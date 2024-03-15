@@ -62,12 +62,22 @@ export default {
 </script>
 <template>
   <div class="container px-5 py-3">
-    <div v-if="isDataLoading">Data is loading...Please wait...</div>
-    <div v-if="errorMsg" class="text-danger">{{ errorMsg }}</div>
+    <div
+      class="d-flex justify-content-center"
+      v-if="isDataLoading"
+      style="margin-top: 250px; margin-bottom: 250px"
+    >
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="alert alert-danger mt-3" role="alert" v-if="errorMsg">
+      <div><i class="bi bi-exclamation-circle-fill"></i> {{ errorMsg }}</div>
+    </div>
     <div v-if="geneData && geneSummaryData">
       <h2 v-if="geneData.gene_symbol">{{ geneData.gene_symbol }}</h2>
       <h2 v-else class="text-muted">Not Available</h2>
-      <h4 class="py-3">Other Synonyms</h4>
+      <h4 class="py-3">Synonyms</h4>
       <div class="row">
         <p v-if="geneData.synonyms && geneData.synonyms.length > 0">
           {{ geneData.synonyms.join(", ") }}
@@ -75,7 +85,7 @@ export default {
         <p v-else class="text-muted">Not Available</p>
       </div>
       <h4 class="py-3">Latest Records</h4>
-      <div class="row mx-1">
+      <div>
         <table
           class="table table-hover table-bordered"
           v-if="
@@ -95,11 +105,11 @@ export default {
                 <a href="#"><i class="bi bi-question-circle-fill"></i></a>
               </th>
               <th>Panels</th>
-              <th>Record Page</th>
+              <th>Stable ID</th>
             </tr>
           </thead>
-          <tbody v-for="item in geneSummaryData.records_summary">
-            <tr>
+          <tbody>
+            <tr v-for="item in geneSummaryData.records_summary">
               <td>{{ item.disease }}</td>
               <td>{{ item.genotype }}</td>
               <td>{{ item.variant_consequence.join(", ") }}</td>
@@ -119,10 +129,10 @@ export default {
               <td>
                 <router-link
                   :to="`/lgd/${item.stable_id}`"
-                  class="btn btn-primary"
+                  style="text-decoration: none"
                   v-if="item.stable_id"
                 >
-                  View <i class="bi bi-box-arrow-up-right"></i>
+                  {{ item.stable_id }}
                 </router-link>
               </td>
             </tr>
@@ -153,7 +163,7 @@ export default {
           </li>
           <li v-if="geneData.ids?.HGNC">
             <a
-              v-bind:href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:${geneData.ids.HGNC}`"
+              v-bind:href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${geneData.ids.HGNC}`"
               style="text-decoration: none"
             >
               View this gene on HGNC website
