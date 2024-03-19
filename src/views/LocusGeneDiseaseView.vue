@@ -336,7 +336,7 @@ export default {
                       :to="`/panel/${item.name}`"
                       style="text-decoration: none"
                     >
-                      {{ item.name }}
+                      {{ item.description }}
                     </router-link>
                     ,
                   </span>
@@ -345,7 +345,7 @@ export default {
                     v-else
                     style="text-decoration: none"
                   >
-                    {{ item.name }}
+                    {{ item.description }}
                   </router-link>
                 </span>
               </span>
