@@ -6,7 +6,7 @@ import HeaderWithoutSearch from "./components/header/HeaderWithoutSearch.vue";
 </script>
 
 <template>
-  <HeaderWithoutSearch v-if="this.$route.path === '/'" />
+  <HeaderWithoutSearch v-if="$route.path === '/'" />
   <Header v-else />
   <RouterView />
   <Footer />
