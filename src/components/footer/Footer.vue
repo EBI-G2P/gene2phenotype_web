@@ -8,19 +8,22 @@
               <h5>Information</h5>
               <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Documentation</a
-                  >
+                  <a href="#" class="nav-link p-0 text-body-secondary">
+                    Documentation
+                  </a>
                 </li>
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Citing G2P</a
+                  <router-link
+                    to="/publications"
+                    class="nav-link p-0 text-body-secondary"
                   >
+                    Citing G2P
+                  </router-link>
                 </li>
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Contact</a
-                  >
+                  <a href="#" class="nav-link p-0 text-body-secondary">
+                    Contact
+                  </a>
                 </li>
               </ul>
             </div>
@@ -28,9 +31,9 @@
               <h5>Data</h5>
               <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Downloads</a
-                  >
+                  <a href="#" class="nav-link p-0 text-body-secondary">
+                    Downloads
+                  </a>
                 </li>
               </ul>
             </div>
@@ -38,24 +41,39 @@
               <h5>Policies</h5>
               <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Privacy</a
+                  <a
+                    href="https://www.ebi.ac.uk/data-protection/privacy-notice/gene2phenotype-helpdesk"
+                    target="_blank"
+                    class="nav-link p-0 text-body-secondary"
                   >
+                    Privacy
+                  </a>
                 </li>
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Cookies</a
+                  <a
+                    href="https://www.ebi.ac.uk/about/terms-of-use#privacy"
+                    target="_blank"
+                    class="nav-link p-0 text-body-secondary"
                   >
+                    Cookies
+                  </a>
                 </li>
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Disclaimer</a
+                  <router-link
+                    to="/disclaimer"
+                    class="nav-link p-0 text-body-secondary"
                   >
+                    Disclaimer
+                  </router-link>
                 </li>
                 <li class="nav-item mb-2">
-                  <a href="#" class="nav-link p-0 text-body-secondary"
-                    >Terms of use</a
+                  <a
+                    href="https://www.ebi.ac.uk/about/terms-of-use#general"
+                    target="_blank"
+                    class="nav-link p-0 text-body-secondary"
                   >
+                    Terms of use
+                  </a>
                 </li>
               </ul>
             </div>

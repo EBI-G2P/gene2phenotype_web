@@ -18,11 +18,11 @@ export const getInitialInputForNewCuration = () => {
     variant_consequences: {},
     molecular_mechanism: {
       name: "",
-      support: "inferred",
+      support: "",
     },
     mechanism_synopsis: {
       name: "",
-      support: "inferred",
+      support: "",
     },
     mechanism_evidence: {},
     disease: { disease_name: "", cross_references: [] },

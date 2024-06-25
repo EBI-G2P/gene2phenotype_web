@@ -210,3 +210,5 @@ export const MechanismSynopsisAttribs = [
   "other GOF",
   "protein aggregation",
 ];
+
+export const MechanismSupportAttribs = ["inferred", "evidence"];

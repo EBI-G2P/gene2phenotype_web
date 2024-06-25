@@ -3,6 +3,7 @@ import MechanismEvidence from "./MechanismEvidence.vue";
 import {
   MechanismAttribs,
   MechanismSynopsisAttribs,
+  MechanismSupportAttribs,
 } from "../../utility/CurationConstants";
 export default {
   props: {
@@ -24,6 +25,7 @@ export default {
     return {
       mechanismAttribs: [...MechanismAttribs],
       mechanismSynopsisAttribs: [...MechanismSynopsisAttribs],
+      mechanismSupportAttribs: [...MechanismSupportAttribs],
     };
   },
 };
@@ -120,8 +122,10 @@ export default {
                     )
                   "
                 >
-                  <option value="inferred">Inferred</option>
-                  <option value="evidence">Evidence</option>
+                  <option disabled value="">Select Source</option>
+                  <option v-for="item in mechanismSupportAttribs" :value="item">
+                    {{ item }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -161,8 +165,10 @@ export default {
                     )
                   "
                 >
-                  <option value="inferred">Inferred</option>
-                  <option value="evidence">Evidence</option>
+                  <option disabled value="">Select Source</option>
+                  <option v-for="item in mechanismSupportAttribs" :value="item">
+                    {{ item }}
+                  </option>
                 </select>
               </div>
             </div>

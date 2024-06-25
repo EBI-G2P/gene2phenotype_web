@@ -226,20 +226,20 @@ export default {
           </tr>
           <tr>
             <td class="w-25 text-end">
-              <h4>Phenotypes</h4>
+              <h4>Phenotypic Features</h4>
             </td>
             <td class="w-75">
               <button
                 class="btn btn-primary"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#collapsiblePhenotypesTable"
+                data-bs-target="#collapsiblePhenotypicFeaturesTable"
                 aria-expanded="false"
-                aria-controls="collapsiblePhenotypesTable"
+                aria-controls="collapsiblePhenotypicFeaturesTable"
               >
-                View phenotypes
+                View Phenotypic Features
               </button>
-              <div class="collapse" id="collapsiblePhenotypesTable">
+              <div class="collapse" id="collapsiblePhenotypicFeaturesTable">
                 <table
                   class="table table-bordered mt-2"
                   v-if="

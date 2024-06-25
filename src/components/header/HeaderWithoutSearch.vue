@@ -47,6 +47,11 @@
                   >Publications</router-link
                 >
               </li>
+              <li>
+                <router-link to="/curators" class="dropdown-item">
+                  Curators
+                </router-link>
+              </li>
               <li><a class="dropdown-item" href="#">Announcements</a></li>
             </ul>
           </li>

@@ -151,9 +151,17 @@ export default {
       <table class="table table-hover table-bordered w-50 mx-auto">
         <thead>
           <tr>
-            <th scope="col">Disorder Panel</th>
-            <th scope="col">Total Records</th>
-            <th scope="col">Total Genes</th>
+            <th scope="col" width="40%">Disorder Panel</th>
+            <th scope="col" width="35%">
+              Total LGMDE Records
+              <span class="bi bi-info-circle custom-tooltip">
+                <span class="custom-tooltip-text">
+                  G2P records are Locus-Genotype-Mechanism-Disease-Evidence
+                  (LGMDE) threads describing gene-disease associations
+                </span>
+              </span>
+            </th>
+            <th scope="col" width="25%">Total Genes</th>
           </tr>
         </thead>
         <tbody>
@@ -175,3 +183,43 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.custom-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-tooltip .custom-tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 5;
+  bottom: 125%;
+  left: 30%;
+  margin-left: -97px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+}
+
+.custom-tooltip .custom-tooltip-text::after {
+  border-width: 5px;
+  border-style: solid;
+  border-color: #000 transparent transparent transparent;
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+}
+
+.custom-tooltip:hover .custom-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+</style>

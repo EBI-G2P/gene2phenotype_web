@@ -25,7 +25,7 @@ export default {
           aria-expanded="false"
           aria-controls="clinical-phenotype-section-body"
         >
-          Clinical Phenotype
+          Phenotypic Features
         </button>
       </h2>
       <div

@@ -1,6 +1,6 @@
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
-    <h2>The Project</h2>
+    <h2 class="pb-3">The Project</h2>
     <p>
       The G2P project shares detailed, evidence-based gene-disease models,
       curated from the literature by experts. These data can be used in the G2P
@@ -13,11 +13,14 @@
       The project was established in 2014, focused on developmental disorders
       and has since been generalised to cover other disease areas. All data is
       made freely available. The initial paper is available
-      <a href="https://doi.org/10.1038/s41467-019-10016-3" target="_blank">
-        here </a
+      <a
+        href="https://doi.org/10.1038/s41467-019-10016-3"
+        target="_blank"
+        style="text-decoration: none"
+        >here</a
       >.
     </p>
-    <p>We report:</p>
+    <p>For each evidence-based gene-disease model, we report:</p>
     <ul>
       <li>Allelic requirement to enable more precise matching on genotype</li>
       <li>
@@ -33,17 +36,20 @@
         genotype is only seen de novo and observations of reduced penetrance,
         mosaicism
       </li>
-      <li>The publications used in assessment</li>
+      <li>
+        The publications used in assessment, so the original evidence can be
+        reviewed
+      </li>
     </ul>
     <p>
       The full curation process is described here and terminology used is
-      described <a href="#">here</a>.
+      described <a href="#" style="text-decoration: none">here</a>.
     </p>
     <p>
       The Ensembl VEP diagnostic variant filtering pipeline matches patient
       genotypes to allelic requirements and genes reported in the literature to
       identify likely causative genes and variants. Full information is
-      available <a href="#">here</a>.
+      available <a href="#" style="text-decoration: none">here</a>.
     </p>
     <div class="row">
       <div class="col-3">
