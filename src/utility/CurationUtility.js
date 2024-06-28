@@ -108,6 +108,33 @@ export const updateInputWithPublicationsData = (input, publicationsData) => {
   return updatedInput;
 };
 
+export const DeConstructJSONWithPublications = (arraydata) => {
+  let publicationsObj = {};
+
+  arraydata.forEach((publication) => {
+    const {
+      families,
+      affectedIndividuals,
+      consanguineous,
+      ancestries,
+      comment,
+      pmid,
+      source,
+    } = publication;
+    publicationsObj[pmid] = {
+      pmid,
+      families,
+      affectedIndividuals,
+      consanguineous,
+      ancestries,
+      comment,
+      source,
+    };
+  });
+
+  return publicationsObj;
+};
+
 export const prepareInputForDataSubmission = (input) => {
   let preparedInput = cloneDeep(input);
 
@@ -252,4 +279,71 @@ export const prepareInputForDataSubmission = (input) => {
     preparedInput.confidence.justification.trim();
 
   return preparedInput;
+};
+
+export const prepareInputForUpdating = (input) => {
+  let deprepare_input = cloneDeep(input);
+
+  return {
+    locus: deprepare_input.locus,
+    publications: DeConstructJSONWithPublications(deprepare_input.publications),
+    phenotypes: deprepare_input.phenotypes,
+    allelic_requirement: deprepare_input.allelic_requirement,
+    cross_cutting_modifier: deprepare_input.cross_cutting_modifier,
+    session_name: deprepare_input.session_name,
+    // variant_types: this.arrayToObject(
+    //  deprepare_input.variant_types,
+    // "primary_type",
+    // "secondary_type"
+    //),
+    // variant_descriptions: this.arrayToObject(
+    // deprepare_input.variant_descriptions,
+    // "pmid"
+    // ),
+    // variant_consequences: arrayToObject(
+    //  deprepare_input.variant_consequences,
+    //  "name"
+    // ),
+    //molecular_mechanism: this.arrayToObject(deprepare_input.molecular_mechanism, 'name'), // is it always inferred except if evidence is given
+    //mechanism_synopsis: {this.arrayToObject(deprepare_input.mechanism_synopsis, 'name'),
+    // mechanism_evidence: this.arrayToObject(
+    //   deprepare_input.mechanism_evidence,
+    //   "pmid"
+    //),
+    disease: {
+      disease_name: deprepare_input.disease.disease_name,
+      cross_references: deprepare_input.disease.cross_references,
+    },
+    panels: deprepare_input.panels,
+    confidence: {
+      justification: deprepare_input.confidence.justification,
+      level: deprepare_input.confidence.level,
+    },
+  };
+};
+
+// this function is to turn array of objects to objects so it can be displayed on the website for updating
+export const appendObjectToPublications = (publications, pubDict) => {
+  // Initialize a new array to hold the combined objects
+  let combinedArray = [];
+
+  // Check if publications.results is an array
+  let new_publications = publications.results;
+
+  // Iterate through the new publications
+  new_publications.forEach((pub) => {
+    const { pmid, authors, source, title, year } = pub;
+    if (pubDict[pmid]) {
+      console.log(`Publication with pmid ${pmid} already exists`);
+    } else {
+      // Append the new publication to the pubDict
+      pubDict[pmid] = { pmid, authors, source, title, year };
+    }
+  });
+
+  // Convert pubDict to an array of its values
+  combinedArray = Object.values(pubDict);
+
+  // Return the combined array within an object that contains the results key
+  return { results: combinedArray, count: combinedArray.length };
 };
