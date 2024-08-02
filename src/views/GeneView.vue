@@ -109,7 +109,7 @@ export default {
         <p v-else class="text-muted">Not Available</p>
       </div>
       <h4 class="py-3">Latest Records</h4>
-      <div>
+      <div class="table-responsive-xl">
         <table
           class="table table-hover table-bordered"
           v-if="
@@ -134,7 +134,15 @@ export default {
           </thead>
           <tbody>
             <tr v-for="item in geneSummaryData.records_summary">
-              <td>{{ item.disease }}</td>
+              <td>
+                <router-link
+                  :to="`/disease/${item.disease}`"
+                  v-if="item.disease"
+                  style="text-decoration: none"
+                >
+                  {{ item.disease }}
+                </router-link>
+              </td>
               <td>{{ item.genotype }}</td>
               <td>{{ item.variant_consequence.join(", ") }}</td>
               <td>{{ item.variant_type.join(", ") }}</td>
@@ -149,7 +157,19 @@ export default {
                   {{ item.confidence }}
                 </span>
               </td>
-              <td>{{ item.panels.join(", ") }}</td>
+              <td>
+                <span
+                  v-if="item.panels && item.panels.length > 0"
+                  v-for="(panelName, index) in item.panels"
+                >
+                  <router-link
+                    :to="`/panel/${panelName}`"
+                    style="text-decoration: none"
+                  >
+                    {{ panelName }} </router-link
+                  ><span v-if="index < item.panels.length - 1">, </span>
+                </span>
+              </td>
               <td>
                 <router-link
                   :to="`/lgd/${item.stable_id}`"

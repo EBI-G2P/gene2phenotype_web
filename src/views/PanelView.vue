@@ -16,6 +16,11 @@ export default {
       chartData: {},
       chartOptions: {
         responsive: true,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
         scales: {
           x: {
             title: {
@@ -172,7 +177,7 @@ export default {
         />
       </div>
       <h4 class="py-3">Latest Records</h4>
-      <div>
+      <div class="table-responsive-xl">
         <table
           class="table table-hover table-bordered"
           v-if="
@@ -259,8 +264,24 @@ export default {
           </thead>
           <tbody>
             <tr v-for="item in panelSummaryData.records_summary">
-              <td>{{ item.locus }}</td>
-              <td>{{ item.disease }}</td>
+              <td>
+                <router-link
+                  :to="`/gene/${item.locus}`"
+                  v-if="item.locus"
+                  style="text-decoration: none"
+                >
+                  {{ item.locus }}
+                </router-link>
+              </td>
+              <td>
+                <router-link
+                  :to="`/disease/${item.disease}`"
+                  v-if="item.disease"
+                  style="text-decoration: none"
+                >
+                  {{ item.disease }}
+                </router-link>
+              </td>
               <td>{{ item.genotype }}</td>
               <td>
                 {{ item.variant_consequence.join(", ") }}

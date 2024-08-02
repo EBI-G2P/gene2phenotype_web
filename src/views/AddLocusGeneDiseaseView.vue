@@ -17,6 +17,7 @@ import {
 } from "../utility/CurationUtility.js";
 import SaveSuccessAlert from "../components/curation/SaveSuccessAlert.vue";
 import AlertModal from "../components/curation/AlertModal.vue";
+import cloneDeep from "lodash/cloneDeep";
 
 export default {
   data() {
@@ -26,11 +27,12 @@ export default {
       hpoTermsInputHelper: {},
       isGeneDataLoading: false,
       isGeneDiseaseDataLoading: false,
-      isSubmitDataLoading: false,
       geneData: null,
       geneFunctionData: null,
       attributesData: null,
       geneErrorMsg: null,
+      geneDiseaseErrorMsg: null,
+      isSubmitDataLoading: false,
       submitErrorMsg: null,
       isSubmitSuccess: false,
       submitSuccessMsg: null,
@@ -61,12 +63,32 @@ export default {
     geneSearchBtnClickHandler() {
       if (this.input.locus !== "") {
         this.isInputLocusValid = true;
+        if (this.geneData) {
+          // if we are fetching data for another gene then we need to reset the data variables
+          this.resetData();
+        }
         this.fetchGeneInformation();
         this.fetchGeneDiseaseInformation();
         this.fetchPanels();
       } else {
         this.isInputLocusValid = false;
       }
+    },
+    resetData() {
+      // if we are fetching data for another gene then we retain value of locus key and reset other keys of input obj
+      const resetInput = getInitialInputForNewCuration();
+      this.input = { ...cloneDeep(resetInput), locus: this.input.locus };
+
+      // most of the data variables have to be reset
+      this.hpoTermsInputHelper = {};
+      this.isSubmitDataLoading = false;
+      this.submitErrorMsg = null;
+      this.isSubmitSuccess = false;
+      this.submitSuccessMsg = null;
+      this.publicationsErrorMsg = null;
+      this.isPublicationsDataLoading = false;
+      this.inputPmids = "";
+      this.isInputPmidsValid = true;
     },
     fetchGeneInformation() {
       this.geneErrorMsg =

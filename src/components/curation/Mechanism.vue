@@ -104,7 +104,7 @@ export default {
                     $emit('update:molecularMechanism', $event.target.value)
                   "
                 >
-                  <option disabled value="">Select</option>
+                  <option value="">Select</option>
                   <option v-for="item in mechanismAttribs" :value="item">
                     {{ item }}
                   </option>
@@ -122,7 +122,7 @@ export default {
                     )
                   "
                 >
-                  <option disabled value="">Select Source</option>
+                  <option value="">Select Source</option>
                   <option v-for="item in mechanismSupportAttribs" :value="item">
                     {{ item }}
                   </option>
@@ -144,7 +144,7 @@ export default {
                     $emit('update:mechanismSynopsis', $event.target.value)
                   "
                 >
-                  <option disabled value="">Select</option>
+                  <option value="">Select</option>
                   <option
                     v-for="item in mechanismSynopsisAttribs"
                     :value="item"
@@ -165,7 +165,7 @@ export default {
                     )
                   "
                 >
-                  <option disabled value="">Select Source</option>
+                  <option value="">Select Source</option>
                   <option v-for="item in mechanismSupportAttribs" :value="item">
                     {{ item }}
                   </option>

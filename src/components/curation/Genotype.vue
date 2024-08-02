@@ -57,7 +57,7 @@ export default {
                     $emit('update:allelicRequirement', $event.target.value)
                   "
                 >
-                  <option disabled value="">Select</option>
+                  <option value="">Select</option>
                   <option v-for="item in attributesData.genotype" :value="item">
                     {{ item }}
                   </option>

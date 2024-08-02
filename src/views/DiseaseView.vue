@@ -94,7 +94,7 @@ export default {
         </a>
       </p>
       <h4 class="py-3">Latest Records</h4>
-      <div class="row mx-1">
+      <div class="table-responsive-xl">
         <table
           class="table table-hover table-bordered"
           v-if="
@@ -205,19 +205,18 @@ export default {
                   overflow: hidden;
                   text-overflow: ellipsis;
                 "
-                v-if="Array.isArray(item.panels)"
               >
-                {{ item.panels.join(",") }}
-              </td>
-              <td
-                style="
-                  max-width: 150px;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                "
-                v-else
-              >
-                {{ item.panels }}
+                <span
+                  v-if="item.panels && item.panels.length > 0"
+                  v-for="(panelName, index) in item.panels"
+                >
+                  <router-link
+                    :to="`/panel/${panelName}`"
+                    style="text-decoration: none"
+                  >
+                    {{ panelName }} </router-link
+                  ><span v-if="index < item.panels.length - 1">, </span>
+                </span>
               </td>
             </tr>
           </tbody>
@@ -230,23 +229,48 @@ export default {
         "
         class="py-3"
       >
-        Disease Ontology Terms
+        Cross references
       </h4>
-      <p
-        v-for="item in diseaseData.ontology_terms"
-        v-if="diseaseData.ontology_terms"
+      <table
+        class="table table-bordered w-50"
+        v-if="
+          diseaseData.ontology_terms && diseaseData.ontology_terms.length > 0
+        "
+        width="50%"
       >
-        <a
-          :href="`http://purl.obolibrary.org/obo/${item.accession.replace(
-            /:/g,
-            '_'
-          )}`"
-          target="_blank"
-          style="text-decoration: none"
-        >
-          {{ item.accession }}
-        </a>
-      </p>
+        <thead>
+          <tr>
+            <th>Accession</th>
+            <th>Term</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in diseaseData.ontology_terms">
+            <td>
+              <a
+                v-bind:href="`https://www.omim.org/entry/${item.accession}`"
+                v-if="item.source === 'OMIM'"
+                target="_blank"
+                style="text-decoration: none"
+              >
+                {{ item.accession }}
+              </a>
+              <a
+                v-bind:href="`https://monarchinitiative.org/${item.accession}`"
+                v-else-if="item.source === 'Mondo'"
+                target="_blank"
+                style="text-decoration: none"
+              >
+                {{ item.accession }}
+              </a>
+              <span v-else>{{ item.accession }}</span>
+            </td>
+            <td>{{ item.term }}</td>
+            <td>{{ item.source }}</td>
+          </tr>
+        </tbody>
+      </table>
       <h4
         v-if="diseaseData.publications && diseaseData.publications.length > 0"
         class="py-3"

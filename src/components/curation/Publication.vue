@@ -217,6 +217,7 @@ export default {
                           type="number"
                           class="form-control"
                           :id="`publication-families-input-${pmid}`"
+                          min="0"
                           :value="publications[pmid].families"
                           @input="
                             inputHandler(
@@ -238,6 +239,7 @@ export default {
                           type="number"
                           class="form-control"
                           :id="`publication-affected-individuals-input-${pmid}`"
+                          min="0"
                           :value="publications[pmid].affectedIndividuals"
                           @input="
                             inputHandler(

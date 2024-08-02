@@ -28,13 +28,14 @@ export default {
               <strong><p>Symbol</p></strong>
             </div>
             <div style="width: 90%">
-              <router-link
-                :to="`/gene/${geneData.gene_symbol}`"
-                style="text-decoration: none"
+              <a
                 v-if="geneData.gene_symbol"
+                :href="`/gene/${geneData.gene_symbol}`"
+                style="text-decoration: none"
+                target="_blank"
               >
                 {{ geneData.gene_symbol }}
-              </router-link>
+              </a>
               <p v-else class="text-muted">Not Available</p>
             </div>
           </div>

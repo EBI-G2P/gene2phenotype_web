@@ -104,7 +104,7 @@ export default {
                   :value="level"
                   @input="$emit('update:level', $event.target.value)"
                 >
-                  <option disabled value="">Select</option>
+                  <option value="">Select</option>
                   <option
                     v-for="item in attributesData.confidence_category"
                     :value="item"

@@ -1,9 +1,8 @@
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
-    <h2 class="pb-2">G2P variant filtering</h2>
-    <h4 class="pb-2">
+    <h2 class="pb-2">
       Variant filtering using the G2P Ensembl Variant Effect Predictor plugin
-    </h4>
+    </h2>
     <p>
       The Ensembl Variant Effect Predictor (<a
         href="https://www.ensembl.org/info/docs/tools/vep/index.html"
@@ -207,7 +206,7 @@
             on how the ensembl-variation API was installed Filtering using
             additional VCF files takes more time than using data in the Ensembl
             VEP cache only.<br />
-            <b>Default not used.</b>
+            <b>Default</b>: not used
           </td>
         </tr>
         <tr>
@@ -216,7 +215,7 @@
             Select additional studies for AF filtering. Separate multiple values
             with '&'. Can only be used with af_from_vcf. Currently supported
             studies are 'uk10k' and 'topmed' (for both GRCh37 and GRCh38).<br />
-            <b>Default not used.</b>
+            <b>Default</b>: not used
           </td>
         </tr>
         <tr>
@@ -225,7 +224,7 @@
             A list of variants to include even if they do not pass allele
             frequency filtering. The include list is a sorted, bgzipped and
             tabixed VCF file.<br />
-            <b>Default not used.</b>
+            <b>Default</b>: not used
           </td>
         </tr>
         <tr>

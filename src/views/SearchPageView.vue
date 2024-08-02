@@ -133,19 +133,45 @@ export default {
               <th>G2P ID</th>
             </tr>
           </thead>
-          <tbody v-for="item in searchData.results">
-            <tr>
-              <td>{{ item.gene }}</td>
-              <td>{{ item.disease }}</td>
+          <tbody>
+            <tr v-for="item in searchData.results">
+              <td>
+                <router-link
+                  v-if="item.gene"
+                  :to="`/gene/${item.gene}`"
+                  style="text-decoration: none"
+                >
+                  {{ item.gene }}
+                </router-link>
+              </td>
+              <td>
+                <router-link
+                  v-if="item.disease"
+                  :to="`/disease/${item.disease}`"
+                  style="text-decoration: none"
+                >
+                  {{ item.disease }}
+                </router-link>
+              </td>
               <td>{{ item.genotype }}</td>
               <td>
-                {{ item.panel.join(", ") }}
+                <span
+                  v-if="item.panel && item.panel.length > 0"
+                  v-for="(panelName, index) in item.panel"
+                >
+                  <router-link
+                    :to="`/panel/${panelName}`"
+                    style="text-decoration: none"
+                  >
+                    {{ panelName }} </router-link
+                  ><span v-if="index < item.panel.length - 1">, </span>
+                </span>
               </td>
               <td>
                 <router-link
                   :to="`/lgd/${item.id}`"
-                  style="text-decoration: none"
                   v-if="item.id"
+                  style="text-decoration: none"
                 >
                   {{ item.id }}
                 </router-link>
