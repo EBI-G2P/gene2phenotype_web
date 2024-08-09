@@ -9,6 +9,9 @@ import Disease from "../components/curation/Disease.vue";
 import Panel from "../components/curation/Panel.vue";
 import Confidence from "../components/curation/Confidence.vue";
 import SaveDraftModal from "../components/curation/SaveDraftModal.vue";
+import PublishModal from "../components/curation/PublishModal.vue";
+import PublishSuccessAlert from "../components/curation/PublishSuccessAlert.vue";
+import SaveNotPublishSuccessAlert from "../components/curation/SaveNotPublishSuccessAlert.vue";
 import {
   getInitialInputForNewCuration,
   updateInputWithPublicationsData,
@@ -34,6 +37,9 @@ export default {
       submitErrorMsg: null,
       isSubmitSuccess: false,
       submitSuccessMsg: null,
+      isPublishSuccess: false,
+      publishSuccessMsg: null,
+      publishErrorMsg: null,
       publicationsErrorMsg: null,
       isPublicationsDataLoading: false,
       inputPmids: "",
@@ -41,6 +47,7 @@ export default {
       panelErrorMsg: null,
       isPanelDataLoading: false,
       panelData: null,
+      stableId: null,
     };
   },
   components: {
@@ -54,6 +61,9 @@ export default {
     Panel,
     Confidence,
     SaveDraftModal,
+    PublishModal,
+    PublishSuccessAlert,
+    SaveNotPublishSuccessAlert,
     SaveSuccessAlert,
     AlertModal,
   },
@@ -258,6 +268,7 @@ export default {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("authToken")}`,
         },
       })
         .then((response) => {
@@ -266,6 +277,8 @@ export default {
         })
         .then((responseJson) => {
           this.isSubmitDataLoading = false;
+          this.stableId = null;
+          this.stableId = responseJson.result;
           if (responseStatus === 200) {
             this.isSubmitSuccess = true;
             this.submitSuccessMsg = responseJson.message;
@@ -287,6 +300,83 @@ export default {
             "Unable to submit data. Please try again later.";
           console.log(error);
         });
+    },
+    async publishEntry() {
+      this.publishErrorMsg =
+        this.publishSucessMsg =
+        this.submitErrorMsg =
+        this.submitSuccessMsg =
+          null;
+      this.isPublishSuccess = this.isSubmitSuccess = false;
+      this.isPublishDataLoading = this.isSubmitDataLoading = true;
+      this.stableId = null;
+
+      const preparedInput = prepareInputForDataSubmission(this.input);
+      const requestBody = { json_data: preparedInput };
+
+      try {
+        // Submitting Data
+        const submitResponse = await fetch(
+          "/gene2phenotype/api/add/curation/",
+          {
+            method: "POST",
+            body: JSON.stringify(requestBody),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const submitResponseJson = await submitResponse.json();
+        this.isSubmitDataLoading = false;
+
+        if (submitResponse.status === 200) {
+          this.isSubmitSuccess = true;
+          this.submitSuccessMsg = submitResponseJson.message;
+          this.stableId = submitResponseJson.result;
+        } else {
+          let errorMsg = "Unable to submit data. Please try again later.";
+          if (
+            submitResponse.errors?.message &&
+            submitResponseJson.errors?.message.length > 0
+          ) {
+            errorMsg = "Error: " + submitResponseJson.errors.message[0];
+          }
+          this.submitErrorMsg = errorMsg;
+          console.log(errorMsg);
+        }
+
+        this.isSubmitSuccess = false;
+        // Publishing Data
+        if (this.stableId) {
+          const publishResponse = await fetch(
+            `/gene2phenotype/api/curation/publish/${this.stableId}/`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Length": 0,
+              },
+            }
+          );
+
+          const publishResponseJson = await publishResponse.json();
+          this.isPublishDataLoading = false;
+          if (publishResponse.status === 201) {
+            this.isPublishSuccess = true;
+            this.publishSuccessMsg = publishResponseJson.message;
+          } else {
+            let errorMsg = "Unable to publish data. ";
+            errorMsg += publishResponseJson.message;
+            this.publishErrorMsg = errorMsg;
+          }
+        }
+      } catch (error) {
+        this.isSubmitDataLoading = this.isPublishDataLoading = false;
+        this.submitErrorMsg = this.publishErrorMsg =
+          "Unable to submit data. Please try again later.";
+        console.log("Error:", error);
+      }
     },
   },
 };
@@ -436,14 +526,29 @@ export default {
       >
         <i class="bi bi-floppy-fill"></i> Save Draft
       </button>
-      <button class="btn btn-primary">
-        <i class="bi bi-send-fill"></i> Publish
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#publish-entry-modal"
+      >
+        <i class="bi bi-floppy-fill"></i> Save and Publish
       </button>
     </div>
+    <SaveNotPublishSuccessAlert
+      v-if="submitSuccessMsg && publishErrorMsg"
+      :errorMsg="publishErrorMsg"
+      :stableId="stableId"
+    />
     <SaveSuccessAlert v-if="isSubmitSuccess" :successMsg="submitSuccessMsg" />
     <SaveDraftModal
       v-model:sessionname="input.session_name"
       @savedraft="saveDraft"
+    />
+    <PublishModal @publish="publishEntry" />
+    <PublishSuccessAlert
+      v-if="isPublishSuccess"
+      :successMsg="publishSuccessMsg"
+      :stableId="stableId"
     />
     <AlertModal
       modalId="all-input-alert-modal"

@@ -9,6 +9,9 @@ import Disease from "../components/curation/Disease.vue";
 import Panel from "../components/curation/Panel.vue";
 import Confidence from "../components/curation/Confidence.vue";
 import SaveDraftModal from "../components/curation/SaveDraftModal.vue";
+import PublishModal from "../components/curation/PublishModal.vue";
+import PublishSuccessAlert from "../components/curation/PublishSuccessAlert.vue";
+import SaveNotPublishSuccessAlert from "../components/curation/SaveNotPublishSuccessAlert.vue";
 import {
   updateInputWithPublicationsData,
   prepareInputForDataSubmission,
@@ -44,6 +47,9 @@ export default {
       submitErrorMsg: null,
       isSubmitSuccess: false,
       submitSuccessMsg: null,
+      isPublishSuccess: false,
+      publishSuccessMsg: null,
+      publishErrorMsg: null,
       publicationsErrorMsg: null,
       isPublicationsDataLoading: false,
       inputPmids: "",
@@ -51,6 +57,7 @@ export default {
       panelErrorMsg: null,
       isPanelDataLoading: false,
       panelData: null,
+      stableID: null,
     };
   },
   components: {
@@ -64,6 +71,9 @@ export default {
     Panel,
     Confidence,
     SaveDraftModal,
+    PublishModal,
+    PublishSuccessAlert,
+    SaveNotPublishSuccessAlert,
     SaveSuccessAlert,
     AlertModal,
   },
@@ -71,8 +81,8 @@ export default {
     fetchPreviousCurationInput() {
       this.isPreviousInputDataLoading = true;
       this.previousInput = this.errorMsg = null;
-      const stableID = this.$route.params.stableID;
-      fetch(`/gene2phenotype/api/curation/${stableID}`)
+      this.stableID = this.$route.params.stableID;
+      fetch(`/gene2phenotype/api/curation/${this.stableID}`)
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -279,12 +289,12 @@ export default {
       const preparedUpdatedInput = prepareInputForDataSubmission(
         this.previousInput
       );
-      const stableID = this.$route.params.stableID;
+      // const stableID = this.$route.params.stableID;
       const requestBody = {
         json_data: preparedUpdatedInput,
       };
       let responseStatus = null;
-      fetch(`/gene2phenotype/api/curation/${stableID}/update/`, {
+      fetch(`/gene2phenotype/api/curation/${this.stableID}/update/`, {
         method: "PUT",
         body: JSON.stringify(requestBody),
         headers: {
@@ -319,6 +329,82 @@ export default {
             "Unable to submit data. Please try again later.";
           console.log(error);
         });
+    },
+    async publishEntry() {
+      this.publishErrorMsg =
+        this.publishSucessMsg =
+        this.submitErrorMsg =
+        this.submitSuccessMsg =
+          null;
+      this.isPublishSuccess = this.isSubmitSuccess = false;
+      this.isPublishDataLoading = this.isSubmitDataLoading = true;
+      this.stableId = null;
+
+      const preparedInput = prepareInputForDataSubmission(this.previousInput);
+      const requestBody = { json_data: preparedInput };
+
+      try {
+        // Updating Data
+        const submitResponse = await fetch(
+          `/gene2phenotype/api/curation/${this.stableID}/update/`,
+          {
+            method: "PUT",
+            body: JSON.stringify(requestBody),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const submitResponseJson = await submitResponse.json();
+        this.isSubmitDataLoading = false;
+
+        if (submitResponse.status === 200) {
+          this.isSubmitSuccess = true;
+          this.submitSuccessMsg = submitResponseJson.message;
+          this.isSubmitSuccess = false;
+        } else {
+          let errorMsg = "Unable to submit data. Please try again later.";
+          if (
+            submitResponse.errors?.message &&
+            submitResponseJson.errors?.message.length > 0
+          ) {
+            errorMsg = "Error: " + submitResponseJson.errors.message[0];
+          }
+          this.submitErrorMsg = errorMsg;
+          console.log(errorMsg);
+        }
+
+        // Publishing Data
+        if ((this.submitSuccess = true && this.stableID)) {
+          const publishResponse = await fetch(
+            `/gene2phenotype/api/curation/publish/${this.stableID}/`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Length": 0,
+              },
+            }
+          );
+
+          const publishResponseJson = await publishResponse.json();
+          this.isPublishDataLoading = false;
+          if (publishResponse.status === 201) {
+            this.isPublishSuccess = true;
+            this.publishSuccessMsg = publishResponseJson.message;
+          } else {
+            let errorMsg = "Unable to publish data.";
+            errorMsg += publishResponseJson.message;
+            this.publishErrorMsg = errorMsg;
+          }
+        }
+      } catch (error) {
+        this.isSubmitDataLoading = this.isPublishDataLoading = false;
+        this.submitErrorMsg = this.publishErrorMsg =
+          "Unable to submit data. Please try again later.";
+        console.log("Error:", error);
+      }
     },
   },
 };
@@ -438,11 +524,26 @@ export default {
       <button type="button" class="btn btn-primary" @click="saveDraft">
         <i class="bi bi-floppy-fill"></i> Save Draft
       </button>
-      <button class="btn btn-primary">
-        <i class="bi bi-send-fill"></i> Publish
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#publish-entry-modal"
+      >
+        <i class="bi bi-floppy-fill"></i> Save and Publish
       </button>
     </div>
+    <SaveNotPublishSuccessAlert
+      v-if="submitSuccessMsg && publishErrorMsg"
+      :errorMsg="publishErrorMsg"
+      :stableId="stableID"
+    />
     <SaveSuccessAlert v-if="isSubmitSuccess" :successMsg="submitSuccessMsg" />
+    <PublishModal @publish="publishEntry" />
+    <PublishSuccessAlert
+      v-if="isPublishSuccess"
+      :successMsg="publishSuccessMsg"
+      :stableId="stableID"
+    />
     <AlertModal
       modalId="publications-input-alert-modal"
       alertText="The data you have input under Publications, Phenotypic Features, Variant Types, Variant Description, and Mechanism Evidence will be lost. Are you sure you want to proceed?"

@@ -272,11 +272,12 @@ export const prepareInputForDataSubmission = (input) => {
   preparedInput.disease.disease_name =
     preparedInput.disease.disease_name.trim();
 
-  // convert locus to uppercase
-  preparedInput.locus = preparedInput.locus.toUpperCase();
-
-  // if disease name is not empty then prefix locus to disease name
-  if (preparedInput.disease.disease_name !== "") {
+  // if disease name is not empty then prefix locus to disease name and disease name does not contain gene-related
+  const regex = new RegExp(`${preparedInput.locus}-related`, "i");
+  if (
+    preparedInput.disease.disease_name !== "" &&
+    !regex.test(preparedInput.disease.disease_name)
+  ) {
     preparedInput.disease.disease_name = `${preparedInput.locus}-related ${preparedInput.disease.disease_name}`;
   }
 

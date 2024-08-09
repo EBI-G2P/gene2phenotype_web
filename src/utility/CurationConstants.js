@@ -64,12 +64,12 @@ export const VariantTypesAttribs = [
       {
         displayNmdEscape: false,
         labelText: "5_prime_UTR_variant",
-        inputKey: "five_prime_UTR_variant",
+        inputKey: "5_prime_UTR_variant",
       },
       {
         displayNmdEscape: false,
         labelText: "3_prime_UTR_variant",
-        inputKey: "three_prime_UTR_variant",
+        inputKey: "3_prime_UTR_variant",
       },
       {
         displayNmdEscape: false,
@@ -101,8 +101,8 @@ export const VariantTypesAttribs = [
       },
       {
         displayNmdEscape: false,
-        labelText: "Stop loss",
-        inputKey: "stop_loss",
+        labelText: "Stop lost",
+        inputKey: "stop_lost",
       },
       {
         displayNmdEscape: false,
@@ -145,8 +145,8 @@ export const VariantConsequencesAttribs = [
     hierarchyLevel: 2,
   },
   {
-    labelText: "Absent_gene_product_level SO:0002317",
-    inputKey: "absent_gene_product_level",
+    labelText: "Absent_gene_product SO:0002317",
+    inputKey: "absent_gene_product",
     hierarchyLevel: 3,
   },
   {
