@@ -50,65 +50,52 @@ export default {
         <div class="accordion-body">
           <form>
             <div class="row g-3 px-3">
-              <div class="col-2">
-                <p class="col-form-label">Badoyni et al probabilities</p>
-              </div>
-              <div class="col-md-3">
-                <label for="gain-of-function-textbox" class="form-label">
-                  Gain of Function
-                </label>
-                <textarea
-                  class="form-control"
-                  id="gain-of-function-textbox"
-                  rows="1"
-                  disabled
-                  >{{
-                    mechanismGeneStats?.gain_of_function_mp
-                      ? mechanismGeneStats.gain_of_function_mp
-                      : "Not Available"
-                  }}</textarea
-                >
-              </div>
-              <div class="col-md-3">
-                <label for="loss-of-function-textbox" class="form-label">
-                  Loss of Function
-                </label>
-                <textarea
-                  class="form-control"
-                  id="loss-of-function-textbox"
-                  rows="1"
-                  disabled
-                  >{{
-                    mechanismGeneStats?.loss_of_function_mp
-                      ? mechanismGeneStats.loss_of_function_mp
-                      : "Not Available"
-                  }}</textarea
-                >
-              </div>
-              <div class="col-md-3">
-                <label for="dominant-negative-textbox" class="form-label">
-                  Dominant Negative
-                </label>
-                <textarea
-                  class="form-control"
-                  id="dominant-negative-textbox"
-                  rows="1"
-                  disabled
-                  >{{
-                    mechanismGeneStats?.dominant_negative_mp
-                      ? mechanismGeneStats.dominant_negative_mp
-                      : "Not Available"
-                  }}</textarea
-                >
+              <p class="mb-0 fw-bold">Badoyni et al probabilities</p>
+              <div class="col-xl-4 col-lg-6">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <th width="50%">Gain of Function</th>
+                      <td width="50%">
+                        {{
+                          mechanismGeneStats?.gain_of_function_mp
+                            ? mechanismGeneStats.gain_of_function_mp
+                            : "Not Available"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th width="50%">Loss of Function</th>
+                      <td width="50%">
+                        {{
+                          mechanismGeneStats?.loss_of_function_mp
+                            ? mechanismGeneStats.loss_of_function_mp
+                            : "Not Available"
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th width="50%">Dominant Negative</th>
+                      <td width="50%">
+                        {{
+                          mechanismGeneStats?.dominant_negative_mp
+                            ? mechanismGeneStats.dominant_negative_mp
+                            : "Not Available"
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div class="row g-3 px-3 pt-4">
-              <div class="col-2">
+            <hr />
+            <div class="row g-3 px-3 pt-3">
+              <div class="col-lg-2">
                 <label for="mechanism-input" class="col-form-label">
                   Mechanism<span class="text-danger">*</span>
                 </label>
               </div>
-              <div class="col-3">
+              <div class="col-xl-3 col-lg-3 col-6">
                 <select
                   id="mechanism-input"
                   class="form-select"
@@ -123,7 +110,7 @@ export default {
                   </option>
                 </select>
               </div>
-              <div class="col-3">
+              <div class="col-xl-3 col-lg-3 col-6">
                 <select
                   id="mechanism-input-source"
                   class="form-select"
@@ -143,12 +130,12 @@ export default {
               </div>
             </div>
             <div class="row g-3 px-3 py-3">
-              <div class="col-2">
+              <div class="col-lg-2">
                 <label for="categorisation-input" class="col-form-label">
                   Categorisation
                 </label>
               </div>
-              <div class="col-3">
+              <div class="col-xl-3 col-lg-3 col-6">
                 <select
                   id="categorisation-input"
                   class="form-select"
@@ -166,7 +153,7 @@ export default {
                   </option>
                 </select>
               </div>
-              <div class="col-3">
+              <div class="col-xl-3 col-lg-3 col-6">
                 <select
                   id="categorisation-input-source"
                   class="form-select"

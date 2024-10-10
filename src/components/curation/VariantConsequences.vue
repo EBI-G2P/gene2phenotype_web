@@ -6,13 +6,9 @@ export default {
   },
   emits: ["updateVariantConsequences"],
   methods: {
-    variantConsequencesRadioBtnHandler(key, checked, value) {
+    variantConsequencesInputHandler(key, inputValue) {
       let updatedVariantConsequences = { ...this.variantConsequences };
-      if (checked) {
-        updatedVariantConsequences[key] = value;
-      } else {
-        updatedVariantConsequences[key] = "";
-      }
+      updatedVariantConsequences[key] = inputValue;
       this.$emit("updateVariantConsequences", updatedVariantConsequences);
     },
     variantConsequenceCssClass(hierarchyLevel) {
@@ -40,12 +36,11 @@ export default {
       <table style="width: 70%" class="table table-bordered">
         <thead>
           <tr>
-            <th style="width: 65%">
+            <th style="width: 70%">
               Altered protein for protein-coding genes or altered RNA level for
               non-protein coding genes
             </th>
-            <th>Inferred</th>
-            <th>Evidence</th>
+            <th style="width: 30%">Source</th>
           </tr>
         </thead>
         <tbody>
@@ -54,36 +49,22 @@ export default {
               {{ item.labelText }}
             </td>
             <td>
-              <div class="form-check">
-                <input
-                  type="radio"
-                  :id="`variant-consequence-input-${item.inputKey}-inferred`"
-                  :checked="variantConsequences[item.inputKey] === 'inferred'"
-                  @input="
-                    variantConsequencesRadioBtnHandler(
-                      item.inputKey,
-                      $event.target.checked,
-                      'inferred'
-                    )
-                  "
-                />
-              </div>
-            </td>
-            <td>
-              <div class="form-check">
-                <input
-                  type="radio"
-                  :id="`variant-consequence-input-${item.inputKey}-evidence`"
-                  :checked="variantConsequences[item.inputKey] === 'evidence'"
-                  @input="
-                    variantConsequencesRadioBtnHandler(
-                      item.inputKey,
-                      $event.target.checked,
-                      'evidence'
-                    )
-                  "
-                />
-              </div>
+              <select
+                :id="`variant-consequence-input-source-${item.inputKey}`"
+                class="form-select"
+                :value="variantConsequences[item.inputKey]"
+                @input="
+                  variantConsequencesInputHandler(
+                    item.inputKey,
+                    $event.target.value
+                  )
+                "
+              >
+                >
+                <option value="">Select</option>
+                <option value="inferred">inferred</option>
+                <option value="evidence">evidence</option>
+              </select>
             </td>
           </tr>
         </tbody>

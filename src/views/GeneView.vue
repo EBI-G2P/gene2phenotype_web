@@ -175,10 +175,12 @@ export default {
               <td>{{ item.molecular_mechanism.join(", ") }}</td>
               <td>
                 <span
-                  :style="{
-                    color: confidenceColorMap[item.confidence.toLowerCase()],
-                  }"
                   v-if="item.confidence"
+                  class="badge text-white"
+                  :style="{
+                    backgroundColor:
+                      confidenceColorMap[item.confidence.toLowerCase()],
+                  }"
                 >
                   {{ item.confidence }}
                 </span>

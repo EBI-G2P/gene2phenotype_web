@@ -94,7 +94,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="add-panel-modal-label">
-            Add to my panel
+            Add to another panel
           </h5>
           <button
             type="button"
@@ -171,7 +171,7 @@ export default {
             class="btn btn-primary"
             @click="addPanel"
           >
-            <i class="bi bi-plus-circle-fill"></i> Add to my panel
+            <i class="bi bi-plus-circle-fill"></i> Add to panel
           </button>
           <button
             v-if="isAddPanelSuccess"
