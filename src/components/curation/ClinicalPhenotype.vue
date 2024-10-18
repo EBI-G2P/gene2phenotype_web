@@ -1,5 +1,76 @@
 <script>
+import { ref, computed } from "vue";
 export default {
+  setup() {
+    let searchTerm = ref("");
+    const isLoadingValue = ref(false);
+    const HPOsearchResponseJson = ref(null);
+    const HPOAPIerrormsg = ref(null);
+    const showDropDown = ref(false);
+    let TermSelected = ref("");
+
+    //function to fetch ontology data
+    // Function to fetch and return filtered ontology data based on search term
+    const fetchAndSearchHPO = computed(async () => {
+      isLoadingValue.value = true;
+      HPOAPIerrormsg.value = null;
+      HPOsearchResponseJson.value = [];
+
+      if (searchTerm.value.length < 3) {
+        isLoadingValue.value = false;
+        return [];
+      }
+      try {
+        // Call the ontology API
+        const hpoApiResponse = await fetch(
+          `https://ontology.jax.org/api/hp/search?q=${searchTerm.value}&page=0&limit=10`
+        );
+
+        if (!hpoApiResponse.ok) {
+          throw new Error("Failed to fetch HPO API");
+        }
+
+        const ontology_data = await hpoApiResponse.json();
+        HPOsearchResponseJson.value = ontology_data.terms || [];
+      } catch (error) {
+        HPOAPIerrormsg.value = "HPO ontology API not working, try again later";
+      } finally {
+        isLoadingValue.value = false;
+      }
+
+      console.log(HPOsearchResponseJson.value);
+      return HPOsearchResponseJson.value; // Return search results
+    });
+
+    const onInput = () => {
+      fetchAndSearchHPO.value;
+    };
+
+    const selectTerm = (term) => {
+      TermSelected.value = term.name;
+      showDropDown.value = false;
+      searchTerm.value = "";
+    };
+
+    const hideDropdown = () => {
+      setTimeout(() => {
+        showDropDown.value = false;
+      }, 800);
+    };
+
+    return {
+      isLoadingValue,
+      HPOsearchResponseJson,
+      HPOAPIerrormsg,
+      fetchAndSearchHPO, //expose function, because it allows other component to access and invoke the function
+      showDropDown,
+      hideDropdown,
+      TermSelected,
+      searchTerm,
+      selectTerm,
+      onInput,
+    };
+  },
   props: {
     fetchHpoTerms: Function,
     clinicalPhenotype: Object,
@@ -8,6 +79,7 @@ export default {
   emits: ["update:clinicalPhenotype", "update:hpoTermsInputHelper"],
   methods: {
     summaryInputHandler(pmid, inputValue) {
+      console.log(inputValue);
       let updateClinicalPhenotype = { ...this.clinicalPhenotype };
       updateClinicalPhenotype[pmid].summary = inputValue;
       this.$emit("update:clinicalPhenotype", updateClinicalPhenotype);
@@ -54,6 +126,48 @@ export default {
                 </strong>
               </div>
             </div>
+            <div class="row pt-3">
+              <label for="search_phenotype" class="form_label">
+                Search Phenotypes
+              </label>
+              <div class="d-flex align-items-center position-relative">
+                <input
+                  type="text"
+                  id="search_phenotype"
+                  placeholder="Enter phenotype...."
+                  v-model="searchTerm"
+                  @input="onInput"
+                  @focus="showDropdown = true"
+                  @blur="hideDropdown"
+                  style="
+                    width: 100%;
+                    max-width: 300px;
+                    border: 2px solid #00008b;
+                    border-radius: 8px;
+                    padding: 10px;
+                    margin-right: 10px;
+                    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+                  "
+                />
+                <button type="button" class="btn btn-primary">Enter</button>
+
+                <!-- Autocomplete Dropdown -->
+                <ul
+                  v-if="HPOsearchResponseJson && HPOsearchResponseJson.length"
+                  class="w-full rounded bg-white border border-gray-300 px-4 py-2 space-y-1 absolute z-10"
+                >
+                  <li
+                    v-for="term in HPOsearchResponseJson"
+                    :key="term.id"
+                    @click="selectTerm(term)"
+                    class="cursor-pointer hover:bg-gray-100 p-1"
+                  >
+                    {{ term.name }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
             <div class="row pt-3">
               <div class="col-2">
                 <label
