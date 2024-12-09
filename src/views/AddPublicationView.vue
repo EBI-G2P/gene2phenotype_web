@@ -1,7 +1,7 @@
 <script>
 import { LGD_RECORD_URL } from "../utility/UrlConstants.js";
 import { appendAuthenticationHeaders } from "../utility/AuthenticationUtility.js";
-import AddPublication from "./update/AddPublication.vue";
+import AddPublication from "../components/add-publication/AddPublication.vue";
 
 export default {
   data() {

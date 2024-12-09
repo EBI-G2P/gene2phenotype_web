@@ -1,9 +1,9 @@
 <script>
 import { ATTRIBS_URL, LGD_RECORD_URL } from "../utility/UrlConstants.js";
 import { appendAuthenticationHeaders } from "../utility/AuthenticationUtility.js";
-import UpdateConfidence from "./update/UpdateConfidence.vue";
-import UpdatePanel from "./update/UpdatePanel.vue";
-import UpdateMechanism from "./update/UpdateMechanism.vue";
+import UpdateConfidence from "../components/update-record/UpdateConfidence.vue";
+import UpdatePanel from "../components/update-record/UpdatePanel.vue";
+import UpdateMechanism from "../components/update-record/UpdateMechanism.vue";
 
 export default {
   data() {

@@ -1,17 +1,17 @@
 <script>
-import LoginErrorAlert from "@/components/alert/LoginErrorAlert.vue";
+import LoginErrorAlert from "../alert/LoginErrorAlert.vue";
 import {
   isUserLoggedIn,
   logOutUser,
   appendAuthenticationHeaders,
-} from "@/utility/AuthenticationUtility";
+} from "../../utility/AuthenticationUtility";
 import {
   EvidenceTypesAttribs,
   MechanismAttribs,
   MechanismSupportAttribs,
   MechanismSynopsisAttribs,
-} from "@/utility/CurationConstants";
-import { UPDATE_MECHANISM_URL } from "@/utility/UrlConstants";
+} from "../../utility/CurationConstants";
+import { UPDATE_MECHANISM_URL } from "../../utility/UrlConstants";
 import cloneDeep from "lodash/cloneDeep";
 import kebabCase from "lodash/kebabCase";
 

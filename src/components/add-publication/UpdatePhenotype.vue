@@ -1,5 +1,5 @@
 <script>
-import ToolTip from "@/components/tooltip/ToolTip.vue";
+import ToolTip from "../tooltip/ToolTip.vue";
 import { HPO_SEARCH_API_URL } from "../../utility/UrlConstants.js";
 export default {
   data() {
