@@ -17,6 +17,7 @@ import {
   prepareInputForDataSubmission,
   prepareInputForUpdating,
   updateHpoTermsInputHelperWithPublicationsData,
+  appendObjectToPublications,
 } from "../utility/CurationUtility.js";
 import SaveSuccessAlert from "../components/alert/SaveSuccessAlert.vue";
 import AlertModal from "../components/modal/AlertModal.vue";
@@ -38,6 +39,7 @@ import {
   UPDATE_SAVED_DRAFT_URL,
   USER_PANELS_URL,
 } from "../utility/UrlConstants";
+import { compileScript } from "vue/compiler-sfc";
 
 export default {
   created() {
@@ -275,7 +277,11 @@ export default {
         .then((responseJson) => {
           this.isPublicationsDataLoading = false;
           if (responseStatus === 200) {
-            const publicationsData = responseJson;
+            let publicationsData = responseJson;
+            publicationsData = appendObjectToPublications(
+              publicationsData,
+              this.previousInput
+            );
             if (publicationsData && publicationsData.results) {
               this.previousInput = updateInputWithPublicationsData(
                 this.previousInput,

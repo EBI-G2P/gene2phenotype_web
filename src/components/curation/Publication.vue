@@ -65,16 +65,6 @@ export default {
             </div>
             <div class="col-auto">
               <button
-                v-if="publications && Object.keys(publications).length > 0"
-                type="button"
-                class="btn btn-primary mb-3"
-                data-bs-toggle="modal"
-                data-bs-target="#publications-input-alert-modal"
-              >
-                <i class="bi bi-search"></i> Look Up
-              </button>
-              <button
-                v-else
                 type="button"
                 class="btn btn-primary mb-3"
                 @click="fetchPublications"
