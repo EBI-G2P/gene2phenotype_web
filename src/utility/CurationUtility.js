@@ -82,14 +82,23 @@ export const updateInputWithPublicationsData = (input, publicationsData) => {
       authors: item.authors,
     };
 
-    updatedPhenotypesObj[item.pmid] = {
-      summary: "",
-      hpo_terms: [],
-    };
+    if (updatedInput.phenotypes[item.pmid]) {
+      updatedPhenotypesObj[item.pmid] = updatedInput.phenotypes[item.pmid];
+    } else {
+      updatedPhenotypesObj[item.pmid] = {
+        summary: "",
+        hpo_terms: [],
+      };
+    }
 
-    updatedVariantDescriptionsObj[item.pmid] = {
-      description: "",
-    };
+    if (updatedInput.variant_descriptions[item.pmid]) {
+      updatedVariantDescriptionsObj[item.pmid] =
+        updatedInput.variant_descriptions[item.pmid];
+    } else {
+      updatedVariantDescriptionsObj[item.pmid] = {
+        description: "",
+      };
+    }
 
     let evidenceTypesObj = {};
     EvidenceTypesAttribs.forEach((item) => {
@@ -491,4 +500,53 @@ export const prepareInputForUpdating = (previousInput) => {
       level: clonedpreviousInput.confidence.level,
     },
   };
+};
+
+export const appendObjectToPublications = (publications, input) => {
+  //publications is the new publication
+  //pubDict is the old JSON
+  // updating the information from pubDict to the new publications
+  // Initialize a new array to hold the combined objects
+
+  // Check if publications.results is an array
+  let new_publications = publications.results || [];
+
+  const existingPmids = new Set(new_publications.map((pub) => pub.pmid));
+
+  // Iterate through pubDict and process each PMID
+  for (let [pmid, pubData] of Object.entries(input.publications)) {
+    if (existingPmids.has(pmid)) {
+      // Update existing publication
+      let existingPub = new_publications.find((pub) => pub.pmid == pmid);
+      existingPub.families = pubData.families ?? existingPub.families;
+      existingPub.affectedIndividuals =
+        pubData.affectedIndividuals ?? existingPub.affectedIndividuals;
+      existingPub.consanguineous =
+        pubData.consanguineous ?? existingPub.consanguineous;
+      existingPub.ancestries = pubData.ancestries ?? existingPub.ancestries;
+      existingPub.comment = pubData.comment ?? existingPub.comment;
+      existingPub.source = pubData.source ?? existingPub.source;
+      existingPub.year = pubData.year ?? existingPub.year;
+      existingPub.title = pubData.title ?? existingPub.title;
+      existingPub.authors = pubData.authors ?? existingPub.authors;
+    } else {
+      // Add new publication
+      pmid = String(pmid);
+      new_publications.push({
+        pmid,
+        families: pubData.families ?? null,
+        affectedIndividuals: pubData.affectedIndividuals ?? null,
+        consanguineous: pubData.consanguineous ?? "unknown",
+        ancestries: pubData.ancestries ?? "",
+        comment: pubData.comment ?? "",
+        source: pubData.source ?? "",
+        year: pubData.year ?? "",
+        title: pubData.title ?? "",
+        authors: pubData.authors ?? "",
+      });
+    }
+  }
+
+  // Return updated publications with the correct structure
+  return { ...publications, results: new_publications };
 };
