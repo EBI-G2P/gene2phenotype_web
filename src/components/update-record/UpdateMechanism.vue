@@ -14,6 +14,7 @@ import {
 import { UPDATE_MECHANISM_URL } from "../../utility/UrlConstants";
 import cloneDeep from "lodash/cloneDeep";
 import kebabCase from "lodash/kebabCase";
+import ToolTip from "../tooltip/ToolTip.vue";
 
 export default {
   props: {
@@ -23,13 +24,14 @@ export default {
   },
   components: {
     LoginErrorAlert,
+    ToolTip,
   },
   data() {
     return {
       mechanism: this.currentMechanism?.mechanism ?? "", // if mechanism is null or undefined then it will set the value as empty string
-      mechanismSupport: this.currentMechanism?.support ?? "", // if support is null or undefined then it will set the value as empty string
-      mechanismSynopsis: this.currentMechanism?.synopsis ?? "", // if synopsis is null or undefined then it will set the value as empty string
-      mechanismSynopsisSupport: this.currentMechanism?.synopsis_support ?? "", // if synopsis_support is null or undefined then it will set the value as empty string
+      mechanismSupport: this.currentMechanism?.mechanism_support ?? "", // if mechanism_support is null or undefined then it will set the value as empty string
+      mechanismSynopsis: "",
+      mechanismSynopsisSupport: "",
       mechanismEvidence: this.getInitialMechanismEvidence(
         this.currentPublications
       ),
@@ -115,6 +117,7 @@ export default {
       return initialMechanismEvidence;
     },
     prepareInputForDataSubmission() {
+      let preparedInput = {};
       // convert mechanismEvidence from object to array of objects and include evidence that have non empty description or non empty evidence types
       let mechanismEvidenceArray = [];
       for (const [publicationPmid, valueObj] of Object.entries(
@@ -144,19 +147,86 @@ export default {
           mechanismEvidenceArray.push(mechanismEvidenceObj);
         }
       }
-      return {
-        molecular_mechanism: {
-          name: this.mechanism,
+      // IF mechanismEvidenceArray is not empty THEN include it in preparedInput object
+      if (mechanismEvidenceArray.length > 0) {
+        preparedInput.mechanism_evidence = mechanismEvidenceArray;
+      }
+
+      // IF mechanism or mechanismSupport is updated THEN include molecular_mechanism in preparedInput object
+      if (this.isMechanismUpdated() || this.isMechanismSupportUpdated()) {
+        preparedInput.molecular_mechanism = {
+          name: this.isMechanismUpdated() ? this.mechanism : "",
           support: this.mechanismSupport,
-        },
-        mechanism_synopsis: {
+        };
+      }
+
+      // IF mechanismSynopsis or mechanismSynopsisSupport is updated THEN include mechanism_synopsis in preparedInput object
+      if (this.isMechanismSynopsisUpdated()) {
+        preparedInput.mechanism_synopsis = {
           name: this.mechanismSynopsis,
           support: this.mechanismSynopsisSupport,
-        },
-        mechanism_evidence: mechanismEvidenceArray,
-      };
+        };
+      }
+      return preparedInput;
+    },
+    isMechanismUpdated() {
+      const currentMechanism = this.currentMechanism.mechanism ?? ""; // if mechanism is null or undefined then it will set the value as empty string
+      const newMechanism = this.mechanism;
+
+      return newMechanism !== currentMechanism;
+    },
+    isMechanismSupportUpdated() {
+      const currentMechanismSupport =
+        this.currentMechanism.mechanism_support ?? ""; // if mechanism_support is null or undefined then it will set the value as empty string
+      const newMechanismSupport = this.mechanismSupport;
+
+      return newMechanismSupport !== currentMechanismSupport;
+    },
+    isMechanismSynopsisUpdated() {
+      const newSynopsis = this.mechanismSynopsis;
+      const newSynopsisSupport = this.mechanismSynopsisSupport;
+
+      return newSynopsis !== "" || newSynopsisSupport !== "";
     },
     kebabCase,
+  },
+  computed: {
+    canUpdateMechanismInput() {
+      return this.currentMechanism?.mechanism === "undetermined";
+    },
+    canUpdateMechanismSourceInput() {
+      return this.currentMechanism?.mechanism_support === "inferred";
+    },
+    isDisplayEvidenceForm() {
+      return (
+        this.mechanismEvidence &&
+        Object.keys(this.mechanismEvidence).length > 0 &&
+        this.mechanismSupport === "evidence" &&
+        this.currentMechanism?.mechanism_support === "inferred"
+      );
+    },
+    isDisplayPublicationWarning() {
+      return (
+        !(
+          this.mechanismEvidence &&
+          Object.keys(this.mechanismEvidence).length > 0
+        ) &&
+        this.mechanismSupport === "evidence" &&
+        this.currentMechanism?.mechanism_support === "inferred"
+      );
+    },
+    isDisplayCurrentCategorization() {
+      return (
+        this.currentMechanism?.synopsis &&
+        this.currentMechanism.synopsis.length > 0
+      );
+    },
+    isDisplayCurrentEvidence() {
+      return (
+        this.currentMechanism?.evidence &&
+        Object.keys(this.currentMechanism.evidence).length > 0
+      );
+    },
   },
 };
 </script>
@@ -212,6 +282,9 @@ export default {
                 <div class="col-lg-2">
                   <label for="mechanism-input" class="col-form-label">
                     Mechanism
+                    <ToolTip
+                      toolTipText="To change Mechanism, please contact Admin at g2p-help@ebi.ac.uk"
+                    />
                   </label>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-6">
@@ -219,6 +292,7 @@ export default {
                     id="mechanism-input"
                     class="form-select"
                     v-model="mechanism"
+                    :disabled="!canUpdateMechanismInput"
                   >
                     <option value="">Select</option>
                     <option v-for="item in mechanismAttribs" :value="item">
@@ -231,6 +305,7 @@ export default {
                     id="mechanism-input-source"
                     class="form-select"
                     v-model="mechanismSupport"
+                    :disabled="!canUpdateMechanismSourceInput"
                   >
                     <option value="">Select Source</option>
                     <option
@@ -242,7 +317,7 @@ export default {
                   </select>
                 </div>
               </div>
-              <div class="row pt-3 pb-4">
+              <div class="row py-3">
                 <div class="col-lg-2">
                   <label for="categorisation-input" class="col-form-label">
                     Categorisation
@@ -280,12 +355,126 @@ export default {
                 </div>
               </div>
               <div
-                v-if="
-                  mechanismEvidence &&
-                  Object.keys(mechanismEvidence).length > 0 &&
-                  mechanismSupport === 'evidence'
-                "
+                v-if="isDisplayCurrentCategorization"
+                class="accordion accordion-flush pb-3"
+                id="accordionMechanismSynopsis"
               >
+                <div class="accordion-item">
+                  <h2 class="accordion-header border">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapsibleMechanismSynopsisTable"
+                      aria-expanded="false"
+                      aria-controls="collapsibleMechanismSynopsisTable"
+                    >
+                      Current Categorization ({{
+                        currentMechanism.synopsis.length
+                      }})
+                    </button>
+                  </h2>
+                  <div
+                    id="collapsibleMechanismSynopsisTable"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#accordionMechanismSynopsis"
+                  >
+                    <div class="accordion-body p-0">
+                      <table class="table table-bordered mb-0">
+                        <thead>
+                          <tr>
+                            <th>Categorization</th>
+                            <th>Support</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="item in currentMechanism.synopsis">
+                            <td>
+                              {{ item.synopsis }}
+                            </td>
+                            <td>
+                              {{ item.support }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-if="isDisplayCurrentEvidence"
+                class="accordion accordion-flush pb-3"
+                id="accordionMechanismEvidence"
+              >
+                <div class="accordion-item">
+                  <h2 class="accordion-header border">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapsibleMechanismEvidenceTable"
+                      aria-expanded="false"
+                      aria-controls="collapsibleMechanismEvidenceTable"
+                    >
+                      Current Mechanism Evidence ({{
+                        Object.keys(currentMechanism.evidence).length
+                      }})
+                    </button>
+                  </h2>
+                  <div
+                    id="collapsibleMechanismEvidenceTable"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#accordionMechanismEvidence"
+                  >
+                    <div class="accordion-body p-0">
+                      <table class="table table-bordered mb-0">
+                        <thead>
+                          <tr>
+                            <th>Evidence Types</th>
+                            <th>Publication</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(value, key) in currentMechanism.evidence">
+                            <td class="ps-0">
+                              <ul
+                                v-if="value && Object.keys(value).length > 0"
+                                class="mb-0"
+                              >
+                                <li
+                                  v-for="(
+                                    secondaryEvidenceTypeArray,
+                                    primaryEvidenceType
+                                  ) in value"
+                                >
+                                  {{ primaryEvidenceType }} :
+                                  {{
+                                    secondaryEvidenceTypeArray &&
+                                    secondaryEvidenceTypeArray.length > 0
+                                      ? secondaryEvidenceTypeArray.join(", ")
+                                      : null
+                                  }}
+                                </li>
+                              </ul>
+                            </td>
+                            <td>
+                              <a
+                                :href="`https://europepmc.org/article/MED/${key}`"
+                                style="text-decoration: none"
+                                target="_blank"
+                              >
+                                {{ key }}
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-if="isDisplayEvidenceForm">
                 <h5 class="mb-0">Evidence</h5>
                 <div
                   class="pt-3 pb-4"
@@ -347,16 +536,9 @@ export default {
                   </div>
                 </div>
               </div>
-              <p
-                v-if="
-                  !(
-                    mechanismEvidence &&
-                    Object.keys(mechanismEvidence).length > 0
-                  ) && mechanismSupport === 'evidence'
-                "
-              >
-                <i class="bi bi-info-circle"></i> Please add 1 or more
-                Publication(s) to provide information on evidence.
+              <p v-if="isDisplayPublicationWarning">
+                <i class="bi bi-info-circle"></i> Please add atleast 1
+                Publication to provide information on evidence.
               </p>
               <button
                 type="button"

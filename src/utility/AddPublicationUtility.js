@@ -13,11 +13,11 @@ export const getInitialInputForAddingNewPublicationData = (
     variant_descriptions: {},
     molecular_mechanism: {
       name: currentMechanism?.mechanism ?? "", // if mechanism is null or undefined then it will set the value as empty string,
-      support: currentMechanism?.support ?? "", // if support is null or undefined then it will set the value as empty string
+      support: currentMechanism?.mechanism_support ?? "", // if mechanism_support is null or undefined then it will set the value as empty string
     },
     mechanism_synopsis: {
-      name: currentMechanism?.synopsis ?? "", // if synopsis is null or undefined then it will set the value as empty string
-      support: currentMechanism?.synopsis_support ?? "", // if synopsis_support is null or undefined then it will set the value as empty string
+      name: "",
+      support: "",
     },
     mechanism_evidence: {},
   };
@@ -210,13 +210,21 @@ export const prepareInputForNewPublicationDataSubmission = (
     preparedInput.mechanism_evidence = mechanismEvidenceArray;
   }
 
-  // IF molecular_mechanism is updated THEN include it in preparedInput object
-  if (isMechanismUpdated(locusGeneDiseaseData, clonedInput)) {
-    preparedInput.molecular_mechanism = clonedInput.molecular_mechanism;
+  // IF molecular_mechanism.name or molecular_mechanism.support is updated THEN include molecular_mechanism in preparedInput object
+  if (
+    isMechanismUpdated(locusGeneDiseaseData, clonedInput) ||
+    isMechanismSupportUpdated(locusGeneDiseaseData, clonedInput)
+  ) {
+    preparedInput.molecular_mechanism = {
+      name: isMechanismUpdated(locusGeneDiseaseData, clonedInput)
+        ? clonedInput.molecular_mechanism.name
+        : "",
+      support: clonedInput.molecular_mechanism.support,
+    };
   }
 
   // IF mechanism_synopsis is updated THEN include it in preparedInput object
-  if (isMechanismSynopsisUpdated(locusGeneDiseaseData, clonedInput)) {
+  if (isMechanismSynopsisUpdated(clonedInput)) {
     preparedInput.mechanism_synopsis = clonedInput.mechanism_synopsis;
   }
 
@@ -276,29 +284,24 @@ export const prepareInputForNewPublicationDataSubmission = (
 const isMechanismUpdated = (locusGeneDiseaseData, clonedInput) => {
   const currentMechanism =
     locusGeneDiseaseData.molecular_mechanism.mechanism ?? ""; // if mechanism is null or undefined then it will set the value as empty string
-  const currentMechanismSupport =
-    locusGeneDiseaseData.molecular_mechanism.support ?? ""; // if support is null or undefined then it will set the value as empty string
 
   const newMechanism = clonedInput.molecular_mechanism.name;
-  const newMechanismSupport = clonedInput.molecular_mechanism.support;
 
-  return (
-    newMechanism !== currentMechanism ||
-    newMechanismSupport !== currentMechanismSupport
-  );
+  return newMechanism !== currentMechanism;
 };
 
-const isMechanismSynopsisUpdated = (locusGeneDiseaseData, clonedInput) => {
-  const currentSynopsis =
-    locusGeneDiseaseData.molecular_mechanism.synopsis ?? ""; // if synopsis is null or undefined then it will set the value as empty string
-  const currentSynopsisSupport =
-    locusGeneDiseaseData.molecular_mechanism.synopsis_support ?? ""; // if synopsis_support is null or undefined then it will set the value as empty string
+const isMechanismSupportUpdated = (locusGeneDiseaseData, clonedInput) => {
+  const currentMechanismSupport =
+    locusGeneDiseaseData.molecular_mechanism.mechanism_support ?? ""; // if mechanism_support is null or undefined then it will set the value as empty string
 
+  const newMechanismSupport = clonedInput.molecular_mechanism.support;
+
+  return newMechanismSupport !== currentMechanismSupport;
+};
+
+const isMechanismSynopsisUpdated = (clonedInput) => {
   const newSynopsis = clonedInput.mechanism_synopsis.name;
   const newSynopsisSupport = clonedInput.mechanism_synopsis.support;
 
-  return (
-    newSynopsis !== currentSynopsis ||
-    newSynopsisSupport !== currentSynopsisSupport
-  );
+  return newSynopsis !== "" || newSynopsisSupport !== "";
 };

@@ -55,17 +55,23 @@ export default {
     };
   },
   computed: {
-    canUpdateMechanism() {
-      return (
-        this.currentMechanism?.mechanism === "undetermined" &&
-        this.currentMechanism?.support === "inferred"
-      );
+    canUpdateMechanismInput() {
+      return this.currentMechanism?.mechanism === "undetermined";
+    },
+    canUpdateMechanismSourceInput() {
+      return this.currentMechanism?.mechanism_support === "inferred";
     },
     isDisplayNewEvidenceForm() {
       return (
         this.mechanismEvidence &&
         Object.keys(this.mechanismEvidence).length > 0 &&
         this.molecularMechanismSupport === "evidence"
+      );
+    },
+    isDisplayCurrentCategorization() {
+      return (
+        this.currentMechanism?.synopsis &&
+        this.currentMechanism.synopsis.length > 0
       );
     },
     isDisplayCurrentEvidence() {
@@ -95,115 +101,141 @@ export default {
       <div id="mechanism-section-body" class="accordion-collapse collapse">
         <div class="accordion-body">
           <div class="row g-3 px-3 pt-3">
-            <div v-if="canUpdateMechanism" class="mt-0">
-              <div class="row pt-3">
-                <div class="col-lg-2">
-                  <label for="mechanism-input" class="col-form-label">
-                    Mechanism
-                    <ToolTip
-                      toolTipText="Mechanism can only be updated if it is 'undetermined'."
-                    />
-                  </label>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-6">
-                  <select
-                    id="mechanism-input"
-                    class="form-select"
-                    :value="molecularMechanism"
-                    @input="
-                      $emit('update:molecularMechanism', $event.target.value)
-                    "
-                  >
-                    <option value="">Select</option>
-                    <option v-for="item in mechanismAttribs" :value="item">
-                      {{ item }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-6">
-                  <select
-                    id="mechanism-input-source"
-                    class="form-select"
-                    :value="molecularMechanismSupport"
-                    @input="
-                      $emit(
-                        'update:molecularMechanismSupport',
-                        $event.target.value
-                      )
-                    "
-                  >
-                    <option value="">Select Source</option>
-                    <option
-                      v-for="item in mechanismSupportAttribs"
-                      :value="item"
-                    >
-                      {{ item }}
-                    </option>
-                  </select>
-                </div>
+            <div class="row pt-3">
+              <div class="col-lg-2">
+                <label for="mechanism-input" class="col-form-label">
+                  Mechanism
+                  <ToolTip
+                    toolTipText="To change Mechanism, please contact Admin at g2p-help@ebi.ac.uk"
+                  />
+                </label>
               </div>
-              <div class="row py-3">
-                <div class="col-lg-2">
-                  <label for="categorisation-input" class="col-form-label">
-                    Categorisation
-                  </label>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-6">
-                  <select
-                    id="categorisation-input"
-                    class="form-select"
-                    :value="mechanismSynopsis"
-                    @input="
-                      $emit('update:mechanismSynopsis', $event.target.value)
-                    "
-                  >
-                    <option value="">Select</option>
-                    <option
-                      v-for="item in mechanismSynopsisAttribs"
-                      :value="item"
-                    >
-                      {{ item }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-6">
-                  <select
-                    id="categorisation-input-source"
-                    class="form-select"
-                    :value="mechanismSynopsisSupport"
-                    @input="
-                      $emit(
-                        'update:mechanismSynopsisSupport',
-                        $event.target.value
-                      )
-                    "
-                  >
-                    <option value="">Select Source</option>
-                    <option
-                      v-for="item in mechanismSupportAttribs"
-                      :value="item"
-                    >
-                      {{ item }}
-                    </option>
-                  </select>
-                </div>
+              <div class="col-xl-3 col-lg-3 col-6">
+                <select
+                  id="mechanism-input"
+                  class="form-select"
+                  :value="molecularMechanism"
+                  @input="
+                    $emit('update:molecularMechanism', $event.target.value)
+                  "
+                  :disabled="!canUpdateMechanismInput"
+                >
+                  <option value="">Select</option>
+                  <option v-for="item in mechanismAttribs" :value="item">
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-6">
+                <select
+                  id="mechanism-input-source"
+                  class="form-select"
+                  :value="molecularMechanismSupport"
+                  @input="
+                    $emit(
+                      'update:molecularMechanismSupport',
+                      $event.target.value
+                    )
+                  "
+                  :disabled="!canUpdateMechanismSourceInput"
+                >
+                  <option value="">Select Source</option>
+                  <option v-for="item in mechanismSupportAttribs" :value="item">
+                    {{ item }}
+                  </option>
+                </select>
               </div>
             </div>
-            <div v-else>
-              <p>
-                <b>Mechanism:</b>
-                {{ currentMechanism?.mechanism || "Not Available" }}
-                <span v-if="currentMechanism?.support === 'inferred'">
-                  ({{ currentMechanism.support }})
-                </span>
-              </p>
-              <p class="mb-0">
-                <b>Categorisation:</b>
-                {{ currentMechanism?.synopsis || "Not Available" }}
-                <span v-if="currentMechanism?.synopsis_support === 'inferred'">
-                  ({{ currentMechanism.synopsis_support }})
-                </span>
-              </p>
+            <div class="row py-3">
+              <div class="col-lg-2">
+                <label for="categorisation-input" class="col-form-label">
+                  Categorisation
+                </label>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-6">
+                <select
+                  id="categorisation-input"
+                  class="form-select"
+                  :value="mechanismSynopsis"
+                  @input="
+                    $emit('update:mechanismSynopsis', $event.target.value)
+                  "
+                >
+                  <option value="">Select</option>
+                  <option
+                    v-for="item in mechanismSynopsisAttribs"
+                    :value="item"
+                  >
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-6">
+                <select
+                  id="categorisation-input-source"
+                  class="form-select"
+                  :value="mechanismSynopsisSupport"
+                  @input="
+                    $emit(
+                      'update:mechanismSynopsisSupport',
+                      $event.target.value
+                    )
+                  "
+                >
+                  <option value="">Select Source</option>
+                  <option v-for="item in mechanismSupportAttribs" :value="item">
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div
+              v-if="isDisplayCurrentCategorization"
+              class="accordion accordion-flush"
+              id="accordionMechanismSynopsis"
+            >
+              <div class="accordion-item">
+                <h2 class="accordion-header border">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapsibleMechanismSynopsisTable"
+                    aria-expanded="false"
+                    aria-controls="collapsibleMechanismSynopsisTable"
+                  >
+                    Current Categorization ({{
+                      currentMechanism.synopsis.length
+                    }})
+                  </button>
+                </h2>
+                <div
+                  id="collapsibleMechanismSynopsisTable"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#accordionMechanismSynopsis"
+                >
+                  <div class="accordion-body p-0">
+                    <table class="table table-bordered mb-0">
+                      <thead>
+                        <tr>
+                          <th>Categorization</th>
+                          <th>Support</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in currentMechanism.synopsis">
+                          <td>
+                            {{ item.synopsis }}
+                          </td>
+                          <td>
+                            {{ item.support }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
             <div
               v-if="isDisplayCurrentEvidence"

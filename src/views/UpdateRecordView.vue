@@ -20,15 +20,6 @@ export default {
     UpdatePanel,
     UpdateMechanism,
   },
-  computed: {
-    canUpdateMechanism() {
-      return (
-        this.locusGeneDiseaseData?.molecular_mechanism?.mechanism ===
-          "undetermined" &&
-        this.locusGeneDiseaseData?.molecular_mechanism?.support === "inferred"
-      );
-    },
-  },
   created() {
     // watch the params of the route to fetch the data again
     this.$watch(
@@ -118,11 +109,9 @@ export default {
       <h4 v-else class="text-muted pb-2">Disease Name Not Available</h4>
       <p class="mb-2">
         <i class="bi bi-info-circle"></i> For this record, only these sections
-        can be updated: <b v-if="canUpdateMechanism">Mechanism, </b
-        ><b>Panel, Confidence</b>
+        can be updated: <b>Mechanism, Panel, Confidence</b>
       </p>
       <UpdateMechanism
-        v-if="canUpdateMechanism"
         :stableId="stableId"
         :currentPublications="locusGeneDiseaseData.publications"
         :currentMechanism="locusGeneDiseaseData.molecular_mechanism"

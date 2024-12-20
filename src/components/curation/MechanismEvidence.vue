@@ -35,30 +35,33 @@ export default {
       evidenceTypesAttribs: [...EvidenceTypesAttribs],
     };
   },
+  computed: {
+    isDisplayPublicationWarning() {
+      return (
+        !(
+          this.mechanismEvidence &&
+          Object.keys(this.mechanismEvidence).length > 0
+        ) && this.molecularMechanismSupport === "evidence"
+      );
+    },
+    isDisplayEvidenceForm() {
+      return (
+        this.mechanismEvidence &&
+        Object.keys(this.mechanismEvidence).length > 0 &&
+        this.molecularMechanismSupport === "evidence"
+      );
+    },
+  },
 };
 </script>
 <template>
-  <div
-    class="row g-3 px-3 pt-3"
-    v-if="
-      !(mechanismEvidence && Object.keys(mechanismEvidence).length > 0) &&
-      (molecularMechanismSupport === 'evidence' ||
-        mechanismSynopsisSupport === 'evidence')
-    "
-  >
+  <div class="row g-3 px-3 pt-3" v-if="isDisplayPublicationWarning">
     <p>
       <i class="bi bi-info-circle"></i> Please enter Publication(s) to provide
       information on evidence.
     </p>
   </div>
-  <div
-    v-if="
-      mechanismEvidence &&
-      Object.keys(mechanismEvidence).length > 0 &&
-      (molecularMechanismSupport === 'evidence' ||
-        mechanismSynopsisSupport === 'evidence')
-    "
-  >
+  <div v-if="isDisplayEvidenceForm">
     <div class="row g-3 px-3 pt-3">
       <h5>Evidence</h5>
     </div>
