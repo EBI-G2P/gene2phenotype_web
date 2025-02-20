@@ -73,158 +73,159 @@ export default {
       >
         <div class="accordion-body">
           <div
-            class="row g-3 px-3 py-3"
             v-if="
               clinicalPhenotype && Object.keys(clinicalPhenotype).length > 0
             "
-            v-for="pmid in Object.keys(clinicalPhenotype)"
-            :key="pmid"
+            class="row g-3 px-3 py-3"
           >
-            <div class="row">
-              <div class="col-12">
-                <strong>
-                  <p class="mb-0">Publication (PMID: {{ pmid }})</p>
-                </strong>
-              </div>
-            </div>
-            <div class="row pt-3">
-              <div class="dropdown">
-                <button
-                  class="btn btn-primary dropdown-toggle"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Click to search HPO terms
-                </button>
-                <div class="dropdown-menu">
-                  <!-- @submit.prevent to prevent the form for doing the default form submission-->
-                  <form class="p-3" @submit.prevent>
-                    <label :for="`search-phenotype-${pmid}`" class="form-label">
-                      Search and select Human Phenotype Ontology terms
-                    </label>
-                    <input
-                      type="text"
-                      :id="`search-phenotype-${pmid}`"
-                      placeholder="E.g. Abnormality of the kidney"
-                      :value="hpoTermsInputHelper[pmid].searchTerm"
-                      @input="fetchAndSearchHPO(pmid, $event.target.value)"
-                      class="form-control"
-                    />
+            <div
+              v-for="pmid in Object.keys(clinicalPhenotype)"
+              :key="pmid"
+              class="pb-3"
+            >
+              <p class="mb-0 fw-bold">Publication (PMID: {{ pmid }})</p>
+              <div class="row pt-3">
+                <div class="dropdown">
+                  <button
+                    class="btn btn-primary dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Click to search HPO terms
+                  </button>
+                  <div class="dropdown-menu">
+                    <!-- @submit.prevent to prevent the form for doing the default form submission-->
+                    <form class="p-3" @submit.prevent>
+                      <label
+                        :for="`search-phenotype-${pmid}`"
+                        class="form-label"
+                      >
+                        Search and select Human Phenotype Ontology terms
+                      </label>
+                      <input
+                        type="text"
+                        :id="`search-phenotype-${pmid}`"
+                        placeholder="E.g. Abnormality of the kidney"
+                        :value="hpoTermsInputHelper[pmid].searchTerm"
+                        @input="fetchAndSearchHPO(pmid, $event.target.value)"
+                        class="form-control"
+                      />
+                      <div
+                        class="form-text"
+                        :id="`search-phenotype-${pmid}-input-help-text`"
+                      >
+                        Enter at least 3 letters to find and select HPO term(s)
+                        then click outside to close.
+                      </div>
+                    </form>
                     <div
-                      class="form-text"
-                      :id="`search-phenotype-${pmid}-input-help-text`"
+                      v-if="hpoTermsInputHelper[pmid].isLoadingValue"
+                      class="d-flex justify-content-center my-1"
                     >
-                      Enter at least 3 letters to find and select HPO term(s)
-                      then click outside to close.
+                      <div
+                        class="spinner-border text-secondary spinner-border-sm"
+                        role="status"
+                      >
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
                     </div>
-                  </form>
-                  <div
-                    v-if="hpoTermsInputHelper[pmid].isLoadingValue"
-                    class="d-flex justify-content-center my-1"
-                  >
                     <div
-                      class="spinner-border text-secondary spinner-border-sm"
-                      role="status"
+                      class="alert alert-danger mx-3 mb-3 mt-1"
+                      role="alert"
+                      v-if="hpoTermsInputHelper[pmid].HPOAPIerrormsg"
                     >
-                      <span class="visually-hidden">Loading...</span>
+                      <div>
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        {{ hpoTermsInputHelper[pmid].HPOAPIerrormsg }}
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="alert alert-danger mx-3 mb-3 mt-1"
-                    role="alert"
-                    v-if="hpoTermsInputHelper[pmid].HPOAPIerrormsg"
-                  >
-                    <div>
-                      <i class="bi bi-exclamation-circle-fill"></i>
-                      {{ hpoTermsInputHelper[pmid].HPOAPIerrormsg }}
-                    </div>
-                  </div>
-                  <div
-                    v-if="
-                      hpoTermsInputHelper[pmid].HPOsearchResponseJson?.length >
-                      0
-                    "
-                  >
-                    <div class="dropdown-divider"></div>
-                    <li>
-                      <h6 class="dropdown-header">
-                        HPO term suggestions
-                        <ToolTip
-                          :toolTipText="HELP_TEXT.CLICK_HPO_SUGGESTION"
-                        />
-                      </h6>
-                    </li>
-                    <li
-                      v-for="term in hpoTermsInputHelper[pmid]
-                        .HPOsearchResponseJson"
-                      :key="term.id"
-                      @mousedown="selectTerm(pmid, term)"
-                      class="dropdown-item text-wrap"
+                    <div
+                      v-if="
+                        hpoTermsInputHelper[pmid].HPOsearchResponseJson
+                          ?.length > 0
+                      "
                     >
-                      {{ term.name }}
-                    </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <h6 class="dropdown-header">
+                          HPO term suggestions
+                          <ToolTip
+                            :toolTipText="HELP_TEXT.CLICK_HPO_SUGGESTION"
+                          />
+                        </h6>
+                      </li>
+                      <li
+                        v-for="term in hpoTermsInputHelper[pmid]
+                          .HPOsearchResponseJson"
+                        :key="term.id"
+                        @mousedown="selectTerm(pmid, term)"
+                        class="dropdown-item text-wrap"
+                      >
+                        {{ term.name }}
+                      </li>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="row mt-4 w-50">
-              <label
-                :for="`phenotype-summary-input-${pmid}`"
-                class="col-form-label col-lg-3"
+              <div class="row mt-4 w-50">
+                <label
+                  :for="`phenotype-summary-input-${pmid}`"
+                  class="col-form-label col-lg-3"
+                >
+                  Summary
+                </label>
+                <div class="col-lg-9">
+                  <textarea
+                    class="form-control"
+                    :id="`phenotype-summary-input-${pmid}`"
+                    rows="3"
+                    :value="clinicalPhenotype[pmid].summary"
+                    @input="summaryInputHandler(pmid, $event.target.value)"
+                  ></textarea>
+                </div>
+              </div>
+              <div
+                class="row pt-3"
+                v-if="clinicalPhenotype[pmid].hpo_terms?.length > 0"
               >
-                Summary
-              </label>
-              <div class="col-lg-9">
-                <textarea
-                  class="form-control"
-                  :id="`phenotype-summary-input-${pmid}`"
-                  rows="3"
-                  :value="clinicalPhenotype[pmid].summary"
-                  @input="summaryInputHandler(pmid, $event.target.value)"
-                ></textarea>
-              </div>
-            </div>
-            <div
-              class="row pt-3"
-              v-if="clinicalPhenotype[pmid].hpo_terms?.length > 0"
-            >
-              <div class="col-12">
-                <p>Selected HPO Term(s)</p>
-              </div>
-              <div class="col-7">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Accession</th>
-                      <th>Term</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="item in clinicalPhenotype[pmid].hpo_terms"
-                      :key="item.accession"
-                    >
-                      <td>{{ item.accession }}</td>
-                      <td>{{ item.term }}</td>
-                      <td class="text-nowrap">
-                        <button
-                          type="button"
-                          class="btn btn-link p-0 text-danger"
-                          style="text-decoration: none"
-                          @click="removeSelectedTerm(pmid, item.accession)"
-                        >
-                          <i class="bi bi-trash-fill"></i> Remove
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div class="col-12">
+                  <p>Selected HPO Term(s)</p>
+                </div>
+                <div class="col-7">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Accession</th>
+                        <th>Term</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="item in clinicalPhenotype[pmid].hpo_terms"
+                        :key="item.accession"
+                      >
+                        <td>{{ item.accession }}</td>
+                        <td>{{ item.term }}</td>
+                        <td class="text-nowrap">
+                          <button
+                            type="button"
+                            class="btn btn-link p-0 text-danger"
+                            style="text-decoration: none"
+                            @click="removeSelectedTerm(pmid, item.accession)"
+                          >
+                            <i class="bi bi-trash-fill"></i> Remove
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          <div class="row g-3 px-3 py-3" v-else>
+          <div v-else class="row g-3 px-3 py-3">
             <p>
               <i class="bi bi-info-circle"></i> Please enter Publication(s) to
               fill this section.
