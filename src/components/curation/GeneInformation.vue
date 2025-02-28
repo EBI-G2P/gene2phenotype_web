@@ -147,7 +147,7 @@ export default {
             </div>
             <div style="width: 90%">
               <a
-                :href="`https://www.ensembl.org/Homo_sapiens/Gene?g=${geneData.ids.Ensembl}`"
+                :href="`https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=${geneData.ids.Ensembl}`"
                 style="text-decoration: none"
                 v-if="geneData.ids?.Ensembl"
                 target="_blank"
