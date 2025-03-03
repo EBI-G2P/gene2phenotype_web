@@ -556,8 +556,8 @@ export default {
           <tr class="align-middle">
             <td class="w-25 text-end">
               <h6>
-                Categorization
-                <ToolTip :toolTipText="HELP_TEXT.CATEGORIZATION" />
+                Categorisation
+                <ToolTip :toolTipText="HELP_TEXT.CATEGORISATION" />
               </h6>
             </td>
             <td class="w-75">
@@ -578,7 +578,7 @@ export default {
                       aria-expanded="false"
                       aria-controls="collapsibleMechanismSynopsisTable"
                     >
-                      Categorization ({{
+                      Categorisation ({{
                         locusGeneDiseaseData.molecular_mechanism.synopsis
                           .length
                       }})
@@ -593,7 +593,7 @@ export default {
                       <table class="table table-bordered mb-0">
                         <thead>
                           <tr>
-                            <th>Categorization</th>
+                            <th>Categorisation</th>
                             <th>Support</th>
                           </tr>
                         </thead>

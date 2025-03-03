@@ -192,7 +192,7 @@ export default {
         this.currentMechanism?.mechanism_support === "inferred"
       );
     },
-    isDisplayCurrentCategorization() {
+    isDisplayCurrentCategorisation() {
       return this.currentMechanism?.synopsis?.length > 0;
     },
     isDisplayCurrentEvidence() {
@@ -396,7 +396,7 @@ export default {
                 </div>
               </div>
               <div
-                v-if="isDisplayCurrentCategorization"
+                v-if="isDisplayCurrentCategorisation"
                 class="accordion accordion-flush pb-3"
                 id="accordionMechanismSynopsis"
               >
@@ -410,7 +410,7 @@ export default {
                       aria-expanded="false"
                       aria-controls="collapsibleMechanismSynopsisTable"
                     >
-                      Current Categorization ({{
+                      Current Categorisation ({{
                         currentMechanism.synopsis.length
                       }})
                     </button>
@@ -424,7 +424,7 @@ export default {
                       <table class="table table-bordered mb-0">
                         <thead>
                           <tr>
-                            <th>Categorization</th>
+                            <th>Categorisation</th>
                             <th>Support</th>
                           </tr>
                         </thead>
