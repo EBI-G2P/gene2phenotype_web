@@ -21,7 +21,7 @@ export const HELP_TEXT = {
   CONFIDENCE: "Confidence the association is real, based on available evidence",
   CROSS_CUTTING_MODIFIER:
     "Additional information reported in the publication that is relevant to the gene-disease inheritance",
-  CATEGORIZATION:
+  CATEGORISATION:
     "More detailed synopsis of molecular mechanism, where available",
   PHENOTYPIC_FEATURE: "Phenotypic features reported in the publication",
   G2P_ID: "The unique stable identifier for this record in G2P",
