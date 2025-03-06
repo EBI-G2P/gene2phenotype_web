@@ -21,6 +21,7 @@ export default {
       downloadAllDataErrorMsg: null,
       confidenceColorMap: { ...CONFIDENCE_COLOR_MAP },
       HELP_TEXT,
+      curatorspage: "/curators",
       chartData: {},
       chartOptions: {
         responsive: true,
@@ -330,15 +331,13 @@ export default {
         </table>
         <p v-else>No Records found</p>
       </div>
-      <h3 class="pt-3 pb-2">Curators</h3>
-      <div class="row mx-3">
-        <ul v-if="panelData.curators?.length > 0">
-          <li v-for="curator in panelData.curators" :key="curator">
-            {{ curator }}
-          </li>
-        </ul>
-        <p v-else style="color: grey">Not Available</p>
-      </div>
+      <p>
+        <strong>Curators: </strong>
+        Full list of expert curators is available
+        <router-link :to="curatorspage" style="text-decoration: none"
+          >here</router-link
+        >.
+      </p>
       <p>
         <strong>Last Updated: </strong>
         <span v-if="panelData.last_updated">

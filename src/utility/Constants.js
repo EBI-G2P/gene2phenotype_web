@@ -51,3 +51,34 @@ export const MARSH_PROBABILITY_THRESHOLD = {
   GAIN_OF_FUNCTION: 0.63,
   DOMINANT_NEGATIVE: 0.61,
 };
+
+export const CURATORS_DD = [
+  "Helen V Firth",
+  "T Michael Yates",
+  "Morad Ansari",
+  "Louise Thompson",
+  "Elena Cibrián Uhalte"
+];
+
+export const CURATORS_SKELETAL = [
+  "Andreas Zankl"
+];
+
+export const CURATORS_CANCER = [
+  "Helen V Firth",
+  "James Whitworth",
+  "Marc Tischkowitz"
+];
+
+export const CURATORS_EYE = [
+];
+
+export const CURATORS_SKIN = [
+  "Neil Rajan",
+  "Anna Shore"
+];
+
+export const CURATORS_CARDIAC = [
+  "James Ware",
+  "Panda Theotokis"
+];
