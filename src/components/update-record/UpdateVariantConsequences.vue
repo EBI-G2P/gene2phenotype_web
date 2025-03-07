@@ -174,22 +174,11 @@ export default {
                           class="form-select"
                           v-model="variantConsequences[item.inputKey]"
                           :disabled="
-                            transformedCurrentVariantConsequences[
-                              item.inputKey
-                            ] === 'evidence'
+                            transformedCurrentVariantConsequences[item.inputKey]
                           "
                         >
                           >
-                          <option
-                            value=""
-                            :disabled="
-                              transformedCurrentVariantConsequences[
-                                item.inputKey
-                              ] === 'inferred'
-                            "
-                          >
-                            Select
-                          </option>
+                          <option value="">Select</option>
                           <option value="inferred">inferred</option>
                           <option value="evidence">evidence</option>
                         </select>
