@@ -5,7 +5,10 @@ import UpdatePanel from "../components/update-record/UpdatePanel.vue";
 import UpdateMechanism from "../components/update-record/UpdateMechanism.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
-import AddComment from "@/components/update-record/AddComment.vue";
+import AddComment from "../components/update-record/AddComment.vue";
+import UpdatePhenotype from "../components/update-record/UpdatePhenotype.vue";
+import UpdateVariantConsequences from "../components/update-record/UpdateVariantConsequences.vue";
+import UpdateVariantTypes from "../components/update-record/UpdateVariantTypes.vue";
 
 export default {
   data() {
@@ -22,6 +25,9 @@ export default {
     UpdatePanel,
     UpdateMechanism,
     AddComment,
+    UpdatePhenotype,
+    UpdateVariantConsequences,
+    UpdateVariantTypes,
   },
   created() {
     // watch the params of the route to fetch the data again
@@ -91,8 +97,27 @@ export default {
       <h4 v-else class="text-muted pb-2">Disease Name Not Available</h4>
       <p class="mb-2">
         <i class="bi bi-info-circle"></i> For this record, only these sections
-        can be updated: <b>Mechanism, Panel, Confidence</b>
+        can be updated:
+        <b
+          >Phenotypic features, Variant types, Variant consequences, Mechanism,
+          Panel, Confidence</b
+        >
       </p>
+      <UpdatePhenotype
+        :stableId="stableId"
+        :currentPublications="locusGeneDiseaseData.publications"
+        :currentPhenotypes="locusGeneDiseaseData.phenotypes"
+        :currentPhenotypeSummary="locusGeneDiseaseData.phenotype_summary"
+      />
+      <UpdateVariantTypes
+        :stableId="stableId"
+        :currentPublications="locusGeneDiseaseData.publications"
+        :currentVariantTypes="locusGeneDiseaseData.variant_type"
+      />
+      <UpdateVariantConsequences
+        :stableId="stableId"
+        :currentVariantConsequences="locusGeneDiseaseData.variant_consequence"
+      />
       <UpdateMechanism
         :stableId="stableId"
         :currentPublications="locusGeneDiseaseData.publications"
