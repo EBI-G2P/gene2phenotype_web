@@ -20,7 +20,6 @@ export const GENE_DISEASE_URL = `${G2P_API_BASE_URL}/gene/:locus/disease`;
 export const ATTRIBS_URL = `${G2P_API_BASE_URL}/attribs/`;
 export const ATTRIBS_DESCRIPTION_URL = `${G2P_API_BASE_URL}/attribs/description`;
 export const PUBLICATIONS_URL = `${G2P_API_BASE_URL}/publication/:pmids/`;
-export const PHENOTYPES_URL = `${G2P_API_BASE_URL}/phenotype/:hpoterms/`;
 export const MECHANISMS_URL = `${G2P_API_BASE_URL}/molecular_mechanisms/`;
 export const VARIANT_TYPES_URL = `${G2P_API_BASE_URL}/ontology_terms/variant_types/`;
 export const SAVE_DRAFT_URL = `${G2P_API_BASE_URL}/add/curation/`;
@@ -37,6 +36,9 @@ export const UPDATE_MECHANISM_URL = `${G2P_API_BASE_URL}/lgd/:stableid/update_me
 export const ADD_PUBLICATION_URL = `${G2P_API_BASE_URL}/lgd/:stableid/publication/`;
 export const ADD_COMMENT_URL = `${G2P_API_BASE_URL}/lgd/:stableid/comment/`;
 export const REFERENCE_DATA_URL = `${G2P_API_BASE_URL}/reference_data/`;
+export const UPDATE_PHENOTYPE_URL = `${G2P_API_BASE_URL}/lgd/:stableid/phenotype/`;
+export const UPDATE_VARIANT_CONSEQUENCE_URL = `${G2P_API_BASE_URL}/lgd/:stableid/variant_consequence/`;
+export const UPDATE_VARIANT_TYPE_URL = `${G2P_API_BASE_URL}/lgd/:stableid/variant_type/`;
 
 //External API URLS
 export const HPO_SEARCH_API_URL = "https://ontology.jax.org/api/hp/search";
