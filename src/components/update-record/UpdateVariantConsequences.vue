@@ -174,7 +174,9 @@ export default {
                           class="form-select"
                           v-model="variantConsequences[item.inputKey]"
                           :disabled="
-                            transformedCurrentVariantConsequences[item.inputKey]
+                            transformedCurrentVariantConsequences[
+                              item.inputKey
+                            ] !== ''
                           "
                         >
                           >
