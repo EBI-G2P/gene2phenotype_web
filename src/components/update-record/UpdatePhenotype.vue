@@ -132,7 +132,6 @@ export default {
       this.isUpdateApiCallLoading = true;
 
       const requestBody = this.prepareRequestBody();
-      console.log(requestBody);
       api
         .post(
           UPDATE_PHENOTYPE_URL.replace(":stableid", this.stableId),
