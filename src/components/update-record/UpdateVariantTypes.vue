@@ -419,7 +419,7 @@ export default {
                 class="btn btn-primary"
                 @click="updateVariantType"
               >
-                <i class="bi bi-pencil-square"></i> Update variant type
+                <i class="bi bi-pencil-square"></i> Update variant types
               </button>
             </div>
             <div

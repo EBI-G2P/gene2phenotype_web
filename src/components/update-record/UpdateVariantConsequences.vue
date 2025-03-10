@@ -129,7 +129,7 @@ export default {
       >
         <div class="accordion-body">
           <div class="row g-3 p-2">
-            <h5>Variant Consequence</h5>
+            <h5>Variant Consequences</h5>
             <div
               v-if="isUpdateApiCallLoading"
               class="d-flex justify-content-center"
@@ -194,7 +194,7 @@ export default {
                 class="btn btn-primary"
                 @click="updateVariantConsequence"
               >
-                <i class="bi bi-pencil-square"></i> Update variant consequence
+                <i class="bi bi-pencil-square"></i> Update variant consequences
               </button>
             </div>
             <div

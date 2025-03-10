@@ -224,7 +224,7 @@ export default {
       >
         <div class="accordion-body">
           <div class="row g-3 p-2">
-            <h5>Phenotypic features</h5>
+            <h5>Phenotypic Features</h5>
             <div
               class="d-flex justify-content-center"
               v-if="isUpdateApiCallLoading"
@@ -553,7 +553,7 @@ export default {
                 class="btn btn-primary mt-3"
                 @click="updatePhenotype"
               >
-                <i class="bi bi-pencil-square"></i> Update phenotype
+                <i class="bi bi-pencil-square"></i> Update phenotype data
               </button>
             </div>
             <div
