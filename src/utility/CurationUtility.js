@@ -192,10 +192,10 @@ export const prepareInputForDataSubmission = (input) => {
   }
   preparedInput.publications = publicationsArray;
 
-  // convert phenotypes from object to array of objects and include phenotypes that have non empty hpo terms
+  // convert phenotypes from object to array of objects and include phenotypes that have non empty hpo terms or non empty phenotype summary
   let phenotypesArray = [];
   for (const [pmidKey, valueObj] of Object.entries(preparedInput.phenotypes)) {
-    if (valueObj.hpo_terms?.length > 0) {
+    if (valueObj.hpo_terms?.length > 0 || valueObj.summary.trim() !== "") {
       let phenotypeObj = {
         pmid: pmidKey,
         summary: valueObj.summary.trim(), // trim summary value
