@@ -281,7 +281,7 @@ export default {
           if (error.response?.status === 404) {
             this.publicationsErrorMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              error?.response?.data?.detail,
+              error?.response?.data?.error,
               "Unable to fetch publications data."
             );
           } else {
@@ -456,7 +456,7 @@ export default {
         if (this.isSaveBeforePublishSuccess) {
           this.publishErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            error?.response?.data?.message,
+            error?.response?.data?.error,
             "Saved draft but unable to publish data. Please try again later.",
             "Saved draft but unable to publish data."
           );

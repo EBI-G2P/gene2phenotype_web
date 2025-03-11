@@ -72,7 +72,7 @@ export default {
             this.routeQuery = this.$route.query;
             this.searchDataNotFoundMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              error?.response?.data?.message,
+              error?.response?.data?.error,
               "No results found. Please try another search."
             );
           } else {
