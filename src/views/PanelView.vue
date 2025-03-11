@@ -21,7 +21,6 @@ export default {
       downloadAllDataErrorMsg: null,
       confidenceColorMap: { ...CONFIDENCE_COLOR_MAP },
       HELP_TEXT,
-      curatorspage: "/curators",
       chartData: {},
       chartOptions: {
         responsive: true,
@@ -334,7 +333,7 @@ export default {
       <p>
         <strong>Curators: </strong>
         Full list of expert curators is available
-        <router-link :to="curatorspage" style="text-decoration: none"
+        <router-link to="/curators" style="text-decoration: none"
           >here</router-link
         >.
       </p>
