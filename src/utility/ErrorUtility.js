@@ -60,14 +60,15 @@ export const fetchAndLogApiResponseErrorListMsg = (
 ) => {
   let errorMsg = defaultMsg;
   if (error.response) {
-    if (error.response.data?.errors?.message?.length > 0) {
+    if (error.response.data?.error?.message?.length > 0) {
+      const apiResponseErrorMsg = error.response.data.error.message[0];
       if (msgPrefix) {
-        errorMsg = `${msgPrefix} Error: ${error.response.data.errors.message[0]}`;
+        errorMsg = `${msgPrefix} Error: ${apiResponseErrorMsg}`;
       } else {
-        errorMsg = error.response.data.errors.message[0];
+        errorMsg = apiResponseErrorMsg;
       }
       console.log(
-        `Error code: ${error.response.status}, Error: ${error.response.data.errors.message[0]}`
+        `Error code: ${error.response.status}, Error: ${apiResponseErrorMsg}`
       );
     } else {
       console.log(

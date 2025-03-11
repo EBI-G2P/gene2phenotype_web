@@ -1,5 +1,5 @@
 <script>
-import { fetchAndLogApiResponseErrorListMsg } from "../../utility/ErrorUtility.js";
+import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import { ADD_PANEL_URL } from "../../utility/UrlConstants.js";
 import api from "../../services/api.js";
 
@@ -34,8 +34,9 @@ export default {
           this.addPanelSuccessMsg = response.data.message;
         })
         .catch((error) => {
-          this.addPanelErrorMsg = fetchAndLogApiResponseErrorListMsg(
+          this.addPanelErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
+            error?.response?.data?.error,
             "Unable to add panel. Please try again later.",
             "Unable to add panel."
           );

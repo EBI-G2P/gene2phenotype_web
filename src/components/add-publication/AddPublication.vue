@@ -190,7 +190,7 @@ export default {
           if (error.response?.status === 404) {
             this.publicationsApiErrorMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              error?.response?.data?.detail,
+              error?.response?.data?.error,
               "Unable to fetch publications data. Please try again later.",
               "Unable to fetch publications data."
             );
