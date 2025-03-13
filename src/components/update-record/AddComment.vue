@@ -67,6 +67,7 @@ export default {
     <i class="bi bi-info-circle"></i> After updating data, use the form below to
     submit any additional comments.
   </p>
+  <hr />
   <h5>Comments</h5>
   <div
     class="d-flex justify-content-center"
@@ -78,35 +79,31 @@ export default {
     </div>
   </div>
   <div v-else>
-    <div class="row py-3 w-50">
-      <label for="private-comment-input" class="col-lg-3 col-form-label">
+    <div class="pb-3">
+      <label for="private-comment-input" class="form-label">
         Private comment
       </label>
-      <div class="col-lg-9">
-        <textarea
-          class="form-control"
-          id="private-comment-input"
-          rows="3"
-          type="text"
-          v-model="privateComment"
-        >
-        </textarea>
-      </div>
+      <textarea
+        class="form-control"
+        id="private-comment-input"
+        rows="3"
+        type="text"
+        v-model="privateComment"
+      >
+      </textarea>
     </div>
-    <div class="row pb-3 w-50">
-      <label for="public-comment-input" class="col-lg-3 col-form-label">
+    <div class="pb-3">
+      <label for="public-comment-input" class="form-label">
         Public comment
       </label>
-      <div class="col-lg-9">
-        <textarea
-          class="form-control"
-          id="public-comment-input"
-          rows="3"
-          type="text"
-          v-model="publicComment"
-        >
-        </textarea>
-      </div>
+      <textarea
+        class="form-control"
+        id="public-comment-input"
+        rows="3"
+        type="text"
+        v-model="publicComment"
+      >
+      </textarea>
     </div>
     <button type="button" class="btn btn-primary" @click="addComment">
       <i class="bi bi-pencil-square"></i> Submit comment

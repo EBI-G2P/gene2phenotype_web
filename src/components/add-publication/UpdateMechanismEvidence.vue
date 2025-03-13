@@ -5,8 +5,9 @@ import {
   MechanismAttribs,
   MechanismSupportAttribs,
   MechanismSynopsisAttribs,
-} from "../../utility/CurationConstants";
+} from "../../utility/CurationConstants.js";
 import kebabCase from "lodash/kebabCase";
+import { HELP_TEXT } from "../../utility/Constants.js";
 export default {
   props: {
     currentMechanism: Object,
@@ -52,6 +53,7 @@ export default {
       mechanismSynopsisAttribs: [...MechanismSynopsisAttribs],
       mechanismSupportAttribs: [...MechanismSupportAttribs],
       evidenceTypesAttribs: [...EvidenceTypesAttribs],
+      HELP_TEXT,
     };
   },
   computed: {
@@ -139,7 +141,8 @@ export default {
                 <label for="mechanism-input" class="col-form-label">
                   Mechanism
                   <ToolTip
-                    toolTipText="To change Mechanism, please contact Admin at g2p-help@ebi.ac.uk"
+                    v-if="!canUpdateMechanismInput"
+                    :toolTipText="HELP_TEXT.CHANGE_MECHANISM"
                   />
                 </label>
               </div>
@@ -425,28 +428,23 @@ export default {
                       </li>
                     </ul>
                   </div>
-                  <div class="row mt-2 w-50">
+                  <div class="mt-2">
                     <label
                       :for="`evidence-type-input-${pmid}-description`"
-                      class="col-form-label col-lg-3"
+                      class="form-label"
                     >
                       Description
                     </label>
-                    <div class="col-lg-9">
-                      <textarea
-                        class="form-control"
-                        :id="`evidence-type-input-${pmid}-description`"
-                        rows="3"
-                        :value="mechanismEvidence[pmid].description"
-                        @input="
-                          mechanismEvidenceInputHandler(
-                            pmid,
-                            $event.target.value
-                          )
-                        "
-                      >
-                      </textarea>
-                    </div>
+                    <textarea
+                      class="form-control"
+                      :id="`evidence-type-input-${pmid}-description`"
+                      rows="3"
+                      :value="mechanismEvidence[pmid].description"
+                      @input="
+                        mechanismEvidenceInputHandler(pmid, $event.target.value)
+                      "
+                    >
+                    </textarea>
                   </div>
                 </div>
               </div>

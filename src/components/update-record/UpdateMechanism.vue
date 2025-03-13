@@ -11,7 +11,7 @@ import kebabCase from "lodash/kebabCase";
 import ToolTip from "../tooltip/ToolTip.vue";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import api from "../../services/api.js";
-import { HELP_TEXT } from "@/utility/Constants.js";
+import { HELP_TEXT } from "../../utility/Constants.js";
 
 export default {
   props: {
@@ -292,7 +292,10 @@ export default {
                 <div class="col-lg-2">
                   <label for="mechanism-input" class="col-form-label">
                     Mechanism
-                    <ToolTip :toolTipText="HELP_TEXT.CHANGE_MECHANISM" />
+                    <ToolTip
+                      v-if="!canUpdateMechanismInput"
+                      :toolTipText="HELP_TEXT.CHANGE_MECHANISM"
+                    />
                   </label>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-6">
@@ -557,22 +560,20 @@ export default {
                       </li>
                     </ul>
                   </div>
-                  <div class="row mt-2 w-50">
+                  <div class="mt-2">
                     <label
                       :for="`evidence-type-input-${pmid}-description`"
-                      class="col-form-label col-lg-3"
+                      class="form-label"
                     >
                       Description
                     </label>
-                    <div class="col-lg-9">
-                      <textarea
-                        class="form-control"
-                        :id="`evidence-type-input-${pmid}-description`"
-                        rows="3"
-                        v-model="mechanismEvidence[pmid].description"
-                      >
-                      </textarea>
-                    </div>
+                    <textarea
+                      class="form-control"
+                      :id="`evidence-type-input-${pmid}-description`"
+                      rows="3"
+                      v-model="mechanismEvidence[pmid].description"
+                    >
+                    </textarea>
                   </div>
                 </div>
               </div>

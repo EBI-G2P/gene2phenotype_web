@@ -168,22 +168,20 @@ export default {
                   </div>
                 </div>
               </div>
-              <div class="row mt-4 w-50">
+              <div class="mt-4">
                 <label
                   :for="`phenotype-summary-input-${pmid}`"
-                  class="col-form-label col-lg-3"
+                  class="form-label"
                 >
                   Summary
                 </label>
-                <div class="col-lg-9">
-                  <textarea
-                    class="form-control"
-                    :id="`phenotype-summary-input-${pmid}`"
-                    rows="3"
-                    :value="clinicalPhenotype[pmid].summary"
-                    @input="summaryInputHandler(pmid, $event.target.value)"
-                  ></textarea>
-                </div>
+                <textarea
+                  class="form-control"
+                  :id="`phenotype-summary-input-${pmid}`"
+                  rows="3"
+                  :value="clinicalPhenotype[pmid].summary"
+                  @input="summaryInputHandler(pmid, $event.target.value)"
+                ></textarea>
               </div>
               <div
                 class="row pt-3"
