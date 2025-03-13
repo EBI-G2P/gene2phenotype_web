@@ -557,22 +557,20 @@ export default {
                       </li>
                     </ul>
                   </div>
-                  <div class="row mt-2 w-50">
+                  <div class="mt-2">
                     <label
                       :for="`evidence-type-input-${pmid}-description`"
-                      class="col-form-label col-lg-3"
+                      class="form-label"
                     >
                       Description
                     </label>
-                    <div class="col-lg-9">
-                      <textarea
-                        class="form-control"
-                        :id="`evidence-type-input-${pmid}-description`"
-                        rows="3"
-                        v-model="mechanismEvidence[pmid].description"
-                      >
-                      </textarea>
-                    </div>
+                    <textarea
+                      class="form-control"
+                      :id="`evidence-type-input-${pmid}-description`"
+                      rows="3"
+                      v-model="mechanismEvidence[pmid].description"
+                    >
+                    </textarea>
                   </div>
                 </div>
               </div>
