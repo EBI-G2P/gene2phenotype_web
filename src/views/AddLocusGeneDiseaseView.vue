@@ -527,8 +527,8 @@ export default {
       </div>
     </div>
     <p v-if="!isGeneDataLoading && !geneData && !isDisplayGeneExistingData">
-      <i class="bi bi-info-circle"></i> Please enter Gene and click Search to
-      proceed further.
+      <i class="bi bi-info-circle"></i> Please enter Gene and click
+      <b>Search</b> to proceed further.
     </p>
     <div
       class="d-flex justify-content-center"

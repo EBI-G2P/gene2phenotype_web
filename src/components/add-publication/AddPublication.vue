@@ -317,7 +317,7 @@ export default {
       </div>
       <p v-else>
         <i class="bi bi-info-circle"></i> Please enter Publication(s) and click
-        'Add' to proceed further.
+        <b>Add</b> to proceed further.
       </p>
     </div>
     <div
