@@ -5,8 +5,9 @@ import {
   MechanismAttribs,
   MechanismSupportAttribs,
   MechanismSynopsisAttribs,
-} from "../../utility/CurationConstants";
+} from "../../utility/CurationConstants.js";
 import kebabCase from "lodash/kebabCase";
+import { HELP_TEXT } from "../../utility/Constants.js";
 export default {
   props: {
     currentMechanism: Object,
@@ -52,6 +53,7 @@ export default {
       mechanismSynopsisAttribs: [...MechanismSynopsisAttribs],
       mechanismSupportAttribs: [...MechanismSupportAttribs],
       evidenceTypesAttribs: [...EvidenceTypesAttribs],
+      HELP_TEXT,
     };
   },
   computed: {
@@ -139,7 +141,8 @@ export default {
                 <label for="mechanism-input" class="col-form-label">
                   Mechanism
                   <ToolTip
-                    toolTipText="To change Mechanism, please contact Admin at g2p-help@ebi.ac.uk"
+                    v-if="!canUpdateMechanismInput"
+                    :toolTipText="HELP_TEXT.CHANGE_MECHANISM"
                   />
                 </label>
               </div>
