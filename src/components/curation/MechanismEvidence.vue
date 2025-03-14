@@ -58,12 +58,12 @@ export default {
   <div class="row g-3 px-3 pt-3" v-if="isDisplayPublicationWarning">
     <p>
       <i class="bi bi-info-circle"></i> Please enter Publication(s) to provide
-      information on evidence.
+      information on functional studies.
     </p>
   </div>
   <div v-if="isDisplayEvidenceForm">
     <div class="row g-3 px-3 pt-3">
-      <h5>Evidence</h5>
+      <h5>Functional Studies</h5>
     </div>
     <div
       class="row g-3 px-3 py-3"
