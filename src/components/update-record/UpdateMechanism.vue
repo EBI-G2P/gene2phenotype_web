@@ -475,7 +475,7 @@ export default {
                       <table class="table table-bordered mb-0">
                         <thead>
                           <tr>
-                            <th>Evidence Types</th>
+                            <th>Functional Studies</th>
                             <th>Publication</th>
                           </tr>
                         </thead>
@@ -518,7 +518,7 @@ export default {
                 </div>
               </div>
               <div v-if="isDisplayEvidenceForm">
-                <h5 class="mb-0">Evidence</h5>
+                <h5 class="mb-0">Functional Studies</h5>
                 <div
                   class="pt-3 pb-4"
                   v-for="pmid in Object.keys(mechanismEvidence)"
@@ -579,7 +579,7 @@ export default {
               </div>
               <p v-if="isDisplayPublicationWarning">
                 <i class="bi bi-info-circle"></i> Please add atleast 1
-                Publication to provide information on evidence.
+                Publication to provide information on functional studies.
               </p>
               <button
                 type="button"

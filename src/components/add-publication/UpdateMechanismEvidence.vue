@@ -335,7 +335,7 @@ export default {
                     <table class="table table-bordered mb-0">
                       <thead>
                         <tr>
-                          <th>Evidence Types</th>
+                          <th>Functional Studies</th>
                           <th>Publication</th>
                         </tr>
                       </thead>
@@ -379,7 +379,7 @@ export default {
             </div>
             <form>
               <div v-if="isDisplayNewEvidenceForm">
-                <h5 class="mb-0">Evidence for new Publication(s)</h5>
+                <h5 class="mb-0">Functional Studies for new Publication(s)</h5>
                 <div
                   class="py-3"
                   v-for="pmid in Object.keys(mechanismEvidence)"

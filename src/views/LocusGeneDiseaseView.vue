@@ -659,7 +659,7 @@ export default {
                       <table class="table table-bordered mb-0">
                         <thead>
                           <tr>
-                            <th>Evidence Types</th>
+                            <th>Functional Studies</th>
                             <th>Publication</th>
                           </tr>
                         </thead>
