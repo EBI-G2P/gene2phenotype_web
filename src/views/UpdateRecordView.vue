@@ -9,6 +9,7 @@ import AddComment from "../components/update-record/AddComment.vue";
 import UpdatePhenotype from "../components/update-record/UpdatePhenotype.vue";
 import UpdateVariantConsequences from "../components/update-record/UpdateVariantConsequences.vue";
 import UpdateVariantTypes from "../components/update-record/UpdateVariantTypes.vue";
+import UpdateDisease from "../components/update-record/UpdateDisease.vue";
 
 export default {
   data() {
@@ -28,6 +29,7 @@ export default {
     UpdatePhenotype,
     UpdateVariantConsequences,
     UpdateVariantTypes,
+    UpdateDisease,
   },
   created() {
     // watch the params of the route to fetch the data again
@@ -122,6 +124,11 @@ export default {
         :stableId="stableId"
         :currentPublications="locusGeneDiseaseData.publications"
         :currentMechanism="locusGeneDiseaseData.molecular_mechanism"
+      />
+      <UpdateDisease
+        :stableId="stableId"
+        :diseaseName="locusGeneDiseaseData.disease?.name"
+        :currentCrossReferences="locusGeneDiseaseData.disease?.ontology_terms"
       />
       <UpdatePanel
         :stableId="stableId"

@@ -81,5 +81,6 @@ api.defaults.headers.get["Cache-Control"] = "no-cache";
 api.defaults.headers.post["Accept"] = "application/json";
 api.defaults.headers.put["Accept"] = "application/json";
 api.defaults.headers.patch["Accept"] = "application/json";
+api.defaults.headers.delete["Accept"] = "application/json";
 
 export default api;
