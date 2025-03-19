@@ -44,7 +44,8 @@ export const HELP_TEXT = {
   CLICK_HPO_SUGGESTION: "Click any term to select it.",
   GENE_LOCATION:
     "The location of the gene on the GRCh38 reference assembly. The format is chromosome:start:end:strand where '1' is forward strand and '-1' is reverse strand.",
-  INPUT_CROSS_REFERENCES: "OMIM and/or Mondo IDs",
+  INPUT_CROSS_REFERENCES:
+    "MONDO or OMIM identifiers relevant to this disease. Use this where no suggested terms are available or relevant.",
 };
 
 export const MARSH_PROBABILITY_THRESHOLD = {
