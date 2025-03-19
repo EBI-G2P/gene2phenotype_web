@@ -2,6 +2,7 @@
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import {
   CROSS_REFERENCES_URL,
+  GENE_DISEASE_URL,
   UPDATE_CROSS_REFERENCE_URL,
 } from "../../utility/UrlConstants.js";
 import api from "../../services/api.js";
@@ -12,8 +13,21 @@ import DeleteCrossReferenceModal from "../modal/DeleteCrossReferenceModal.vue";
 export default {
   props: {
     stableId: String,
+    gene: String,
     diseaseName: String,
     currentCrossReferences: Array,
+  },
+  created() {
+    // watch the params of the route to fetch the data again
+    this.$watch(
+      () => this.$route.params,
+      () => {
+        this.fetchGeneDiseaseData();
+      },
+      // fetch the data when the view is created and the data is
+      // already being observed
+      { immediate: true }
+    );
   },
   data() {
     return {
@@ -23,6 +37,10 @@ export default {
       inputCrossReferencesInvalidMsg: null,
       newCrossReferences: [],
       crossReferenceToDelete: null,
+      geneDiseaseErrorMsg: null,
+      suggestedCrossReferences: [],
+      selectedCrossReferenceIds: [],
+      isGeneDiseaseDataLoading: false,
       fetchApiCallErrorMsg: null,
       isFetchApiCallLoading: false,
       addApiCallErrorMsg: null,
@@ -41,6 +59,64 @@ export default {
     DeleteCrossReferenceModal,
   },
   methods: {
+    fetchGeneDiseaseData() {
+      this.geneDiseaseErrorMsg = null;
+      this.suggestedCrossReferences = [];
+      this.isGeneDiseaseDataLoading = true;
+      api
+        .get(GENE_DISEASE_URL.replace(":locus", this.gene))
+        .then((response) => {
+          if (response.data?.results) {
+            /*
+              Need to transform API response format to the required format and also fitler out existing cross references:
+              API response format:
+              [
+                {
+                  identifier: "...",
+                  source: "...",
+                  disease_name: "...",
+                  original_disease_name: "...",
+                },
+              ]
+              Required format:
+              [
+                {
+                  accession: "...",
+                  source: "...",
+                  term: "...",
+                  description: "...",
+                }
+              ]
+            */
+            let crossReferencesResponse = [];
+            const existingCrossReferenceIdentifiers = this.crossReferences.map(
+              (item) => item.accession
+            );
+            response.data.results.forEach((item) => {
+              if (
+                !existingCrossReferenceIdentifiers.includes(item.identifier)
+              ) {
+                crossReferencesResponse.push({
+                  accession: item.identifier,
+                  source: item.source,
+                  term: item.original_disease_name,
+                  description: item.original_disease_name,
+                });
+              }
+            });
+            this.suggestedCrossReferences = crossReferencesResponse;
+          }
+        })
+        .catch((error) => {
+          this.geneDiseaseErrorMsg = fetchAndLogGeneralErrorMsg(
+            error,
+            "Unable to fetch suggested cross references data. Please try again later."
+          );
+        })
+        .finally(() => {
+          this.isGeneDiseaseDataLoading = false;
+        });
+    },
     resetApiCallVariables() {
       this.fetchApiCallErrorMsg = null;
       this.addApiCallErrorMsg = null;
@@ -184,6 +260,47 @@ export default {
           this.crossReferences.push(...this.newCrossReferences);
           // Clear newCrossReferences list
           this.clearNewCrossReferences();
+        })
+        .catch((error) => {
+          this.addApiCallErrorMsg = fetchAndLogApiResponseErrorMsg(
+            error,
+            error?.response?.data?.error,
+            "Unable to add cross references. Please try again later.",
+            "Unable to add cross references."
+          );
+        })
+        .finally(() => {
+          this.isAddApiCallLoading = false;
+        });
+    },
+    addSelectedCrossReferences() {
+      this.resetApiCallVariables();
+      this.isAddApiCallLoading = true;
+      let selectedCrossReferenceObjList = [];
+      this.suggestedCrossReferences.forEach((item) => {
+        if (this.selectedCrossReferenceIds.includes(item.accession)) {
+          selectedCrossReferenceObjList.push(item);
+        }
+      });
+      const requestBody = {
+        disease_ontologies: selectedCrossReferenceObjList,
+      };
+      api
+        .post(
+          UPDATE_CROSS_REFERENCE_URL.replace(":diseasename", this.diseaseName),
+          requestBody
+        )
+        .then((response) => {
+          this.isAddApiCallSuccess = true;
+          this.addApiCallSuccessMsg = response.data.message;
+          // Add the selected cross references to crossReferences list
+          this.crossReferences.push(...selectedCrossReferenceObjList);
+          // Filter out the selected cross references from suggestedCrossReferences list
+          this.suggestedCrossReferences = this.suggestedCrossReferences.filter(
+            (item) => !this.selectedCrossReferenceIds.includes(item.accession)
+          );
+          // Clear selectedCrossReferenceIds list
+          this.selectedCrossReferenceIds = [];
         })
         .catch((error) => {
           this.addApiCallErrorMsg = fetchAndLogApiResponseErrorMsg(
@@ -385,7 +502,88 @@ export default {
                 </div>
               </div>
               <hr />
-              <h5 class="mb-0">Add New Cross Reference(s)</h5>
+              <h5 class="mb-3">Add New Cross Reference(s)</h5>
+              <div
+                v-if="
+                  !geneDiseaseErrorMsg && suggestedCrossReferences?.length > 0
+                "
+              >
+                <h6 class="mb-3">Suggested Cross Reference(s)</h6>
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%">Link</th>
+                      <th>Accession</th>
+                      <th>Name</th>
+                      <th>Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="item in suggestedCrossReferences"
+                      :key="item.accession"
+                    >
+                      <td class="text-center" style="width: 5%">
+                        <input
+                          type="checkbox"
+                          :id="`cross-reference-link-input-${item.accession}`"
+                          :value="item.accession"
+                          v-model="selectedCrossReferenceIds"
+                        />
+                      </td>
+                      <td>
+                        <a
+                          :href="`https://www.omim.org/entry/${item.accession}`"
+                          style="text-decoration: none"
+                          v-if="item.source === 'OMIM'"
+                          target="_blank"
+                        >
+                          {{ item.accession }}
+                        </a>
+                        <a
+                          :href="`https://monarchinitiative.org/${item.accession}`"
+                          style="text-decoration: none"
+                          v-else-if="item.source === 'Mondo'"
+                          target="_blank"
+                        >
+                          {{ item.accession }}
+                        </a>
+                        <span v-else>{{ item.accession }}</span>
+                      </td>
+                      <td>{{ item.term }}</td>
+                      <td>{{ item.source }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button
+                  type="button"
+                  :class="
+                    selectedCrossReferenceIds?.length === 0
+                      ? 'btn btn-secondary'
+                      : 'btn btn-primary'
+                  "
+                  @click="addSelectedCrossReferences"
+                  :disabled="selectedCrossReferenceIds?.length === 0"
+                >
+                  <i class="bi bi-plus-circle-fill"></i> Add cross references
+                </button>
+              </div>
+              <div
+                class="alert alert-danger mt-3"
+                role="alert"
+                v-else-if="geneDiseaseErrorMsg"
+              >
+                <div>
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  {{ geneDiseaseErrorMsg }}
+                </div>
+              </div>
+              <p v-else>
+                <i class="bi bi-info-circle"></i> No Cross Reference is
+                available to add.
+              </p>
+              <hr />
+              <h6>Fetch Other Cross Reference(s)</h6>
               <div class="row py-3">
                 <div class="col-auto">
                   <label for="cross-references-input" class="col-form-label">

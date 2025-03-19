@@ -127,6 +127,7 @@ export default {
       />
       <UpdateDisease
         :stableId="stableId"
+        :gene="locusGeneDiseaseData.locus?.gene_symbol"
         :diseaseName="locusGeneDiseaseData.disease?.name"
         :currentCrossReferences="locusGeneDiseaseData.disease?.ontology_terms"
       />
