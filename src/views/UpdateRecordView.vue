@@ -102,7 +102,7 @@ export default {
         can be updated:
         <b
           >Phenotypic features, Variant types, Variant consequences, Mechanism,
-          Panel, Confidence</b
+          Disease Cross References, Panel, Confidence</b
         >
       </p>
       <UpdatePhenotype
