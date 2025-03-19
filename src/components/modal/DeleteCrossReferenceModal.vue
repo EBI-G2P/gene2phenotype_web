@@ -28,6 +28,7 @@ export default {
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
+            @click="$emit('cancel')"
             aria-label="Close"
           ></button>
         </div>
