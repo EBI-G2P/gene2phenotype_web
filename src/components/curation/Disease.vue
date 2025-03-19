@@ -161,7 +161,7 @@ export default {
                 </tbody>
               </table>
               <p class="m-0">
-                <i class="bi bi-info-circle"></i> Clicking on 'Use name' button
+                <i class="bi bi-info-circle"></i> Clicking on <b>Use name</b>
                 will auto-populate the disease name in the input.
               </p>
             </div>
