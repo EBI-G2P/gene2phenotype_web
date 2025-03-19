@@ -7,6 +7,7 @@ import {
 import api from "../../services/api.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 import { HELP_TEXT } from "../../utility/Constants.js";
+import DeleteCrossReferenceModal from "../modal/DeleteCrossReferenceModal.vue";
 
 export default {
   props: {
@@ -21,6 +22,7 @@ export default {
       isInputCrossReferencesValid: true,
       inputCrossReferencesInvalidMsg: null,
       newCrossReferences: [],
+      crossReferenceToDelete: null,
       fetchApiCallErrorMsg: null,
       isFetchApiCallLoading: false,
       addApiCallErrorMsg: null,
@@ -36,6 +38,7 @@ export default {
   },
   components: {
     ToolTip,
+    DeleteCrossReferenceModal,
   },
   methods: {
     resetApiCallVariables() {
@@ -67,24 +70,26 @@ export default {
         .get(CROSS_REFERENCES_URL.replace(":ids", crossReferencesListStr))
         .then((response) => {
           if (response.data?.results) {
-            // Transform fetched cross references into required format
-            // Cross reference API response format:
-            // [
-            //   {
-            //     disease: "...",
-            //     identifier: "...",
-            //     source: "...",
-            //   },
-            // ]
-            // Required format:
-            // [
-            //   {
-            //     term: "...",
-            //     description: "...",
-            //     accession: "...",
-            //     source: "...",
-            //   }
-            // ]
+            /*
+              Need to transform API response format to the required format:
+              API response format:
+              [
+                {
+                  identifier: "...",
+                  source: "...",
+                  disease: "...",
+                },
+              ]
+              Required format:
+              [
+                {
+                  accession: "...",
+                  source: "...",
+                  term: "...",
+                  description: "...",
+                }
+              ]
+            */
             let crossReferencesResponse = [];
             response.data.results.forEach((item) => {
               crossReferencesResponse.push({
@@ -178,7 +183,7 @@ export default {
           // Add the new cross references to crossReferences list
           this.crossReferences.push(...this.newCrossReferences);
           // Clear newCrossReferences list
-          this.newCrossReferences = [];
+          this.clearNewCrossReferences();
         })
         .catch((error) => {
           this.addApiCallErrorMsg = fetchAndLogApiResponseErrorMsg(
@@ -192,12 +197,28 @@ export default {
           this.isAddApiCallLoading = false;
         });
     },
-    deleteCrossReference(accessionToDelete) {
+    deleteCrossReference() {
+      if (!this.crossReferenceToDelete) {
+        return;
+      }
       this.resetApiCallVariables();
       this.isDeleteApiCallLoading = true;
+      /*
+      The DELETE API expects the following request body json:
+      {
+        accession: "..."
+      }
+      However, to send a request body for a DELETE API call using Axios, the Axios instance expects the following json:
+      {
+        data: 
+          {
+            accession: "..."
+          }
+      }
+     */
       const requestBody = {
         data: {
-          accession: accessionToDelete,
+          accession: this.crossReferenceToDelete,
         },
       };
       api
@@ -210,8 +231,10 @@ export default {
           this.deleteApiCallSuccessMsg = response.data.message;
           // Remove the deleted cross reference from crossReferences list
           this.crossReferences = this.crossReferences.filter(
-            (item) => item.accession !== accessionToDelete
+            (item) => item.accession !== this.crossReferenceToDelete
           );
+          // Clear crossReferenceToDelete
+          this.clearCrossReferenceToDelete();
         })
         .catch((error) => {
           this.deleteApiCallErrorMsg = fetchAndLogApiResponseErrorMsg(
@@ -224,6 +247,18 @@ export default {
         .finally(() => {
           this.isDeleteApiCallLoading = false;
         });
+    },
+    setCrossReferenceToDelete(accession) {
+      // Set crossReferenceToDelete
+      this.crossReferenceToDelete = accession;
+    },
+    clearCrossReferenceToDelete() {
+      // Clear crossReferenceToDelete
+      this.crossReferenceToDelete = null;
+    },
+    clearNewCrossReferences() {
+      // Clear newCrossReferences list
+      this.newCrossReferences = [];
     },
   },
 };
@@ -257,6 +292,7 @@ export default {
               v-if="diseaseName"
               :to="`/disease/${diseaseName}`"
               style="text-decoration: none"
+              class="pt-0 mt-0"
             >
               {{ diseaseName }}
             </router-link>
@@ -276,7 +312,10 @@ export default {
             </div>
             <div v-else>
               <h5>Current Cross Reference(s)</h5>
-              <table class="table table-bordered">
+              <table
+                v-if="crossReferences.length > 0"
+                class="table table-bordered"
+              >
                 <thead>
                   <tr>
                     <th>Accession</th>
@@ -286,32 +325,34 @@ export default {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="ontologyTerm in crossReferences">
+                  <tr v-for="item in crossReferences" :key="item.accession">
                     <td>
                       <a
-                        v-if="ontologyTerm.source === 'OMIM'"
-                        :href="`https://www.omim.org/entry/${ontologyTerm.accession}`"
+                        v-if="item.source === 'OMIM'"
+                        :href="`https://www.omim.org/entry/${item.accession}`"
                         style="text-decoration: none"
                         target="_blank"
                       >
-                        {{ ontologyTerm.accession }}
+                        {{ item.accession }}
                       </a>
                       <a
-                        v-else-if="ontologyTerm.source === 'Mondo'"
-                        :href="`https://monarchinitiative.org/${ontologyTerm.accession}`"
+                        v-else-if="item.source === 'Mondo'"
+                        :href="`https://monarchinitiative.org/${item.accession}`"
                         style="text-decoration: none"
                         target="_blank"
                       >
-                        {{ ontologyTerm.accession }}
+                        {{ item.accession }}
                       </a>
-                      <span v-else>{{ ontologyTerm.accession }}</span>
+                      <span v-else>{{ item.accession }}</span>
                     </td>
-                    <td>{{ ontologyTerm.term }}</td>
-                    <td>{{ ontologyTerm.source }}</td>
+                    <td>{{ item.term }}</td>
+                    <td>{{ item.source }}</td>
                     <td>
                       <button
                         class="btn btn-outline-danger"
-                        @click="deleteCrossReference(ontologyTerm.accession)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#delete-cross-reference-modal"
+                        @click="setCrossReferenceToDelete(item.accession)"
                       >
                         <i class="bi bi-trash-fill"></i> Delete
                       </button>
@@ -319,6 +360,10 @@ export default {
                   </tr>
                 </tbody>
               </table>
+              <p v-else>
+                <i class="bi bi-info-circle"></i> No Cross Reference available
+                for this disease.
+              </p>
               <div
                 class="alert alert-danger mt-3"
                 role="alert"
@@ -344,8 +389,7 @@ export default {
               <div class="row py-3">
                 <div class="col-auto">
                   <label for="cross-references-input" class="col-form-label">
-                    Cross Reference(s)<span class="text-danger">*</span>
-
+                    Cross Reference(s)
                     <ToolTip :toolTipText="HELP_TEXT.INPUT_CROSS_REFERENCES" />
                   </label>
                 </div>
@@ -398,38 +442,50 @@ export default {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="ontologyTerm in newCrossReferences">
+                    <tr
+                      v-for="item in newCrossReferences"
+                      :key="item.accession"
+                    >
                       <td>
                         <a
-                          v-if="ontologyTerm.source === 'OMIM'"
-                          :href="`https://www.omim.org/entry/${ontologyTerm.accession}`"
+                          v-if="item.source === 'OMIM'"
+                          :href="`https://www.omim.org/entry/${item.accession}`"
                           style="text-decoration: none"
                           target="_blank"
                         >
-                          {{ ontologyTerm.accession }}
+                          {{ item.accession }}
                         </a>
                         <a
-                          v-else-if="ontologyTerm.source === 'Mondo'"
-                          :href="`https://monarchinitiative.org/${ontologyTerm.accession}`"
+                          v-else-if="item.source === 'Mondo'"
+                          :href="`https://monarchinitiative.org/${item.accession}`"
                           style="text-decoration: none"
                           target="_blank"
                         >
-                          {{ ontologyTerm.accession }}
+                          {{ item.accession }}
                         </a>
-                        <span v-else>{{ ontologyTerm.accession }}</span>
+                        <span v-else>{{ item.accession }}</span>
                       </td>
-                      <td>{{ ontologyTerm.term }}</td>
-                      <td>{{ ontologyTerm.source }}</td>
+                      <td>{{ item.term }}</td>
+                      <td>{{ item.source }}</td>
                     </tr>
                   </tbody>
                 </table>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  @click="addCrossReferences"
-                >
-                  <i class="bi bi-plus-circle-fill"></i> Add cross references
-                </button>
+                <div class="d-flex">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary me-3"
+                    @click="clearNewCrossReferences"
+                  >
+                    <i class="bi bi-trash-fill"></i> Clear
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="addCrossReferences"
+                  >
+                    <i class="bi bi-plus-circle-fill"></i> Add cross references
+                  </button>
+                </div>
               </div>
               <p v-else>
                 <i class="bi bi-info-circle"></i> Please enter Cross
@@ -457,6 +513,11 @@ export default {
               </div>
             </div>
           </div>
+          <DeleteCrossReferenceModal
+            :accession="crossReferenceToDelete"
+            @cancel="clearCrossReferenceToDelete"
+            @delete="deleteCrossReference"
+          />
         </div>
       </div>
     </div>
