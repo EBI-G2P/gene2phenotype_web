@@ -32,7 +32,10 @@ export default {
       crossReferenceToDelete: null,
       selectedCrossReferenceIds: [],
       geneDiseaseErrorMsg: null,
-      suggestedCrossReferences: [],
+      // allSuggestedCrossReferences keeps track of all suggested cross references provided by API
+      allSuggestedCrossReferences: [],
+      // filteredSuggestedCrossReferences keeps track of filtered suggested cross references based on user actions
+      filteredSuggestedCrossReferences: [],
       isGeneDiseaseDataLoading: false,
       addApiCallErrorMsg: null,
       isAddApiCallLoading: false,
@@ -50,14 +53,15 @@ export default {
   methods: {
     fetchGeneDiseaseData() {
       this.geneDiseaseErrorMsg = null;
-      this.suggestedCrossReferences = [];
+      this.allSuggestedCrossReferences = [];
+      this.filteredSuggestedCrossReferences = [];
       this.isGeneDiseaseDataLoading = true;
       api
         .get(GENE_DISEASE_URL.replace(":locus", this.gene))
         .then((response) => {
           if (response.data?.results) {
             /*
-              Transform API response format to required format and filter out existing cross references:
+              Transform API response format to required format:
               API response format:
               [
                 {
@@ -78,20 +82,18 @@ export default {
               ]
             */
             let crossReferencesResponse = [];
-            const existingCrossReferenceIds = this.crossReferences.map(
-              (item) => item.accession
-            );
             response.data.results.forEach((item) => {
-              if (!existingCrossReferenceIds.includes(item.identifier)) {
-                crossReferencesResponse.push({
-                  accession: item.identifier,
-                  source: item.source,
-                  term: item.original_disease_name,
-                  description: item.original_disease_name,
-                });
-              }
+              crossReferencesResponse.push({
+                accession: item.identifier,
+                source: item.source,
+                term: item.original_disease_name,
+                description: item.original_disease_name,
+              });
             });
-            this.suggestedCrossReferences = crossReferencesResponse;
+            this.allSuggestedCrossReferences = crossReferencesResponse;
+            // filter out existing cross references from allSuggestedCrossReferences list
+            this.filteredSuggestedCrossReferences =
+              this.getFilteredSuggestedCrossReferences();
           }
         })
         .catch((error) => {
@@ -103,7 +105,9 @@ export default {
           }
           /*
             IF API response gives 404 status,
-            THEN no changes required because suggestedCrossReferences is already set to empty list before calling the API
+            THEN no changes required 
+            because allSuggestedCrossReferences and filteredSuggestedCrossReferences are already set to empty lists 
+            before calling the API
           */
         })
         .finally(() => {
@@ -121,8 +125,13 @@ export default {
     addSelectedCrossReferences() {
       this.resetApiCallVariables();
       this.isAddApiCallLoading = true;
+      /*
+       Logic to prepare request body for API call:
+       selectedCrossReferenceIds only has the selected accessions
+       so get the full objects of the selected accessions from allSuggestedCrossReferences list
+      */
       let selectedCrossReferenceObjList = [];
-      this.suggestedCrossReferences.forEach((item) => {
+      this.allSuggestedCrossReferences.forEach((item) => {
         if (this.selectedCrossReferenceIds.includes(item.accession)) {
           selectedCrossReferenceObjList.push(item);
         }
@@ -140,10 +149,9 @@ export default {
           this.addApiCallSuccessMsg = response.data.message;
           // Add the selected cross references to crossReferences list
           this.crossReferences.push(...selectedCrossReferenceObjList);
-          // Filter out the selected cross references from suggestedCrossReferences list
-          this.suggestedCrossReferences = this.suggestedCrossReferences.filter(
-            (item) => !this.selectedCrossReferenceIds.includes(item.accession)
-          );
+          // Since crossReferences list has been updated, filter out updated crossReferences list
+          this.filteredSuggestedCrossReferences =
+            this.getFilteredSuggestedCrossReferences();
           // Clear selectedCrossReferenceIds list
           this.selectedCrossReferenceIds = [];
         })
@@ -195,6 +203,9 @@ export default {
           this.crossReferences = this.crossReferences.filter(
             (item) => item.accession !== this.crossReferenceToDelete
           );
+          // Since crossReferences list has been updated, filter out updated crossReferences list
+          this.filteredSuggestedCrossReferences =
+            this.getFilteredSuggestedCrossReferences();
           // Clear crossReferenceToDelete
           this.clearCrossReferenceToDelete();
         })
@@ -217,6 +228,15 @@ export default {
     clearCrossReferenceToDelete() {
       // Clear crossReferenceToDelete
       this.crossReferenceToDelete = null;
+    },
+    getFilteredSuggestedCrossReferences() {
+      // Filter out items in crossReferences list from allSuggestedCrossReferences list
+      const existingCrossReferenceIds = this.crossReferences.map(
+        (item) => item.accession
+      );
+      return this.allSuggestedCrossReferences.filter(
+        (item) => !existingCrossReferenceIds.includes(item.accession)
+      );
     },
   },
 };
@@ -347,7 +367,8 @@ export default {
               <h5 class="mb-3">Add New Cross Reference(s)</h5>
               <div
                 v-if="
-                  !geneDiseaseErrorMsg && suggestedCrossReferences?.length > 0
+                  !geneDiseaseErrorMsg &&
+                  filteredSuggestedCrossReferences?.length > 0
                 "
               >
                 <h6 class="mb-3">Suggested Cross Reference(s)</h6>
@@ -362,7 +383,7 @@ export default {
                   </thead>
                   <tbody>
                     <tr
-                      v-for="item in suggestedCrossReferences"
+                      v-for="item in filteredSuggestedCrossReferences"
                       :key="item.accession"
                     >
                       <td class="text-center" style="width: 5%">
