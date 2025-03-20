@@ -1,5 +1,6 @@
 <script>
-import { VariantConsequencesAttribs } from "../../utility/CurationConstants";
+import { getVariantConsequenceCssClass } from "../../utility/CurationUtility.js";
+import { VariantConsequencesAttribs } from "../../utility/CurationConstants.js";
 export default {
   props: {
     variantConsequences: Object,
@@ -11,16 +12,7 @@ export default {
       updatedVariantConsequences[key] = inputValue;
       this.$emit("updateVariantConsequences", updatedVariantConsequences);
     },
-    variantConsequenceCssClass(hierarchyLevel) {
-      if (hierarchyLevel === 1) {
-        return "text-start";
-      } else if (hierarchyLevel === 2) {
-        return "text-center";
-      } else if (hierarchyLevel === 3) {
-        return "text-end";
-      }
-      return "text-start";
-    },
+    getVariantConsequenceCssClass,
   },
   data() {
     return {
@@ -47,7 +39,7 @@ export default {
         </thead>
         <tbody>
           <tr v-for="item in variantConsequencesAttribs">
-            <td :class="variantConsequenceCssClass(item.hierarchyLevel)">
+            <td :class="getVariantConsequenceCssClass(item.hierarchyLevel)">
               {{ item.labelText }}
             </td>
             <td>
