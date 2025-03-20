@@ -562,3 +562,14 @@ export const getAffectedIndividualsInputErrorMsg = (
   }
   return null;
 };
+
+export const getVariantConsequenceCssClass = (hierarchyLevel) => {
+  if (hierarchyLevel === 1) {
+    return "text-start";
+  } else if (hierarchyLevel === 2) {
+    return "text-center";
+  } else if (hierarchyLevel === 3) {
+    return "text-end";
+  }
+  return "text-start";
+};

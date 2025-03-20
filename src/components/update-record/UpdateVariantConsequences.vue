@@ -3,6 +3,7 @@ import api from "../../services/api.js";
 import { UPDATE_VARIANT_CONSEQUENCE_URL } from "../../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import { VariantConsequencesAttribs } from "../../utility/CurationConstants.js";
+import { getVariantConsequenceCssClass } from "../../utility/CurationUtility.js";
 
 export default {
   props: {
@@ -11,10 +12,12 @@ export default {
   },
   data() {
     return {
-      variantConsequences: this.getInitialVariantConsequences(
+      // initialCurrentVariantConsequences keeps track of existing variant consequences provided by API
+      initialCurrentVariantConsequences: this.getInitialVariantConsequences(
         this.currentVariantConsequences
       ),
-      transformedCurrentVariantConsequences: this.getInitialVariantConsequences(
+      // variantConsequences keeps track of variant consequences based on user actions
+      variantConsequences: this.getInitialVariantConsequences(
         this.currentVariantConsequences
       ),
       isUpdateApiCallLoading: false,
@@ -48,7 +51,7 @@ export default {
       // convert variant consequences from object to array of objects and include variant consequence that changed
       let variantConsequencesArray = [];
       for (const [key, value] of Object.entries(this.variantConsequences)) {
-        if (this.transformedCurrentVariantConsequences[key] !== value) {
+        if (this.initialCurrentVariantConsequences[key] !== value) {
           let variantConsequencesObj = {
             variant_consequence: key,
             support: value,
@@ -59,16 +62,6 @@ export default {
       return {
         variant_consequences: variantConsequencesArray,
       };
-    },
-    variantConsequenceCssClass(hierarchyLevel) {
-      if (hierarchyLevel === 1) {
-        return "text-start";
-      } else if (hierarchyLevel === 2) {
-        return "text-center";
-      } else if (hierarchyLevel === 3) {
-        return "text-end";
-      }
-      return "text-start";
     },
     updateVariantConsequence() {
       this.updateVariantConsequenceErrorMsg =
@@ -91,14 +84,15 @@ export default {
             fetchAndLogApiResponseErrorMsg(
               error,
               error?.response?.data?.error,
-              "Unable to update variant consequence. Please try again later.",
-              "Unable to update variant consequence."
+              "Unable to update variant consequences. Please try again later.",
+              "Unable to update variant consequences."
             );
         })
         .finally(() => {
           this.isUpdateApiCallLoading = false;
         });
     },
+    getVariantConsequenceCssClass,
   },
 };
 </script>
@@ -162,9 +156,14 @@ export default {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in VariantConsequencesAttribs">
+                    <tr
+                      v-for="item in VariantConsequencesAttribs"
+                      :key="item.inputKey"
+                    >
                       <td
-                        :class="variantConsequenceCssClass(item.hierarchyLevel)"
+                        :class="
+                          getVariantConsequenceCssClass(item.hierarchyLevel)
+                        "
                       >
                         {{ item.labelText }}
                       </td>
@@ -174,9 +173,8 @@ export default {
                           class="form-select"
                           v-model="variantConsequences[item.inputKey]"
                           :disabled="
-                            transformedCurrentVariantConsequences[
-                              item.inputKey
-                            ] !== ''
+                            initialCurrentVariantConsequences[item.inputKey] !==
+                            ''
                           "
                         >
                           >
