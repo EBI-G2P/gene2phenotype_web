@@ -11,7 +11,7 @@ export default {
     class="modal fade"
     id="delete-cross-reference-modal"
     tabindex="-1"
-    aria-labelledby="alert-modal-label"
+    aria-labelledby="delete-cross-reference-modal-label"
     aria-hidden="true"
   >
     <div class="modal-dialog">
