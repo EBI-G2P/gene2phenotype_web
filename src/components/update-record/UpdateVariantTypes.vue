@@ -13,25 +13,15 @@ export default {
   data() {
     return {
       variantTypes: this.getInitialVariantTypes(),
+      currentPublicationPMIDs: this.getCurrentPublicationPMIDs(
+        this.currentPublications
+      ),
       isUpdateApiCallLoading: false,
       updateVariantTypeErrorMsg: null,
       isUpdateVariantTypeSuccess: false,
       updateVariantTypeSuccessMsg: null,
       VariantTypesAttribs,
     };
-  },
-  computed: {
-    currentPMIDList() {
-      let currentPMIDList = [];
-      if (this.currentPublications?.length > 0) {
-        this.currentPublications.forEach((publicationItem) => {
-          if (publicationItem?.publication?.pmid) {
-            currentPMIDList.push(publicationItem.publication.pmid);
-          }
-        });
-      }
-      return currentPMIDList;
-    },
   },
   methods: {
     getInitialVariantTypes() {
@@ -54,6 +44,17 @@ export default {
 
       return variantTypesObj;
     },
+    getCurrentPublicationPMIDs(currentPublications) {
+      let pmidList = [];
+      if (currentPublications?.length > 0) {
+        currentPublications.forEach((item) => {
+          if (item?.publication?.pmid) {
+            pmidList.push(item.publication.pmid);
+          }
+        });
+      }
+      return pmidList;
+    },
     updateVariantType() {
       this.updateVariantTypeErrorMsg = this.updateVariantTypeSuccessMsg = null;
       this.isUpdateVariantTypeSuccess = false;
@@ -72,8 +73,8 @@ export default {
           this.updateVariantTypeErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
             error?.response?.data?.error,
-            "Unable to update variant type. Please try again later.",
-            "Unable to update variant type."
+            "Unable to update variant types. Please try again later.",
+            "Unable to update variant types."
           );
         })
         .finally(() => {
@@ -375,24 +376,24 @@ export default {
                         <td>
                           <div
                             class="form-check"
-                            v-for="publicationItem in currentPMIDList"
+                            v-for="pmid in currentPublicationPMIDs"
                           >
                             <input
                               class="form-check-input"
                               type="checkbox"
-                              :id="`input-${publicationItem}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
+                              :id="`input-${pmid}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
                               v-model="
                                 variantTypes[item.primaryType.inputKey][
                                   secondaryTypeItem.inputKey
                                 ].supporting_papers
                               "
-                              :value="publicationItem"
+                              :value="pmid"
                             />
                             <label
                               class="form-check-label"
-                              :for="`input-${publicationItem}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
+                              :for="`input-${pmid}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
                             >
-                              {{ publicationItem }}
+                              {{ pmid }}
                             </label>
                           </div>
                         </td>
