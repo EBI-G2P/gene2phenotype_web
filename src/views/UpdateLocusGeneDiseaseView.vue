@@ -558,6 +558,7 @@ export default {
         :attributesData="attributesData"
         :inputPublications="previousInput.publications"
         v-model:confidence="previousInput.confidence"
+        :geneData="geneData"
       />
       <Comment
         v-model:private-comment="previousInput.private_comment"
