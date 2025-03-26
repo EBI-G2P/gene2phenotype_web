@@ -297,6 +297,16 @@ export default {
               <i class="bi bi-box-arrow-up-right"></i>
             </a>
           </li>
+          <li v-if="geneData.ids?.HGNC">
+            <a
+              :href="`https://search.thegencc.org/genes/${geneData.ids.HGNC}`"
+              style="text-decoration: none"
+              target="_blank"
+            >
+              GenCC
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+          </li>
         </ul>
       </div>
       <p>
