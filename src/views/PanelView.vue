@@ -19,7 +19,7 @@ export default {
       panelSummaryData: null,
       errorMsg: null,
       downloadAllDataErrorMsg: null,
-      confidenceColorMap: { ...CONFIDENCE_COLOR_MAP },
+      CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
       chartData: {},
       chartOptions: {
@@ -318,7 +318,7 @@ export default {
                   class="badge text-white"
                   :style="{
                     backgroundColor:
-                      confidenceColorMap[item.confidence.toLowerCase()],
+                      CONFIDENCE_COLOR_MAP[item.confidence.toLowerCase()],
                   }"
                 >
                   {{ item.confidence }}

@@ -1,6 +1,6 @@
 <script>
 import { mapState } from "pinia";
-import { useAuthStore } from "@/store/auth.js";
+import { useAuthStore } from "../store/auth.js";
 
 export default {
   computed: {

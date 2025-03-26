@@ -1,5 +1,5 @@
 <script>
-import { HELP_TEXT } from "@/utility/Constants";
+import { HELP_TEXT } from "../../utility/Constants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 export default {
   props: {

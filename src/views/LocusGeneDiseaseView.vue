@@ -18,11 +18,11 @@ export default {
       isDataLoading: false,
       locusGeneDiseaseData: null,
       errorMsg: null,
-      confidenceColorMap: { ...CONFIDENCE_COLOR_MAP },
       isRecordPartOfUserPanels: false,
       stableId: null,
       userPanels: null,
       isPanelDataLoading: false,
+      CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
     };
   },
@@ -179,7 +179,7 @@ export default {
                   class="badge text-white fs-6 ms-2"
                   :style="{
                     backgroundColor:
-                      confidenceColorMap[
+                      CONFIDENCE_COLOR_MAP[
                         locusGeneDiseaseData.confidence.toLowerCase()
                       ],
                   }"

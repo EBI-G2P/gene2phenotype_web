@@ -1,5 +1,5 @@
 <script>
-import { VariantTypesAttribs } from "../../utility/CurationConstants";
+import { VariantTypesAttribs } from "../../utility/CurationConstants.js";
 export default {
   props: {
     publicationsData: Object,

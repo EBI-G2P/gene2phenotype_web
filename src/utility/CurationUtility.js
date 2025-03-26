@@ -2,7 +2,7 @@ import {
   VariantTypesAttribs,
   VariantConsequencesAttribs,
   EvidenceTypesAttribs,
-} from "./CurationConstants";
+} from "./CurationConstants.js";
 import cloneDeep from "lodash/cloneDeep";
 
 export const getInitialInputForNewCuration = () => {

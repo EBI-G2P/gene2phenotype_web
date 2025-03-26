@@ -1,5 +1,5 @@
 <script>
-import { EvidenceTypesAttribs } from "../../utility/CurationConstants";
+import { EvidenceTypesAttribs } from "../../utility/CurationConstants.js";
 import kebabCase from "lodash/kebabCase";
 export default {
   props: {

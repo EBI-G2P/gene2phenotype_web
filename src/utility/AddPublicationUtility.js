@@ -1,4 +1,4 @@
-import { VariantTypesAttribs } from "./CurationConstants";
+import { VariantTypesAttribs } from "./CurationConstants.js";
 import cloneDeep from "lodash/cloneDeep";
 
 export const getInitialInputForAddingNewPublicationData = (

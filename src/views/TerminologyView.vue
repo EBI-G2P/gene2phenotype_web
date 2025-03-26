@@ -19,7 +19,7 @@ export default {
       molecularDescriptionData: null,
       variantDescriptionData: null,
       errorMsg: null,
-      confidenceColorMap: { ...CONFIDENCE_COLOR_MAP },
+      CONFIDENCE_COLOR_MAP,
       VariantConsequencesAttribs,
     };
   },
@@ -105,7 +105,9 @@ export default {
                     class="badge text-white"
                     :style="{
                       backgroundColor:
-                        confidenceColorMap[Object.keys(item)[0].toLowerCase()],
+                        CONFIDENCE_COLOR_MAP[
+                          Object.keys(item)[0].toLowerCase()
+                        ],
                     }"
                   >
                     {{ Object.keys(item)[0] }}
