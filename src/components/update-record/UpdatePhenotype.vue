@@ -4,13 +4,13 @@ import ToolTip from "../tooltip/ToolTip.vue";
 import {
   HPO_SEARCH_API_URL,
   UPDATE_PHENOTYPE_URL,
-} from "@/utility/UrlConstants";
+} from "../../utility/UrlConstants.js";
 import axios from "axios";
-import api from "@/services/api";
+import api from "../../services/api.js";
 import {
   fetchAndLogGeneralErrorMsg,
   fetchAndLogApiResponseErrorMsg,
-} from "@/utility/ErrorUtility";
+} from "../../utility/ErrorUtility.js";
 export default {
   props: {
     stableId: String,

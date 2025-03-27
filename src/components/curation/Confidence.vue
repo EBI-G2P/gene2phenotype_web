@@ -5,6 +5,7 @@ export default {
     attributesData: Object,
     inputPublications: Object,
     confidence: String,
+    geneData: Object,
   },
   emits: ["update:confidence"],
   computed: {
@@ -35,11 +36,9 @@ export default {
       <div id="confidence-section-body" class="accordion-collapse collapse">
         <div class="accordion-body">
           <div class="row g-3">
-            <div class="col-12">
-              <p class="mb-0 fw-bold">Summary</p>
-            </div>
+            <p class="mb-0 fw-bold">Summary</p>
             <div class="col-3">
-              <table class="table table-bordered">
+              <table class="table table-bordered mb-0">
                 <tbody>
                   <tr>
                     <th width="50%">Total Papers</th>
@@ -78,10 +77,35 @@ export default {
                 </tbody>
               </table>
             </div>
+            <p class="fw-bold">External Links</p>
+            <div class="row mx-3">
+              <ul class="mb-0">
+                <li v-if="geneData?.gene_symbol">
+                  <a
+                    :href="`https://panelapp.genomicsengland.co.uk/panels/entities/${geneData.gene_symbol}`"
+                    style="text-decoration: none"
+                    target="_blank"
+                  >
+                    PanelApp
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </li>
+                <li v-if="geneData?.ids?.HGNC">
+                  <a
+                    :href="`https://search.thegencc.org/genes/${geneData.ids.HGNC}`"
+                    style="text-decoration: none"
+                    target="_blank"
+                  >
+                    GenCC
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
           <hr />
           <p class="mb-0 fw-bold">Confidence</p>
-          <div class="row g-3 pt-3 w-50">
+          <div class="row g-3 py-3 w-50">
             <label for="confidence-level-input" class="col-lg-3 col-form-label">
               Level<span class="text-danger">*</span>
             </label>

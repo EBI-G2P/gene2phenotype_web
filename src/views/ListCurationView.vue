@@ -1,7 +1,7 @@
 <script>
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
 import { ALL_SAVED_DRAFTS_URL } from "../utility/UrlConstants.js";
-import api from "@/services/api.js";
+import api from "../services/api.js";
 
 export default {
   data() {

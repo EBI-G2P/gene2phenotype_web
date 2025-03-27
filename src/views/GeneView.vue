@@ -12,7 +12,6 @@ import {
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
-
 export default {
   data() {
     return {
@@ -21,9 +20,9 @@ export default {
       geneData: null,
       geneFunctionData: null,
       errorMsg: null,
-      confidenceColorMap: { ...CONFIDENCE_COLOR_MAP },
       isReadMoreActivated: false,
-      maxCharacters: MAX_CHARACTERS,
+      CONFIDENCE_COLOR_MAP,
+      MAX_CHARACTERS,
       HELP_TEXT,
     };
   },
@@ -105,13 +104,13 @@ export default {
           <span
             v-if="
               !isReadMoreActivated &&
-              geneFunctionData.function.protein_function.length > maxCharacters
+              geneFunctionData.function.protein_function.length > MAX_CHARACTERS
             "
           >
             {{
               geneFunctionData.function.protein_function.slice(
                 0,
-                maxCharacters
+                MAX_CHARACTERS
               )
             }}&hellip;
           </span>
@@ -122,7 +121,7 @@ export default {
             class="btn btn-link p-0 ml-2 align-baseline"
             @click="toggleReadMore"
             v-if="
-              geneFunctionData.function.protein_function.length > maxCharacters
+              geneFunctionData.function.protein_function.length > MAX_CHARACTERS
             "
           >
             {{ isReadMoreActivated ? "Show less" : "Show more" }}
@@ -201,7 +200,7 @@ export default {
                   class="badge text-white"
                   :style="{
                     backgroundColor:
-                      confidenceColorMap[item.confidence.toLowerCase()],
+                      CONFIDENCE_COLOR_MAP[item.confidence.toLowerCase()],
                   }"
                 >
                   {{ item.confidence }}
@@ -294,6 +293,16 @@ export default {
               target="_blank"
             >
               PanelApp
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+          </li>
+          <li v-if="geneData.ids?.HGNC">
+            <a
+              :href="`https://search.thegencc.org/genes/${geneData.ids.HGNC}`"
+              style="text-decoration: none"
+              target="_blank"
+            >
+              GenCC
               <i class="bi bi-box-arrow-up-right"></i>
             </a>
           </li>

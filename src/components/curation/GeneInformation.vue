@@ -1,11 +1,10 @@
 <script>
 import { MAX_CHARACTERS } from "../../utility/Constants.js";
-
 export default {
   data() {
     return {
       isReadMoreActivated: false,
-      maxCharacters: MAX_CHARACTERS,
+      MAX_CHARACTERS,
     };
   },
   props: {
@@ -73,7 +72,7 @@ export default {
                   v-if="
                     isReadMoreActivated ||
                     geneFunctionData.function.protein_function.length <=
-                      maxCharacters
+                      MAX_CHARACTERS
                   "
                 >
                   {{ geneFunctionData.function.protein_function }}
@@ -82,7 +81,7 @@ export default {
                   {{
                     geneFunctionData.function.protein_function.slice(
                       0,
-                      maxCharacters
+                      MAX_CHARACTERS
                     )
                   }}&hellip;
                 </span>
@@ -91,7 +90,7 @@ export default {
                   @click="toggleReadMore"
                   v-if="
                     geneFunctionData.function.protein_function.length >
-                    maxCharacters
+                    MAX_CHARACTERS
                   "
                 >
                   {{ isReadMoreActivated ? "Show less" : "Show more" }}

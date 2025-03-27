@@ -5,11 +5,11 @@ import {
   MechanismAttribs,
   MechanismSynopsisAttribs,
   MechanismSupportAttribs,
-} from "../../utility/CurationConstants";
+} from "../../utility/CurationConstants.js";
 import {
   HELP_TEXT,
   MARSH_PROBABILITY_THRESHOLD,
-} from "../../utility/Constants";
+} from "../../utility/Constants.js";
 
 export default {
   props: {
@@ -36,8 +36,8 @@ export default {
       mechanismAttribs: [...MechanismAttribs],
       mechanismSynopsisAttribs: [...MechanismSynopsisAttribs],
       mechanismSupportAttribs: [...MechanismSupportAttribs],
-      marshProbabilityThreshold: { ...MARSH_PROBABILITY_THRESHOLD },
-      helpText: { ...HELP_TEXT },
+      MARSH_PROBABILITY_THRESHOLD,
+      HELP_TEXT,
     };
   },
   computed: {
@@ -129,7 +129,7 @@ export default {
             <div class="row g-3 px-3">
               <p class="mb-0 fw-bold">
                 Badoyni et al probabilities
-                <ToolTip :toolTipText="helpText.MARSH_PROBABILITY" />
+                <ToolTip :toolTipText="HELP_TEXT.MARSH_PROBABILITY" />
               </p>
               <p class="mb-0 mt-1">
                 See
@@ -146,13 +146,13 @@ export default {
                     <tr>
                       <td width="60%">
                         Gain of Function (pGOF)
-                        <ToolTip :toolTipText="helpText.GAIN_OF_FUNCTION" />
+                        <ToolTip :toolTipText="HELP_TEXT.GAIN_OF_FUNCTION" />
                       </td>
                       <td width="40%">
                         <span
                           v-if="
                             mechanismGeneStats?.gain_of_function_mp >
-                            marshProbabilityThreshold.GAIN_OF_FUNCTION
+                            MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
                           "
                           class="badge red-text-box"
                         >
@@ -161,7 +161,7 @@ export default {
                         <span
                           v-else-if="
                             mechanismGeneStats?.gain_of_function_mp <=
-                            marshProbabilityThreshold.GAIN_OF_FUNCTION
+                            MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
                           "
                           class="badge green-text-box"
                         >
@@ -173,13 +173,13 @@ export default {
                     <tr>
                       <td width="60%">
                         Loss of Function (pLOF)
-                        <ToolTip :toolTipText="helpText.LOSS_OF_FUNCTION" />
+                        <ToolTip :toolTipText="HELP_TEXT.LOSS_OF_FUNCTION" />
                       </td>
                       <td width="40%">
                         <span
                           v-if="
                             mechanismGeneStats?.loss_of_function_mp >
-                            marshProbabilityThreshold.LOSS_OF_FUNCTION
+                            MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
                           "
                           class="badge red-text-box"
                         >
@@ -188,7 +188,7 @@ export default {
                         <span
                           v-else-if="
                             mechanismGeneStats?.loss_of_function_mp <=
-                            marshProbabilityThreshold.LOSS_OF_FUNCTION
+                            MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
                           "
                           class="badge green-text-box"
                         >
@@ -200,13 +200,13 @@ export default {
                     <tr>
                       <td width="60%">
                         Dominant Negative (pDN)
-                        <ToolTip :toolTipText="helpText.DOMINANT_NEGATIVE" />
+                        <ToolTip :toolTipText="HELP_TEXT.DOMINANT_NEGATIVE" />
                       </td>
                       <td width="40%">
                         <span
                           v-if="
                             mechanismGeneStats?.dominant_negative_mp >
-                            marshProbabilityThreshold.DOMINANT_NEGATIVE
+                            MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
                           "
                           class="badge red-text-box"
                         >
@@ -215,7 +215,7 @@ export default {
                         <span
                           v-else-if="
                             mechanismGeneStats?.dominant_negative_mp <=
-                            marshProbabilityThreshold.DOMINANT_NEGATIVE
+                            MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
                           "
                           class="badge green-text-box"
                         >
