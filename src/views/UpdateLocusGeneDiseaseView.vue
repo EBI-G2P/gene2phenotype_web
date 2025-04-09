@@ -527,9 +527,10 @@ export default {
         v-model:molecular-mechanism-support="
           previousInput.molecular_mechanism.support
         "
-        v-model:mechanism-synopsis="previousInput.mechanism_synopsis.name"
-        v-model:mechanism-synopsis-support="
-          previousInput.mechanism_synopsis.support
+        :mechanismSynopsis="previousInput.mechanism_synopsis"
+        @update-mechanism-synopsis="
+          (updatedMechanismSynopsis) =>
+            (previousInput.mechanism_synopsis = updatedMechanismSynopsis)
         "
         :mechanismEvidence="previousInput.mechanism_evidence"
         @update-mechanism-evidence="

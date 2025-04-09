@@ -139,10 +139,13 @@ export default {
 
       // IF mechanismSynopsis or mechanismSynopsisSupport is updated THEN include mechanism_synopsis in preparedInput object
       if (this.isMechanismSynopsisUpdated()) {
-        preparedInput.mechanism_synopsis = {
-          name: this.mechanismSynopsis,
-          support: this.mechanismSynopsisSupport,
-        };
+        // TODO: Code changes to support multiple mechanism synopsis input
+        preparedInput.mechanism_synopsis = [
+          {
+            name: this.mechanismSynopsis,
+            support: this.mechanismSynopsisSupport,
+          },
+        ];
       }
       return preparedInput;
     },
