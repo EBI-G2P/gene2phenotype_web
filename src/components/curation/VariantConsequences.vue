@@ -26,8 +26,8 @@ export default {
     <div class="col-12">
       <h5>Variant Consequences<span class="text-danger">*</span></h5>
     </div>
-    <div class="col-12">
-      <table style="width: 70%" class="table table-bordered">
+    <div class="col-xl-6 col-12">
+      <table class="table table-bordered">
         <thead>
           <tr>
             <th style="width: 70%">
@@ -38,9 +38,19 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in variantConsequencesAttribs">
+          <tr v-for="item in variantConsequencesAttribs" :key="item.inputKey">
             <td :class="getVariantConsequenceCssClass(item.hierarchyLevel)">
-              {{ item.labelText }}
+              <a
+                v-if="item.accession"
+                :href="`http://www.sequenceontology.org/browser/current_release/term/${item.accession}`"
+                style="text-decoration: none"
+                target="_blank"
+              >
+                {{ item.labelText }}
+              </a>
+              <span v-else>
+                {{ item.labelText }}
+              </span>
             </td>
             <td>
               <select

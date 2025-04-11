@@ -144,8 +144,8 @@ export default {
               </div>
             </div>
             <div v-else>
-              <div class="col-12">
-                <table style="width: 70%" class="table table-bordered">
+              <div class="col-xl-6 col-12">
+                <table class="table table-bordered">
                   <thead>
                     <tr>
                       <th style="width: 70%">
@@ -165,7 +165,17 @@ export default {
                           getVariantConsequenceCssClass(item.hierarchyLevel)
                         "
                       >
-                        {{ item.labelText }}
+                        <a
+                          v-if="item.accession"
+                          :href="`http://www.sequenceontology.org/browser/current_release/term/${item.accession}`"
+                          style="text-decoration: none"
+                          target="_blank"
+                        >
+                          {{ item.labelText }}
+                        </a>
+                        <span v-else>
+                          {{ item.labelText }}
+                        </span>
                       </td>
                       <td>
                         <select
