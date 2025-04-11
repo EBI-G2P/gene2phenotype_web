@@ -2,6 +2,7 @@ import {
   VariantTypesAttribs,
   VariantConsequencesAttribs,
   EvidenceTypesAttribs,
+  MechanismSynopsisAttribs,
 } from "./CurationConstants.js";
 import cloneDeep from "lodash/cloneDeep";
 
@@ -20,10 +21,7 @@ export const getInitialInputForNewCuration = () => {
       name: "",
       support: "",
     },
-    mechanism_synopsis: {
-      name: "",
-      support: "",
-    },
+    mechanism_synopsis: {},
     mechanism_evidence: {},
     disease: { disease_name: "", cross_references: [] },
     panels: [],
@@ -55,6 +53,13 @@ export const getInitialInputForNewCuration = () => {
     variantConsequencesObj[item.inputKey] = "";
   });
   input.variant_consequences = variantConsequencesObj;
+
+  // initialize mechanism_synopsis field of input with MechanismSynopsisAttribs
+  let mechanismSynopsisObj = {};
+  MechanismSynopsisAttribs.forEach((item) => {
+    mechanismSynopsisObj[item] = "";
+  });
+  input.mechanism_synopsis = mechanismSynopsisObj;
 
   return input;
 };
@@ -142,6 +147,71 @@ const convertVariantConsequencesArrayToObject = (variantConsequencesArray) => {
   });
 
   return variantConsequenceObj;
+};
+
+const convertMechanismSynopsisArrayToObject = (
+  mechanismSynopsisPreviousInput
+) => {
+  // convert mechanism synopsis from array of objects to object
+  let mechanismSynopsisObj = {};
+
+  let mechanismSynopsisPreviousInputArray = [];
+  /* 
+  New format for mechanism_synopsis is:
+  [
+    {
+      "name": "...",
+      "support": "..."
+    },
+    .
+    .
+  ]
+  Old format for mechanism_synopsis is:
+  {
+    "name": "...",
+    "support": "..."
+  }
+  
+  The below code logic makes sure that saved drafts storing the old format of mechanism_synopsis are processed correctly.
+  Below 3 scenarios are addressed:
+  1. If clonedpreviousInput.mechanism_synopsis follows new format then retain the value in mechanismSynopsisPreviousInputArray
+  2. If clonedpreviousInput.mechanism_synopsis follows old format with non empty value in 'name' field as follows:
+  {
+    "name": "<non empty value>",
+    "support": "..."
+  }
+  then convert it to below format for mechanismSynopsisPreviousInputArray:
+  [
+    {
+      "name": "<non empty value>",
+      "support": "..."
+    }
+  ]
+  3. If clonedpreviousInput.mechanism_synopsis follows old format with empty value in 'name' field then it is ignored
+  */
+  if (Array.isArray(mechanismSynopsisPreviousInput)) {
+    mechanismSynopsisPreviousInputArray = mechanismSynopsisPreviousInput;
+  } else if (
+    typeof mechanismSynopsisPreviousInput === "object" &&
+    mechanismSynopsisPreviousInput !== null &&
+    "name" in mechanismSynopsisPreviousInput &&
+    "support" in mechanismSynopsisPreviousInput &&
+    mechanismSynopsisPreviousInput.name !== ""
+  ) {
+    mechanismSynopsisPreviousInputArray.push(mechanismSynopsisPreviousInput);
+  }
+
+  MechanismSynopsisAttribs.forEach((item) => {
+    mechanismSynopsisObj[item] = "";
+  });
+
+  mechanismSynopsisPreviousInputArray.forEach((item) => {
+    const { name, support } = item;
+
+    mechanismSynopsisObj[name] = support;
+  });
+
+  return mechanismSynopsisObj;
 };
 
 export const updateHpoTermsInputHelperWithNewPublicationsData = (
@@ -306,6 +376,19 @@ export const prepareInputForDataSubmission = (input) => {
   }
   preparedInput.variant_consequences = variantConsequencesArray;
 
+  // convert mechanism synopsis from object to array of objects and include mechanism synopsis that have non empty support
+  let mechanismSynopsisArray = [];
+  for (const [key, value] of Object.entries(preparedInput.mechanism_synopsis)) {
+    if (value !== "") {
+      let mechanismSynopsisObj = {
+        name: key,
+        support: value,
+      };
+      mechanismSynopsisArray.push(mechanismSynopsisObj);
+    }
+  }
+  preparedInput.mechanism_synopsis = mechanismSynopsisArray;
+
   // convert locus to uppercase
   preparedInput.locus = preparedInput.locus.toUpperCase();
 
@@ -464,11 +547,6 @@ export const prepareInputForUpdating = (previousInput) => {
     MechanismNameObj.support = "";
   }
 
-  let MechanismSynopsisObj = {
-    name: clonedpreviousInput.mechanism_synopsis.name,
-    support: clonedpreviousInput.mechanism_synopsis.support,
-  };
-
   let MechanismEvidenceObj = {};
   let MechanismEvidence = clonedpreviousInput.mechanism_evidence;
 
@@ -530,7 +608,9 @@ export const prepareInputForUpdating = (previousInput) => {
       clonedpreviousInput.variant_consequences
     ),
     molecular_mechanism: MechanismNameObj,
-    mechanism_synopsis: MechanismSynopsisObj,
+    mechanism_synopsis: convertMechanismSynopsisArrayToObject(
+      clonedpreviousInput.mechanism_synopsis
+    ),
     mechanism_evidence: MechanismEvidenceObj,
     disease: {
       disease_name: disease_name,

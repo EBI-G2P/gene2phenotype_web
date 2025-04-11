@@ -4,7 +4,6 @@ import kebabCase from "lodash/kebabCase";
 export default {
   props: {
     molecularMechanismSupport: String,
-    mechanismSynopsisSupport: String,
     mechanismEvidence: Object,
   },
   emits: ["updateMechanismEvidence"],

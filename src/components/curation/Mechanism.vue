@@ -15,16 +15,14 @@ export default {
   props: {
     molecularMechanism: String,
     molecularMechanismSupport: String,
-    mechanismSynopsis: String,
-    mechanismSynopsisSupport: String,
+    mechanismSynopsis: Object,
     mechanismEvidence: Object,
     mechanismGeneStats: Object,
   },
   emits: [
     "update:molecularMechanism",
     "update:molecularMechanismSupport",
-    "update:mechanismSynopsis",
-    "update:mechanismSynopsisSupport",
+    "updateMechanismSynopsis",
     "updateMechanismEvidence",
   ],
   components: {
@@ -40,15 +38,23 @@ export default {
       HELP_TEXT,
     };
   },
+  methods: {
+    mechanismSynopsisInputHandler(key, inputValue) {
+      let updatedMechanismSynopsis = { ...this.mechanismSynopsis };
+      updatedMechanismSynopsis[key] = inputValue;
+      this.$emit("updateMechanismSynopsis", updatedMechanismSynopsis);
+    },
+  },
   computed: {
     molecularMechanismErrorMsg() {
       // Any of following conditions will return an error message:
       // 1. molecularMechanism is empty and molecularMechanismSupport is defined
-      // 2. molecularMechanism is empty and mechanismSynopsis is defined
+      // 2. molecularMechanism is empty and any value of mechanismSynopsis obj is not blank
 
       if (
         !this.molecularMechanism &&
-        (this.molecularMechanismSupport || this.mechanismSynopsis)
+        (this.molecularMechanismSupport ||
+          Object.values(this.mechanismSynopsis).some((item) => item !== ""))
       ) {
         return "Select Mechanism";
       }
@@ -58,7 +64,7 @@ export default {
       // Any of following conditions will return an error message:
       // 1. molecularMechanismSupport is set to 'inferred' or 'evidence' and molecularMechanism is set to 'undetermined'
       // 2. molecularMechanismSupport is empty and molecularMechanism is set to any value except 'undetermined'
-      // 3. molecularMechanismSupport is empty and mechanismSynopsisSupport is set to 'inferred' or 'evidence'
+      // 3. molecularMechanismSupport is empty and any value of mechanismSynopsis obj is not blank
 
       if (
         (this.molecularMechanismSupport === "inferred" ||
@@ -74,34 +80,9 @@ export default {
         return "Select source";
       } else if (
         !this.molecularMechanismSupport &&
-        (this.mechanismSynopsisSupport === "inferred" ||
-          this.mechanismSynopsisSupport === "evidence")
+        Object.values(this.mechanismSynopsis).some((item) => item !== "")
       ) {
         return "Select source";
-      }
-      return null;
-    },
-    mechanismSynopsisErrorMsg() {
-      // Following condition will return an error message:
-      // 1. mechanismSynopsis is empty and mechanismSynopsisSupport is defined
-
-      if (!this.mechanismSynopsis && this.mechanismSynopsisSupport) {
-        return "Select Categorisation";
-      }
-      return null;
-    },
-    mechanismSynopsisSupportErrorMsg() {
-      // Any of following conditions will return an error message:
-      // 1. mechanismSynopsisSupport is empty and mechanismSynopsis is defined
-      // 2. mechanismSynopsisSupport is set to 'evidence' and molecularMechanismSupport is set to 'inferred'
-
-      if (!this.mechanismSynopsisSupport && this.mechanismSynopsis) {
-        return "Select source";
-      } else if (
-        this.mechanismSynopsisSupport === "evidence" &&
-        this.molecularMechanismSupport === "inferred"
-      ) {
-        return "Categorisation source can not be set to 'evidence' if Mechanism source is 'inferred'";
       }
       return null;
     },
@@ -292,73 +273,73 @@ export default {
               </div>
             </div>
             <div class="row g-3 px-3 py-3">
-              <div class="col-lg-2">
-                <label for="categorisation-input" class="col-form-label">
-                  Categorisation
-                </label>
-              </div>
-              <div class="col-xl-3 col-lg-3 col-6">
-                <select
-                  id="categorisation-input"
-                  :class="
-                    mechanismSynopsisErrorMsg
-                      ? 'form-select is-invalid'
-                      : 'form-select'
-                  "
-                  :value="mechanismSynopsis"
-                  @input="
-                    $emit('update:mechanismSynopsis', $event.target.value)
-                  "
-                  aria-describedby="invalid-categorisation-input-feedback"
-                >
-                  <option value="">Select</option>
-                  <option
-                    v-for="item in mechanismSynopsisAttribs"
-                    :value="item"
-                  >
-                    {{ item }}
-                  </option>
-                </select>
-                <div
-                  id="invalid-categorisation-input-feedback"
-                  class="invalid-feedback"
-                >
-                  {{ mechanismSynopsisErrorMsg }}
-                </div>
-              </div>
-              <div class="col-xl-3 col-lg-3 col-6">
-                <select
-                  id="categorisation-input-source"
-                  :class="
-                    mechanismSynopsisSupportErrorMsg
-                      ? 'form-select is-invalid'
-                      : 'form-select'
-                  "
-                  :value="mechanismSynopsisSupport"
-                  @input="
-                    $emit(
-                      'update:mechanismSynopsisSupport',
-                      $event.target.value
-                    )
-                  "
-                  aria-describedby="invalid-categorisation-input-source-feedback"
-                >
-                  <option value="">Select Source</option>
-                  <option v-for="item in mechanismSupportAttribs" :value="item">
-                    {{ item }}
-                  </option>
-                </select>
-                <div
-                  id="invalid-categorisation-input-source-feedback"
-                  class="invalid-feedback"
-                >
-                  {{ mechanismSynopsisSupportErrorMsg }}
-                </div>
+              <p class="mb-0">Categorisation</p>
+              <div class="col-xl-6 col-12">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 60%">
+                        Categorisation
+                        <a
+                          href="/gene2phenotype/about/terminology#mechanism-synopsis"
+                          style="text-decoration: none"
+                          target="_blank"
+                        >
+                          <i class="bi bi-question-circle"></i>
+                        </a>
+                      </th>
+                      <th style="width: 40%">Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in mechanismSynopsisAttribs" :key="item">
+                      <td>
+                        {{ item }}
+                      </td>
+                      <td>
+                        <select
+                          :id="`categorisation-input-source-${item}`"
+                          :class="
+                            // Following condition will display an error message:
+                            // molecularMechanismSupport is set to 'inferred' and mechanismSynopsis[item] is set to 'evidence'
+                            molecularMechanismSupport === 'inferred' &&
+                            mechanismSynopsis[item] === 'evidence'
+                              ? 'form-select is-invalid'
+                              : 'form-select'
+                          "
+                          :value="mechanismSynopsis[item]"
+                          @input="
+                            mechanismSynopsisInputHandler(
+                              item,
+                              $event.target.value
+                            )
+                          "
+                          :aria-describedby="`invalid-categorisation-input-source-feedback-${item}`"
+                        >
+                          >
+                          <option value="">Select</option>
+                          <option
+                            v-for="support in mechanismSupportAttribs"
+                            :value="support"
+                          >
+                            {{ support }}
+                          </option>
+                        </select>
+                        <div
+                          :id="`invalid-categorisation-input-source-feedback-${item}`"
+                          class="invalid-feedback"
+                        >
+                          Categorisation source can not be set to 'evidence' if
+                          Mechanism source is 'inferred'
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
             <MechanismEvidence
               :molecularMechanismSupport="molecularMechanismSupport"
-              :mechanismSynopsisSupport="mechanismSynopsisSupport"
               :mechanismEvidence="mechanismEvidence"
               @update-mechanism-evidence="
                 (updatedMechanismEvidence) =>

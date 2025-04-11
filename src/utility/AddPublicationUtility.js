@@ -132,7 +132,8 @@ export const prepareInputForNewPublicationDataSubmission = (
 
   // IF mechanism_synopsis is updated THEN include it in preparedInput object
   if (isMechanismSynopsisUpdated(clonedInput)) {
-    preparedInput.mechanism_synopsis = clonedInput.mechanism_synopsis;
+    // TODO: Code changes to support multiple mechanism synopsis input
+    preparedInput.mechanism_synopsis = [clonedInput.mechanism_synopsis];
   }
 
   // convert variant types from object to array of objects and include variant types that have any non empty field data
