@@ -135,34 +135,40 @@ export const VariantTypesAttribs = [
 
 export const VariantConsequencesAttribs = [
   {
-    labelText: "Altered_gene_product_level SO:0002314",
+    labelText: "Altered_gene_product_level",
     inputKey: "altered_gene_product_level",
     hierarchyLevel: 1,
+    accession: "SO:0002314",
   },
   {
-    labelText: "Decreased_gene_product_level SO:0002316",
+    labelText: "Decreased_gene_product_level",
     inputKey: "decreased_gene_product_level",
     hierarchyLevel: 2,
+    accession: "SO:0002316",
   },
   {
-    labelText: "Absent_gene_product SO:0002317",
+    labelText: "Absent_gene_product",
     inputKey: "absent_gene_product",
     hierarchyLevel: 3,
+    accession: "SO:0002317",
   },
   {
-    labelText: "Increased_gene_product_level SO:0002315",
+    labelText: "Increased_gene_product_level",
     inputKey: "increased_gene_product_level",
     hierarchyLevel: 2,
+    accession: "SO:0002315",
   },
   {
-    labelText: "Altered_gene_product_structure SO:0002318",
+    labelText: "Altered_gene_product_structure",
     inputKey: "altered_gene_product_structure",
     hierarchyLevel: 1,
+    accession: "SO:0002318",
   },
   {
     labelText: "Uncertain",
     inputKey: "uncertain",
     hierarchyLevel: 1,
+    accession: null,
   },
 ];
 
