@@ -231,7 +231,9 @@ export default {
             </tr>
           </tbody>
         </table>
-        <p v-else class="text-muted">Not Available</p>
+        <p v-else class="text-muted">
+          No G2P disease models are currently available.
+        </p>
       </div>
       <h4 class="py-3">External Links</h4>
       <div class="row mx-3 pb-3">
