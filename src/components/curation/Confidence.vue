@@ -7,15 +7,17 @@ export default {
     confidence: String,
     geneData: Object,
   },
-  emits: ["update:confidence"],
-  computed: {
-    reorderedConfidenceCategoryList() {
-      return this.attributesData.confidence_category.sort(
-        (a, b) =>
-          ConfidenceAttribsOrder.indexOf(a) - ConfidenceAttribsOrder.indexOf(b)
-      );
-    },
+  data() {
+    return {
+      sortedConfidenceCategoryList:
+        this.attributesData?.confidence_category?.sort(
+          (a, b) =>
+            ConfidenceAttribsOrder.indexOf(a) -
+            ConfidenceAttribsOrder.indexOf(b)
+        ) || [],
+    };
   },
+  emits: ["update:confidence"],
 };
 </script>
 <template>
@@ -118,7 +120,7 @@ export default {
               >
                 <option value="">Select</option>
                 <option
-                  v-for="item in reorderedConfidenceCategoryList"
+                  v-for="item in sortedConfidenceCategoryList"
                   :value="item"
                 >
                   {{ item }}
