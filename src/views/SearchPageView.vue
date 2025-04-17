@@ -1,5 +1,5 @@
 <script>
-import { SEARCH_URL } from "../utility/UrlConstants.js";
+import { GENE_URL, SEARCH_URL } from "../utility/UrlConstants.js";
 import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
@@ -16,6 +16,7 @@ export default {
       searchDataNotFoundMsg: null,
       routeQuery: null,
       errorMsg: null,
+      geneData: null,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
     };
@@ -37,10 +38,11 @@ export default {
   },
   methods: {
     fetchData(dataUrl) {
-      this.errorMsg =
-        this.searchData =
+      this.searchData =
         this.searchDataNotFoundMsg =
         this.routeQuery =
+        this.errorMsg =
+        this.geneData =
           null;
       this.isDataLoading = true;
       let url = "";
@@ -64,23 +66,42 @@ export default {
       api
         .get(url)
         .then((response) => {
+          this.isDataLoading = false;
           this.routeQuery = this.$route.query;
           this.searchData = response.data;
         })
         .catch((error) => {
           if (error.response?.status === 404) {
             this.routeQuery = this.$route.query;
-            this.searchDataNotFoundMsg = fetchAndLogApiResponseErrorMsg(
+            const searchDataNotFoundMsg = fetchAndLogApiResponseErrorMsg(
               error,
               error?.response?.data?.error,
               "No results found. Please try another search."
             );
+            // for given search query, if no search results are found then call gene api to check if it is a valid gene
+            this.fetchGeneData(searchDataNotFoundMsg);
           } else {
+            this.isDataLoading = false;
             this.errorMsg = fetchAndLogGeneralErrorMsg(
               error,
               "Unable to fetch search results. Please try again later."
             );
           }
+        });
+    },
+    fetchGeneData(searchDataNotFoundMsg) {
+      const searchQuery = this.$route.query?.query;
+      api
+        .get(GENE_URL.replace(":locus", searchQuery))
+        .then((response) => {
+          this.geneData = response.data;
+        })
+        .catch((error) => {
+          fetchAndLogGeneralErrorMsg(
+            error,
+            "Unable to fetch gene data. Please try again later."
+          );
+          this.searchDataNotFoundMsg = searchDataNotFoundMsg;
         })
         .finally(() => {
           this.isDataLoading = false;
@@ -128,6 +149,20 @@ export default {
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
         {{ searchDataNotFoundMsg }}
+      </div>
+    </div>
+    <div v-if="geneData" class="alert alert-primary mt-3" role="alert">
+      <div>
+        <i class="bi bi-info-circle"></i>
+        No G2P disease models are currently available for given gene, see here
+        for details from other resources:
+        <router-link
+          v-if="geneData.gene_symbol"
+          :to="`/gene/${geneData.gene_symbol}`"
+          class="fw-bold"
+        >
+          {{ geneData.gene_symbol }}
+        </router-link>
       </div>
     </div>
     <div v-if="searchData">

@@ -17,15 +17,13 @@ export default {
       updateConfidenceErrorMsg: null,
       isUpdateConfidenceSuccess: false,
       updateConfidenceSuccessMsg: null,
+      sortedConfidenceCategoryList:
+        this.attributesData?.confidence_category?.sort(
+          (a, b) =>
+            ConfidenceAttribsOrder.indexOf(a) -
+            ConfidenceAttribsOrder.indexOf(b)
+        ) || [],
     };
-  },
-  computed: {
-    reorderedConfidenceCategoryList() {
-      return this.attributesData.confidence_category.sort(
-        (a, b) =>
-          ConfidenceAttribsOrder.indexOf(a) - ConfidenceAttribsOrder.indexOf(b)
-      );
-    },
   },
   methods: {
     updateConfidence() {
@@ -111,7 +109,7 @@ export default {
                     v-model="confidence"
                   >
                     <option
-                      v-for="item in reorderedConfidenceCategoryList"
+                      v-for="item in sortedConfidenceCategoryList"
                       :value="item"
                     >
                       {{ item }}
