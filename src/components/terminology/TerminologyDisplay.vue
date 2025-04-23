@@ -119,8 +119,8 @@ export default {
       <section id="allelic-requirement-section" class="pt-3">
         <h4>Allelic Requirement</h4>
         <h6>
-          HPO Mode of inheritance terminology is used. G2P uses synonyms of the
-          MOI terms as many of the disorders described are de novo.
+          HPO Mode of inheritance (MOI) terminology is used. G2P uses synonyms
+          of the MOI terms as many of the disorders described are de novo.
         </h6>
         <div class="pt-1 table-responsive-xl">
           <table class="table table-bordered">
@@ -151,7 +151,7 @@ export default {
       </section>
       <section id="cross-cutting-modifier-section" class="pt-3">
         <h4>Cross Cutting Modifier</h4>
-        <h6>HPO inheriance qualifier terms are used where available</h6>
+        <h6>HPO inheritance qualifier terms are used where available</h6>
         <div class="pt-1 table-responsive-xl">
           <table class="table table-bordered">
             <thead>
@@ -185,12 +185,13 @@ export default {
         <h4>Molecular Mechanism</h4>
         <h6>
           The mechanism of disease derived from the available evidence,
-          following the definitions of Backwell and Marsh. See
+          following the definitions of Backwell and Marsh. More information can
+          be found
           <a
             href="https://europepmc.org/article/MED/35395171"
             style="text-decoration: none"
             target="_blank"
-            >this link</a
+            >here</a
           >.
         </h6>
         <div class="pt-1 table-responsive-xl">
@@ -224,12 +225,12 @@ export default {
         <h4>Molecular Mechanism Synopsis</h4>
         <h6>
           A more detailed description of the molecular mechanism, following the
-          definitions of Backwell and Marsh. See
+          definitions of Backwell and Marsh. More information can be found
           <a
             href="https://europepmc.org/article/MED/35395171"
             style="text-decoration: none"
             target="_blank"
-            >this link</a
+            >here</a
           >.
         </h6>
         <div class="pt-1 table-responsive-xl">
