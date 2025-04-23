@@ -126,15 +126,19 @@ export default {
                     </td>
                     <td style="width: 55%">
                       <div class="d-flex justify-content-between">
-                        {{ item.disease_name }}
-                        <button
-                          :id="`disease-name-use-btn-${index}`"
-                          class="btn btn-outline-primary py-0 px-1"
-                          @click="useDiseaseName(item)"
-                          type="button"
-                        >
-                          Use name
-                        </button>
+                        <div class="flex-grow-1 me-1">
+                          {{ item.disease_name }}
+                        </div>
+                        <div class="flex-shrink-0">
+                          <button
+                            :id="`disease-name-use-btn-${index}`"
+                            class="btn btn-outline-primary py-0 px-1"
+                            @click="useDiseaseName(item)"
+                            type="button"
+                          >
+                            Use name
+                          </button>
+                        </div>
                       </div>
                     </td>
                     <td style="width: 20%">
