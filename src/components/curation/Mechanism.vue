@@ -281,7 +281,7 @@ export default {
                       <th style="width: 60%">
                         Categorisation
                         <a
-                          href="/gene2phenotype/about/terminology#mechanism-synopsis"
+                          href="/gene2phenotype/about/terminology#mechanism-synopsis-section"
                           style="text-decoration: none"
                           target="_blank"
                         >

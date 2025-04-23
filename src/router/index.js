@@ -170,9 +170,19 @@ const router = createRouter({
       component: NotFoundView,
     },
   ],
-  scrollBehavior() {
-    // scroll to top
-    return { top: 0 };
+  scrollBehavior(to, _, savedPosition) {
+    // custom scroll behavior
+    if (to.hash) {
+      return {
+        el: hash,
+        bahaviour: "smooth",
+      };
+    } else if (savedPosition) {
+      return savedPosition;
+    } else {
+      // scroll to top
+      return { top: 0 };
+    }
   },
 });
 
