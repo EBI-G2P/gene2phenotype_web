@@ -18,6 +18,7 @@ export default {
   display: inline-block;
   color: #0d6efd;
   white-space: normal;
+  font-size: 16px;
 }
 
 .custom-tooltip .custom-tooltip-text {
