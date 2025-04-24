@@ -125,41 +125,55 @@ export default {
     </div>
     <div v-if="locusGeneDiseaseData">
       <div class="d-flex justify-content-between">
-        <div>
+        <div class="flex-grow-1 me-1">
           <h2 v-if="locusGeneDiseaseData.disease?.name">
             {{ locusGeneDiseaseData.disease.name }}
+            <span
+              v-if="locusGeneDiseaseData.confidence"
+              class="badge text-white fs-6"
+              :style="{
+                backgroundColor:
+                  CONFIDENCE_COLOR_MAP[
+                    locusGeneDiseaseData.confidence.toLowerCase()
+                  ],
+              }"
+            >
+              {{ locusGeneDiseaseData.confidence }}
+            </span>
           </h2>
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
         </div>
-        <button
-          class="btn btn-outline-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#add-panel-modal"
-          v-if="
-            !isPanelDataLoading &&
-            userPanels?.length > 0 &&
-            isAuthenticated &&
-            !isRecordPartOfUserPanels
-          "
-        >
-          <i class="bi bi-plus-circle-fill"></i> Add to another panel
-        </button>
-        <button
-          class="btn btn-outline-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#update-record-modal"
-          v-if="
-            !isPanelDataLoading && isAuthenticated && isRecordPartOfUserPanels
-          "
-        >
-          <i class="bi bi-pencil-square"></i> Update record
-        </button>
-        <div v-if="isPanelDataLoading && isAuthenticated" class="my-auto">
-          <span
-            class="spinner-border spinner-border-sm text-primary"
-            role="status"
-            aria-hidden="true"
-          ></span>
+        <div class="flex-shrink-0">
+          <button
+            class="btn btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#add-panel-modal"
+            v-if="
+              !isPanelDataLoading &&
+              userPanels?.length > 0 &&
+              isAuthenticated &&
+              !isRecordPartOfUserPanels
+            "
+          >
+            <i class="bi bi-plus-circle-fill"></i> Add to another panel
+          </button>
+          <button
+            class="btn btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#update-record-modal"
+            v-if="
+              !isPanelDataLoading && isAuthenticated && isRecordPartOfUserPanels
+            "
+          >
+            <i class="bi bi-pencil-square"></i> Update record
+          </button>
+          <div v-if="isPanelDataLoading && isAuthenticated" class="my-auto">
+            <span
+              class="spinner-border spinner-border-sm text-primary"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </div>
         </div>
       </div>
       <table class="table table-borderless my-3">
@@ -174,18 +188,6 @@ export default {
             <td class="w-75">
               <p v-if="locusGeneDiseaseData.genotype">
                 {{ locusGeneDiseaseData.genotype }}
-                <span
-                  v-if="locusGeneDiseaseData.confidence"
-                  class="badge text-white fs-6 ms-2"
-                  :style="{
-                    backgroundColor:
-                      CONFIDENCE_COLOR_MAP[
-                        locusGeneDiseaseData.confidence.toLowerCase()
-                      ],
-                  }"
-                >
-                  {{ locusGeneDiseaseData.confidence }}
-                </span>
               </p>
               <p v-else class="text-muted">Not Available</p>
             </td>
@@ -193,7 +195,7 @@ export default {
           <tr>
             <td class="w-25 text-end">
               <h5>
-                Cross Cutting Modifier(s)
+                Cross Cutting Modifiers
                 <ToolTip :toolTipText="HELP_TEXT.CROSS_CUTTING_MODIFIER" />
               </h5>
             </td>
@@ -210,7 +212,7 @@ export default {
           </tr>
           <tr class="align-middle">
             <td class="w-25 text-end">
-              <h5>Panel(s)</h5>
+              <h5>Panels</h5>
             </td>
             <td class="w-75">
               <span v-if="locusGeneDiseaseData.panels?.length > 0">
@@ -245,7 +247,7 @@ export default {
           <tr>
             <td class="w-25 text-end">
               <h6>
-                Variant Type(s)
+                Variant Types
                 <ToolTip :toolTipText="HELP_TEXT.VARIANT_TYPE" />
               </h6>
             </td>
@@ -284,7 +286,7 @@ export default {
                             <th>Type</th>
                             <th>Inheritance</th>
                             <th>Publications</th>
-                            <th>Comments</th>
+                            <th v-if="isAuthenticated">Comments</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -346,7 +348,7 @@ export default {
                                 </span>
                               </span>
                             </td>
-                            <td class="ps-0">
+                            <td v-if="isAuthenticated" class="ps-0">
                               <ul v-if="item.comments?.length > 0" class="mb-0">
                                 <li
                                   v-for="commentItem in item.comments"
@@ -456,7 +458,7 @@ export default {
           <tr>
             <td class="w-25 text-end">
               <h6>
-                Variant Consequence(s)
+                Variant Consequences
                 <ToolTip :toolTipText="HELP_TEXT.VARIANT_CONSEQUENCE" />
               </h6>
             </td>
@@ -709,7 +711,7 @@ export default {
           <tr>
             <td class="w-25 text-end">
               <h5>
-                Phenotypic Feature(s)
+                Phenotypic Features
                 <ToolTip :toolTipText="HELP_TEXT.PHENOTYPIC_FEATURE" />
               </h5>
             </td>
@@ -908,7 +910,7 @@ export default {
                             <th>PMID</th>
                             <th>Title</th>
                             <th>Individuals</th>
-                            <th>Comment</th>
+                            <th v-if="isAuthenticated">Comment</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -949,7 +951,7 @@ export default {
                                 {{ item.publication.families[0].consanguinity }}
                               </span>
                             </td>
-                            <td>
+                            <td v-if="isAuthenticated">
                               <span
                                 v-if="item.publication?.comments?.length > 0"
                               >
@@ -993,7 +995,7 @@ export default {
           </tr>
           <tr class="align-middle">
             <td class="w-25 text-end">
-              <h6>Synonym(s)</h6>
+              <h6>Synonyms</h6>
             </td>
             <td>
               <p v-if="locusGeneDiseaseData.locus?.synonyms?.length > 0">
@@ -1050,10 +1052,17 @@ export default {
             </td>
             <td class="w-75">
               <table class="table table-bordered mb-0">
+                <thead>
+                  <tr>
+                    <th>DECIPHER</th>
+                    <th>OMIM</th>
+                    <th>Ensembl ID</th>
+                    <th>HGNC ID</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr>
                     <td>
-                      DECIPHER:
                       <a
                         :href="`https://www.deciphergenomics.org/gene/${locusGeneDiseaseData.locus?.gene_symbol}`"
                         style="text-decoration: none"
@@ -1065,7 +1074,6 @@ export default {
                       <p v-else class="text-muted">Not Available</p>
                     </td>
                     <td>
-                      OMIM:
                       <a
                         :href="`https://www.omim.org/entry/${locusGeneDiseaseData.locus?.ids?.OMIM}`"
                         style="text-decoration: none"
@@ -1077,7 +1085,6 @@ export default {
                       <p v-else class="text-muted">Not Available</p>
                     </td>
                     <td>
-                      Ensembl ID:
                       <a
                         :href="`https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=${locusGeneDiseaseData.locus?.ids?.Ensembl}`"
                         style="text-decoration: none"
@@ -1089,7 +1096,6 @@ export default {
                       <p v-else class="text-muted">Not Available</p>
                     </td>
                     <td>
-                      HGNC ID:
                       <a
                         :href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${locusGeneDiseaseData.locus?.ids?.HGNC}`"
                         style="text-decoration: none"
@@ -1129,7 +1135,7 @@ export default {
           <tr>
             <td class="w-25 text-end">
               <h6>
-                Cross Reference(s)
+                Cross References
                 <ToolTip :toolTipText="HELP_TEXT.CROSS_REFERENCES" />
               </h6>
             </td>
@@ -1217,7 +1223,7 @@ export default {
           </tr>
           <tr v-if="locusGeneDiseaseData.comments?.length > 0">
             <td class="w-25 text-end">
-              <h5>Comment(s)</h5>
+              <h5>Comments</h5>
             </td>
             <td class="w-75">
               <div class="accordion accordion-flush" id="accordionComments">
