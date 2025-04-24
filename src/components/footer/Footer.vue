@@ -61,7 +61,7 @@
           <ul class="nav flex-column">
             <li class="nav-item mb-2">
               <a
-                href="https://www.ebi.ac.uk/data-protection/privacy-notice/gene2phenotype-helpdesk"
+                href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/privacy_notices/"
                 target="_blank"
                 class="nav-link p-0 text-body-secondary"
               >
