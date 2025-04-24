@@ -174,7 +174,7 @@ const router = createRouter({
     // custom scroll behavior
     if (to.hash) {
       return {
-        el: hash,
+        el: to.hash,
         bahaviour: "smooth",
       };
     } else if (savedPosition) {
