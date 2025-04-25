@@ -52,13 +52,13 @@ export default {
         url = `${SEARCH_URL}?`;
         const { query, type, panel } = this.$route.query;
         let queryParamsArr = [];
-        if (this.$route.query.query) {
+        if (query) {
           queryParamsArr.push(`query=${query}`);
         }
-        if (this.$route.query.type) {
+        if (type) {
           queryParamsArr.push(`type=${type}`);
         }
-        if (this.$route.query.panel) {
+        if (panel) {
           queryParamsArr.push(`panel=${panel}`);
         }
         url += queryParamsArr.join("&");
@@ -78,8 +78,15 @@ export default {
               error?.response?.data?.error,
               "No results found. Please try another search."
             );
-            // for given search query, if no search results are found then call gene api to check if it is a valid gene
-            this.fetchGeneData(searchDataNotFoundMsg);
+            const queryType = this.$route.query?.type;
+            if (!queryType || queryType === "gene") {
+              // if it is a general query or query for type "gene" and no search results are found then call gene api to check if it is a valid gene
+              this.fetchGeneData(searchDataNotFoundMsg);
+            } else {
+              // else display error message
+              this.isDataLoading = false;
+              this.searchDataNotFoundMsg = searchDataNotFoundMsg;
+            }
           } else {
             this.isDataLoading = false;
             this.errorMsg = fetchAndLogGeneralErrorMsg(
