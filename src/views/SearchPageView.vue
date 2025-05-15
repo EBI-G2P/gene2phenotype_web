@@ -196,14 +196,14 @@ export default {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in searchData.results" :key="item.id">
+            <tr v-for="item in searchData.results" :key="item.stable_id">
               <td>
                 <router-link
-                  :to="`/lgd/${item.id}`"
-                  v-if="item.id"
+                  :to="`/lgd/${item.stable_id}`"
+                  v-if="item.stable_id"
                   style="text-decoration: none"
                 >
-                  {{ item.id }}
+                  {{ item.stable_id }}
                 </router-link>
               </td>
               <td>
