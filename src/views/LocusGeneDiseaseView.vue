@@ -10,6 +10,7 @@ import {
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import LocusGeneDiseaseDisplay from "../components/view-record/LocusGeneDiseaseDisplay.vue";
+import html2pdf from 'html2pdf.js';
 
 export default {
   data() {
@@ -91,6 +92,12 @@ export default {
     refreshPage() {
       this.$router.go(); // refresh current page
     },
+    exportToPDF() {
+      html2pdf(document.getElementById("lgd-data"), {
+        margin: 1,
+        filename: `${this.stableId}.pdf`  // Use backticks here
+      });
+    }
   },
 };
 </script>
@@ -111,7 +118,10 @@ export default {
         {{ errorMsg }}
       </div>
     </div>
-    <div v-if="locusGeneDiseaseData">
+    <div id="lgd-data" v-if="locusGeneDiseaseData">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <button @click="exportToPDF">Export to PDF</button>
+      </div>
       <LocusGeneDiseaseDisplay
         :isRecordPartOfUserPanels="isRecordPartOfUserPanels"
         :locusGeneDiseaseData="locusGeneDiseaseData"
