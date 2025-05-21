@@ -200,7 +200,7 @@ export default {
               <input
                 class="form-check-input"
                 type="radio"
-                value="g2p_id"
+                value="stable_id"
                 v-model="selectedSearchType"
                 id="header-filter-input-type-g2p-id"
               />
