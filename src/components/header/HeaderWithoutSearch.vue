@@ -135,6 +135,11 @@ export default {
               </router-link>
             </li>
             <li>
+              <router-link to="/g2p-api-info" class="dropdown-item">
+                G2P API
+              </router-link>
+            </li>
+            <li>
               <router-link to="/reference-data" class="dropdown-item">
                 Reference data
               </router-link>
