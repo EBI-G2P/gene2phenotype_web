@@ -31,7 +31,7 @@
         href="/gene2phenotype/about/terminology"
         target="_blank"
         style="text-decoration: none"
-        >the terminology docs</a
+        >the terminology documentation</a
       >
       for descriptions of terminology used.
     </p>
