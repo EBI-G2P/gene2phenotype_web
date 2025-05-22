@@ -26,6 +26,7 @@ import ChangePasswordView from "../views/ChangePasswordView.vue";
 import ResetPasswordView from "../views/ResetPasswordView.vue";
 import VerifyEmailView from "../views/VerifyEmailView.vue";
 import ReferenceDataView from "../views/ReferenceDataView.vue";
+import ApiInformationView from "../views/ApiInformationView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -162,6 +163,11 @@ const router = createRouter({
       path: "/reference-data",
       name: "reference-data",
       component: ReferenceDataView,
+    },
+    {
+      path: "/g2p-api-info",
+      name: "g2p-api-info",
+      component: ApiInformationView,
     },
     // 404 page route, should always be at end of routes list
     {
