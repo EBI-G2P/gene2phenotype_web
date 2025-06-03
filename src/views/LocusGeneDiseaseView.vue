@@ -10,6 +10,8 @@ import {
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import LocusGeneDiseaseDisplay from "../components/view-record/LocusGeneDiseaseDisplay.vue";
+// import jsPDF from 'jspdf';
+// import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
 
 export default {
@@ -93,9 +95,32 @@ export default {
       this.$router.go(); // refresh current page
     },
     exportToPDF() {
-      html2pdf(document.getElementById("lgd-data"), {
-        margin: 1,
-        filename: `${this.stableId}.pdf`  // Use backticks here
+      const element = document.getElementById("lgd-data");
+
+      // Add a temporary CSS class to tweak layout for export if needed
+      element.classList.add("pdf-export");
+
+      const opt = {
+        margin:       0.5,  // in inches
+        filename:     `${this.stableId}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  {
+          scale: 2,          // improves resolution
+          useCORS: true      // enables loading external assets like Bootstrap
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'letter',
+          orientation: 'portrait'
+        },
+        pagebreak: {
+          mode: ['avoid-all', 'css', 'legacy']  // avoid cutting elements
+        }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        // Clean up the temporary class after export
+        element.classList.remove("pdf-export");
       });
     }
   },
