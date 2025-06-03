@@ -143,7 +143,9 @@ export default {
     </div>
     <div id="lgd-data" v-if="locusGeneDiseaseData">
       <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-        <button @click="exportToPDF">Export to PDF</button>
+        <button @click="exportToPDF" class="btn btn-primary">
+          <i class="bi bi-file-earmark-pdf-fill me-2"></i> Export to PDF
+        </button>
       </div>
       <LocusGeneDiseaseDisplay
         :isRecordPartOfUserPanels="isRecordPartOfUserPanels"
