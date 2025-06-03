@@ -10,8 +10,6 @@ import {
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import LocusGeneDiseaseDisplay from "../components/view-record/LocusGeneDiseaseDisplay.vue";
-// import jsPDF from 'jspdf';
-// import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
 
 export default {
@@ -99,22 +97,19 @@ export default {
       const collapsibles = element.querySelectorAll(".collapse");
       collapsibles.forEach((el) => el.classList.add("show"));
 
-      const toggleButtons = element.querySelectorAll('[data-bs-toggle="collapse"]');
-      toggleButtons.forEach((btn) => btn.setAttribute("aria-expanded", "true"));
-
       element.classList.add("pdf-export");
 
       const opt = {
         margin: 0.5,
-        filename: `${this.stableId}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
+        image: { type: 'png', quality: 0.98 },
         html2canvas: {
-          scale: 2,
+          scale: 1,
           useCORS: true
         },
         jsPDF: {
           unit: 'in',
-          format: 'letter',
+          format: 'a4',
           orientation: 'portrait'
         },
         pagebreak: {
