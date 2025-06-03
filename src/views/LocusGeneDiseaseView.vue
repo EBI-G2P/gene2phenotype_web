@@ -97,16 +97,24 @@ export default {
     exportToPDF() {
       const element = document.getElementById("lgd-data");
 
+      // Expand all collapsible sections
+      const collapsibles = element.querySelectorAll(".collapse");
+      collapsibles.forEach((el) => el.classList.add("show"));
+
+      // Optional: If you're using buttons to control collapse, set aria-expanded to true
+      const toggleButtons = element.querySelectorAll('[data-bs-toggle="collapse"]');
+      toggleButtons.forEach((btn) => btn.setAttribute("aria-expanded", "true"));
+
       // Add a temporary CSS class to tweak layout for export if needed
       element.classList.add("pdf-export");
 
       const opt = {
-        margin:       0.5,  // in inches
-        filename:     `${this.stableId}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  {
-          scale: 2,          // improves resolution
-          useCORS: true      // enables loading external assets like Bootstrap
+        margin: 0.5,
+        filename: `${this.stableId}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true
         },
         jsPDF: {
           unit: 'in',
@@ -114,12 +122,12 @@ export default {
           orientation: 'portrait'
         },
         pagebreak: {
-          mode: ['avoid-all', 'css', 'legacy']  // avoid cutting elements
+          mode: ['avoid-all', 'css', 'legacy']
         }
       };
 
       html2pdf().set(opt).from(element).save().then(() => {
-        // Clean up the temporary class after export
+        // Clean up temporary class
         element.classList.remove("pdf-export");
       });
     }
