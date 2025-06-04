@@ -10,6 +10,7 @@ import {
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import LocusGeneDiseaseDisplay from "../components/view-record/LocusGeneDiseaseDisplay.vue";
+import html2pdf from 'html2pdf.js';
 
 export default {
   data() {
@@ -91,6 +92,35 @@ export default {
     refreshPage() {
       this.$router.go(); // refresh current page
     },
+    exportToPDF() {
+      const element = document.getElementById("lgd-data");
+      const collapsibles = element.querySelectorAll(".collapse");
+      collapsibles.forEach((el) => el.classList.add("show"));
+
+      element.classList.add("pdf-export");
+
+      const opt = {
+        margin: 0.5,
+        filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
+        image: { type: 'png', quality: 0.98 },
+        html2canvas: {
+          scale: 1,
+          useCORS: true
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'a4',
+          orientation: 'portrait'
+        },
+        pagebreak: {
+          mode: ['avoid-all', 'css', 'legacy']
+        }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        element.classList.remove("pdf-export");
+      });
+    }
   },
 };
 </script>
@@ -111,7 +141,12 @@ export default {
         {{ errorMsg }}
       </div>
     </div>
-    <div v-if="locusGeneDiseaseData">
+    <div id="lgd-data" v-if="locusGeneDiseaseData">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <button @click="exportToPDF" class="btn btn-primary">
+          <i class="bi bi-file-earmark-pdf-fill me-2"></i> Export to PDF
+        </button>
+      </div>
       <LocusGeneDiseaseDisplay
         :isRecordPartOfUserPanels="isRecordPartOfUserPanels"
         :locusGeneDiseaseData="locusGeneDiseaseData"
