@@ -107,14 +107,18 @@ export default {
                             {{ item.publication.families[0].consanguinity }}
                           </span>
                         </td>
-                        <td>
-                          <span v-if="item.publication?.comments?.length > 0">
-                            {{
-                              item.publication.comments[
-                                item.publication.comments.length - 1
-                              ].comment
-                            }}
-                          </span>
+                        <td class="ps-0">
+                          <ul
+                            v-if="item.publication?.comments?.length > 0"
+                            class="mb-0"
+                          >
+                            <li
+                              v-for="commentItem in item.publication.comments"
+                              :key="commentItem.comment"
+                            >
+                              {{ commentItem.comment }} ({{ commentItem.date }})
+                            </li>
+                          </ul>
                         </td>
                       </tr>
                     </tbody>
