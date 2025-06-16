@@ -125,11 +125,11 @@ export default {
                 <table class="table table-bordered">
                   <tbody>
                     <tr>
-                      <td width="60%">
+                      <td style="width: 60%">
                         Gain of Function (pGOF)
                         <ToolTip :toolTipText="HELP_TEXT.GAIN_OF_FUNCTION" />
                       </td>
-                      <td width="40%">
+                      <td style="width: 40%">
                         <span
                           v-if="
                             mechanismGeneStats?.gain_of_function_mp >
@@ -152,11 +152,11 @@ export default {
                       </td>
                     </tr>
                     <tr>
-                      <td width="60%">
+                      <td style="width: 60%">
                         Loss of Function (pLOF)
                         <ToolTip :toolTipText="HELP_TEXT.LOSS_OF_FUNCTION" />
                       </td>
-                      <td width="40%">
+                      <td style="width: 40%">
                         <span
                           v-if="
                             mechanismGeneStats?.loss_of_function_mp >
@@ -179,11 +179,11 @@ export default {
                       </td>
                     </tr>
                     <tr>
-                      <td width="60%">
+                      <td style="width: 60%">
                         Dominant Negative (pDN)
                         <ToolTip :toolTipText="HELP_TEXT.DOMINANT_NEGATIVE" />
                       </td>
-                      <td width="40%">
+                      <td style="width: 40%">
                         <span
                           v-if="
                             mechanismGeneStats?.dominant_negative_mp >
