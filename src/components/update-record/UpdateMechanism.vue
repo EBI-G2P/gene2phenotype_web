@@ -92,41 +92,38 @@ export default {
     prepareInputForDataSubmission() {
       let preparedInput = {};
 
-      // IF mechanismSupport is evidence THEN process mechanism_evidence
-      if (this.mechanismSupport === "evidence") {
-        // convert mechanismEvidence from object to array of objects and include evidence that have non empty description or non empty evidence types
-        let mechanismEvidenceArray = [];
-        for (const [publicationPmid, valueObj] of Object.entries(
-          this.mechanismEvidence
+      // convert mechanismEvidence from object to array of objects and include evidence that have non empty description or non empty evidence types
+      let mechanismEvidenceArray = [];
+      for (const [publicationPmid, valueObj] of Object.entries(
+        this.mechanismEvidence
+      )) {
+        let evidenceTypesArray = [];
+        for (const [primaryType, secondaryTypesArray] of Object.entries(
+          valueObj.evidence_types
         )) {
-          let evidenceTypesArray = [];
-          for (const [primaryType, secondaryTypesArray] of Object.entries(
-            valueObj.evidence_types
-          )) {
-            if (secondaryTypesArray.length > 0) {
-              let evidenceTypeObj = {
-                primary_type: primaryType,
-                secondary_type: secondaryTypesArray,
-              };
-              evidenceTypesArray.push(evidenceTypeObj);
-            }
-          }
-          if (
-            valueObj.description.trim() !== "" ||
-            evidenceTypesArray.length > 0
-          ) {
-            let mechanismEvidenceObj = {
-              pmid: publicationPmid,
-              description: valueObj.description.trim(), // trim description value
-              evidence_types: evidenceTypesArray,
+          if (secondaryTypesArray.length > 0) {
+            let evidenceTypeObj = {
+              primary_type: primaryType,
+              secondary_type: secondaryTypesArray,
             };
-            mechanismEvidenceArray.push(mechanismEvidenceObj);
+            evidenceTypesArray.push(evidenceTypeObj);
           }
         }
-        // IF mechanismEvidenceArray is not empty THEN include it in preparedInput object
-        if (mechanismEvidenceArray.length > 0) {
-          preparedInput.mechanism_evidence = mechanismEvidenceArray;
+        if (
+          valueObj.description.trim() !== "" ||
+          evidenceTypesArray.length > 0
+        ) {
+          let mechanismEvidenceObj = {
+            pmid: publicationPmid,
+            description: valueObj.description.trim(), // trim description value
+            evidence_types: evidenceTypesArray,
+          };
+          mechanismEvidenceArray.push(mechanismEvidenceObj);
         }
+      }
+      // IF mechanismEvidenceArray is not empty THEN include it in preparedInput object
+      if (mechanismEvidenceArray.length > 0) {
+        preparedInput.mechanism_evidence = mechanismEvidenceArray;
       }
 
       // IF mechanism or mechanismSupport is updated THEN include molecular_mechanism in preparedInput object
@@ -179,20 +176,7 @@ export default {
     },
     isDisplayEvidenceForm() {
       return (
-        this.mechanismEvidence &&
-        Object.keys(this.mechanismEvidence).length > 0 &&
-        this.mechanismSupport === "evidence" &&
-        this.currentMechanism?.mechanism_support === "inferred"
-      );
-    },
-    isDisplayPublicationWarning() {
-      return (
-        !(
-          this.mechanismEvidence &&
-          Object.keys(this.mechanismEvidence).length > 0
-        ) &&
-        this.mechanismSupport === "evidence" &&
-        this.currentMechanism?.mechanism_support === "inferred"
+        this.mechanismEvidence && Object.keys(this.mechanismEvidence).length > 0
       );
     },
     isDisplayCurrentCategorisation() {
@@ -580,7 +564,7 @@ export default {
                   </div>
                 </div>
               </div>
-              <p v-if="isDisplayPublicationWarning">
+              <p v-else>
                 <i class="bi bi-info-circle"></i> Please add atleast 1
                 Publication to provide information on functional studies.
               </p>
@@ -588,7 +572,6 @@ export default {
                 type="button"
                 class="btn btn-primary"
                 @click="updateMechanism"
-                v-else
               >
                 <i class="bi bi-pencil-square"></i> Update mechanism
               </button>
