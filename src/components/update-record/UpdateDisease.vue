@@ -1,6 +1,10 @@
 <script>
-import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import {
+  fetchAndLogApiResponseErrorMsg,
+  fetchAndLogGeneralErrorMsg,
+} from "../../utility/ErrorUtility.js";
+import {
+  CROSS_REFERENCE_URL,
   GENE_DISEASE_URL,
   UPDATE_CROSS_REFERENCE_URL,
 } from "../../utility/UrlConstants.js";
@@ -31,12 +35,16 @@ export default {
       crossReferences: this.currentCrossReferences,
       crossReferenceToDelete: null,
       selectedCrossReferenceIds: [],
-      geneDiseaseErrorMsg: null,
       // allSuggestedCrossReferences keeps track of all suggested cross references provided by API
       allSuggestedCrossReferences: [],
       // filteredSuggestedCrossReferences keeps track of filtered suggested cross references based on user actions
       filteredSuggestedCrossReferences: [],
+      fetchedInputCrossReferences: [],
+      inputCrossReferencesStr: "",
+      isInputCrossReferencesStrValid: true,
+      inputCrossReferencesStrInvalidMsg: null,
       isGeneDiseaseDataLoading: false,
+      geneDiseaseErrorMsg: null,
       addApiCallErrorMsg: null,
       isAddApiCallLoading: false,
       isAddApiCallSuccess: false,
@@ -45,6 +53,12 @@ export default {
       isDeleteApiCallLoading: false,
       isDeleteApiCallSuccess: false,
       deleteApiCallSuccessMsg: null,
+      isFetchInputCrossReferencesApiCallLoading: false,
+      fetchInputCrossReferencesApiCallErrorMsg: null,
+      addInputCrossReferencesApiCallErrorMsg: null,
+      isAddInputCrossReferencesApiCallLoading: false,
+      isAddInputCrossReferencesApiCallSuccess: false,
+      addInputCrossReferencesApiCallSuccessMsg: null,
     };
   },
   components: {
@@ -121,6 +135,10 @@ export default {
       this.deleteApiCallErrorMsg = null;
       this.deleteApiCallSuccessMsg = null;
       this.isDeleteApiCallSuccess = false;
+      this.fetchInputCrossReferencesApiCallErrorMsg = null;
+      this.addInputCrossReferencesApiCallErrorMsg = null;
+      this.addInputCrossReferencesApiCallSuccessMsg = null;
+      this.isAddInputCrossReferencesApiCallSuccess = false;
     },
     addSelectedCrossReferences() {
       this.resetApiCallVariables();
@@ -238,6 +256,200 @@ export default {
         (item) => !existingCrossReferenceIds.includes(item.accession)
       );
     },
+    validateInputCrossReferences() {
+      // check if inputCrossReferencesStr is empty string
+      if (this.inputCrossReferencesStr.trim() === "") {
+        this.inputCrossReferencesStrInvalidMsg = "Input is empty";
+        return false;
+      }
+
+      // convert inputCrossReferencesStr string to list of pmids
+      // Eg: "1;2;3;" => ["1","2","3"]
+      const inputCrossReferencesList = this.inputCrossReferencesStr
+        .trim()
+        .split(";")
+        .filter((item) => item);
+
+      // check for duplicate input cross references
+      const duplicateCrossReferencesList = inputCrossReferencesList.filter(
+        (item, index) => inputCrossReferencesList.indexOf(item) !== index
+      );
+      if (duplicateCrossReferencesList.length > 0) {
+        this.inputCrossReferencesStrInvalidMsg = `Duplicate terms(s): ${duplicateCrossReferencesList.join(
+          ", "
+        )}`;
+        return false;
+      }
+
+      // check if any input cross reference exists in fetched cross references
+      const fetchedInputCrossReferencesAccessionList =
+        this.fetchedInputCrossReferences.map((item) =>
+          item.accession.toString()
+        );
+      const crossReferencesExistingFetchedList =
+        inputCrossReferencesList.filter((item) =>
+          fetchedInputCrossReferencesAccessionList.includes(item)
+        );
+      if (crossReferencesExistingFetchedList.length > 0) {
+        this.inputCrossReferencesStrInvalidMsg = `Term(s) already fetched below: ${crossReferencesExistingFetchedList.join(
+          ", "
+        )}`;
+        return false;
+      }
+
+      // check if any input cross reference exists in current cross references
+      const currentCrossReferencesList = this.crossReferences.map((item) =>
+        item.accession.toString()
+      );
+      const crossReferencesAlreadyExistingList =
+        inputCrossReferencesList.filter((item) =>
+          currentCrossReferencesList.includes(item)
+        );
+      if (crossReferencesAlreadyExistingList.length > 0) {
+        this.inputCrossReferencesStrInvalidMsg = `Term(s) already exist(s): ${crossReferencesAlreadyExistingList.join(
+          ", "
+        )}`;
+        return false;
+      }
+
+      // check if any input cross reference exists in suggested cross references
+      const suggestedCrossReferencesList =
+        this.filteredSuggestedCrossReferences.map((item) =>
+          item.accession.toString()
+        );
+      const crossReferencesAlreadySuggestedList =
+        inputCrossReferencesList.filter((item) =>
+          suggestedCrossReferencesList.includes(item)
+        );
+      if (crossReferencesAlreadySuggestedList.length > 0) {
+        this.inputCrossReferencesStrInvalidMsg = `Term(s) already suggested above: ${crossReferencesAlreadySuggestedList.join(
+          ", "
+        )}`;
+        return false;
+      }
+
+      // if inputCrossReferencesStr passed all above checks, then it is valid
+      return true;
+    },
+    fetchInputCrossReferences() {
+      // if inputCrossReferencesStr is invalid then set isInputCrossReferencesStrValid to false and dont continue further
+      if (!this.validateInputCrossReferences()) {
+        this.isInputCrossReferencesStrValid = false;
+        return;
+      }
+      // if inputCrossReferencesStr is valid then continue further
+      this.isInputCrossReferencesStrValid = true;
+      this.inputCrossReferencesStrInvalidMsg = "";
+      this.resetApiCallVariables();
+      this.isFetchInputCrossReferencesApiCallLoading = true;
+      const crossReferencesListStr = this.inputCrossReferencesStr
+        .trim()
+        .split(";")
+        .filter((item) => item)
+        .join(",");
+      api
+        .get(
+          CROSS_REFERENCE_URL.replace(
+            ":crossreferences",
+            crossReferencesListStr
+          )
+        )
+        .then((response) => {
+          if (response.data?.results) {
+            /*
+              Transform API response format to required format:
+              API response format:
+              [
+                {
+                  identifier: "...",
+                  source: "...",
+                  disease: "..."
+                },
+              ]
+              Required format:
+              [
+                {
+                  accession: "...",
+                  source: "...",
+                  term: "...",
+                  description: "...",
+                }
+              ]
+            */
+            let crossReferencesResponse = [];
+            response.data.results.forEach((item) => {
+              crossReferencesResponse.push({
+                accession: item.identifier,
+                source: item.source,
+                term: item.disease,
+                description: item.disease,
+              });
+            });
+            this.fetchedInputCrossReferences.push(...crossReferencesResponse);
+            // clear inputCrossReferencesStr
+            this.inputCrossReferencesStr = "";
+          }
+        })
+        .catch((error) => {
+          if (error.response?.status === 404) {
+            this.fetchInputCrossReferencesApiCallErrorMsg =
+              fetchAndLogApiResponseErrorMsg(
+                error,
+                error?.response?.data?.error,
+                "Unable to fetch cross references data. Please try again later.",
+                "Unable to fetch cross references data."
+              );
+          } else {
+            this.fetchInputCrossReferencesApiCallErrorMsg =
+              fetchAndLogGeneralErrorMsg(
+                error,
+                "Unable to fetch cross references data. Please try again later."
+              );
+          }
+        })
+        .finally(() => {
+          this.isFetchInputCrossReferencesApiCallLoading = false;
+        });
+    },
+    addInputCrossReferences() {
+      this.resetApiCallVariables();
+      this.isAddInputCrossReferencesApiCallLoading = true;
+
+      const requestBody = {
+        disease_ontologies: this.fetchedInputCrossReferences,
+      };
+      api
+        .post(
+          UPDATE_CROSS_REFERENCE_URL.replace(":diseasename", this.diseaseName),
+          requestBody
+        )
+        .then((response) => {
+          this.isAddInputCrossReferencesApiCallSuccess = true;
+          this.addInputCrossReferencesApiCallSuccessMsg = response.data.message;
+          // Add the fetchedInputCrossReferences to crossReferences list
+          this.crossReferences.push(...this.fetchedInputCrossReferences);
+          // Clear fetchedInputCrossReferences list
+          this.fetchedInputCrossReferences = [];
+        })
+        .catch((error) => {
+          this.addInputCrossReferencesApiCallErrorMsg =
+            fetchAndLogApiResponseErrorMsg(
+              error,
+              error?.response?.data?.error,
+              "Unable to add cross references. Please try again later.",
+              "Unable to add cross references."
+            );
+        })
+        .finally(() => {
+          this.isAddInputCrossReferencesApiCallLoading = false;
+        });
+    },
+    removeInputCrossReference(accessionToRemove) {
+      this.fetchedInputCrossReferences =
+        this.fetchedInputCrossReferences.filter(
+          (item) => item.accession !== accessionToRemove
+        );
+    },
   },
 };
 </script>
@@ -281,7 +493,9 @@ export default {
               v-if="
                 isGeneDiseaseDataLoading ||
                 isAddApiCallLoading ||
-                isDeleteApiCallLoading
+                isDeleteApiCallLoading ||
+                isFetchInputCrossReferencesApiCallLoading ||
+                isAddInputCrossReferencesApiCallLoading
               "
               style="margin-top: 122px; margin-bottom: 122px"
             >
@@ -445,25 +659,157 @@ export default {
                 <i class="bi bi-info-circle"></i> No Cross Reference is
                 available to add.
               </p>
-            </div>
-            <div
-              class="alert alert-danger mt-3"
-              role="alert"
-              v-if="addApiCallErrorMsg"
-            >
-              <div>
-                <i class="bi bi-exclamation-circle-fill"></i>
-                {{ addApiCallErrorMsg }}
+              <div
+                class="alert alert-danger mt-3"
+                role="alert"
+                v-if="addApiCallErrorMsg"
+              >
+                <div>
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  {{ addApiCallErrorMsg }}
+                </div>
               </div>
-            </div>
-            <div
-              class="alert alert-success mt-3"
-              role="alert"
-              v-if="isAddApiCallSuccess"
-            >
-              <div>
-                <i class="bi bi-check-circle-fill"></i>
-                {{ addApiCallSuccessMsg }}
+              <div
+                class="alert alert-success mt-3"
+                role="alert"
+                v-if="isAddApiCallSuccess"
+              >
+                <div>
+                  <i class="bi bi-check-circle-fill"></i>
+                  {{ addApiCallSuccessMsg }}
+                </div>
+              </div>
+              <hr />
+              <h5>Add Other Mondo Term(s)</h5>
+              <div class="row g-3 py-3">
+                <div class="col-auto">
+                  <label for="cross-references-input" class="col-form-label">
+                    Mondo Term(s)
+                  </label>
+                </div>
+                <div class="col-4">
+                  <textarea
+                    :class="
+                      isInputCrossReferencesStrValid
+                        ? 'form-control'
+                        : 'form-control is-invalid'
+                    "
+                    id="cross-references-input"
+                    v-model="inputCrossReferencesStr"
+                    rows="3"
+                    aria-describedby="invalid-cross-references-input-feedback"
+                  >
+                  </textarea>
+                  <div
+                    id="invalid-cross-references-input-feedback"
+                    class="invalid-feedback"
+                  >
+                    {{ inputCrossReferencesStrInvalidMsg }}
+                  </div>
+                  <div class="form-text" id="cross-references-input-help-text">
+                    For multiple entries, separate by semicolon
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <button
+                    type="button"
+                    class="btn btn-primary mb-3"
+                    @click="fetchInputCrossReferences"
+                  >
+                    <i class="bi bi-search"></i> Search
+                  </button>
+                </div>
+              </div>
+              <div
+                class="alert alert-danger mt-3"
+                role="alert"
+                v-if="fetchInputCrossReferencesApiCallErrorMsg"
+              >
+                <div>
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  {{ fetchInputCrossReferencesApiCallErrorMsg }}
+                </div>
+              </div>
+              <div v-if="fetchedInputCrossReferences?.length > 0">
+                <p class="mb-3">
+                  <i class="bi bi-info-circle"></i> Verify the following Mondo
+                  term(s) and click <b>Add Mondo Terms</b> to add them.
+                </p>
+                <h6 class="mb-3">Fetched Mondo Term(s)</h6>
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Accession</th>
+                      <th>Term</th>
+                      <th>Source</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="item in fetchedInputCrossReferences"
+                      :key="item.accession"
+                    >
+                      <td>
+                        <a
+                          :href="`https://www.omim.org/entry/${item.accession}`"
+                          style="text-decoration: none"
+                          v-if="item.source === 'OMIM'"
+                          target="_blank"
+                        >
+                          {{ item.accession }}
+                        </a>
+                        <a
+                          :href="`https://monarchinitiative.org/${item.accession}`"
+                          style="text-decoration: none"
+                          v-else-if="item.source === 'Mondo'"
+                          target="_blank"
+                        >
+                          {{ item.accession }}
+                        </a>
+                        <span v-else>{{ item.accession }}</span>
+                      </td>
+                      <td>{{ item.term }}</td>
+                      <td>{{ item.source }}</td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger"
+                          @click="removeInputCrossReference(item.accession)"
+                        >
+                          <i class="bi bi-trash-fill"></i> Remove
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click="addInputCrossReferences"
+                >
+                  <i class="bi bi-plus-circle-fill"></i> Add Mondo Terms
+                </button>
+              </div>
+              <div
+                class="alert alert-danger mt-3"
+                role="alert"
+                v-if="addInputCrossReferencesApiCallErrorMsg"
+              >
+                <div>
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  {{ addInputCrossReferencesApiCallErrorMsg }}
+                </div>
+              </div>
+              <div
+                class="alert alert-success mt-3"
+                role="alert"
+                v-if="isAddInputCrossReferencesApiCallSuccess"
+              >
+                <div>
+                  <i class="bi bi-check-circle-fill"></i>
+                  {{ addInputCrossReferencesApiCallSuccessMsg }}
+                </div>
               </div>
             </div>
           </div>
