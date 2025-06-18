@@ -35,31 +35,15 @@ export default {
     };
   },
   computed: {
-    isDisplayPublicationWarning() {
-      return (
-        !(
-          this.mechanismEvidence &&
-          Object.keys(this.mechanismEvidence).length > 0
-        ) && this.molecularMechanismSupport === "evidence"
-      );
-    },
     isDisplayEvidenceForm() {
       return (
-        this.mechanismEvidence &&
-        Object.keys(this.mechanismEvidence).length > 0 &&
-        this.molecularMechanismSupport === "evidence"
+        this.mechanismEvidence && Object.keys(this.mechanismEvidence).length > 0
       );
     },
   },
 };
 </script>
 <template>
-  <div class="row g-3 px-3 pt-3" v-if="isDisplayPublicationWarning">
-    <p>
-      <i class="bi bi-info-circle"></i> Please enter Publication(s) to provide
-      information on functional studies.
-    </p>
-  </div>
   <div v-if="isDisplayEvidenceForm">
     <div class="row g-3 px-3 pt-3">
       <h5>Functional Studies</h5>
@@ -129,5 +113,11 @@ export default {
         </textarea>
       </div>
     </div>
+  </div>
+  <div class="row g-3 px-3 pt-3" v-else>
+    <p>
+      <i class="bi bi-info-circle"></i> Please enter Publication(s) to provide
+      information on functional studies.
+    </p>
   </div>
 </template>
