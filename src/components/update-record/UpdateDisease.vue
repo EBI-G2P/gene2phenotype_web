@@ -270,12 +270,25 @@ export default {
         .split(";")
         .filter((item) => item);
 
+      // check for format of input cross references
+      // Currently, only MONDO terms are supported, so the format must be MONDO:#######
+      // TODO: Remove this check, when OMIM terms are also supported
+      const invalidFormatCrossReferencesList = inputCrossReferencesList.filter(
+        (item) => !item.startsWith("MONDO:")
+      );
+      if (invalidFormatCrossReferencesList.length > 0) {
+        this.inputCrossReferencesStrInvalidMsg = `Invalid format for term(s): ${invalidFormatCrossReferencesList.join(
+          ", "
+        )}. Expected format MONDO:#######`;
+        return false;
+      }
+
       // check for duplicate input cross references
       const duplicateCrossReferencesList = inputCrossReferencesList.filter(
         (item, index) => inputCrossReferencesList.indexOf(item) !== index
       );
       if (duplicateCrossReferencesList.length > 0) {
-        this.inputCrossReferencesStrInvalidMsg = `Duplicate terms(s): ${duplicateCrossReferencesList.join(
+        this.inputCrossReferencesStrInvalidMsg = `Duplicate term(s): ${duplicateCrossReferencesList.join(
           ", "
         )}`;
         return false;
