@@ -9,6 +9,7 @@ export default {
     userPanels: Array,
     isPanelDataLoading: Boolean,
     isAuthenticated: Boolean,
+    exportToPDF: Function,
   },
   data() {
     return {
@@ -77,7 +78,10 @@ export default {
           </h2>
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
         </div>
-        <div class="flex-shrink-0">
+        <div class="flex-shrink-0" id="buttons">
+          <button @click="exportToPDF" class="btn btn-primary">
+            <i class="bi bi-file-earmark-pdf-fill"></i> Export to PDF
+          </button>
           <button
             class="btn btn-outline-primary"
             data-bs-toggle="modal"
@@ -110,9 +114,9 @@ export default {
           </div>
         </div>
       </div>
-      <table class="table table-borderless my-3">
+      <table class="table table-borderless my-3" id="lgd-table">
         <tbody>
-          <tr id="allelic-requirement-section" class="align-middle">
+          <tr id="allelic-requirement-section">
             <td class="w-25 text-end">
               <h5>
                 Allelic Requirement

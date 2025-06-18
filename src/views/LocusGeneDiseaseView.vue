@@ -10,7 +10,7 @@ import {
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import LocusGeneDiseaseDisplay from "../components/view-record/LocusGeneDiseaseDisplay.vue";
-import html2pdf from 'html2pdf.js';
+import html2pdf from "html2pdf.js";
 
 export default {
   data() {
@@ -22,6 +22,7 @@ export default {
       stableId: null,
       userPanels: null,
       isPanelDataLoading: false,
+      isExportingPDF: false,
     };
   },
   components: {
@@ -93,34 +94,55 @@ export default {
       this.$router.go(); // refresh current page
     },
     exportToPDF() {
+      this.isExportingPDF = true;
       const element = document.getElementById("lgd-data");
       const collapsibles = element.querySelectorAll(".collapse");
       collapsibles.forEach((el) => el.classList.add("show"));
+      // hide tooltips, buttons and side navbar
+      const tooltips = element.querySelectorAll(".custom-tooltip");
+      tooltips.forEach((el) => (el.style.display = "none"));
+      const buttons = document.getElementById("buttons");
+      const originalDisplay = window.getComputedStyle(buttons).display;
+      buttons.style.display = "none";
+      const navbar = document.getElementById("record-side-navbar");
+      const originalDisplayNavBar = window.getComputedStyle(navbar).display;
+      navbar.style.display = "none";
 
       element.classList.add("pdf-export");
 
       const opt = {
-        margin: 0.5,
+        margin: 0.1,
         filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
-        image: { type: 'png', quality: 0.98 },
+        image: { type: "png", quality: 1 },
         html2canvas: {
-          scale: 1,
-          useCORS: true
+          scale: 3,
+          useCORS: true,
         },
         jsPDF: {
-          unit: 'in',
-          format: 'a4',
-          orientation: 'portrait'
+          unit: "in",
+          format: "a4",
+          orientation: "portrait",
         },
         pagebreak: {
-          mode: ['avoid-all', 'css', 'legacy']
-        }
+          mode: ["avoid-all", "css", "legacy"],
+        },
       };
 
-      html2pdf().set(opt).from(element).save().then(() => {
-        element.classList.remove("pdf-export");
-      });
-    }
+      html2pdf()
+        .set(opt)
+        .from(element)
+        .save()
+        .then(() => {
+          this.isExportingPDF = false;
+          element.classList.remove("pdf-export");
+          tooltips.forEach((el) => (el.style.display = "inline-block"));
+          buttons.style.display = originalDisplay;
+          navbar.style.display = originalDisplayNavBar;
+        })
+        .catch(() => {
+          this.isExportingPDF = false;
+        });
+    },
   },
 };
 </script>
@@ -142,11 +164,6 @@ export default {
       </div>
     </div>
     <div id="lgd-data" v-if="locusGeneDiseaseData">
-      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-        <button @click="exportToPDF" class="btn btn-primary">
-          <i class="bi bi-file-earmark-pdf-fill me-2"></i> Export to PDF
-        </button>
-      </div>
       <LocusGeneDiseaseDisplay
         :isRecordPartOfUserPanels="isRecordPartOfUserPanels"
         :locusGeneDiseaseData="locusGeneDiseaseData"
@@ -154,6 +171,7 @@ export default {
         :userPanels="userPanels"
         :isPanelDataLoading="isPanelDataLoading"
         :isAuthenticated="isAuthenticated"
+        :exportToPDF="exportToPDF"
       />
       <AddPanelModal
         :stableId="stableId"
@@ -162,5 +180,12 @@ export default {
       />
       <UpdateRecordModal :stableId="stableId" />
     </div>
+  </div>
+  <div
+    v-if="isExportingPDF"
+    class="position-fixed top-0 start-50 translate-middle-x mt-4 alert alert-info text-center"
+    style="z-index: 1050; width: 300px;"
+    >
+    <strong>Downloading PDF...</strong>
   </div>
 </template>
