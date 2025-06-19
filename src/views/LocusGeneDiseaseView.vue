@@ -188,13 +188,13 @@ export default {
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div class="alert alert-danger mt-3" role="alert" v-if="errorMsg">
+    <div class="alert alert-danger mt-3" role="alert" v-else-if="errorMsg">
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
         {{ errorMsg }}
       </div>
     </div>
-    <div id="lgd-data" v-if="locusGeneDiseaseData">
+    <div id="lgd-data" v-else-if="locusGeneDiseaseData">
       <LocusGeneDiseaseDisplay
         :isRecordPartOfUserPanels="isRecordPartOfUserPanels"
         :locusGeneDiseaseData="locusGeneDiseaseData"
