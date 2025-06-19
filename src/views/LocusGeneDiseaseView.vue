@@ -129,7 +129,7 @@ export default {
         const opt = {
           margin: 0.1,
           filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
-          image: { type: "jpeg", quality: 0.85 },
+          image: { type: "jpeg", quality: 1.00 },
           html2canvas: {
             scale: 2,
             useCORS: true,
