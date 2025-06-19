@@ -116,7 +116,7 @@ export default {
           </div>
         </div>
       </div>
-      <table class="table table-borderless my-3" id="lgd-table">
+      <table class="table table-borderless my-3">
         <tbody>
           <tr id="allelic-requirement-section">
             <td class="w-25 text-end">
