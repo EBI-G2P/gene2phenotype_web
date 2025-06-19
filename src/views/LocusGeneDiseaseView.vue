@@ -94,8 +94,6 @@ export default {
       this.$router.go(); // refresh current page
     },
     exportToPDF() {
-      this.isExportingPDF = true;
-
       const element = document.getElementById("lgd-data");
 
       // Expand collapsibles
@@ -153,7 +151,8 @@ export default {
             console.warn("⚠️ Element has zero size:", el);
           }
         });
-
+        
+        this.isExportingPDF = true;
         html2pdf()
           .set(opt)
           .from(element)
