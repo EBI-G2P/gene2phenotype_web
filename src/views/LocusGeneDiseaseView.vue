@@ -181,7 +181,7 @@ export default {
   <div class="container px-5 py-3" style="min-height: 60vh">
     <div
       class="d-flex justify-content-center"
-      v-if="isDataLoading"
+      v-if="isDataLoading || isExportingPDF"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
@@ -211,12 +211,5 @@ export default {
       />
       <UpdateRecordModal :stableId="stableId" />
     </div>
-  </div>
-  <div
-    v-if="isExportingPDF"
-    class="position-fixed top-0 start-50 translate-middle-x mt-4 alert alert-info text-center"
-    style="z-index: 1050; width: 300px;"
-    >
-    <strong>Downloading PDF...</strong>
   </div>
 </template>
