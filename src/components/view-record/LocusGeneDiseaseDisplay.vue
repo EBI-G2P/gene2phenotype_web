@@ -81,7 +81,7 @@ export default {
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
         </div>
         <div class="flex-shrink-0" id="buttons">
-          <button  v-if="!isFirefox" @click="exportToPDF" class="btn btn-primary">
+          <button  v-if="!isFirefox" class="btn btn-primary me-1" type="button" @click="exportToPDF">
             <i class="bi bi-file-earmark-pdf-fill"></i> Export to PDF
           </button>
           <button
