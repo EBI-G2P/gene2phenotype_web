@@ -95,54 +95,86 @@ export default {
     },
     exportToPDF() {
       this.isExportingPDF = true;
+
       const element = document.getElementById("lgd-data");
+
+      // Expand collapsibles
       const collapsibles = element.querySelectorAll(".collapse");
       collapsibles.forEach((el) => el.classList.add("show"));
-      // hide tooltips, buttons and side navbar
+
+      // Hide tooltips, buttons, navbar
       const tooltips = element.querySelectorAll(".custom-tooltip");
       tooltips.forEach((el) => (el.style.display = "none"));
+
       const buttons = document.getElementById("buttons");
-      const originalDisplay = window.getComputedStyle(buttons).display;
-      buttons.style.display = "none";
+      const originalDisplay = buttons?.style.display || "";
+      if (buttons) buttons.style.display = "none";
+
       const navbar = document.getElementById("record-side-navbar");
-      const originalDisplayNavBar = window.getComputedStyle(navbar).display;
-      navbar.style.display = "none";
+      const originalDisplayNavBar = navbar?.style.display || "";
+      if (navbar) navbar.style.display = "none";
 
       element.classList.add("pdf-export");
+      element.style.display = "block";
+      element.style.visibility = "visible";
 
-      const opt = {
-        margin: 0.1,
-        filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
-        image: { type: "png", quality: 1 },
-        html2canvas: {
-          scale: 3,
-          useCORS: true,
-        },
-        jsPDF: {
-          unit: "in",
-          format: "a4",
-          orientation: "portrait",
-        },
-        pagebreak: {
-          mode: ["avoid-all", "css", "legacy"],
-        },
-      };
+      // Wait for layout update
+      this.$nextTick(() => {
+        // Force reflow and check element height
+        const height = element.offsetHeight;
+        if (!height || height === 0) {
+          alert("Export failed: content is not visible or has zero height.");
+          this.restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element);
+          return;
+        }
 
-      html2pdf()
-        .set(opt)
-        .from(element)
-        .save()
-        .then(() => {
-          this.isExportingPDF = false;
-          element.classList.remove("pdf-export");
-          tooltips.forEach((el) => (el.style.display = "inline-block"));
-          buttons.style.display = originalDisplay;
-          navbar.style.display = originalDisplayNavBar;
-        })
-        .catch(() => {
-          this.isExportingPDF = false;
+        const opt = {
+          margin: 0.1,
+          filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
+          image: { type: "png", quality: 1 },
+          html2canvas: {
+            scale: 3,
+            useCORS: true,
+            logging: true,
+          },
+          jsPDF: {
+            unit: "in",
+            format: "a4",
+            orientation: "portrait",
+          },
+          pagebreak: {
+            mode: ["avoid-all", "css", "legacy"],
+          },
+        };
+
+        [...document.querySelectorAll("#lgd-data canvas, #lgd-data img")].forEach(el => {
+          const { width, height } = el;
+          if (width === 0 || height === 0) {
+            console.warn("⚠️ Element has zero size:", el);
+          }
         });
+
+        html2pdf()
+          .set(opt)
+          .from(element)
+          .save()
+          .catch((err) => {
+            console.error("PDF generation failed:", err);
+            alert("PDF export failed. Please try again or use Chrome.");
+          })
+          .finally(() => {
+            this.restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element);
+          });
+      });
     },
+    restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element) {
+      this.isExportingPDF = false;
+      element.classList.remove("pdf-export");
+      tooltips.forEach((el) => (el.style.display = "inline-block"));
+      if (buttons) buttons.style.display = originalDisplay;
+      if (navbar) navbar.style.display = originalDisplayNavBar;
+    }
+
   },
 };
 </script>
