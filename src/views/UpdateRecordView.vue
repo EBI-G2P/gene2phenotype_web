@@ -74,7 +74,7 @@ export default {
     <div class="d-flex justify-content-between align-items-start pb-2">
       <h2>Update G2P Record</h2>
       <router-link class="btn btn-outline-primary" :to="`/lgd/${stableId}`">
-        Go to record page
+        <i class="bi bi-arrow-left-circle"></i> Return to record
       </router-link>
     </div>
     <div
