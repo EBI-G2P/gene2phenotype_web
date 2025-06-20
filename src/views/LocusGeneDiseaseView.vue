@@ -126,7 +126,7 @@ export default {
           return;
         }
 
-        const opt = {
+        const options = {
           margin: 0.1,
           filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
           image: { type: "jpeg", quality: 1.00 },
