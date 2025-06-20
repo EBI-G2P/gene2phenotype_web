@@ -10,6 +10,7 @@ import {
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import LocusGeneDiseaseDisplay from "../components/view-record/LocusGeneDiseaseDisplay.vue";
+import html2pdf from "html2pdf.js";
 
 export default {
   data() {
@@ -21,6 +22,7 @@ export default {
       stableId: null,
       userPanels: null,
       isPanelDataLoading: false,
+      isExportingPDF: false,
     };
   },
   components: {
@@ -91,6 +93,88 @@ export default {
     refreshPage() {
       this.$router.go(); // refresh current page
     },
+    exportToPDF() {
+      const element = document.getElementById("lgd-data");
+
+      // Expand collapsibles
+      const collapsibles = element.querySelectorAll(".collapse");
+      collapsibles.forEach((el) => el.classList.add("show"));
+
+      // Hide tooltips, buttons, navbar
+      const tooltips = element.querySelectorAll(".custom-tooltip");
+      tooltips.forEach((el) => (el.style.display = "none"));
+
+      const buttons = document.getElementById("record-buttons-div");
+      const originalDisplay = buttons?.style.display || "";
+      if (buttons) buttons.style.display = "none";
+
+      const navbar = document.getElementById("record-side-navbar");
+      const originalDisplayNavBar = navbar?.style.display || "";
+      if (navbar) navbar.style.display = "none";
+
+      element.classList.add("pdf-export");
+      element.style.display = "block";
+      element.style.visibility = "visible";
+
+      // Wait for layout update
+      this.$nextTick(() => {
+        // Force reflow and check element height
+        const height = element.offsetHeight;
+        if (!height || height === 0) {
+          alert("Export failed: content is not visible or has zero height.");
+          this.restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element);
+          return;
+        }
+
+        const options = {
+          margin: 0.1,
+          filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
+          image: { type: "jpeg", quality: 1.00 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: true,
+          },
+          jsPDF: {
+            unit: "in",
+            format: "a4",
+            orientation: "portrait",
+          },
+          pagebreak: {
+            mode: ["avoid-all", "css", "legacy"],
+          },
+        };
+
+        [...document.querySelectorAll("#lgd-data canvas, #lgd-data img")].forEach(el => {
+          const { width, height } = el;
+          if (width === 0 || height === 0) {
+            console.warn("Element has zero size:", el);
+          }
+        });
+        
+        this.isExportingPDF = true;
+        html2pdf()
+          .set(options)
+          .from(element)
+          .save()
+          .catch((err) => {
+            console.error("PDF generation failed:", err);
+            alert("PDF export failed. Please try again or use Chrome.");
+          })
+          .finally(() => {
+            this.restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element);
+          });
+      });
+    },
+    restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element) {
+      this.isExportingPDF = false;
+      element.classList.remove("pdf-export");
+      // Display tooltips, buttons, navbar
+      tooltips.forEach((el) => (el.style.display = "inline-block"));
+      if (buttons) buttons.style.display = originalDisplay;
+      if (navbar) navbar.style.display = originalDisplayNavBar;
+    }
+
   },
 };
 </script>
@@ -98,20 +182,20 @@ export default {
   <div class="container px-5 py-3" style="min-height: 60vh">
     <div
       class="d-flex justify-content-center"
-      v-if="isDataLoading"
+      v-if="isDataLoading || isExportingPDF"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div class="alert alert-danger mt-3" role="alert" v-if="errorMsg">
+    <div class="alert alert-danger mt-3" role="alert" v-else-if="errorMsg">
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
         {{ errorMsg }}
       </div>
     </div>
-    <div v-if="locusGeneDiseaseData">
+    <div id="lgd-data" v-else-if="locusGeneDiseaseData">
       <LocusGeneDiseaseDisplay
         :isRecordPartOfUserPanels="isRecordPartOfUserPanels"
         :locusGeneDiseaseData="locusGeneDiseaseData"
@@ -119,6 +203,7 @@ export default {
         :userPanels="userPanels"
         :isPanelDataLoading="isPanelDataLoading"
         :isAuthenticated="isAuthenticated"
+        :exportToPDF="exportToPDF"
       />
       <AddPanelModal
         :stableId="stableId"

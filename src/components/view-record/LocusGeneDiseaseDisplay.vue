@@ -9,16 +9,19 @@ export default {
     userPanels: Array,
     isPanelDataLoading: Boolean,
     isAuthenticated: Boolean,
+    exportToPDF: Function,
   },
   data() {
     return {
       observer: null,
+      isFireFox: false,
       isDisplayComments: this.locusGeneDiseaseData?.comments?.length > 0,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
     };
   },
   created() {
+    this.isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
     this.observer = new IntersectionObserver(this.onElementObserved, {
       root: document.querySelector("#record-main"),
       rootMargin: "0% 0% -90% 0%",
@@ -60,7 +63,7 @@ export default {
     <div id="record-content-div">
       <div class="d-flex justify-content-between">
         <div class="flex-grow-1 me-1">
-          <h2 v-if="locusGeneDiseaseData.disease?.name">
+          <h3 v-if="locusGeneDiseaseData.disease?.name">
             {{ locusGeneDiseaseData.disease.name }}
             <span
               v-if="locusGeneDiseaseData.confidence"
@@ -74,10 +77,13 @@ export default {
             >
               {{ locusGeneDiseaseData.confidence }}
             </span>
-          </h2>
+          </h3>
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
         </div>
-        <div class="flex-shrink-0">
+        <div class="flex-shrink-0" id="record-buttons-div">
+          <button  v-if="!isFirefox" class="btn btn-primary me-1" type="button" @click="exportToPDF">
+            <i class="bi bi-file-earmark-pdf-fill"></i> Export to PDF
+          </button>
           <button
             class="btn btn-outline-primary"
             data-bs-toggle="modal"
@@ -112,7 +118,7 @@ export default {
       </div>
       <table class="table table-borderless my-3">
         <tbody>
-          <tr id="allelic-requirement-section" class="align-middle">
+          <tr id="allelic-requirement-section">
             <td class="w-25 text-end">
               <h5>
                 Allelic Requirement
