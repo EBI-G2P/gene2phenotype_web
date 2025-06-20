@@ -148,7 +148,7 @@ export default {
         [...document.querySelectorAll("#lgd-data canvas, #lgd-data img")].forEach(el => {
           const { width, height } = el;
           if (width === 0 || height === 0) {
-            console.warn("⚠️ Element has zero size:", el);
+            console.warn("Element has zero size:", el);
           }
         });
         
