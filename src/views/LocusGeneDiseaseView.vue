@@ -169,6 +169,7 @@ export default {
     restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element) {
       this.isExportingPDF = false;
       element.classList.remove("pdf-export");
+      // Display tooltips, buttons, navbar
       tooltips.forEach((el) => (el.style.display = "inline-block"));
       if (buttons) buttons.style.display = originalDisplay;
       if (navbar) navbar.style.display = originalDisplayNavBar;
