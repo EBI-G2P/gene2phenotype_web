@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       isDataLoading: false,
-      panelData: null,
+      panelData: [],
       panelErrorMsg: null,
       dataDownloadErrorMsg: null,
     };
@@ -26,12 +26,15 @@ export default {
   },
   methods: {
     fetchPanels() {
-      this.panelErrorMsg = this.panelData = null;
+      this.panelData = [];
+      this.panelErrorMsg = null;
       this.isDataLoading = true;
       api
         .get(ALL_PANELS_URL)
         .then((response) => {
-          this.panelData = response.data;
+          if (response?.data?.results?.length > 0) {
+            this.panelData = response.data.results;
+          }
         })
         .catch((error) => {
           this.panelErrorMsg = fetchAndLogGeneralErrorMsg(
@@ -90,7 +93,7 @@ export default {
 </script>
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
-    <h2 class="pb-2">Download G2P data by disorder panel</h2>
+    <h2 class="pb-2">Download G2P data</h2>
     <div
       class="d-flex justify-content-center"
       v-if="isDataLoading"
@@ -105,9 +108,20 @@ export default {
         <i class="bi bi-exclamation-circle-fill"></i> {{ panelErrorMsg }}
       </div>
     </div>
-    <div v-if="!isDataLoading && panelData?.results?.length > 0">
+    <div v-if="!isDataLoading">
       <ul class="list-unstyled">
-        <li v-for="item in panelData.results" :key="item.name">
+        <li>
+          <button
+            @click="downloadPanelData('all')"
+            type="button"
+            class="btn btn-link"
+            style="margin: 0; padding: 0; text-decoration: none"
+          >
+            <i class="bi bi-cloud-arrow-down-fill fs-5"></i>
+            All data
+          </button>
+        </li>
+        <li v-for="item in panelData" :key="item.name">
           <button
             @click="downloadPanelData(item.name)"
             type="button"
