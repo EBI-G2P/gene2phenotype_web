@@ -104,7 +104,7 @@ export default {
       const tooltips = element.querySelectorAll(".custom-tooltip");
       tooltips.forEach((el) => (el.style.display = "none"));
 
-      const buttons = document.getElementById("buttons");
+      const buttons = document.getElementById("record-buttons-div");
       const originalDisplay = buttons?.style.display || "";
       if (buttons) buttons.style.display = "none";
 
