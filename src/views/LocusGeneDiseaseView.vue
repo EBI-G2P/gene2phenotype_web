@@ -154,7 +154,7 @@ export default {
         
         this.isExportingPDF = true;
         html2pdf()
-          .set(opt)
+          .set(options)
           .from(element)
           .save()
           .catch((err) => {
