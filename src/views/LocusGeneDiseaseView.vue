@@ -96,6 +96,10 @@ export default {
     exportToPDF() {
       const element = document.getElementById("lgd-data");
 
+      // Expand collapsibles
+      const collapsibles = element.querySelectorAll(".collapse");
+      collapsibles.forEach((el) => el.classList.add("show"));
+ 
       // Wait for layout update
       this.$nextTick(() => {
         // Force reflow and check element height
@@ -106,7 +110,7 @@ export default {
           return;
         }
 
-        const opt = {
+        const options = {
           margin: 0.1,
           filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
           image: { type: "jpeg", quality: 1.00 },
@@ -128,13 +132,13 @@ export default {
         [...document.querySelectorAll("#lgd-data canvas, #lgd-data img")].forEach(el => {
           const { width, height } = el;
           if (width === 0 || height === 0) {
-            console.warn("⚠️ Element has zero size:", el);
+            console.warn("Element has zero size:", el);
           }
         });
         
         this.isExportingPDF = true;
         html2pdf()
-          .set(opt)
+          .set(options)
           .from(element)
           .save()
           .catch((err) => {
@@ -148,8 +152,7 @@ export default {
     },
     restorePageState() {
       this.isExportingPDF = false;
-    }
-
+    }   
   },
 };
 </script>
