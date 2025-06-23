@@ -81,7 +81,7 @@ export default {
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
         </div>
         <div class="flex-shrink-0" id="buttons">
-          <button  v-if="!isFirefox" class="btn btn-primary me-1" type="button" @click="exportToPDF">
+          <button  v-if="!isFirefox" class="btn btn-primary me-1" type="button" @click="exportToPDF" data-html2canvas-ignore>
             <i class="bi bi-file-earmark-pdf-fill"></i> Export to PDF
           </button>
           <button
@@ -94,6 +94,7 @@ export default {
               isAuthenticated &&
               !isRecordPartOfUserPanels
             "
+            data-html2canvas-ignore
           >
             <i class="bi bi-plus-circle-fill"></i> Add to another panel
           </button>
@@ -101,6 +102,7 @@ export default {
             class="btn btn-outline-primary"
             data-bs-toggle="modal"
             data-bs-target="#update-record-modal"
+            data-html2canvas-ignore
             v-if="
               !isPanelDataLoading && isAuthenticated && isRecordPartOfUserPanels
             "
@@ -122,7 +124,7 @@ export default {
             <td class="w-25 text-end">
               <h5>
                 Allelic Requirement
-                <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" />
+                <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" data-html2canvas-ignore />
               </h5>
             </td>
             <td class="w-75">
@@ -136,7 +138,7 @@ export default {
             <td class="w-25 text-end">
               <h5>
                 Cross Cutting Modifiers
-                <ToolTip :toolTipText="HELP_TEXT.CROSS_CUTTING_MODIFIER" />
+                <ToolTip :toolTipText="HELP_TEXT.CROSS_CUTTING_MODIFIER" data-html2canvas-ignore />
               </h5>
             </td>
             <td class="w-75">
@@ -188,7 +190,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Variant Types
-                <ToolTip :toolTipText="HELP_TEXT.VARIANT_TYPE" />
+                <ToolTip :toolTipText="HELP_TEXT.VARIANT_TYPE" data-html2canvas-ignore/>
               </h6>
             </td>
             <td class="w-75">
@@ -399,7 +401,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Variant Consequences
-                <ToolTip :toolTipText="HELP_TEXT.VARIANT_CONSEQUENCE" />
+                <ToolTip :toolTipText="HELP_TEXT.VARIANT_CONSEQUENCE" data-html2canvas-ignore/>
               </h6>
             </td>
             <td class="w-75">
@@ -474,7 +476,7 @@ export default {
           </tr>
           <tr class="align-middle">
             <td class="w-25 text-end">
-              <h6>Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" /></h6>
+              <h6>Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" data-html2canvas-ignore /></h6>
             </td>
             <td class="w-75">
               <p v-if="locusGeneDiseaseData.molecular_mechanism?.mechanism">
@@ -499,7 +501,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Categorisation
-                <ToolTip :toolTipText="HELP_TEXT.CATEGORISATION" />
+                <ToolTip :toolTipText="HELP_TEXT.CATEGORISATION" data-html2canvas-ignore />
               </h6>
             </td>
             <td class="w-75">
@@ -652,7 +654,7 @@ export default {
             <td class="w-25 text-end">
               <h5>
                 Phenotypic Features
-                <ToolTip :toolTipText="HELP_TEXT.PHENOTYPIC_FEATURE" />
+                <ToolTip :toolTipText="HELP_TEXT.PHENOTYPIC_FEATURE" data-html2canvas-ignore />
               </h5>
             </td>
             <td class="w-75">
@@ -947,7 +949,7 @@ export default {
           <tr class="align-middle">
             <td class="w-25 text-end">
               <h6>
-                Location <ToolTip :toolTipText="HELP_TEXT.GENE_LOCATION" />
+                Location <ToolTip :toolTipText="HELP_TEXT.GENE_LOCATION" data-html2canvas-ignore/>
               </h6>
             </td>
             <td>
@@ -987,7 +989,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 External Links
-                <ToolTip :toolTipText="HELP_TEXT.EXTERNAL_LINKS" />
+                <ToolTip :toolTipText="HELP_TEXT.EXTERNAL_LINKS" data-html2canvas-ignore/>
               </h6>
             </td>
             <td class="w-75">
@@ -1076,7 +1078,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Cross References
-                <ToolTip :toolTipText="HELP_TEXT.CROSS_REFERENCES" />
+                <ToolTip :toolTipText="HELP_TEXT.CROSS_REFERENCES" data-html2canvas-ignore />
               </h6>
             </td>
             <td class="w-75">
@@ -1152,7 +1154,7 @@ export default {
           </tr>
           <tr class="align-middle">
             <td class="w-25 text-end">
-              <h5>G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" /></h5>
+              <h5>G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" data-html2canvas-ignore/></h5>
             </td>
             <td class="w-75">
               <p v-if="locusGeneDiseaseData.stable_id">
@@ -1250,6 +1252,7 @@ export default {
     <nav
       id="record-side-navbar"
       class="h-100 flex-column align-items-stretch ps-3"
+      data-html2canvas-ignore
     >
       <strong class="d-none d-md-block h6 my-2 ms-3 text-body-secondary"
         >On this page</strong

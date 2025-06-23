@@ -96,33 +96,13 @@ export default {
     exportToPDF() {
       const element = document.getElementById("lgd-data");
 
-      // Expand collapsibles
-      const collapsibles = element.querySelectorAll(".collapse");
-      collapsibles.forEach((el) => el.classList.add("show"));
-
-      // Hide tooltips, buttons, navbar
-      const tooltips = element.querySelectorAll(".custom-tooltip");
-      tooltips.forEach((el) => (el.style.display = "none"));
-
-      const buttons = document.getElementById("buttons");
-      const originalDisplay = buttons?.style.display || "";
-      if (buttons) buttons.style.display = "none";
-
-      const navbar = document.getElementById("record-side-navbar");
-      const originalDisplayNavBar = navbar?.style.display || "";
-      if (navbar) navbar.style.display = "none";
-
-      element.classList.add("pdf-export");
-      element.style.display = "block";
-      element.style.visibility = "visible";
-
       // Wait for layout update
       this.$nextTick(() => {
         // Force reflow and check element height
         const height = element.offsetHeight;
         if (!height || height === 0) {
           alert("Export failed: content is not visible or has zero height.");
-          this.restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element);
+          this.restorePageState();
           return;
         }
 
@@ -162,16 +142,12 @@ export default {
             alert("PDF export failed. Please try again or use Chrome.");
           })
           .finally(() => {
-            this.restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element);
+            this.restorePageState();
           });
       });
     },
-    restorePageState(tooltips, buttons, originalDisplay, navbar, originalDisplayNavBar, element) {
+    restorePageState() {
       this.isExportingPDF = false;
-      element.classList.remove("pdf-export");
-      tooltips.forEach((el) => (el.style.display = "inline-block"));
-      if (buttons) buttons.style.display = originalDisplay;
-      if (navbar) navbar.style.display = originalDisplayNavBar;
     }
 
   },
