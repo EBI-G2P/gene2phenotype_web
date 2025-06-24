@@ -267,7 +267,13 @@ export default {
         <h6>
           The consequence of the reported variants at the protein (for
           protein-coding genes) or the RNA (for non-protein coding genes), per
-          allele.
+          allele. More information can be found
+          <a
+            href="https://europepmc.org/article/MED/37982373"
+            style="text-decoration: none"
+            target="_blank"
+            >here</a
+          >.
         </h6>
         <div class="pt-1 table-responsive-xl">
           <table class="table table-bordered">

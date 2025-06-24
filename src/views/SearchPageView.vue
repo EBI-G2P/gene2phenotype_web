@@ -129,7 +129,9 @@ export default {
       Search results
       <span v-if="routeQuery?.type || routeQuery?.query"> for </span>
       <span v-if="routeQuery?.type">
-        <i>{{ routeQuery.type === "g2p_id" ? "G2P ID" : routeQuery.type }}</i>
+        <i>{{
+          routeQuery.type === "stable_id" ? "G2P ID" : routeQuery.type
+        }}</i>
       </span>
       <span v-if="routeQuery?.query"> '{{ routeQuery.query }}'</span>
       <span v-if="routeQuery?.panel">
@@ -196,14 +198,14 @@ export default {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in searchData.results" :key="item.id">
+            <tr v-for="item in searchData.results" :key="item.stable_id">
               <td>
                 <router-link
-                  :to="`/lgd/${item.id}`"
-                  v-if="item.id"
+                  :to="`/lgd/${item.stable_id}`"
+                  v-if="item.stable_id"
                   style="text-decoration: none"
                 >
-                  {{ item.id }}
+                  {{ item.stable_id }}
                 </router-link>
               </td>
               <td>

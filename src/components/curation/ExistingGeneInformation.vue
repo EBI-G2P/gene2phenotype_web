@@ -171,9 +171,9 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in geneExistingDrafts.results" :key="item.id">
+              <tr v-for="item in geneExistingDrafts.results" :key="item.stable_id">
                 <td>
-                  {{ item.id }}
+                  {{ item.stable_id }}
                 </td>
                 <td>
                   {{ item.gene }}
@@ -206,7 +206,7 @@ export default {
                 </td>
                 <td class="text-nowrap">
                   <router-link
-                    :to="`/lgd/update-draft/${item.id}`"
+                    :to="`/lgd/update-draft/${item.stable_id}`"
                     style="text-decoration: none"
                     v-if="isUserCreatorOfDraft(item.curator_email)"
                   >
@@ -275,9 +275,9 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in geneExistingRecords.results" :key="item.id">
+              <tr v-for="item in geneExistingRecords.results" :key="item.stable_id">
                 <td>
-                  {{ item.id }}
+                  {{ item.stable_id }}
                 </td>
                 <td>
                   <router-link
@@ -334,10 +334,10 @@ export default {
                 </td>
                 <td class="text-nowrap">
                   <router-link
-                    :to="`/lgd/${item.id}`"
+                    :to="`/lgd/${item.stable_id}`"
                     style="text-decoration: none"
                     target="_blank"
-                    v-if="item.id"
+                    v-if="item.stable_id"
                   >
                     View record <i class="bi bi-box-arrow-up-right"></i>
                   </router-link>

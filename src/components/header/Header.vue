@@ -200,7 +200,7 @@ export default {
               <input
                 class="form-check-input"
                 type="radio"
-                value="g2p_id"
+                value="stable_id"
                 v-model="selectedSearchType"
                 id="header-filter-input-type-g2p-id"
               />
@@ -307,6 +307,11 @@ export default {
             <li>
               <router-link to="/download" class="dropdown-item">
                 Downloads
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/g2p-api-info" class="dropdown-item">
+                G2P API
               </router-link>
             </li>
             <li>

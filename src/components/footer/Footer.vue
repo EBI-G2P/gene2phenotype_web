@@ -107,6 +107,14 @@
                 Downloads
               </router-link>
             </li>
+            <li class="nav-item mb-2">
+              <router-link
+                to="/g2p-api-info"
+                class="nav-link p-0 text-body-secondary"
+              >
+                G2P API
+              </router-link>
+            </li>
           </ul>
         </div>
         <div class="col-md-4 col-lg col-xl-2 mb-3 text-center">

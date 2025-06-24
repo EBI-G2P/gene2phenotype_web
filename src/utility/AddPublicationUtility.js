@@ -83,38 +83,35 @@ export const prepareInputForNewPublicationDataSubmission = (
     preparedInput.phenotypes = phenotypesArray;
   }
 
-  // IF molecular_mechanism.support is evidence THEN process mechanism_evidence
-  if (clonedInput.molecular_mechanism.support === "evidence") {
-    // convert mechanism evidence from object to array of objects and include evidence that have non empty description or non empty evidence types
-    let mechanismEvidenceArray = [];
-    for (const [publicationPmid, valueObj] of Object.entries(
-      clonedInput.mechanism_evidence
+  // convert mechanism evidence from object to array of objects and include evidence that have non empty description or non empty evidence types
+  let mechanismEvidenceArray = [];
+  for (const [publicationPmid, valueObj] of Object.entries(
+    clonedInput.mechanism_evidence
+  )) {
+    let evidenceTypesArray = [];
+    for (const [primaryType, secondaryTypesArray] of Object.entries(
+      valueObj.evidence_types
     )) {
-      let evidenceTypesArray = [];
-      for (const [primaryType, secondaryTypesArray] of Object.entries(
-        valueObj.evidence_types
-      )) {
-        if (secondaryTypesArray.length > 0) {
-          let evidenceTypeObj = {
-            primary_type: primaryType,
-            secondary_type: secondaryTypesArray,
-          };
-          evidenceTypesArray.push(evidenceTypeObj);
-        }
-      }
-      if (valueObj.description.trim() !== "" || evidenceTypesArray.length > 0) {
-        let mechanismEvidenceObj = {
-          pmid: publicationPmid,
-          description: valueObj.description.trim(), // trim description value
-          evidence_types: evidenceTypesArray,
+      if (secondaryTypesArray.length > 0) {
+        let evidenceTypeObj = {
+          primary_type: primaryType,
+          secondary_type: secondaryTypesArray,
         };
-        mechanismEvidenceArray.push(mechanismEvidenceObj);
+        evidenceTypesArray.push(evidenceTypeObj);
       }
     }
-    // IF mechanismEvidenceArray is not empty THEN include it in preparedInput object
-    if (mechanismEvidenceArray.length > 0) {
-      preparedInput.mechanism_evidence = mechanismEvidenceArray;
+    if (valueObj.description.trim() !== "" || evidenceTypesArray.length > 0) {
+      let mechanismEvidenceObj = {
+        pmid: publicationPmid,
+        description: valueObj.description.trim(), // trim description value
+        evidence_types: evidenceTypesArray,
+      };
+      mechanismEvidenceArray.push(mechanismEvidenceObj);
     }
+  }
+  // IF mechanismEvidenceArray is not empty THEN include it in preparedInput object
+  if (mechanismEvidenceArray.length > 0) {
+    preparedInput.mechanism_evidence = mechanismEvidenceArray;
   }
 
   // IF molecular_mechanism.name or molecular_mechanism.support is updated THEN include molecular_mechanism in preparedInput object

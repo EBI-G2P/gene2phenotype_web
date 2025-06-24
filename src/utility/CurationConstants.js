@@ -204,15 +204,15 @@ export const MechanismAttribs = [
 ];
 
 export const MechanismSynopsisAttribs = [
+  "competitive dominant-negative",
   "assembly-mediated dominant negative",
   "assembly-mediated GOF",
-  "competitive dominant-negative",
-  "destabilising LOF",
-  "interaction-disrupting LOF",
-  "local LOF leading to overall GOF",
-  "LOF due to protein mislocalisation",
-  "loss of activity LOF",
   "other GOF",
+  "local LOF leading to overall GOF",
+  "loss of activity LOF",
+  "LOF due to protein mislocalisation",
+  "interaction-disrupting LOF",
+  "destabilising LOF",
   "aggregation",
 ];
 
