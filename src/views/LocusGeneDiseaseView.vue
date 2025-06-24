@@ -106,7 +106,6 @@ export default {
         const height = element.offsetHeight;
         if (!height || height === 0) {
           alert("Export failed: content is not visible or has zero height.");
-          this.restorePageState();
           return;
         }
 
@@ -146,13 +145,10 @@ export default {
             alert("PDF export failed. Please try again or use Chrome.");
           })
           .finally(() => {
-            this.restorePageState();
+            this.isExportingPDF = false;
           });
       });
     },
-    restorePageState() {
-      this.isExportingPDF = false;
-    }   
   },
 };
 </script>

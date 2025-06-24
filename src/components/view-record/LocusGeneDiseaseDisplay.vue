@@ -80,7 +80,7 @@ export default {
           </h3>
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
         </div>
-        <div class="flex-shrink-0" id="record-buttons-div">
+        <div class="flex-shrink-0" data-html2canvas-ignore>
           <button  v-if="!isFirefox" class="btn btn-primary me-1" type="button" @click="exportToPDF">
             <i class="bi bi-file-earmark-pdf-fill"></i> Export to PDF
           </button>
@@ -94,7 +94,6 @@ export default {
               isAuthenticated &&
               !isRecordPartOfUserPanels
             "
-            data-html2canvas-ignore
           >
             <i class="bi bi-plus-circle-fill"></i> Add to another panel
           </button>
@@ -102,7 +101,6 @@ export default {
             class="btn btn-outline-primary"
             data-bs-toggle="modal"
             data-bs-target="#update-record-modal"
-            data-html2canvas-ignore
             v-if="
               !isPanelDataLoading && isAuthenticated && isRecordPartOfUserPanels
             "
