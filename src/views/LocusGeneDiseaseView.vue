@@ -98,7 +98,7 @@ export default {
 
       // Expand collapsibles
       const collapsibles = element.querySelectorAll(".collapse");
-      collapsibles.forEach((el) => el.classList.add("show"));
+      collapsibles.forEach((el) => el.classList.add("show", "page-break-before"));
  
       // Wait for layout update
       this.$nextTick(() => {
@@ -110,7 +110,7 @@ export default {
         }
 
         const options = {
-          margin: 0.1,
+          margin: 0.2,
           filename: `${this.stableId}_${new Date().toISOString()}.pdf`,
           image: { type: "jpeg", quality: 1.00 },
           html2canvas: {
@@ -124,16 +124,9 @@ export default {
             orientation: "portrait",
           },
           pagebreak: {
-            mode: ["avoid-all", "css", "legacy"],
+            mode: ["css"],
           },
         };
-
-        [...document.querySelectorAll("#lgd-data canvas, #lgd-data img")].forEach(el => {
-          const { width, height } = el;
-          if (width === 0 || height === 0) {
-            console.warn("Element has zero size:", el);
-          }
-        });
         
         this.isExportingPDF = true;
         html2pdf()
