@@ -9,16 +9,19 @@ export default {
     userPanels: Array,
     isPanelDataLoading: Boolean,
     isAuthenticated: Boolean,
+    exportToPDF: Function,
   },
   data() {
     return {
       observer: null,
+      isFireFox: false,
       isDisplayComments: this.locusGeneDiseaseData?.comments?.length > 0,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
     };
   },
   created() {
+    this.isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
     this.observer = new IntersectionObserver(this.onElementObserved, {
       root: document.querySelector("#record-main"),
       rootMargin: "0% 0% -90% 0%",
@@ -60,7 +63,7 @@ export default {
     <div id="record-content-div">
       <div class="d-flex justify-content-between">
         <div class="flex-grow-1 me-1">
-          <h2 v-if="locusGeneDiseaseData.disease?.name">
+          <h3 v-if="locusGeneDiseaseData.disease?.name">
             {{ locusGeneDiseaseData.disease.name }}
             <span
               v-if="locusGeneDiseaseData.confidence"
@@ -74,10 +77,13 @@ export default {
             >
               {{ locusGeneDiseaseData.confidence }}
             </span>
-          </h2>
+          </h3>
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
         </div>
-        <div class="flex-shrink-0">
+        <div class="flex-shrink-0" data-html2canvas-ignore>
+          <button  v-if="!isFirefox" class="btn btn-primary me-1" type="button" @click="exportToPDF">
+            <i class="bi bi-file-earmark-pdf-fill"></i> Export to PDF
+          </button>
           <button
             class="btn btn-outline-primary"
             data-bs-toggle="modal"
@@ -112,11 +118,11 @@ export default {
       </div>
       <table class="table table-borderless my-3">
         <tbody>
-          <tr id="allelic-requirement-section" class="align-middle">
+          <tr id="allelic-requirement-section">
             <td class="w-25 text-end">
               <h5>
                 Allelic Requirement
-                <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" />
+                <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" data-html2canvas-ignore />
               </h5>
             </td>
             <td class="w-75">
@@ -130,7 +136,7 @@ export default {
             <td class="w-25 text-end">
               <h5>
                 Cross Cutting Modifiers
-                <ToolTip :toolTipText="HELP_TEXT.CROSS_CUTTING_MODIFIER" />
+                <ToolTip :toolTipText="HELP_TEXT.CROSS_CUTTING_MODIFIER" data-html2canvas-ignore />
               </h5>
             </td>
             <td class="w-75">
@@ -182,7 +188,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Variant Types
-                <ToolTip :toolTipText="HELP_TEXT.VARIANT_TYPE" />
+                <ToolTip :toolTipText="HELP_TEXT.VARIANT_TYPE" data-html2canvas-ignore/>
               </h6>
             </td>
             <td class="w-75">
@@ -393,7 +399,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Variant Consequences
-                <ToolTip :toolTipText="HELP_TEXT.VARIANT_CONSEQUENCE" />
+                <ToolTip :toolTipText="HELP_TEXT.VARIANT_CONSEQUENCE" data-html2canvas-ignore/>
               </h6>
             </td>
             <td class="w-75">
@@ -468,7 +474,7 @@ export default {
           </tr>
           <tr class="align-middle">
             <td class="w-25 text-end">
-              <h6>Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" /></h6>
+              <h6>Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" data-html2canvas-ignore /></h6>
             </td>
             <td class="w-75">
               <p v-if="locusGeneDiseaseData.molecular_mechanism?.mechanism">
@@ -493,7 +499,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Categorisation
-                <ToolTip :toolTipText="HELP_TEXT.CATEGORISATION" />
+                <ToolTip :toolTipText="HELP_TEXT.CATEGORISATION" data-html2canvas-ignore />
               </h6>
             </td>
             <td class="w-75">
@@ -646,7 +652,7 @@ export default {
             <td class="w-25 text-end">
               <h5>
                 Phenotypic Features
-                <ToolTip :toolTipText="HELP_TEXT.PHENOTYPIC_FEATURE" />
+                <ToolTip :toolTipText="HELP_TEXT.PHENOTYPIC_FEATURE" data-html2canvas-ignore />
               </h5>
             </td>
             <td class="w-75">
@@ -946,7 +952,7 @@ export default {
           <tr class="align-middle">
             <td class="w-25 text-end">
               <h6>
-                Location <ToolTip :toolTipText="HELP_TEXT.GENE_LOCATION" />
+                Location <ToolTip :toolTipText="HELP_TEXT.GENE_LOCATION" data-html2canvas-ignore/>
               </h6>
             </td>
             <td>
@@ -986,7 +992,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 External Links
-                <ToolTip :toolTipText="HELP_TEXT.EXTERNAL_LINKS" />
+                <ToolTip :toolTipText="HELP_TEXT.EXTERNAL_LINKS" data-html2canvas-ignore/>
               </h6>
             </td>
             <td class="w-75">
@@ -1075,7 +1081,7 @@ export default {
             <td class="w-25 text-end">
               <h6>
                 Cross References
-                <ToolTip :toolTipText="HELP_TEXT.CROSS_REFERENCES" />
+                <ToolTip :toolTipText="HELP_TEXT.CROSS_REFERENCES" data-html2canvas-ignore />
               </h6>
             </td>
             <td class="w-75">
@@ -1151,7 +1157,7 @@ export default {
           </tr>
           <tr class="align-middle">
             <td class="w-25 text-end">
-              <h5>G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" /></h5>
+              <h5>G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" data-html2canvas-ignore/></h5>
             </td>
             <td class="w-75">
               <p v-if="locusGeneDiseaseData.stable_id">
@@ -1249,6 +1255,7 @@ export default {
     <nav
       id="record-side-navbar"
       class="h-100 flex-column align-items-stretch ps-3"
+      data-html2canvas-ignore
     >
       <strong class="d-none d-md-block h6 my-2 ms-3 text-body-secondary"
         >On this page</strong
