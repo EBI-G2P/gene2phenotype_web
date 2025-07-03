@@ -41,6 +41,7 @@ export const UPDATE_VARIANT_CONSEQUENCE_URL = `${G2P_API_BASE_URL}/lgd/:stableid
 export const UPDATE_VARIANT_TYPE_URL = `${G2P_API_BASE_URL}/lgd/:stableid/variant_type/`;
 export const UPDATE_CROSS_REFERENCE_URL = `${G2P_API_BASE_URL}/disease/:diseasename/cross_references/`;
 export const CROSS_REFERENCE_URL = `${G2P_API_BASE_URL}/external_disease/:crossreferences/`;
+export const UPDATE_REVIEW_STATUS_URL = `${G2P_API_BASE_URL}/lgd/:stableid/review/`;
 
 //External API URLS
 export const HPO_SEARCH_API_URL = "https://ontology.jax.org/api/hp/search";
