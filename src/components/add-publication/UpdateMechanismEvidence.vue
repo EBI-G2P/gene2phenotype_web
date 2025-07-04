@@ -333,22 +333,35 @@ export default {
                     <table class="table table-bordered mb-0">
                       <thead>
                         <tr>
-                          <th>Functional Studies</th>
                           <th>Publication</th>
+                          <th>Functional Studies</th>
+                          <th>Descriptions</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr v-for="(value, key) in currentMechanism.evidence">
+                          <td>
+                            <a
+                              :href="`https://europepmc.org/article/MED/${key}`"
+                              style="text-decoration: none"
+                              target="_blank"
+                            >
+                              {{ key }}
+                            </a>
+                          </td>
                           <td class="ps-0">
                             <ul
-                              v-if="value && Object.keys(value).length > 0"
+                              v-if="
+                                Object.keys(value?.functional_studies || {})
+                                  .length > 0
+                              "
                               class="mb-0"
                             >
                               <li
                                 v-for="(
                                   secondaryEvidenceTypeArray,
                                   primaryEvidenceType
-                                ) in value"
+                                ) in value.functional_studies"
                               >
                                 {{ primaryEvidenceType }} :
                                 {{
@@ -359,14 +372,15 @@ export default {
                               </li>
                             </ul>
                           </td>
-                          <td>
-                            <a
-                              :href="`https://europepmc.org/article/MED/${key}`"
-                              style="text-decoration: none"
-                              target="_blank"
+                          <td class="ps-0">
+                            <ul
+                              v-if="value?.descriptions?.length > 0"
+                              class="mb-0"
                             >
-                              {{ key }}
-                            </a>
+                              <li v-for="item in value.descriptions">
+                                {{ item }}
+                              </li>
+                            </ul>
                           </td>
                         </tr>
                       </tbody>
