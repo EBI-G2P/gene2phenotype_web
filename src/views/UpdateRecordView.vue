@@ -10,6 +10,7 @@ import UpdatePhenotype from "../components/update-record/UpdatePhenotype.vue";
 import UpdateVariantConsequences from "../components/update-record/UpdateVariantConsequences.vue";
 import UpdateVariantTypes from "../components/update-record/UpdateVariantTypes.vue";
 import UpdateDisease from "../components/update-record/UpdateDisease.vue";
+import UpdateReviewStatus from "../components/update-record/UpdateReviewStatus.vue";
 
 export default {
   data() {
@@ -30,6 +31,7 @@ export default {
     UpdateVariantConsequences,
     UpdateVariantTypes,
     UpdateDisease,
+    UpdateReviewStatus,
   },
   created() {
     // watch the params of the route to fetch the data again
@@ -102,7 +104,7 @@ export default {
         can be updated:
         <b
           >Phenotypic features, Variant types, Variant consequences, Mechanism,
-          Disease Cross References, Panel, Confidence</b
+          Disease Cross References, Panel, Confidence, Review status</b
         >
       </p>
       <UpdatePhenotype
@@ -139,6 +141,10 @@ export default {
         :stableId="stableId"
         :attributesData="attributesData"
         :currentConfidence="locusGeneDiseaseData.confidence"
+      />
+      <UpdateReviewStatus
+        :stableId="stableId"
+        :currentReviewStatus="locusGeneDiseaseData.is_reviewed"
       />
       <AddComment :stableId="stableId" />
     </div>

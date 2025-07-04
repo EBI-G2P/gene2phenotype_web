@@ -76,6 +76,12 @@ export default {
             </span>
           </h2>
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
+          <span
+            v-if="locusGeneDiseaseData.is_reviewed === false"
+            class="badge text-white fs-6 text-bg-warning"
+          >
+            Under review
+          </span>
         </div>
         <div class="flex-shrink-0">
           <button
