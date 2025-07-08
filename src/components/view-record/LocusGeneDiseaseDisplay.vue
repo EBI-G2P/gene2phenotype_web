@@ -884,25 +884,24 @@ export default {
                             </td>
                             <td>
                               <span
-                                v-if="item.publication?.families?.length > 0"
+                                v-if="
+                                  item.number_of_families ||
+                                  item.affected_individuals ||
+                                  item.ancestry ||
+                                  item.consanguinity
+                                "
                               >
                                 Number of Families:
-                                {{
-                                  item.publication.families[0]
-                                    .number_of_families
-                                }}
-                                <br />
+                                {{ item.number_of_families }}
+                                <hr class="m-0" />
                                 Affected Individuals:
-                                {{
-                                  item.publication.families[0]
-                                    .affected_individuals
-                                }}
-                                <br />
+                                {{ item.affected_individuals }}
+                                <hr class="m-0" />
                                 Ancestry:
-                                {{ item.publication.families[0].ancestry }}
-                                <br />
+                                {{ item.ancestry }}
+                                <hr class="m-0" />
                                 Consanguinity:
-                                {{ item.publication.families[0].consanguinity }}
+                                {{ item.consanguinity }}
                               </span>
                             </td>
                             <td v-if="isAuthenticated" class="ps-0">
