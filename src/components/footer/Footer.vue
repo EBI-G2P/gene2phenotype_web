@@ -47,6 +47,14 @@
             </li>
             <li class="nav-item mb-2">
               <router-link
+                to="/g2p-website-help"
+                class="nav-link p-0 text-body-secondary"
+              >
+                G2P website help
+              </router-link>
+            </li>
+            <li class="nav-item mb-2">
+              <router-link
                 to="/contact"
                 class="nav-link p-0 text-body-secondary"
               >
