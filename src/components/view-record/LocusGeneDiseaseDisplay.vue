@@ -1,6 +1,7 @@
 <script>
 import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../../utility/Constants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
+import { exportRecordPdf } from "../../utility/DownloadUtility.js";
 export default {
   props: {
     isRecordPartOfUserPanels: Boolean,
@@ -16,6 +17,7 @@ export default {
       isDisplayComments: this.locusGeneDiseaseData?.comments?.length > 0,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
+      exportRecordPdf,
     };
   },
   created() {
@@ -84,35 +86,50 @@ export default {
           </span>
         </div>
         <div class="flex-shrink-0">
-          <button
-            class="btn btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#add-panel-modal"
-            v-if="
-              !isPanelDataLoading &&
-              userPanels?.length > 0 &&
-              isAuthenticated &&
-              !isRecordPartOfUserPanels
-            "
-          >
-            <i class="bi bi-plus-circle-fill"></i> Add to another panel
-          </button>
-          <button
-            class="btn btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#update-record-modal"
-            v-if="
-              !isPanelDataLoading && isAuthenticated && isRecordPartOfUserPanels
-            "
-          >
-            <i class="bi bi-pencil-square"></i> Update record
-          </button>
-          <div v-if="isPanelDataLoading && isAuthenticated" class="my-auto">
-            <span
-              class="spinner-border spinner-border-sm text-primary"
-              role="status"
-              aria-hidden="true"
-            ></span>
+          <div class="d-flex align-items-start flex-column">
+            <div>
+              <button
+                class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#add-panel-modal"
+                v-if="
+                  !isPanelDataLoading &&
+                  userPanels?.length > 0 &&
+                  isAuthenticated &&
+                  !isRecordPartOfUserPanels
+                "
+              >
+                <i class="bi bi-plus-circle-fill"></i> Add to another panel
+              </button>
+              <button
+                class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#update-record-modal"
+                v-if="
+                  !isPanelDataLoading &&
+                  isAuthenticated &&
+                  isRecordPartOfUserPanels
+                "
+              >
+                <i class="bi bi-pencil-square"></i> Update record
+              </button>
+              <div v-if="isPanelDataLoading && isAuthenticated" class="my-auto">
+                <span
+                  class="spinner-border spinner-border-sm text-primary"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </div>
+            <div class="mt-1">
+              <button
+                class="btn btn-outline-primary"
+                type="button"
+                @click="exportRecordPdf(locusGeneDiseaseData, isAuthenticated)"
+              >
+                <i class="bi bi-file-earmark-arrow-down"></i> Download PDF
+              </button>
+            </div>
           </div>
         </div>
       </div>
