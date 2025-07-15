@@ -1,6 +1,5 @@
 <script>
 import ToolTip from "../components/tooltip/ToolTip.vue";
-
 export default {
   components: {
     ToolTip,
@@ -12,7 +11,7 @@ export default {
     <h2 class="pb-3">G2P website help</h2>
     <p>
       The G2P database holds detailed gene disease models, defined as
-      locus-genotype-mechanism-evidence-disease threads. These are grouped into
+      locus-genotype-mechanism-disease-evidence threads. These are grouped into
       overlapping panels, defined by clinical speciality. Summary information
       can also be viewed by disease or gene.
     </p>
