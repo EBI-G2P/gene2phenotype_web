@@ -126,8 +126,8 @@ export const VariantTypesAttribs = [
       },
       {
         displayNmdEscape: false,
-        labelText: "ncRNA",
-        inputKey: "ncRNA",
+        labelText: "non_coding_transcript_variant",
+        inputKey: "non_coding_transcript_variant",
       },
     ],
   },
