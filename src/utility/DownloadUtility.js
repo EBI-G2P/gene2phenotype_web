@@ -1,6 +1,10 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { CONFIDENCE_COLOR_MAP } from "./Constants.js";
+import {
+  CONFIDENCE_COLOR_MAP,
+  NOT_AVAILABLE,
+  NOT_ASSIGNED,
+} from "./Constants.js";
 import {
   DECIPHER_URL,
   ENSEMBL_GENE_URL,
@@ -15,9 +19,6 @@ import {
 
 // Set the fonts
 pdfMake.addVirtualFileSystem(pdfFonts);
-
-const NOT_AVAILABLE = "Not Available";
-const NOT_ASSIGNED = "Not Assigned";
 
 const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
   if (locusGeneDiseaseData.variant_type?.length > 0) {
