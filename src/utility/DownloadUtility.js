@@ -651,6 +651,15 @@ const createDocumentDefinition = (
     color: "white",
     background: CONFIDENCE_COLOR_MAP[confidence.toLowerCase()],
   };
+  // Review status section
+  const reviewStatus =
+    locusGeneDiseaseData.is_reviewed === false ? "Under review" : "";
+  const reviewStatusObj = reviewStatus
+    ? {
+        text: reviewStatus,
+        style: "reviewStatusText",
+      }
+    : reviewStatus;
   // Allelic requirement section
   const allelicRequirementHeaderObj = {
     text: "Allelic Requirement",
@@ -885,6 +894,7 @@ const createDocumentDefinition = (
       "\n",
       diseaseNameObj,
       confidenceObj,
+      reviewStatusObj,
       "\n",
       allelicRequirementHeaderObj,
       allelicRequirementObj,
@@ -991,6 +1001,11 @@ const createDocumentDefinition = (
       smallText: {
         fontSize: 8,
         bold: true,
+      },
+      reviewStatusText: {
+        color: "white",
+        background: "#ffc107",
+        marginTop: 5,
       },
     },
   };
