@@ -36,9 +36,9 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
             item.de_novo || item.inherited || item.unknown_inheritance
               ? {
                   ul: [
-                    item.de_novo && "De Novo",
-                    item.inherited && "Inherited",
-                    item.unknown_inheritance && "Unknown Inheritance",
+                    item.de_novo ? "De Novo" : "",
+                    item.inherited ? "Inherited" : "",
+                    item.unknown_inheritance ? "Unknown Inheritance" : "",
                   ],
                 }
               : "",
@@ -78,9 +78,9 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
             item.de_novo || item.inherited || item.unknown_inheritance
               ? {
                   ul: [
-                    item.de_novo && "De Novo",
-                    item.inherited && "Inherited",
-                    item.unknown_inheritance && "Unknown Inheritance",
+                    item.de_novo ? "De Novo" : "",
+                    item.inherited ? "Inherited" : "",
+                    item.unknown_inheritance ? "Unknown Inheritance" : "",
                   ],
                 }
               : "",
@@ -729,11 +729,11 @@ const createDocumentDefinition = (
       }`
     : NOT_AVAILABLE;
   // Mechanism categorisation section
-  const mechanismCategorizationHeaderObj = {
-    text: "Categorization",
+  const mechanismCategorisationHeaderObj = {
+    text: "Categorisation",
     style: "subsubheader",
   };
-  const mechanismCategorizationObj =
+  const mechanismCategorisationObj =
     prepareMechanismCategorisationObj(locusGeneDiseaseData);
   // Mechanism evidence section
   const isDisplayMechanismEvidence =
@@ -911,8 +911,8 @@ const createDocumentDefinition = (
       mechanismHeaderObj,
       mechanismObj,
       "\n",
-      mechanismCategorizationHeaderObj,
-      mechanismCategorizationObj,
+      mechanismCategorisationHeaderObj,
+      mechanismCategorisationObj,
       "\n",
       isDisplayMechanismEvidence ? mechanismEvidenceHeaderObj : "",
       isDisplayMechanismEvidence ? mechanismEvidenceObj : "",
