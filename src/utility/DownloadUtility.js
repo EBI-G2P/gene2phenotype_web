@@ -1,6 +1,17 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { CONFIDENCE_COLOR_MAP } from "./Constants.js";
+import {
+  DECIPHER_URL,
+  ENSEMBL_GENE_URL,
+  ENSEMBL_LOCATION_URL,
+  EUROPE_PMC_URL,
+  HGNC_URL,
+  HPO_URL,
+  MONDO_URL,
+  OMIM_URL,
+  SEQUENCE_ONTOLOGY_URL,
+} from "./UrlConstants.js";
 
 // Set the fonts
 pdfMake.addVirtualFileSystem(pdfFonts);
@@ -29,7 +40,7 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
             item.accession
               ? {
                   text: item.term,
-                  link: `http://www.sequenceontology.org/browser/current_release/term/${item.accession}`,
+                  link: SEQUENCE_ONTOLOGY_URL + item.accession,
                   style: "link",
                 }
               : item.term,
@@ -47,7 +58,7 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
                   ul: item.publications.map((publicationItem) => {
                     return {
                       text: publicationItem,
-                      link: `https://europepmc.org/article/MED/${publicationItem}`,
+                      link: EUROPE_PMC_URL + publicationItem,
                       style: "link",
                     };
                   }),
@@ -71,7 +82,7 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
             item.accession
               ? {
                   text: item.term,
-                  link: `http://www.sequenceontology.org/browser/current_release/term/${item.accession}`,
+                  link: SEQUENCE_ONTOLOGY_URL + item.accession,
                   style: "link",
                 }
               : item.term,
@@ -89,7 +100,7 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
                   ul: item.publications.map((publicationItem) => {
                     return {
                       text: publicationItem,
-                      link: `https://europepmc.org/article/MED/${publicationItem}`,
+                      link: EUROPE_PMC_URL + publicationItem,
                       style: "link",
                     };
                   }),
@@ -135,7 +146,7 @@ const prepareVariantDescriptionObj = (locusGeneDiseaseData) => {
               ul: item.publications.map((publicationItem) => {
                 return {
                   text: publicationItem,
-                  link: `https://europepmc.org/article/MED/${publicationItem}`,
+                  link: EUROPE_PMC_URL + publicationItem,
                   style: "link",
                 };
               }),
@@ -175,7 +186,7 @@ const prepareVariantConsequencesObj = (locusGeneDiseaseData) => {
         item.accession
           ? {
               text: item.variant_consequence,
-              link: `http://www.sequenceontology.org/browser/current_release/term/${item.accession}`,
+              link: SEQUENCE_ONTOLOGY_URL + item.accession,
               style: "link",
             }
           : item.variant_consequence,
@@ -268,7 +279,7 @@ const prepareMechanismEvidenceObj = (locusGeneDiseaseData) => {
     mechanismEvidenceTableBodyRows.push([
       {
         text: key,
-        link: `https://europepmc.org/article/MED/${key}`,
+        link: EUROPE_PMC_URL + key,
         style: "link",
       },
       Object.keys(value?.functional_studies || {}).length > 0
@@ -314,7 +325,7 @@ const preparePhenotypicFeaturesObj = (locusGeneDiseaseData) => {
         item.accession
           ? {
               text: item.accession,
-              link: `https://hpo.jax.org/app/browse/term/${item.accession}`,
+              link: HPO_URL + item.accession,
               style: "link",
             }
           : "",
@@ -324,7 +335,7 @@ const preparePhenotypicFeaturesObj = (locusGeneDiseaseData) => {
               ul: item.publications.map((publicationItem) => {
                 return {
                   text: publicationItem,
-                  link: `https://europepmc.org/article/MED/${publicationItem}`,
+                  link: EUROPE_PMC_URL + publicationItem,
                   style: "link",
                 };
               }),
@@ -365,7 +376,7 @@ const preparePhenotypicSummaryObj = (locusGeneDiseaseData) => {
         item.publication
           ? {
               text: item.publication,
-              link: `https://europepmc.org/article/MED/${item.publication}`,
+              link: EUROPE_PMC_URL + item.publication,
               style: "link",
             }
           : "",
@@ -414,7 +425,7 @@ const preparePublicationsEvidenceObj = (
             item.publication?.pmid
               ? {
                   text: item.publication.pmid,
-                  link: `https://europepmc.org/article/MED/${item.publication.pmid}`,
+                  link: EUROPE_PMC_URL + item.publication.pmid,
                   style: "link",
                 }
               : "",
@@ -450,7 +461,7 @@ const preparePublicationsEvidenceObj = (
             item.publication?.pmid
               ? {
                   text: item.publication.pmid,
-                  link: `https://europepmc.org/article/MED/${item.publication.pmid}`,
+                  link: EUROPE_PMC_URL + item.publication.pmid,
                   style: "link",
                 }
               : "",
@@ -500,28 +511,28 @@ const prepareExternalLinksObj = (locusGeneDiseaseData) => {
   const geneSymbolLink = locusGeneDiseaseData.locus?.gene_symbol
     ? {
         text: locusGeneDiseaseData.locus.gene_symbol,
-        link: `https://www.deciphergenomics.org/gene/${locusGeneDiseaseData.locus.gene_symbol}`,
+        link: DECIPHER_URL + locusGeneDiseaseData.locus.gene_symbol,
         style: "link",
       }
     : NOT_AVAILABLE;
   const omim = locusGeneDiseaseData.locus?.ids?.OMIM
     ? {
         text: locusGeneDiseaseData.locus.ids.OMIM,
-        link: `https://www.omim.org/entry/${locusGeneDiseaseData.locus.ids.OMIM}`,
+        link: OMIM_URL + locusGeneDiseaseData.locus.ids.OMIM,
         style: "link",
       }
     : NOT_AVAILABLE;
   const ensembl = locusGeneDiseaseData.locus?.ids?.Ensembl
     ? {
         text: locusGeneDiseaseData.locus.ids.Ensembl,
-        link: `https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=${locusGeneDiseaseData.locus.ids.Ensembl}`,
+        link: ENSEMBL_GENE_URL + locusGeneDiseaseData.locus.ids.Ensembl,
         style: "link",
       }
     : NOT_AVAILABLE;
   const hgnc = locusGeneDiseaseData.locus?.ids?.HGNC
     ? {
         text: locusGeneDiseaseData.locus.ids.HGNC,
-        link: `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${locusGeneDiseaseData.locus.ids.HGNC}`,
+        link: HGNC_URL + locusGeneDiseaseData.locus.ids.HGNC,
         style: "link",
       }
     : NOT_AVAILABLE;
@@ -555,13 +566,13 @@ const prepareCrossReferencesObj = (locusGeneDiseaseData) => {
         item.source === "OMIM"
           ? {
               text: item.accession,
-              link: `https://www.omim.org/entry/${item.accession}`,
+              link: OMIM_URL + item.accession,
               style: "link",
             }
           : item.source === "Mondo"
           ? {
               text: item.accession,
-              link: `https://monarchinitiative.org/${item.accession}`,
+              link: MONDO_URL + item.accession,
               style: "link",
             }
           : item.accession,
@@ -810,7 +821,7 @@ const createDocumentDefinition = (
     locusGeneDiseaseData.locus?.end
       ? {
           text: `${locusGeneDiseaseData.locus.sequence}:${locusGeneDiseaseData.locus.start}-${locusGeneDiseaseData.locus.end}:${locusGeneDiseaseData.locus.strand}`,
-          link: `https://www.ensembl.org/Homo_sapiens/Location/View?r=${locusGeneDiseaseData.locus?.sequence}:${locusGeneDiseaseData.locus?.start}-${locusGeneDiseaseData.locus?.end}`,
+          link: `${ENSEMBL_LOCATION_URL}${locusGeneDiseaseData.locus?.sequence}:${locusGeneDiseaseData.locus?.start}-${locusGeneDiseaseData.locus?.end}`,
           style: ["link"],
         }
       : locusGeneDiseaseData.locus?.sequence ||
