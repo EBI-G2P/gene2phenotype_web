@@ -425,10 +425,10 @@ const preparePublicationsEvidenceObj = (
             item.consanguinity
               ? {
                   ul: [
-                    `Number of Families: ${item.number_of_families}`,
-                    `Affected Individuals: ${item.affected_individuals}`,
-                    `Ancestry: ${item.ancestry}`,
-                    `Consanguinity: ${item.consanguinity}`,
+                    `Number of Families: ${item.number_of_families ?? ""}`,
+                    `Affected Individuals: ${item.affected_individuals ?? ""}`,
+                    `Ancestry: ${item.ancestry ?? ""}`,
+                    `Consanguinity: ${item.consanguinity ?? ""}`,
                   ],
                 }
               : "",
@@ -461,10 +461,10 @@ const preparePublicationsEvidenceObj = (
             item.consanguinity
               ? {
                   ul: [
-                    `Number of Families: ${item.number_of_families}`,
-                    `Affected Individuals: ${item.affected_individuals}`,
-                    `Ancestry: ${item.ancestry}`,
-                    `Consanguinity: ${item.consanguinity}`,
+                    `Number of Families: ${item.number_of_families ?? ""}`,
+                    `Affected Individuals: ${item.affected_individuals ?? ""}`,
+                    `Ancestry: ${item.ancestry ?? ""}`,
+                    `Consanguinity: ${item.consanguinity ?? ""}`,
                   ],
                 }
               : "",
