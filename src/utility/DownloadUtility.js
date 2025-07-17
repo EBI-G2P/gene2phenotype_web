@@ -20,111 +20,111 @@ import {
 // Set the fonts
 pdfMake.addVirtualFileSystem(pdfFonts);
 
+const createHeaderObj = (text) => {
+  return { text: text, style: "header" };
+};
+
+const createSubHeader = (text) => {
+  return {
+    text: text,
+    style: "subheader",
+  };
+};
+
+const createSubSubHeader = (text) => {
+  return {
+    text: text,
+    style: "subsubheader",
+  };
+};
+
+const createLinkObj = (text, link) => {
+  return {
+    text: text,
+    link: link,
+    style: "link",
+  };
+};
+
+const createTableHeaderRow = (headers) => {
+  return headers.map((item) => {
+    return { text: item, style: "tableHeader" };
+  });
+};
+
+const createTableObj = (tableRows) => {
+  return {
+    table: {
+      headerRows: 1,
+      keepWithHeaderRows: 1,
+      body: tableRows,
+    },
+    style: "tableMargin",
+  };
+};
+
 const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
   if (locusGeneDiseaseData.variant_type?.length > 0) {
     // Prepare table header row
-    const variantTypesTableHeaders = [
-      "Type",
-      "Inheritance",
-      "Publications",
-      isAuthenticated && "Comments",
-    ].filter(Boolean);
-    const variantTypesTableHeaderRow = variantTypesTableHeaders.map((item) => {
-      return { text: item, style: "tableHeader" };
-    });
+    let variantTypesTableHeaders = ["Type", "Inheritance", "Publications"];
+    // If user is authenticated, then include comment header column
+    if (isAuthenticated) {
+      variantTypesTableHeaders.push("Comments");
+    }
+    const variantTypesTableHeaderRow = createTableHeaderRow(
+      variantTypesTableHeaders
+    );
     // Prepare table body rows
     let variantTypesTableBodyRows = [];
-    if (isAuthenticated) {
-      variantTypesTableBodyRows = locusGeneDiseaseData.variant_type.map(
-        (item) => {
-          return [
-            item.accession
-              ? {
-                  text: item.term,
-                  link: SEQUENCE_ONTOLOGY_URL + item.accession,
-                  style: "link",
-                }
-              : item.term,
-            item.de_novo || item.inherited || item.unknown_inheritance
-              ? {
-                  ul: [
-                    item.de_novo ? "De Novo" : "",
-                    item.inherited ? "Inherited" : "",
-                    item.unknown_inheritance ? "Unknown Inheritance" : "",
-                  ],
-                }
-              : "",
-            item.publications?.length > 0
-              ? {
-                  ul: item.publications.map((publicationItem) => {
-                    return {
-                      text: publicationItem,
-                      link: EUROPE_PMC_URL + publicationItem,
-                      style: "link",
-                    };
-                  }),
-                }
-              : "",
-            item.comments?.length > 0
-              ? {
-                  ul: item.comments.map(
-                    (commentItem) =>
-                      commentItem.text + " (" + commentItem.date + ")"
-                  ),
-                }
-              : "",
-          ];
-        }
-      );
-    } else {
-      variantTypesTableBodyRows = locusGeneDiseaseData.variant_type.map(
-        (item) => {
-          return [
-            item.accession
-              ? {
-                  text: item.term,
-                  link: SEQUENCE_ONTOLOGY_URL + item.accession,
-                  style: "link",
-                }
-              : item.term,
-            item.de_novo || item.inherited || item.unknown_inheritance
-              ? {
-                  ul: [
-                    item.de_novo ? "De Novo" : "",
-                    item.inherited ? "Inherited" : "",
-                    item.unknown_inheritance ? "Unknown Inheritance" : "",
-                  ],
-                }
-              : "",
-            item.publications?.length > 0
-              ? {
-                  ul: item.publications.map((publicationItem) => {
-                    return {
-                      text: publicationItem,
-                      link: EUROPE_PMC_URL + publicationItem,
-                      style: "link",
-                    };
-                  }),
-                }
-              : "",
-          ];
-        }
-      );
-    }
+    locusGeneDiseaseData.variant_type.forEach((item) => {
+      let tableBodyRow = [
+        item.accession
+          ? createLinkObj(item.term, SEQUENCE_ONTOLOGY_URL + item.accession)
+          : item.term,
+        item.de_novo || item.inherited || item.unknown_inheritance
+          ? {
+              ul: [
+                item.de_novo ? "De Novo" : "",
+                item.inherited ? "Inherited" : "",
+                item.unknown_inheritance ? "Unknown Inheritance" : "",
+              ],
+            }
+          : "",
+        item.publications?.length > 0
+          ? {
+              ul: item.publications.map((publicationItem) => {
+                return createLinkObj(
+                  publicationItem,
+                  EUROPE_PMC_URL + publicationItem
+                );
+              }),
+            }
+          : "",
+      ];
+      // If user is authenticated, then include comment column data
+      if (isAuthenticated) {
+        tableBodyRow.push(
+          item.comments?.length > 0
+            ? {
+                ul: item.comments.map(
+                  (commentItem) =>
+                    commentItem.text + " (" + commentItem.date + ")"
+                ),
+              }
+            : ""
+        );
+      }
+      variantTypesTableBodyRows.push(tableBodyRow);
+    });
+
     // Prepare table rows (header and body rows)
     const variantTypesTableRows = [
       variantTypesTableHeaderRow,
       ...variantTypesTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: variantTypesTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(variantTypesTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -133,10 +133,8 @@ const prepareVariantDescriptionObj = (locusGeneDiseaseData) => {
   if (locusGeneDiseaseData.variant_description?.length > 0) {
     // Prepare table header row
     const variantDescriptionHeaders = ["Variant Description", "Publications"];
-    const variantDescriptionTableHeaderRow = variantDescriptionHeaders.map(
-      (item) => {
-        return { text: item, style: "tableHeader" };
-      }
+    const variantDescriptionTableHeaderRow = createTableHeaderRow(
+      variantDescriptionHeaders
     );
     // Prepare table body rows
     const variantDescriptionTableBodyRows =
@@ -145,11 +143,10 @@ const prepareVariantDescriptionObj = (locusGeneDiseaseData) => {
         item.publications?.length > 0
           ? {
               ul: item.publications.map((publicationItem) => {
-                return {
-                  text: publicationItem,
-                  link: EUROPE_PMC_URL + publicationItem,
-                  style: "link",
-                };
+                return createLinkObj(
+                  publicationItem,
+                  EUROPE_PMC_URL + publicationItem
+                );
               }),
             }
           : "",
@@ -160,14 +157,8 @@ const prepareVariantDescriptionObj = (locusGeneDiseaseData) => {
       ...variantDescriptionTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: variantDescriptionTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(variantDescriptionTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -176,20 +167,17 @@ const prepareVariantConsequencesObj = (locusGeneDiseaseData) => {
   if (locusGeneDiseaseData.variant_consequence?.length > 0) {
     // Prepare table header row
     const variantConsequencesHeaders = ["Variant Consequence", "Support"];
-    const variantConsequencesTableHeaderRow = variantConsequencesHeaders.map(
-      (item) => {
-        return { text: item, style: "tableHeader" };
-      }
+    const variantConsequencesTableHeaderRow = createTableHeaderRow(
+      variantConsequencesHeaders
     );
     // Prepare table body rows
     const variantConsequencesTableBodyRows =
       locusGeneDiseaseData.variant_consequence.map((item) => [
         item.accession
-          ? {
-              text: item.variant_consequence,
-              link: SEQUENCE_ONTOLOGY_URL + item.accession,
-              style: "link",
-            }
+          ? createLinkObj(
+              item.variant_consequence,
+              SEQUENCE_ONTOLOGY_URL + item.accession
+            )
           : item.variant_consequence,
         item.support,
       ]);
@@ -199,14 +187,8 @@ const prepareVariantConsequencesObj = (locusGeneDiseaseData) => {
       ...variantConsequencesTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: variantConsequencesTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(variantConsequencesTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -215,10 +197,9 @@ const prepareMechanismCategorisationObj = (locusGeneDiseaseData) => {
   if (locusGeneDiseaseData.molecular_mechanism?.synopsis?.length > 0) {
     // Prepare table header row
     const mechanismCategorisationHeaders = ["Categorisation", "Support"];
-    const mechanismCategorisationTableHeaderRow =
-      mechanismCategorisationHeaders.map((item) => {
-        return { text: item, style: "tableHeader" };
-      });
+    const mechanismCategorisationTableHeaderRow = createTableHeaderRow(
+      mechanismCategorisationHeaders
+    );
     // Prepare table body rows
     const mechanismCategorisationTableBodyRows =
       locusGeneDiseaseData.molecular_mechanism.synopsis.map((item) => [
@@ -231,14 +212,8 @@ const prepareMechanismCategorisationObj = (locusGeneDiseaseData) => {
       ...mechanismCategorisationTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: mechanismCategorisationTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(mechanismCategorisationTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -267,10 +242,8 @@ const prepareMechanismEvidenceObj = (locusGeneDiseaseData) => {
     "Functional Studies",
     "Descriptions",
   ];
-  const mechanismEvidenceTableHeaderRow = mechanismEvidenceHeaders.map(
-    (item) => {
-      return { text: item, style: "tableHeader" };
-    }
+  const mechanismEvidenceTableHeaderRow = createTableHeaderRow(
+    mechanismEvidenceHeaders
   );
   // Prepare table body rows
   let mechanismEvidenceTableBodyRows = [];
@@ -278,11 +251,7 @@ const prepareMechanismEvidenceObj = (locusGeneDiseaseData) => {
     locusGeneDiseaseData.molecular_mechanism.evidence
   )) {
     mechanismEvidenceTableBodyRows.push([
-      {
-        text: key,
-        link: EUROPE_PMC_URL + key,
-        style: "link",
-      },
+      createLinkObj(key, EUROPE_PMC_URL + key),
       Object.keys(value?.functional_studies || {}).length > 0
         ? {
             ul: getMechanismEvidenceTypes(value.functional_studies),
@@ -301,44 +270,31 @@ const prepareMechanismEvidenceObj = (locusGeneDiseaseData) => {
     ...mechanismEvidenceTableBodyRows,
   ];
 
-  return {
-    table: {
-      headerRows: 1,
-      keepWithHeaderRows: 1,
-      body: mechanismEvidenceTableRows,
-    },
-    style: "tableMargin",
-  };
+  // Return table object
+  return createTableObj(mechanismEvidenceTableRows);
 };
 
 const preparePhenotypicFeaturesObj = (locusGeneDiseaseData) => {
   if (locusGeneDiseaseData.phenotypes?.length > 0) {
     // Prepare table header row
     const phenotypicFeaturesHeaders = ["Accession", "Term", "Publications"];
-    const phenotypicFeaturesTableHeaderRow = phenotypicFeaturesHeaders.map(
-      (item) => {
-        return { text: item, style: "tableHeader" };
-      }
+    const phenotypicFeaturesTableHeaderRow = createTableHeaderRow(
+      phenotypicFeaturesHeaders
     );
     // Prepare table body rows
     const phenotypicFeaturesTableBodyRows = locusGeneDiseaseData.phenotypes.map(
       (item) => [
         item.accession
-          ? {
-              text: item.accession,
-              link: HPO_URL + item.accession,
-              style: "link",
-            }
+          ? createLinkObj(item.accession, HPO_URL + item.accession)
           : "",
         item.term,
         item.publications?.length > 0
           ? {
               ul: item.publications.map((publicationItem) => {
-                return {
-                  text: publicationItem,
-                  link: EUROPE_PMC_URL + publicationItem,
-                  style: "link",
-                };
+                return createLinkObj(
+                  publicationItem,
+                  EUROPE_PMC_URL + publicationItem
+                );
               }),
             }
           : "",
@@ -350,14 +306,8 @@ const preparePhenotypicFeaturesObj = (locusGeneDiseaseData) => {
       ...phenotypicFeaturesTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: phenotypicFeaturesTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(phenotypicFeaturesTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -366,20 +316,14 @@ const preparePhenotypicSummaryObj = (locusGeneDiseaseData) => {
   if (locusGeneDiseaseData.phenotype_summary?.length > 0) {
     // Prepare table header row
     const phenotypicSummaryHeaders = ["Publication", "Phenotypic Summary"];
-    const phenotypicSummaryTableHeaderRow = phenotypicSummaryHeaders.map(
-      (item) => {
-        return { text: item, style: "tableHeader" };
-      }
+    const phenotypicSummaryTableHeaderRow = createTableHeaderRow(
+      phenotypicSummaryHeaders
     );
     // Prepare table body rows
     const phenotypicSummaryTableBodyRows =
       locusGeneDiseaseData.phenotype_summary.map((item) => [
         item.publication
-          ? {
-              text: item.publication,
-              link: EUROPE_PMC_URL + item.publication,
-              style: "link",
-            }
+          ? createLinkObj(item.publication, EUROPE_PMC_URL + item.publication)
           : "",
         item.summary,
       ]);
@@ -389,14 +333,8 @@ const preparePhenotypicSummaryObj = (locusGeneDiseaseData) => {
       ...phenotypicSummaryTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: phenotypicSummaryTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(phenotypicSummaryTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -407,97 +345,62 @@ const preparePublicationsEvidenceObj = (
 ) => {
   if (locusGeneDiseaseData.publications?.length > 0) {
     // Prepare table header row
-    const publicationsEvidenceTableHeaders = [
-      "PMID",
-      "Title",
-      "Individuals",
-      isAuthenticated && "Comments",
-    ].filter(Boolean);
-    const publicationsEvidenceTableHeaderRow =
-      publicationsEvidenceTableHeaders.map((item) => {
-        return { text: item, style: "tableHeader" };
-      });
+    let publicationsEvidenceTableHeaders = ["PMID", "Title", "Individuals"];
+    // If user is authenticated, then include comment header column
+    if (isAuthenticated) {
+      publicationsEvidenceTableHeaders.push("Comments");
+    }
+    const publicationsEvidenceTableHeaderRow = createTableHeaderRow(
+      publicationsEvidenceTableHeaders
+    );
     // Prepare table body rows
     let publicationsEvidenceTableBodyRows = [];
-    if (isAuthenticated) {
-      publicationsEvidenceTableBodyRows = locusGeneDiseaseData.publications.map(
-        (item) => {
-          return [
-            item.publication?.pmid
-              ? {
-                  text: item.publication.pmid,
-                  link: EUROPE_PMC_URL + item.publication.pmid,
-                  style: "link",
-                }
-              : "",
-            item.publication.title,
-            item.number_of_families ||
-            item.affected_individuals ||
-            item.ancestry ||
-            item.consanguinity
-              ? {
-                  ul: [
-                    `Number of Families: ${item.number_of_families ?? ""}`,
-                    `Affected Individuals: ${item.affected_individuals ?? ""}`,
-                    `Ancestry: ${item.ancestry ?? ""}`,
-                    `Consanguinity: ${item.consanguinity ?? ""}`,
-                  ],
-                }
-              : "",
-            item.publication?.comments?.length > 0
-              ? {
-                  ul: item.publication.comments.map(
-                    (commentItem) =>
-                      commentItem.comment + " (" + commentItem.date + ")"
-                  ),
-                }
-              : "",
-          ];
-        }
-      );
-    } else {
-      publicationsEvidenceTableBodyRows = locusGeneDiseaseData.publications.map(
-        (item) => {
-          return [
-            item.publication?.pmid
-              ? {
-                  text: item.publication.pmid,
-                  link: EUROPE_PMC_URL + item.publication.pmid,
-                  style: "link",
-                }
-              : "",
-            item.publication.title,
-            item.number_of_families ||
-            item.affected_individuals ||
-            item.ancestry ||
-            item.consanguinity
-              ? {
-                  ul: [
-                    `Number of Families: ${item.number_of_families ?? ""}`,
-                    `Affected Individuals: ${item.affected_individuals ?? ""}`,
-                    `Ancestry: ${item.ancestry ?? ""}`,
-                    `Consanguinity: ${item.consanguinity ?? ""}`,
-                  ],
-                }
-              : "",
-          ];
-        }
-      );
-    }
+    locusGeneDiseaseData.publications.forEach((item) => {
+      let bodyRow = [
+        item.publication?.pmid
+          ? createLinkObj(
+              item.publication.pmid,
+              EUROPE_PMC_URL + item.publication.pmid
+            )
+          : "",
+        item.publication.title,
+        item.number_of_families ||
+        item.affected_individuals ||
+        item.ancestry ||
+        item.consanguinity
+          ? {
+              ul: [
+                `Number of Families: ${item.number_of_families ?? ""}`,
+                `Affected Individuals: ${item.affected_individuals ?? ""}`,
+                `Ancestry: ${item.ancestry ?? ""}`,
+                `Consanguinity: ${item.consanguinity ?? ""}`,
+              ],
+            }
+          : "",
+      ];
+      // If user is authenticated, then include comment column data
+      if (isAuthenticated) {
+        bodyRow.push(
+          item.publication?.comments?.length > 0
+            ? {
+                ul: item.publication.comments.map(
+                  (commentItem) =>
+                    commentItem.comment + " (" + commentItem.date + ")"
+                ),
+              }
+            : ""
+        );
+      }
+      publicationsEvidenceTableBodyRows.push(bodyRow);
+    });
     // Prepare table rows (header and body rows)
     const publicationsEvidenceTableRows = [
       publicationsEvidenceTableHeaderRow,
       ...publicationsEvidenceTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: publicationsEvidenceTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(publicationsEvidenceTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -505,37 +408,32 @@ const preparePublicationsEvidenceObj = (
 const prepareExternalLinksObj = (locusGeneDiseaseData) => {
   // Prepare table header row
   const externalLinksHeaders = ["DECIPHER", "OMIM", "Ensembl ID", "HGNC ID"];
-  const externalLinksTableHeaderRow = externalLinksHeaders.map((item) => {
-    return { text: item, style: "tableHeader" };
-  });
+  const externalLinksTableHeaderRow =
+    createTableHeaderRow(externalLinksHeaders);
   // Prepare table body rows
   const geneSymbolLink = locusGeneDiseaseData.locus?.gene_symbol
-    ? {
-        text: locusGeneDiseaseData.locus.gene_symbol,
-        link: DECIPHER_URL + locusGeneDiseaseData.locus.gene_symbol,
-        style: "link",
-      }
+    ? createLinkObj(
+        locusGeneDiseaseData.locus.gene_symbol,
+        DECIPHER_URL + locusGeneDiseaseData.locus.gene_symbol
+      )
     : NOT_AVAILABLE;
   const omim = locusGeneDiseaseData.locus?.ids?.OMIM
-    ? {
-        text: locusGeneDiseaseData.locus.ids.OMIM,
-        link: OMIM_URL + locusGeneDiseaseData.locus.ids.OMIM,
-        style: "link",
-      }
+    ? createLinkObj(
+        locusGeneDiseaseData.locus.ids.OMIM,
+        OMIM_URL + locusGeneDiseaseData.locus.ids.OMIM
+      )
     : NOT_AVAILABLE;
   const ensembl = locusGeneDiseaseData.locus?.ids?.Ensembl
-    ? {
-        text: locusGeneDiseaseData.locus.ids.Ensembl,
-        link: ENSEMBL_GENE_URL + locusGeneDiseaseData.locus.ids.Ensembl,
-        style: "link",
-      }
+    ? createLinkObj(
+        locusGeneDiseaseData.locus.ids.Ensembl,
+        ENSEMBL_GENE_URL + locusGeneDiseaseData.locus.ids.Ensembl
+      )
     : NOT_AVAILABLE;
   const hgnc = locusGeneDiseaseData.locus?.ids?.HGNC
-    ? {
-        text: locusGeneDiseaseData.locus.ids.HGNC,
-        link: HGNC_URL + locusGeneDiseaseData.locus.ids.HGNC,
-        style: "link",
-      }
+    ? createLinkObj(
+        locusGeneDiseaseData.locus.ids.HGNC,
+        HGNC_URL + locusGeneDiseaseData.locus.ids.HGNC
+      )
     : NOT_AVAILABLE;
   const externalLinksTableBodyRow = [geneSymbolLink, omim, ensembl, hgnc];
   // Prepare table rows (header and body row)
@@ -544,38 +442,24 @@ const prepareExternalLinksObj = (locusGeneDiseaseData) => {
     externalLinksTableBodyRow,
   ];
 
-  return {
-    table: {
-      headerRows: 1,
-      keepWithHeaderRows: 1,
-      body: externalLinksTableRows,
-    },
-    style: "tableMargin",
-  };
+  // Return table object
+  return createTableObj(externalLinksTableRows);
 };
 
 const prepareCrossReferencesObj = (locusGeneDiseaseData) => {
   if (locusGeneDiseaseData.disease?.ontology_terms?.length > 0) {
     // Prepare table header row
     const crossReferencesHeaders = ["Accession", "Term", "Source"];
-    const crossReferencesTableHeaderRow = crossReferencesHeaders.map((item) => {
-      return { text: item, style: "tableHeader" };
-    });
+    const crossReferencesTableHeaderRow = createTableHeaderRow(
+      crossReferencesHeaders
+    );
     // Prepare table body rows
     const crossReferencesTableBodyRows =
       locusGeneDiseaseData.disease.ontology_terms.map((item) => [
         item.source === "OMIM"
-          ? {
-              text: item.accession,
-              link: OMIM_URL + item.accession,
-              style: "link",
-            }
+          ? createLinkObj(item.accession, OMIM_URL + item.accession)
           : item.source === "Mondo"
-          ? {
-              text: item.accession,
-              link: MONDO_URL + item.accession,
-              style: "link",
-            }
+          ? createLinkObj(item.accession, MONDO_URL + item.accession)
           : item.accession,
         item.term,
         item.source,
@@ -586,14 +470,8 @@ const prepareCrossReferencesObj = (locusGeneDiseaseData) => {
       ...crossReferencesTableBodyRows,
     ];
 
-    return {
-      table: {
-        headerRows: 1,
-        keepWithHeaderRows: 1,
-        body: crossReferencesTableRows,
-      },
-      style: "tableMargin",
-    };
+    // Return table object
+    return createTableObj(crossReferencesTableRows);
   }
   return NOT_AVAILABLE;
 };
@@ -601,9 +479,7 @@ const prepareCrossReferencesObj = (locusGeneDiseaseData) => {
 const prepareCommentsObj = (locusGeneDiseaseData) => {
   // Prepare table header row
   const commentsHeaders = ["Comment", "Type"];
-  const commentsTableHeaderRow = commentsHeaders.map((item) => {
-    return { text: item, style: "tableHeader" };
-  });
+  const commentsTableHeaderRow = createTableHeaderRow(commentsHeaders);
   // Prepare table body rows
   const commentsTableBodyRows = locusGeneDiseaseData.comments.map((item) => [
     item.text,
@@ -612,14 +488,8 @@ const prepareCommentsObj = (locusGeneDiseaseData) => {
   // Prepare table rows (header and body rows)
   const commentsTableRows = [commentsTableHeaderRow, ...commentsTableBodyRows];
 
-  return {
-    table: {
-      headerRows: 1,
-      keepWithHeaderRows: 1,
-      body: commentsTableRows,
-    },
-    style: "tableMargin",
-  };
+  // Return table object
+  return createTableObj(commentsTableRows);
 };
 
 const createDocumentDefinition = (
@@ -631,11 +501,7 @@ const createDocumentDefinition = (
   const downloadedRecordPageObj = {
     text: [
       "Downloaded from G2P: ",
-      {
-        text: window.location.href,
-        link: `${window.location.href}`,
-        style: ["link"],
-      },
+      createLinkObj(window.location.href, window.location.href),
     ],
     style: "smallText",
   };
@@ -653,7 +519,7 @@ const createDocumentDefinition = (
   const diseaseName = locusGeneDiseaseData.disease?.name
     ? locusGeneDiseaseData.disease.name
     : "Disease Name Not Available";
-  const diseaseNameObj = { text: diseaseName, style: "header" };
+  const diseaseNameObj = createHeaderObj(diseaseName);
   // Confidence section
   const confidence = locusGeneDiseaseData.confidence
     ? locusGeneDiseaseData.confidence
@@ -673,18 +539,14 @@ const createDocumentDefinition = (
       }
     : reviewStatus;
   // Allelic requirement section
-  const allelicRequirementHeaderObj = {
-    text: "Allelic Requirement",
-    style: "subheader",
-  };
+  const allelicRequirementHeaderObj = createSubHeader("Allelic Requirement");
   const allelicRequirementObj = locusGeneDiseaseData.genotype
     ? locusGeneDiseaseData.genotype
     : NOT_AVAILABLE;
   // Cross cutting modifiers section
-  const crossCuttingModifiersHeaderObj = {
-    text: "Cross Cutting Modifiers",
-    style: "subheader",
-  };
+  const crossCuttingModifiersHeaderObj = createSubHeader(
+    "Cross Cutting Modifiers"
+  );
   const crossCuttingModifiersObj =
     locusGeneDiseaseData.cross_cutting_modifier?.length > 0
       ? locusGeneDiseaseData.cross_cutting_modifier
@@ -692,10 +554,7 @@ const createDocumentDefinition = (
           .join(", ")
       : NOT_ASSIGNED;
   // Panels section
-  const panelsHeaderObj = {
-    text: "Panels",
-    style: "subheader",
-  };
+  const panelsHeaderObj = createSubHeader("Panels");
   const panelsObj =
     locusGeneDiseaseData.panels?.length > 0
       ? locusGeneDiseaseData.panels
@@ -703,43 +562,27 @@ const createDocumentDefinition = (
           .join(", ")
       : NOT_AVAILABLE;
   // Variant information section
-  const variantInformationHeaderObj = {
-    text: "Variant Information",
-    style: "subheader",
-  };
+  const variantInformationHeaderObj = createSubHeader("Variant Information");
   // Variant types section
-  const variantTypesHeaderObj = {
-    text: "Variant Types",
-    style: "subsubheader",
-  };
+  const variantTypesHeaderObj = createSubSubHeader("Variant Types");
   const variantTypesObj = prepareVariantTypesObj(
     locusGeneDiseaseData,
     isAuthenticated
   );
   // Variant description section
-  const variantDescriptionHeaderObj = {
-    text: "Variant Description",
-    style: "subsubheader",
-  };
+  const variantDescriptionHeaderObj = createSubSubHeader("Variant Description");
   const variantDescriptionObj =
     prepareVariantDescriptionObj(locusGeneDiseaseData);
   // Variant consequences section
-  const variantConsequencesHeaderObj = {
-    text: "Variant Consequences",
-    style: "subsubheader",
-  };
+  const variantConsequencesHeaderObj = createSubSubHeader(
+    "Variant Consequences"
+  );
   const variantConsequencesObj =
     prepareVariantConsequencesObj(locusGeneDiseaseData);
   // Molecular mechanism section
-  const molecularMechanismHeaderObj = {
-    text: "Molecular Mechanism",
-    style: "subheader",
-  };
+  const molecularMechanismHeaderObj = createSubHeader("Molecular Mechanism");
   // Mechanism section
-  const mechanismHeaderObj = {
-    text: "Mechanism",
-    style: "subsubheader",
-  };
+  const mechanismHeaderObj = createSubSubHeader("Mechanism");
   const mechanismObj = locusGeneDiseaseData.molecular_mechanism?.mechanism
     ? `${locusGeneDiseaseData.molecular_mechanism.mechanism} ${
         locusGeneDiseaseData.molecular_mechanism?.mechanism_support ===
@@ -750,142 +593,87 @@ const createDocumentDefinition = (
       }`
     : NOT_AVAILABLE;
   // Mechanism categorisation section
-  const mechanismCategorisationHeaderObj = {
-    text: "Categorisation",
-    style: "subsubheader",
-  };
+  const mechanismCategorisationHeaderObj = createSubSubHeader("Categorisation");
   const mechanismCategorisationObj =
     prepareMechanismCategorisationObj(locusGeneDiseaseData);
   // Mechanism evidence section
-  const isDisplayMechanismEvidence =
+  const isDisplayMechanismEvidenceSection =
     locusGeneDiseaseData.molecular_mechanism?.evidence &&
     Object.keys(locusGeneDiseaseData.molecular_mechanism.evidence).length > 0;
-  const mechanismEvidenceHeaderObj = {
-    text: "Evidence",
-    style: "subsubheader",
-  };
+  const mechanismEvidenceHeaderObj = createSubSubHeader("Evidence");
   const mechanismEvidenceObj =
     prepareMechanismEvidenceObj(locusGeneDiseaseData);
   // Phenotypic features section
-  const phenotypicFeaturesHeaderObj = {
-    text: "Phenotypic Features",
-    style: "subheader",
-  };
+  const phenotypicFeaturesHeaderObj = createSubHeader("Phenotypic Features");
   const phenotypicFeaturesObj =
     preparePhenotypicFeaturesObj(locusGeneDiseaseData);
   // Phenotypic summary section
-  const phenotypicSummaryHeaderObj = {
-    text: "Phenotypic Summary",
-    style: "subheader",
-  };
+  const phenotypicSummaryHeaderObj = createSubHeader("Phenotypic Summary");
   const phenotypicSummaryObj =
     preparePhenotypicSummaryObj(locusGeneDiseaseData);
   // Publications evidence section
-  const publicationsEvidenceHeaderObj = {
-    text: "Evidence",
-    style: "subheader",
-  };
+  const publicationsEvidenceHeaderObj = createSubHeader("Evidence");
   const publicationsEvidenceObj = preparePublicationsEvidenceObj(
     locusGeneDiseaseData,
     isAuthenticated
   );
   // Gene information section
-  const geneInformationHeaderObj = {
-    text: "Gene Information",
-    style: "subheader",
-  };
+  const geneInformationHeaderObj = createSubHeader("Gene Information");
   // Gene symbol section
-  const geneSymbolHeaderObj = {
-    text: "Gene Symbol",
-    style: "subsubheader",
-  };
+  const geneSymbolHeaderObj = createSubSubHeader("Gene Symbol");
   const geneSymbolObj = locusGeneDiseaseData.locus?.gene_symbol
     ? locusGeneDiseaseData.locus?.gene_symbol
     : NOT_AVAILABLE;
   // Gene synonyms section
-  const geneSynonymsHeaderObj = {
-    text: "Synonyms",
-    style: "subsubheader",
-  };
+  const geneSynonymsHeaderObj = createSubSubHeader("Synonyms");
   const geneSynonymsObj =
     locusGeneDiseaseData.locus?.synonyms?.length > 0
       ? locusGeneDiseaseData.locus.synonyms.join(", ")
       : NOT_AVAILABLE;
   // Location section
-  const locationHeaderObj = {
-    text: "Location",
-    style: "subsubheader",
-  };
+  const locationHeaderObj = createSubSubHeader("Location");
   const locationObj =
     locusGeneDiseaseData.locus?.sequence &&
     locusGeneDiseaseData.locus?.start &&
     locusGeneDiseaseData.locus?.end
-      ? {
-          text: `${locusGeneDiseaseData.locus.sequence}:${locusGeneDiseaseData.locus.start}-${locusGeneDiseaseData.locus.end}:${locusGeneDiseaseData.locus.strand}`,
-          link: `${ENSEMBL_LOCATION_URL}${locusGeneDiseaseData.locus?.sequence}:${locusGeneDiseaseData.locus?.start}-${locusGeneDiseaseData.locus?.end}`,
-          style: ["link"],
-        }
+      ? createLinkObj(
+          `${locusGeneDiseaseData.locus.sequence}:${locusGeneDiseaseData.locus.start}-${locusGeneDiseaseData.locus.end}:${locusGeneDiseaseData.locus.strand}`,
+          `${ENSEMBL_LOCATION_URL}${locusGeneDiseaseData.locus?.sequence}:${locusGeneDiseaseData.locus?.start}-${locusGeneDiseaseData.locus?.end}`
+        )
       : locusGeneDiseaseData.locus?.sequence ||
         locusGeneDiseaseData.locus?.start ||
         locusGeneDiseaseData.locus?.end
       ? `${locusGeneDiseaseData.locus.sequence}:${locusGeneDiseaseData.locus.start}-${locusGeneDiseaseData.locus.end}:${locusGeneDiseaseData.locus.strand}`
       : NOT_AVAILABLE;
   // External links section
-  const externalLinksHeaderObj = {
-    text: "External Links",
-    style: "subsubheader",
-  };
+  const externalLinksHeaderObj = createSubSubHeader("External Links");
   const externalLinksObj = prepareExternalLinksObj(locusGeneDiseaseData);
   // Disease Information section
-  const diseaseInformationHeaderObj = {
-    text: "Disease Information",
-    style: "subheader",
-  };
+  const diseaseInformationHeaderObj = createSubHeader("Disease Information");
   // Disease name section
-  const diseaseNameHeaderObj = {
-    text: "Disease Name",
-    style: "subsubheader",
-  };
+  const diseaseNameHeaderObj = createSubSubHeader("Disease Name");
   const diseaseNameTextObj = diseaseName;
   // Cross references section
-  const crossReferencesHeaderObj = {
-    text: "Cross References",
-    style: "subsubheader",
-  };
+  const crossReferencesHeaderObj = createSubSubHeader("Cross References");
   const crossReferencesObj = prepareCrossReferencesObj(locusGeneDiseaseData);
   // G2P ID section
-  const g2pIdHeaderObj = {
-    text: "G2P ID",
-    style: "subheader",
-  };
+  const g2pIdHeaderObj = createSubHeader("G2P ID");
   const g2pIdObj = locusGeneDiseaseData.stable_id
     ? locusGeneDiseaseData.stable_id
     : NOT_AVAILABLE;
   // Comments section
-  const isDisplayComments = locusGeneDiseaseData?.comments?.length > 0;
-  const commentsHeaderObj = {
-    text: "Comments",
-    style: "subheader",
-  };
+  const isDisplayCommentsSection = locusGeneDiseaseData?.comments?.length > 0;
+  const commentsHeaderObj = createSubHeader("Comments");
   const commentsObj = prepareCommentsObj(locusGeneDiseaseData);
   // Curation Information section
-  const curationInformationHeaderObj = {
-    text: "Curation Information",
-    style: "subheader",
-  };
+  const curationInformationHeaderObj = createSubHeader("Curation Information");
   // Created on section
-  const createdOnDateHeaderObj = {
-    text: "Created On",
-    style: "subsubheader",
-  };
+  const createdOnDateHeaderObj = createSubSubHeader("Created On");
   const createdOnDateObj = locusGeneDiseaseData.date_created
     ? locusGeneDiseaseData.date_created
     : NOT_AVAILABLE;
   // Last updated on section
-  const lastUpdatedOnDateHeaderObj = {
-    text: "Last Updated On",
-    style: "subsubheader",
-  };
+  const lastUpdatedOnDateHeaderObj = createSubSubHeader("Last Updated On");
   const lastUpdatedOnDateObj = locusGeneDiseaseData.last_updated
     ? locusGeneDiseaseData.last_updated
     : NOT_AVAILABLE;
@@ -936,9 +724,9 @@ const createDocumentDefinition = (
       mechanismCategorisationHeaderObj,
       mechanismCategorisationObj,
       "\n",
-      isDisplayMechanismEvidence ? mechanismEvidenceHeaderObj : "",
-      isDisplayMechanismEvidence ? mechanismEvidenceObj : "",
-      isDisplayMechanismEvidence ? "\n" : "",
+      isDisplayMechanismEvidenceSection ? mechanismEvidenceHeaderObj : "",
+      isDisplayMechanismEvidenceSection ? mechanismEvidenceObj : "",
+      isDisplayMechanismEvidenceSection ? "\n" : "",
       phenotypicFeaturesHeaderObj,
       phenotypicFeaturesObj,
       "\n",
@@ -973,9 +761,9 @@ const createDocumentDefinition = (
       g2pIdHeaderObj,
       g2pIdObj,
       "\n",
-      isDisplayComments ? commentsHeaderObj : "",
-      isDisplayComments ? commentsObj : "",
-      isDisplayComments ? "\n" : "",
+      isDisplayCommentsSection ? commentsHeaderObj : "",
+      isDisplayCommentsSection ? commentsObj : "",
+      isDisplayCommentsSection ? "\n" : "",
       curationInformationHeaderObj,
       "\n",
       createdOnDateHeaderObj,
