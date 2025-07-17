@@ -568,8 +568,8 @@ export default {
                     "
                     class="m-0"
                   >
-                    <i class="bi bi-info-circle"></i> Please select values to
-                    enter the description.
+                    <i class="bi bi-info-circle"></i> Please select functional
+                    studies to enter the description.
                   </p>
                   <p
                     v-if="
@@ -580,8 +580,8 @@ export default {
                     "
                     class="m-0"
                   >
-                    <i class="bi bi-info-circle"></i> Please select values to
-                    save the description.
+                    <i class="bi bi-info-circle"></i> Please select functional
+                    studies to save the description.
                   </p>
                   <div class="mt-2">
                     <label
