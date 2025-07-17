@@ -27,6 +27,17 @@ export default {
       updatedMechanismEvidence[pmid].description = inputValue;
       this.$emit("updateMechanismEvidence", updatedMechanismEvidence);
     },
+    isDisableEvidenceDescription(pmid) {
+      EvidenceTypesAttribs.forEach((item) => {
+        if (
+          this.mechanismEvidence[pmid].evidence_types[item.primaryType].length >
+          0
+        ) {
+          return false;
+        }
+      });
+      return true;
+    },
     kebabCase,
   },
   data() {
@@ -96,6 +107,28 @@ export default {
           </li>
         </ul>
       </div>
+      <p
+        v-if="
+          Object.values(mechanismEvidence[pmid].evidence_types).every(
+            (arr) => arr.length === 0
+          ) && mechanismEvidence[pmid].description.length === 0
+        "
+        class="m-0"
+      >
+        <i class="bi bi-info-circle"></i> Please select values to enter the
+        description.
+      </p>
+      <p
+        v-if="
+          Object.values(mechanismEvidence[pmid].evidence_types).every(
+            (arr) => arr.length === 0
+          ) && mechanismEvidence[pmid].description.length > 0
+        "
+        class="m-0"
+      >
+        <i class="bi bi-info-circle"></i> Please select values to save the
+        description.
+      </p>
       <div class="mt-2">
         <label
           :for="`evidence-type-input-${pmid}-description`"
@@ -109,6 +142,11 @@ export default {
           rows="3"
           :value="mechanismEvidence[pmid].description"
           @input="mechanismEvidenceInputHandler(pmid, $event.target.value)"
+          :disabled="
+            Object.values(mechanismEvidence[pmid].evidence_types).every(
+              (arr) => arr.length === 0
+            )
+          "
         >
         </textarea>
       </div>
