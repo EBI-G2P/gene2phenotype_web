@@ -17,13 +17,16 @@
       collections of unique Locus-Genotype-Mechanism-Disease-Evidence (LGMDE)
       threads.
     </p>
-    <div class="my-3 col-12 col-lg-8">
-      <img
-        alt="LGMDE diagram"
-        src="../assets/LGMDE-info.png"
-        width="100%"
-        height="auto"
-      />
+    <div class="mt-3 d-flex justify-content-center">
+      <figure class="figure">
+        <img
+          src="../assets/LGMDE-info.png"
+          class="figure-img img-thumbnail border-secondary-subtle"
+          alt="LGMDE diagram"
+          width="800"
+          height="auto"
+        />
+      </figure>
     </div>
     <p>
       See
