@@ -144,7 +144,7 @@ export default {
               and disease mechanism.
             </p>
             <div class="mt-3">
-              <div class="input-group shadow-sm">
+              <div class="input-group">
                 <input
                   type="text"
                   class="form-control"
