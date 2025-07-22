@@ -45,3 +45,16 @@ export const UPDATE_REVIEW_STATUS_URL = `${G2P_API_BASE_URL}/lgd/:stableid/revie
 
 //External API URLS
 export const HPO_SEARCH_API_URL = "https://ontology.jax.org/api/hp/search";
+export const HPO_URL = "https://hpo.jax.org/app/browse/term/";
+export const SEQUENCE_ONTOLOGY_URL =
+  "http://www.sequenceontology.org/browser/current_release/term/";
+export const EUROPE_PMC_URL = "https://europepmc.org/article/MED/";
+export const DECIPHER_URL = "https://www.deciphergenomics.org/gene/";
+export const OMIM_URL = "https://www.omim.org/entry/";
+export const HGNC_URL =
+  "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/";
+export const ENSEMBL_GENE_URL =
+  "https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=";
+export const ENSEMBL_LOCATION_URL =
+  "https://www.ensembl.org/Homo_sapiens/Location/View?r=";
+export const MONDO_URL = "https://monarchinitiative.org/";
