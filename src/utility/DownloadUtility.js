@@ -63,6 +63,27 @@ const createTableObj = (tableRows) => {
   };
 };
 
+const createListOfPublicationLinkObj = (publications) => {
+  return publications.map((item) => createLinkObj(item, EUROPE_PMC_URL + item));
+};
+
+const getMechanismEvidenceTypes = (obj) => {
+  let mechanismEvidenceTypes = [];
+  for (const [
+    primaryEvidenceType,
+    secondaryEvidenceTypeArray,
+  ] of Object.entries(obj)) {
+    mechanismEvidenceTypes.push(
+      `${primaryEvidenceType} : ${
+        secondaryEvidenceTypeArray?.length > 0
+          ? secondaryEvidenceTypeArray.join(", ")
+          : null
+      }`
+    );
+  }
+  return mechanismEvidenceTypes;
+};
+
 const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
   if (locusGeneDiseaseData.variant_type?.length > 0) {
     // Prepare table header row
@@ -92,12 +113,7 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
           : "",
         item.publications?.length > 0
           ? {
-              ul: item.publications.map((publicationItem) => {
-                return createLinkObj(
-                  publicationItem,
-                  EUROPE_PMC_URL + publicationItem
-                );
-              }),
+              ul: createListOfPublicationLinkObj(item.publications),
             }
           : "",
       ];
@@ -107,8 +123,7 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
           item.comments?.length > 0
             ? {
                 ul: item.comments.map(
-                  (commentItem) =>
-                    commentItem.text + " (" + commentItem.date + ")"
+                  (commentItem) => `${commentItem.text} (${commentItem.date})`
                 ),
               }
             : ""
@@ -142,12 +157,7 @@ const prepareVariantDescriptionObj = (locusGeneDiseaseData) => {
         item.description,
         item.publications?.length > 0
           ? {
-              ul: item.publications.map((publicationItem) => {
-                return createLinkObj(
-                  publicationItem,
-                  EUROPE_PMC_URL + publicationItem
-                );
-              }),
+              ul: createListOfPublicationLinkObj(item.publications),
             }
           : "",
       ]);
@@ -218,23 +228,6 @@ const prepareMechanismCategorisationObj = (locusGeneDiseaseData) => {
   return NOT_AVAILABLE;
 };
 
-const getMechanismEvidenceTypes = (obj) => {
-  let mechanismEvidenceTypes = [];
-  for (const [
-    primaryEvidenceType,
-    secondaryEvidenceTypeArray,
-  ] of Object.entries(obj)) {
-    mechanismEvidenceTypes.push(
-      `${primaryEvidenceType} : ${
-        secondaryEvidenceTypeArray?.length > 0
-          ? secondaryEvidenceTypeArray.join(", ")
-          : null
-      }`
-    );
-  }
-  return mechanismEvidenceTypes;
-};
-
 const prepareMechanismEvidenceObj = (locusGeneDiseaseData) => {
   // Prepare table header row
   const mechanismEvidenceHeaders = [
@@ -259,7 +252,7 @@ const prepareMechanismEvidenceObj = (locusGeneDiseaseData) => {
         : "",
       value?.descriptions?.length > 0
         ? {
-            ul: value.descriptions.map((descriptionItem) => descriptionItem),
+            ul: value.descriptions,
           }
         : "",
     ]);
@@ -290,12 +283,7 @@ const preparePhenotypicFeaturesObj = (locusGeneDiseaseData) => {
         item.term,
         item.publications?.length > 0
           ? {
-              ul: item.publications.map((publicationItem) => {
-                return createLinkObj(
-                  publicationItem,
-                  EUROPE_PMC_URL + publicationItem
-                );
-              }),
+              ul: createListOfPublicationLinkObj(item.publications),
             }
           : "",
       ]
@@ -385,7 +373,7 @@ const preparePublicationsEvidenceObj = (
             ? {
                 ul: item.publication.comments.map(
                   (commentItem) =>
-                    commentItem.comment + " (" + commentItem.date + ")"
+                    `${commentItem.comment} (${commentItem.date})`
                 ),
               }
             : ""
