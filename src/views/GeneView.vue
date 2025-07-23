@@ -3,6 +3,13 @@ import {
   GENE_FUNCTION_URL,
   GENE_SUMMARY_URL,
   GENE_URL,
+  HGNC_URL,
+  OMIM_URL,
+  PANELAPP_URL,
+  UNIPROT_URL,
+  DECIPHER_URL,
+  ENSEMBL_GENE_URL,
+  GENCC_URL,
 } from "../utility/UrlConstants.js";
 import {
   CONFIDENCE_COLOR_MAP,
@@ -24,6 +31,13 @@ export default {
       CONFIDENCE_COLOR_MAP,
       MAX_CHARACTERS,
       HELP_TEXT,
+      DECIPHER_URL,
+      ENSEMBL_GENE_URL,
+      GENCC_URL,
+      HGNC_URL,
+      OMIM_URL,
+      PANELAPP_URL,
+      UNIPROT_URL,
     };
   },
   created() {
@@ -129,7 +143,7 @@ export default {
           <br />
           <b>Source:</b>
           <a
-            :href="`https://www.uniprot.org/uniprotkb/${geneFunctionData.function.uniprot_accession}`"
+            :href="UNIPROT_URL + geneFunctionData.function.uniprot_accession"
             style="text-decoration: none"
             target="_blank"
           >
@@ -240,7 +254,7 @@ export default {
         <ul>
           <li v-if="geneData.gene_symbol">
             <a
-              :href="`https://www.deciphergenomics.org/gene/${geneData.gene_symbol}`"
+              :href="DECIPHER_URL + geneData.gene_symbol"
               style="text-decoration: none"
               target="_blank"
             >
@@ -250,7 +264,7 @@ export default {
           </li>
           <li v-if="geneData.ids?.OMIM">
             <a
-              :href="`https://www.omim.org/entry/${geneData.ids.OMIM}`"
+              :href="OMIM_URL + geneData.ids.OMIM"
               style="text-decoration: none"
               target="_blank"
             >
@@ -260,7 +274,7 @@ export default {
           </li>
           <li v-if="geneData.ids?.Ensembl">
             <a
-              :href="`https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=${geneData.ids.Ensembl}`"
+              :href="ENSEMBL_GENE_URL + geneData.ids.Ensembl"
               style="text-decoration: none"
               target="_blank"
             >
@@ -270,7 +284,7 @@ export default {
           </li>
           <li v-if="geneData.ids?.HGNC">
             <a
-              :href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${geneData.ids.HGNC}`"
+              :href="HGNC_URL + geneData.ids.HGNC"
               style="text-decoration: none"
               target="_blank"
             >
@@ -280,7 +294,7 @@ export default {
           </li>
           <li v-if="geneFunctionData?.function?.uniprot_accession">
             <a
-              :href="`https://www.uniprot.org/uniprotkb/${geneFunctionData.function.uniprot_accession}`"
+              :href="UNIPROT_URL + geneFunctionData.function.uniprot_accession"
               style="text-decoration: none"
               target="_blank"
             >
@@ -290,7 +304,7 @@ export default {
           </li>
           <li v-if="geneData.gene_symbol">
             <a
-              :href="`https://panelapp.genomicsengland.co.uk/panels/entities/${geneData.gene_symbol}`"
+              :href="PANELAPP_URL + geneData.gene_symbol"
               style="text-decoration: none"
               target="_blank"
             >
@@ -300,7 +314,7 @@ export default {
           </li>
           <li v-if="geneData.ids?.HGNC">
             <a
-              :href="`https://search.thegencc.org/genes/${geneData.ids.HGNC}`"
+              :href="GENCC_URL + geneData.ids.HGNC"
               style="text-decoration: none"
               target="_blank"
             >

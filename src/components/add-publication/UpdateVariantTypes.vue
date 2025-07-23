@@ -1,4 +1,5 @@
 <script>
+import { EUROPE_PMC_URL } from "../../utility/UrlConstants.js";
 import { VariantTypesAttribs } from "../../utility/CurationConstants.js";
 export default {
   props: {
@@ -49,6 +50,7 @@ export default {
   data() {
     return {
       variantTypesAttribs: [...VariantTypesAttribs],
+      EUROPE_PMC_URL,
     };
   },
 };
@@ -126,7 +128,7 @@ export default {
                       >
                         <span v-if="index < item.publications.length - 1">
                           <a
-                            :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                            :href="EUROPE_PMC_URL + publicationItem"
                             style="text-decoration: none"
                             target="_blank"
                           >
@@ -136,7 +138,7 @@ export default {
                         </span>
                         <a
                           v-else
-                          :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                          :href="EUROPE_PMC_URL + publicationItem"
                           style="text-decoration: none"
                           target="_blank"
                         >

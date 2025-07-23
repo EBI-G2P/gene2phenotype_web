@@ -8,6 +8,7 @@ import {
 } from "../../utility/CurationConstants.js";
 import kebabCase from "lodash/kebabCase";
 import { HELP_TEXT } from "../../utility/Constants.js";
+import { EUROPE_PMC_URL } from "../../utility/UrlConstants.js";
 export default {
   props: {
     currentMechanism: Object,
@@ -54,6 +55,7 @@ export default {
       mechanismSupportAttribs: [...MechanismSupportAttribs],
       evidenceTypesAttribs: [...EvidenceTypesAttribs],
       HELP_TEXT,
+      EUROPE_PMC_URL,
     };
   },
   computed: {
@@ -342,7 +344,7 @@ export default {
                         <tr v-for="(value, key) in currentMechanism.evidence">
                           <td>
                             <a
-                              :href="`https://europepmc.org/article/MED/${key}`"
+                              :href="EUROPE_PMC_URL + key"
                               style="text-decoration: none"
                               target="_blank"
                             >

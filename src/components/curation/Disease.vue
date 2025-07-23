@@ -1,4 +1,5 @@
 <script>
+import { MONDO_URL, OMIM_URL } from "../../utility/UrlConstants.js";
 export default {
   props: {
     inputGeneSymbol: String,
@@ -9,6 +10,12 @@ export default {
     diseaseCrossReferences: Array,
   },
   emits: ["update:diseaseName", "update:diseaseCrossReferences"],
+  data() {
+    return {
+      OMIM_URL,
+      MONDO_URL,
+    };
+  },
   methods: {
     checkboxHandler(diseaseCrossReference, checked) {
       let updatedDiseaseCrossReferences = [...this.diseaseCrossReferences];
@@ -143,7 +150,7 @@ export default {
                     </td>
                     <td style="width: 20%">
                       <a
-                        :href="`https://www.omim.org/entry/${item.identifier}`"
+                        :href="OMIM_URL + item.identifier"
                         style="text-decoration: none"
                         v-if="item.source === 'OMIM'"
                         target="_blank"
@@ -151,7 +158,7 @@ export default {
                         {{ item.identifier }}
                       </a>
                       <a
-                        :href="`https://monarchinitiative.org/${item.identifier}`"
+                        :href="MONDO_URL + item.identifier"
                         style="text-decoration: none"
                         v-else-if="item.source === 'Mondo'"
                         target="_blank"

@@ -1,5 +1,6 @@
 <script>
 import UpdateVariantTypes from "./UpdateVariantTypes.vue";
+import { EUROPE_PMC_URL } from "../../utility/UrlConstants.js";
 export default {
   props: {
     currentVariantDescription: Array,
@@ -9,6 +10,11 @@ export default {
     variantDescriptions: Object,
   },
   emits: ["updateVariantTypes", "update:variantDescriptions"],
+  data() {
+    return {
+      EUROPE_PMC_URL,
+    };
+  },
   methods: {
     variantDescriptionsInputHandler(pmid, inputValue) {
       let updatedVariantDescriptions = { ...this.variantDescriptions };
@@ -101,7 +107,7 @@ export default {
                                     v-if="index < item.publications.length - 1"
                                   >
                                     <a
-                                      :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                                      :href="EUROPE_PMC_URL + publicationItem"
                                       style="text-decoration: none"
                                       target="_blank"
                                     >
@@ -111,7 +117,7 @@ export default {
                                   </span>
                                   <a
                                     v-else
-                                    :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                                    :href="EUROPE_PMC_URL + publicationItem"
                                     style="text-decoration: none"
                                     target="_blank"
                                   >

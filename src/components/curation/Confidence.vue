@@ -1,4 +1,5 @@
 <script>
+import { GENCC_URL, PANELAPP_URL } from "@/utility/UrlConstants.js";
 import { ConfidenceAttribsOrder } from "../../utility/CurationConstants.js";
 export default {
   props: {
@@ -15,6 +16,8 @@ export default {
             ConfidenceAttribsOrder.indexOf(a) -
             ConfidenceAttribsOrder.indexOf(b)
         ) || [],
+      GENCC_URL,
+      PANELAPP_URL,
     };
   },
   emits: ["update:confidence"],
@@ -84,7 +87,7 @@ export default {
               <ul class="mb-0">
                 <li v-if="geneData?.gene_symbol">
                   <a
-                    :href="`https://panelapp.genomicsengland.co.uk/panels/entities/${geneData.gene_symbol}`"
+                    :href="PANELAPP_URL + geneData.gene_symbol"
                     style="text-decoration: none"
                     target="_blank"
                   >
@@ -94,7 +97,7 @@ export default {
                 </li>
                 <li v-if="geneData?.ids?.HGNC">
                   <a
-                    :href="`https://search.thegencc.org/genes/${geneData.ids.HGNC}`"
+                    :href="GENCC_URL + geneData.ids.HGNC"
                     style="text-decoration: none"
                     target="_blank"
                   >

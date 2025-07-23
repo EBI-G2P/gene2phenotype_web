@@ -58,3 +58,7 @@ export const ENSEMBL_GENE_URL =
 export const ENSEMBL_LOCATION_URL =
   "https://www.ensembl.org/Homo_sapiens/Location/View?r=";
 export const MONDO_URL = "https://monarchinitiative.org/";
+export const PANELAPP_URL =
+  "https://panelapp.genomicsengland.co.uk/panels/entities/";
+export const GENCC_URL = "https://search.thegencc.org/genes/";
+export const UNIPROT_URL = "https://www.uniprot.org/uniprotkb/";
