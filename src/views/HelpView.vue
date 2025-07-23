@@ -46,7 +46,7 @@ export default {
   <div class="container px-5 py-3" style="min-height: 60vh">
     <main id="website-help-main">
       <div id="website-help-content-div">
-        <h2 class="pb-3">G2P website help</h2>
+        <h2 class="pb-3">Using this site</h2>
         <p>
           The G2P database holds detailed gene disease models, defined as
           locus-genotype-mechanism-disease-evidence threads. These are grouped
