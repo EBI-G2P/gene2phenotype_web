@@ -1,4 +1,5 @@
 <script>
+import { EUROPE_PMC_URL, HPO_URL } from "../../utility/UrlConstants.js";
 import { HELP_TEXT } from "../../utility/Constants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 export default {
@@ -11,6 +12,8 @@ export default {
   data() {
     return {
       HELP_TEXT,
+      HPO_URL,
+      EUROPE_PMC_URL,
     };
   },
   components: { ToolTip },
@@ -113,7 +116,7 @@ export default {
                         >
                           <td style="width: 10%">
                             <a
-                              :href="`https://hpo.jax.org/app/browse/term/${item.accession}`"
+                              :href="HPO_URL + item.accession"
                               style="text-decoration: none"
                               v-if="item.accession"
                               target="_blank"
@@ -135,7 +138,7 @@ export default {
                                   v-if="index < item.publications.length - 1"
                                 >
                                   <a
-                                    :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                                    :href="EUROPE_PMC_URL + publicationItem"
                                     style="text-decoration: none"
                                     target="_blank"
                                   >
@@ -145,7 +148,7 @@ export default {
                                 </span>
                                 <a
                                   v-else
-                                  :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                                  :href="EUROPE_PMC_URL + publicationItem"
                                   style="text-decoration: none"
                                   target="_blank"
                                 >

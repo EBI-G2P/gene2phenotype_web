@@ -5,7 +5,10 @@ import {
   MechanismSupportAttribs,
   MechanismSynopsisAttribs,
 } from "../../utility/CurationConstants.js";
-import { UPDATE_MECHANISM_URL } from "../../utility/UrlConstants.js";
+import {
+  EUROPE_PMC_URL,
+  UPDATE_MECHANISM_URL,
+} from "../../utility/UrlConstants.js";
 import cloneDeep from "lodash/cloneDeep";
 import kebabCase from "lodash/kebabCase";
 import ToolTip from "../tooltip/ToolTip.vue";
@@ -40,6 +43,7 @@ export default {
       mechanismSupportAttribs: [...MechanismSupportAttribs],
       evidenceTypesAttribs: [...EvidenceTypesAttribs],
       HELP_TEXT,
+      EUROPE_PMC_URL,
     };
   },
   methods: {
@@ -469,7 +473,7 @@ export default {
                           <tr v-for="(value, key) in currentMechanism.evidence">
                             <td>
                               <a
-                                :href="`https://europepmc.org/article/MED/${key}`"
+                                :href="EUROPE_PMC_URL + key"
                                 style="text-decoration: none"
                                 target="_blank"
                               >

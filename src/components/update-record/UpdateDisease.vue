@@ -6,6 +6,8 @@ import {
 import {
   CROSS_REFERENCE_URL,
   GENE_DISEASE_URL,
+  MONDO_URL,
+  OMIM_URL,
   UPDATE_CROSS_REFERENCE_URL,
 } from "../../utility/UrlConstants.js";
 import api from "../../services/api.js";
@@ -59,6 +61,8 @@ export default {
       isAddInputCrossReferencesApiCallLoading: false,
       isAddInputCrossReferencesApiCallSuccess: false,
       addInputCrossReferencesApiCallSuccessMsg: null,
+      OMIM_URL,
+      MONDO_URL,
     };
   },
   components: {
@@ -535,7 +539,7 @@ export default {
                     <td>
                       <a
                         v-if="item.source === 'OMIM'"
-                        :href="`https://www.omim.org/entry/${item.accession}`"
+                        :href="OMIM_URL + item.accession"
                         style="text-decoration: none"
                         target="_blank"
                       >
@@ -543,7 +547,7 @@ export default {
                       </a>
                       <a
                         v-else-if="item.source === 'Mondo'"
-                        :href="`https://monarchinitiative.org/${item.accession}`"
+                        :href="MONDO_URL + item.accession"
                         style="text-decoration: none"
                         target="_blank"
                       >
@@ -623,7 +627,7 @@ export default {
                       </td>
                       <td>
                         <a
-                          :href="`https://www.omim.org/entry/${item.accession}`"
+                          :href="OMIM_URL + item.accession"
                           style="text-decoration: none"
                           v-if="item.source === 'OMIM'"
                           target="_blank"
@@ -631,7 +635,7 @@ export default {
                           {{ item.accession }}
                         </a>
                         <a
-                          :href="`https://monarchinitiative.org/${item.accession}`"
+                          :href="MONDO_URL + item.accession"
                           style="text-decoration: none"
                           v-else-if="item.source === 'Mondo'"
                           target="_blank"
@@ -765,7 +769,7 @@ export default {
                     >
                       <td>
                         <a
-                          :href="`https://www.omim.org/entry/${item.accession}`"
+                          :href="OMIM_URL + item.accession"
                           style="text-decoration: none"
                           v-if="item.source === 'OMIM'"
                           target="_blank"
@@ -773,7 +777,7 @@ export default {
                           {{ item.accession }}
                         </a>
                         <a
-                          :href="`https://monarchinitiative.org/${item.accession}`"
+                          :href="MONDO_URL + item.accession"
                           style="text-decoration: none"
                           v-else-if="item.source === 'Mondo'"
                           target="_blank"

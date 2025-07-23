@@ -47,10 +47,10 @@
             </li>
             <li class="nav-item mb-2">
               <router-link
-                to="/g2p-website-help"
+                to="/using-this-site"
                 class="nav-link p-0 text-body-secondary"
               >
-                G2P website help
+                Using this site
               </router-link>
             </li>
             <li class="nav-item mb-2">

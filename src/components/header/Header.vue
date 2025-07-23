@@ -320,8 +320,8 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link to="/g2p-website-help" class="dropdown-item">
-                G2P website help
+              <router-link to="/using-this-site" class="dropdown-item">
+                Using this site
               </router-link>
             </li>
           </ul>

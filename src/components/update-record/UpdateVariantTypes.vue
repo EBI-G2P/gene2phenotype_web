@@ -1,6 +1,9 @@
 <script>
 import api from "../../services/api.js";
-import { UPDATE_VARIANT_TYPE_URL } from "../../utility/UrlConstants.js";
+import {
+  EUROPE_PMC_URL,
+  UPDATE_VARIANT_TYPE_URL,
+} from "../../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import { VariantTypesAttribs } from "../../utility/CurationConstants.js";
 
@@ -21,6 +24,7 @@ export default {
       isUpdateVariantTypeSuccess: false,
       updateVariantTypeSuccessMsg: null,
       VariantTypesAttribs,
+      EUROPE_PMC_URL,
     };
   },
   methods: {
@@ -240,7 +244,7 @@ export default {
                                     v-if="index < item.publications.length - 1"
                                   >
                                     <a
-                                      :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                                      :href="EUROPE_PMC_URL + publicationItem"
                                       style="text-decoration: none"
                                       target="_blank"
                                     >
@@ -250,7 +254,7 @@ export default {
                                   </span>
                                   <a
                                     v-else
-                                    :href="`https://europepmc.org/article/MED/${publicationItem}`"
+                                    :href="EUROPE_PMC_URL + publicationItem"
                                     style="text-decoration: none"
                                     target="_blank"
                                   >

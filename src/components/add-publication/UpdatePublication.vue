@@ -3,12 +3,18 @@ import {
   getAffectedIndividualsInputErrorMsg,
   getFamiliesInputErrorMsg,
 } from "../../utility/CurationUtility.js";
+import { EUROPE_PMC_URL } from "../../utility/UrlConstants.js";
 export default {
   props: {
     currentPublications: Object,
     publications: Object,
   },
   emits: ["update:publications"],
+  data() {
+    return {
+      EUROPE_PMC_URL,
+    };
+  },
   methods: {
     inputHandler(key, pmid, inputValue) {
       let updatedPublications = { ...this.publications };
@@ -78,7 +84,7 @@ export default {
                         <td>
                           <a
                             v-if="item.publication?.pmid"
-                            :href="`https://europepmc.org/article/MED/${item.publication?.pmid}`"
+                            :href="EUROPE_PMC_URL + item.publication.pmid"
                             style="text-decoration: none"
                             target="_blank"
                           >
@@ -163,7 +169,7 @@ export default {
                     <div class="row g-3">
                       <div class="col-12">
                         <a
-                          :href="`https://europepmc.org/article/MED/${pmid}`"
+                          :href="EUROPE_PMC_URL + pmid"
                           style="text-decoration: none"
                           v-if="pmid"
                           target="_blank"
