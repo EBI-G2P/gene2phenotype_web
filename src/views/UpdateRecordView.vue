@@ -144,7 +144,7 @@ export default {
       />
       <UpdateReviewStatus
         :stableId="stableId"
-        :currentReviewStatus="locusGeneDiseaseData.is_reviewed"
+        :currentUnderReviewStatus="locusGeneDiseaseData.under_review"
       />
       <AddComment :stableId="stableId" />
     </div>

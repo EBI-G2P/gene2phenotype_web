@@ -99,7 +99,7 @@ export default {
           </h2>
           <h2 v-else class="text-muted">Disease Name Not Available</h2>
           <span
-            v-if="locusGeneDiseaseData.is_reviewed === false"
+            v-if="locusGeneDiseaseData.under_review"
             class="badge text-white fs-6 text-bg-warning"
           >
             Under review

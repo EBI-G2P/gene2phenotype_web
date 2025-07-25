@@ -128,8 +128,9 @@ export default {
             </figure>
           </div>
           <h6>
-            3. Searching for cardiomyopathy without filtering, returns records
-            where 'cardiomyopathy' is a listed phenotype
+            3. Searching for 'cardiomyopathy' without filtering, returns records
+            where 'cardiomyopathy' is a listed phenotype in addition to all
+            records with 'cardiomyopathy' in the disease name or synonym
           </h6>
           <div class="mt-3 d-flex justify-content-center">
             <figure class="figure">

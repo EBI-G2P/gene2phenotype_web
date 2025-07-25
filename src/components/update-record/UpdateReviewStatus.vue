@@ -6,11 +6,16 @@ import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 export default {
   props: {
     stableId: String,
-    currentReviewStatus: Boolean,
+    currentUnderReviewStatus: Boolean,
   },
   data() {
     return {
-      reviewStatus: this.currentReviewStatus,
+      reviewStatus:
+        this.currentUnderReviewStatus === false
+          ? true
+          : this.currentUnderReviewStatus === true
+          ? false
+          : null,
       isUpdateApiCallLoading: false,
       updateReviewStatusErrorMsg: null,
       isUpdateReviewStatusSuccess: false,
@@ -90,7 +95,7 @@ export default {
             <div
               class="alert alert-danger mt-3"
               role="alert"
-              v-else-if="reviewStatus !== true && reviewStatus !== false"
+              v-else-if="reviewStatus === null"
             >
               <div>
                 <i class="bi bi-exclamation-circle-fill"></i>
