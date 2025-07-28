@@ -518,8 +518,7 @@ const createDocumentDefinition = (
     background: CONFIDENCE_COLOR_MAP[confidence.toLowerCase()],
   };
   // Review status section
-  const reviewStatus =
-    locusGeneDiseaseData.is_reviewed === false ? "Under review" : "";
+  const reviewStatus = locusGeneDiseaseData.under_review ? "Under review" : "";
   const reviewStatusObj = reviewStatus
     ? {
         text: reviewStatus,
