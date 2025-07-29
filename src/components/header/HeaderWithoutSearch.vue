@@ -144,6 +144,11 @@ export default {
                 Reference data
               </router-link>
             </li>
+            <li>
+              <router-link to="/using-this-site" class="dropdown-item">
+                Using this site
+              </router-link>
+            </li>
           </ul>
         </li>
         <li class="nav-item dropdown" v-if="panelData?.results?.length > 0">

@@ -5,7 +5,10 @@ import {
   MechanismSupportAttribs,
   MechanismSynopsisAttribs,
 } from "../../utility/CurationConstants.js";
-import { UPDATE_MECHANISM_URL } from "../../utility/UrlConstants.js";
+import {
+  EUROPE_PMC_URL,
+  UPDATE_MECHANISM_URL,
+} from "../../utility/UrlConstants.js";
 import cloneDeep from "lodash/cloneDeep";
 import kebabCase from "lodash/kebabCase";
 import ToolTip from "../tooltip/ToolTip.vue";
@@ -40,6 +43,7 @@ export default {
       mechanismSupportAttribs: [...MechanismSupportAttribs],
       evidenceTypesAttribs: [...EvidenceTypesAttribs],
       HELP_TEXT,
+      EUROPE_PMC_URL,
     };
   },
   methods: {
@@ -92,7 +96,7 @@ export default {
     prepareInputForDataSubmission() {
       let preparedInput = {};
 
-      // convert mechanismEvidence from object to array of objects and include evidence that have non empty description or non empty evidence types
+      // convert mechanismEvidence from object to array of objects and include evidence that have non empty evidence types
       let mechanismEvidenceArray = [];
       for (const [publicationPmid, valueObj] of Object.entries(
         this.mechanismEvidence
@@ -109,10 +113,8 @@ export default {
             evidenceTypesArray.push(evidenceTypeObj);
           }
         }
-        if (
-          valueObj.description.trim() !== "" ||
-          evidenceTypesArray.length > 0
-        ) {
+        // IF evidenceTypesArray is not empty THEN include it in mechanismEvidenceArray
+        if (evidenceTypesArray.length > 0) {
           let mechanismEvidenceObj = {
             pmid: publicationPmid,
             description: valueObj.description.trim(), // trim description value
@@ -462,22 +464,35 @@ export default {
                       <table class="table table-bordered mb-0">
                         <thead>
                           <tr>
-                            <th>Functional Studies</th>
                             <th>Publication</th>
+                            <th>Functional Studies</th>
+                            <th>Descriptions</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr v-for="(value, key) in currentMechanism.evidence">
+                            <td>
+                              <a
+                                :href="EUROPE_PMC_URL + key"
+                                style="text-decoration: none"
+                                target="_blank"
+                              >
+                                {{ key }}
+                              </a>
+                            </td>
                             <td class="ps-0">
                               <ul
-                                v-if="value && Object.keys(value).length > 0"
+                                v-if="
+                                  Object.keys(value?.functional_studies || {})
+                                    .length > 0
+                                "
                                 class="mb-0"
                               >
                                 <li
                                   v-for="(
                                     secondaryEvidenceTypeArray,
                                     primaryEvidenceType
-                                  ) in value"
+                                  ) in value.functional_studies"
                                 >
                                   {{ primaryEvidenceType }} :
                                   {{
@@ -488,14 +503,15 @@ export default {
                                 </li>
                               </ul>
                             </td>
-                            <td>
-                              <a
-                                :href="`https://europepmc.org/article/MED/${key}`"
-                                style="text-decoration: none"
-                                target="_blank"
+                            <td class="ps-0">
+                              <ul
+                                v-if="value?.descriptions?.length > 0"
+                                class="mb-0"
                               >
-                                {{ key }}
-                              </a>
+                                <li v-for="item in value.descriptions">
+                                  {{ item }}
+                                </li>
+                              </ul>
                             </td>
                           </tr>
                         </tbody>
@@ -547,6 +563,30 @@ export default {
                       </li>
                     </ul>
                   </div>
+                  <p
+                    v-if="
+                      Object.values(
+                        mechanismEvidence[pmid].evidence_types
+                      ).every((arr) => arr.length === 0) &&
+                      mechanismEvidence[pmid].description.length === 0
+                    "
+                    class="m-0"
+                  >
+                    <i class="bi bi-info-circle"></i> Please select functional
+                    studies to enter the description.
+                  </p>
+                  <p
+                    v-if="
+                      Object.values(
+                        mechanismEvidence[pmid].evidence_types
+                      ).every((arr) => arr.length === 0) &&
+                      mechanismEvidence[pmid].description.length > 0
+                    "
+                    class="m-0"
+                  >
+                    <i class="bi bi-info-circle"></i> Please select functional
+                    studies to save the description.
+                  </p>
                   <div class="mt-2">
                     <label
                       :for="`evidence-type-input-${pmid}-description`"
@@ -559,6 +599,11 @@ export default {
                       :id="`evidence-type-input-${pmid}-description`"
                       rows="3"
                       v-model="mechanismEvidence[pmid].description"
+                      :disabled="
+                        Object.values(
+                          mechanismEvidence[pmid].evidence_types
+                        ).every((arr) => arr.length === 0)
+                      "
                     >
                     </textarea>
                   </div>

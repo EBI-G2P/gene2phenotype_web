@@ -1,10 +1,22 @@
 <script>
+import {
+  DECIPHER_URL,
+  ENSEMBL_GENE_URL,
+  HGNC_URL,
+  OMIM_URL,
+  UNIPROT_URL,
+} from "../../utility/UrlConstants.js";
 import { MAX_CHARACTERS } from "../../utility/Constants.js";
 export default {
   data() {
     return {
       isReadMoreActivated: false,
       MAX_CHARACTERS,
+      DECIPHER_URL,
+      ENSEMBL_GENE_URL,
+      HGNC_URL,
+      OMIM_URL,
+      UNIPROT_URL,
     };
   },
   props: {
@@ -98,7 +110,9 @@ export default {
                 <br />
                 <b>Source:</b>
                 <a
-                  :href="`https://www.uniprot.org/uniprotkb/${geneFunctionData.function.uniprot_accession}`"
+                  :href="
+                    UNIPROT_URL + geneFunctionData.function.uniprot_accession
+                  "
                   style="text-decoration: none"
                   target="_blank"
                 >
@@ -114,7 +128,7 @@ export default {
             </div>
             <div style="width: 90%">
               <a
-                :href="`https://www.omim.org/entry/${geneData.ids.OMIM}`"
+                :href="OMIM_URL + geneData.ids.OMIM"
                 style="text-decoration: none"
                 v-if="geneData.ids?.OMIM"
                 target="_blank"
@@ -130,7 +144,7 @@ export default {
             </div>
             <div style="width: 90%">
               <a
-                :href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${geneData.ids.HGNC}`"
+                :href="HGNC_URL + geneData.ids.HGNC"
                 style="text-decoration: none"
                 v-if="geneData.ids?.HGNC"
                 target="_blank"
@@ -146,7 +160,7 @@ export default {
             </div>
             <div style="width: 90%">
               <a
-                :href="`https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=${geneData.ids.Ensembl}`"
+                :href="ENSEMBL_GENE_URL + geneData.ids.Ensembl"
                 style="text-decoration: none"
                 v-if="geneData.ids?.Ensembl"
                 target="_blank"
@@ -158,7 +172,7 @@ export default {
           </div>
           <div class="row">
             <a
-              :href="`https://www.deciphergenomics.org/gene/${geneData.gene_symbol}`"
+              :href="DECIPHER_URL + geneData.gene_symbol"
               style="text-decoration: none"
               target="_blank"
             >

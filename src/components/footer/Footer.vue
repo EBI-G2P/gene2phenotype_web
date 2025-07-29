@@ -47,6 +47,14 @@
             </li>
             <li class="nav-item mb-2">
               <router-link
+                to="/using-this-site"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Using this site
+              </router-link>
+            </li>
+            <li class="nav-item mb-2">
+              <router-link
                 to="/contact"
                 class="nav-link p-0 text-body-secondary"
               >
@@ -55,7 +63,6 @@
             </li>
           </ul>
         </div>
-
         <div class="col-md-4 col-lg col-xl-2 mb-3">
           <h5>Policies</h5>
           <ul class="nav flex-column">

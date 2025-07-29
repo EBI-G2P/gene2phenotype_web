@@ -1,5 +1,10 @@
 <script>
-import { DISEASE_SUMMARY_URL, DISEASE_URL } from "../utility/UrlConstants.js";
+import {
+  DISEASE_SUMMARY_URL,
+  DISEASE_URL,
+  MONDO_URL,
+  OMIM_URL,
+} from "../utility/UrlConstants.js";
 import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
@@ -14,6 +19,8 @@ export default {
       errorMsg: null,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
+      OMIM_URL,
+      MONDO_URL,
     };
   },
   created() {
@@ -206,7 +213,7 @@ export default {
           <tr v-for="item in diseaseData.ontology_terms" :key="item.accession">
             <td>
               <a
-                :href="`https://www.omim.org/entry/${item.accession}`"
+                :href="OMIM_URL + item.accession"
                 v-if="item.source === 'OMIM'"
                 target="_blank"
                 style="text-decoration: none"
@@ -214,7 +221,7 @@ export default {
                 {{ item.accession }}
               </a>
               <a
-                :href="`https://monarchinitiative.org/${item.accession}`"
+                :href="MONDO_URL + item.accession"
                 v-else-if="item.source === 'Mondo'"
                 target="_blank"
                 style="text-decoration: none"

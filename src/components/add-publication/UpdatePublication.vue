@@ -3,12 +3,18 @@ import {
   getAffectedIndividualsInputErrorMsg,
   getFamiliesInputErrorMsg,
 } from "../../utility/CurationUtility.js";
+import { EUROPE_PMC_URL } from "../../utility/UrlConstants.js";
 export default {
   props: {
     currentPublications: Object,
     publications: Object,
   },
   emits: ["update:publications"],
+  data() {
+    return {
+      EUROPE_PMC_URL,
+    };
+  },
   methods: {
     inputHandler(key, pmid, inputValue) {
       let updatedPublications = { ...this.publications };
@@ -78,7 +84,7 @@ export default {
                         <td>
                           <a
                             v-if="item.publication?.pmid"
-                            :href="`https://europepmc.org/article/MED/${item.publication?.pmid}`"
+                            :href="EUROPE_PMC_URL + item.publication.pmid"
                             style="text-decoration: none"
                             target="_blank"
                           >
@@ -89,22 +95,25 @@ export default {
                           {{ item.publication?.title }}
                         </td>
                         <td>
-                          <span v-if="item.publication?.families?.length > 0">
+                          <span
+                            v-if="
+                              item.number_of_families ||
+                              item.affected_individuals ||
+                              item.ancestry ||
+                              item.consanguinity
+                            "
+                          >
                             Number of Families:
-                            {{
-                              item.publication.families[0].number_of_families
-                            }}
-                            <br />
+                            {{ item.number_of_families }}
+                            <hr class="m-0" />
                             Affected Individuals:
-                            {{
-                              item.publication.families[0].affected_individuals
-                            }}
-                            <br />
+                            {{ item.affected_individuals }}
+                            <hr class="m-0" />
                             Ancestry:
-                            {{ item.publication.families[0].ancestry }}
-                            <br />
+                            {{ item.ancestry }}
+                            <hr class="m-0" />
                             Consanguinity:
-                            {{ item.publication.families[0].consanguinity }}
+                            {{ item.consanguinity }}
                           </span>
                         </td>
                         <td class="ps-0">
@@ -160,7 +169,7 @@ export default {
                     <div class="row g-3">
                       <div class="col-12">
                         <a
-                          :href="`https://europepmc.org/article/MED/${pmid}`"
+                          :href="EUROPE_PMC_URL + pmid"
                           style="text-decoration: none"
                           v-if="pmid"
                           target="_blank"

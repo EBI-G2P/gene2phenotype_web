@@ -41,6 +41,24 @@ export const UPDATE_VARIANT_CONSEQUENCE_URL = `${G2P_API_BASE_URL}/lgd/:stableid
 export const UPDATE_VARIANT_TYPE_URL = `${G2P_API_BASE_URL}/lgd/:stableid/variant_type/`;
 export const UPDATE_CROSS_REFERENCE_URL = `${G2P_API_BASE_URL}/disease/:diseasename/cross_references/`;
 export const CROSS_REFERENCE_URL = `${G2P_API_BASE_URL}/external_disease/:crossreferences/`;
+export const UPDATE_REVIEW_STATUS_URL = `${G2P_API_BASE_URL}/lgd/:stableid/review/`;
 
 //External API URLS
 export const HPO_SEARCH_API_URL = "https://ontology.jax.org/api/hp/search";
+export const HPO_URL = "https://hpo.jax.org/app/browse/term/";
+export const SEQUENCE_ONTOLOGY_URL =
+  "http://www.sequenceontology.org/browser/current_release/term/";
+export const EUROPE_PMC_URL = "https://europepmc.org/article/MED/";
+export const DECIPHER_URL = "https://www.deciphergenomics.org/gene/";
+export const OMIM_URL = "https://www.omim.org/entry/";
+export const HGNC_URL =
+  "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/";
+export const ENSEMBL_GENE_URL =
+  "https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=";
+export const ENSEMBL_LOCATION_URL =
+  "https://www.ensembl.org/Homo_sapiens/Location/View?r=";
+export const MONDO_URL = "https://monarchinitiative.org/";
+export const PANELAPP_URL =
+  "https://panelapp.genomicsengland.co.uk/panels/entities/";
+export const GENCC_URL = "https://search.thegencc.org/genes/";
+export const UNIPROT_URL = "https://www.uniprot.org/uniprotkb/";

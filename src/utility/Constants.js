@@ -51,3 +51,6 @@ export const MARSH_PROBABILITY_THRESHOLD = {
   GAIN_OF_FUNCTION: 0.63,
   DOMINANT_NEGATIVE: 0.61,
 };
+
+export const NOT_AVAILABLE = "Not Available";
+export const NOT_ASSIGNED = "Not Assigned";

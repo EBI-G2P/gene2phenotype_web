@@ -284,7 +284,7 @@ export const prepareInputForDataSubmission = (input) => {
     preparedInput.molecular_mechanism.support = "inferred";
   }
 
-  // convert mechanism evidence from object to array of objects and include evidence that have non empty description or non empty evidence types
+  // convert mechanism evidence from object to array of objects and include evidence that have non empty evidence types
   let mechanismEvidenceArray = [];
   for (const [publicationPmid, valueObj] of Object.entries(
     preparedInput.mechanism_evidence
@@ -301,7 +301,8 @@ export const prepareInputForDataSubmission = (input) => {
         evidenceTypesArray.push(evidenceTypeObj);
       }
     }
-    if (valueObj.description.trim() !== "" || evidenceTypesArray.length > 0) {
+    // IF evidenceTypesArray is not empty THEN include it in mechanismEvidenceArray
+    if (evidenceTypesArray.length > 0) {
       let mechanismEvidenceObj = {
         pmid: publicationPmid,
         description: valueObj.description.trim(), // trim description value
