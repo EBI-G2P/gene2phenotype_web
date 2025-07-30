@@ -148,7 +148,7 @@ export default {
       <p>
         Download format is available
         <a
-          href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/DataDownloadFormat202501.txt"
+          href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/Data_download_format_202508.txt"
           target="_blank"
           style="text-decoration: none"
           >here</a
