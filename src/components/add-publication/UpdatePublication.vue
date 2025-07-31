@@ -4,12 +4,14 @@ import {
   getFamiliesInputErrorMsg,
 } from "../../utility/CurationUtility.js";
 import { EUROPE_PMC_URL } from "../../utility/UrlConstants.js";
+import ToolTip from "../tooltip/ToolTip.vue";
 export default {
   props: {
     currentPublications: Object,
     publications: Object,
   },
   emits: ["update:publications"],
+  components: { ToolTip },
   data() {
     return {
       EUROPE_PMC_URL,
@@ -373,7 +375,10 @@ export default {
                           :for="`publication-comment-input-${pmid}`"
                           class="form-label"
                         >
-                          Comment
+                          Comment (Private
+                          <ToolTip
+                            toolTipText="This comment will only be visible to logged-in users"
+                          />)
                         </label>
                         <textarea
                           class="form-control"

@@ -6,6 +6,7 @@ import {
 } from "../../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import { VariantTypesAttribs } from "../../utility/CurationConstants.js";
+import ToolTip from "../tooltip/ToolTip.vue";
 
 export default {
   props: {
@@ -27,6 +28,7 @@ export default {
       EUROPE_PMC_URL,
     };
   },
+  components: { ToolTip },
   methods: {
     getInitialVariantTypes() {
       let variantTypesObj = {};
@@ -297,7 +299,12 @@ export default {
                       <th style="width: 10%">Inherited</th>
                       <th style="width: 10%">Unknown Inheritance</th>
                       <th style="width: 15%">Supporting Papers</th>
-                      <th style="width: 35%">Comment</th>
+                      <th style="width: 35%">
+                        Comment (Private
+                        <ToolTip
+                          toolTipText="This comment will only be visible to logged-in users"
+                        />)
+                      </th>
                     </tr>
                   </thead>
                   <tbody>

@@ -4,6 +4,7 @@ import {
   getAffectedIndividualsInputErrorMsg,
   getFamiliesInputErrorMsg,
 } from "../../utility/CurationUtility.js";
+import ToolTip from "../tooltip/ToolTip.vue";
 export default {
   props: {
     fetchPublications: Function,
@@ -20,6 +21,7 @@ export default {
       EUROPE_PMC_URL,
     };
   },
+  components: { ToolTip },
   methods: {
     inputHandler(key, pmid, inputValue) {
       let updatedPublications = { ...this.publications };
@@ -349,7 +351,10 @@ export default {
                           :for="`publication-comment-input-${pmid}`"
                           class="form-label"
                         >
-                          Comment
+                          Comment (Private
+                          <ToolTip
+                            toolTipText="This comment will only be visible to logged-in users"
+                          />)
                         </label>
                         <textarea
                           class="form-control"

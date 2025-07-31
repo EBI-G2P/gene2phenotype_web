@@ -1,12 +1,14 @@
 <script>
 import { EvidenceTypesAttribs } from "../../utility/CurationConstants.js";
 import kebabCase from "lodash/kebabCase";
+import ToolTip from "../tooltip/ToolTip.vue";
 export default {
   props: {
     molecularMechanismSupport: String,
     mechanismEvidence: Object,
   },
   emits: ["updateMechanismEvidence"],
+  components: { ToolTip },
   methods: {
     mechanismEvidenceCheckboxHandler(key, pmid, checked, value) {
       let updatedMechanismEvidence = { ...this.mechanismEvidence };
@@ -134,7 +136,10 @@ export default {
           :for="`evidence-type-input-${pmid}-description`"
           class="form-label"
         >
-          Description
+          Description (Private
+          <ToolTip
+            toolTipText="This description will only be visible to logged-in users"
+          />)
         </label>
         <textarea
           class="form-control"

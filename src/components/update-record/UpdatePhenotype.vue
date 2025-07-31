@@ -498,7 +498,7 @@ export default {
                       :for="`phenotype-summary-input-${pmid}`"
                       class="form-label"
                     >
-                      Summary
+                      Summary (Public)
                     </label>
                     <textarea
                       class="form-control"
