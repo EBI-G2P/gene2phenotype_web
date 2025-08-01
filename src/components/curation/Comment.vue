@@ -1,16 +1,21 @@
 <script>
+import ToolTip from "../tooltip/ToolTip.vue";
 export default {
   props: {
     privateComment: String,
     publicComment: String,
   },
   emits: ["update:privateComment", "update:publicComment"],
+  components: { ToolTip },
 };
 </script>
 <template>
   <div class="py-3">
     <label for="private-comment-input" class="form-label">
-      Private comment
+      Comment (Private
+      <ToolTip
+        toolTipText="This comment will only be visible to logged-in users"
+      />)
     </label>
     <textarea
       class="form-control"
@@ -24,7 +29,7 @@ export default {
   </div>
   <div class="pb-3">
     <label for="public-comment-input" class="form-label">
-      Public comment
+      Comment (Public)
     </label>
     <textarea
       class="form-control"

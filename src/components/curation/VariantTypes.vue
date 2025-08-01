@@ -1,11 +1,13 @@
 <script>
 import { VariantTypesAttribs } from "../../utility/CurationConstants.js";
+import ToolTip from "../tooltip/ToolTip.vue";
 export default {
   props: {
     publicationsData: Object,
     variantTypes: Object,
   },
   emits: ["updateVariantTypes"],
+  components: { ToolTip },
   methods: {
     variantTypesSingleCheckboxHandler(
       primaryType,
@@ -79,7 +81,12 @@ export default {
             <th style="width: 15%" v-if="isPublicationsDataAvailable">
               Supporting Papers
             </th>
-            <th style="width: 35%">Comment</th>
+            <th style="width: 35%">
+              Comment (Private
+              <ToolTip
+                toolTipText="This comment will only be visible to logged-in users"
+              />)
+            </th>
           </tr>
         </thead>
         <tbody>

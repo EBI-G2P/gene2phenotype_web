@@ -592,7 +592,10 @@ export default {
                       :for="`evidence-type-input-${pmid}-description`"
                       class="form-label"
                     >
-                      Description
+                      Description (Private
+                      <ToolTip
+                        toolTipText="This description will only be visible to logged-in users"
+                      />)
                     </label>
                     <textarea
                       class="form-control"

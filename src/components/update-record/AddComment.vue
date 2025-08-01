@@ -2,6 +2,7 @@
 import api from "../../services/api.js";
 import { ADD_COMMENT_URL } from "../../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
+import ToolTip from "../tooltip/ToolTip.vue";
 
 export default {
   props: {
@@ -17,6 +18,7 @@ export default {
       addCommentSuccessMsg: null,
     };
   },
+  components: { ToolTip },
   methods: {
     addComment() {
       this.apiErrorMsg = this.addCommentSuccessMsg = null;
@@ -81,7 +83,10 @@ export default {
   <div v-else>
     <div class="pb-3">
       <label for="private-comment-input" class="form-label">
-        Private comment
+        Comment (Private
+        <ToolTip
+          toolTipText="This comment will only be visible to logged-in users"
+        />)
       </label>
       <textarea
         class="form-control"
@@ -94,7 +99,7 @@ export default {
     </div>
     <div class="pb-3">
       <label for="public-comment-input" class="form-label">
-        Public comment
+        Comment (Public)
       </label>
       <textarea
         class="form-control"
