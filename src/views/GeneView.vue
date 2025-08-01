@@ -14,6 +14,7 @@ import {
 import {
   CONFIDENCE_COLOR_MAP,
   HELP_TEXT,
+  MARSH_PROBABILITY_THRESHOLD,
   MAX_CHARACTERS,
 } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
@@ -38,6 +39,7 @@ export default {
       OMIM_URL,
       PANELAPP_URL,
       UNIPROT_URL,
+      MARSH_PROBABILITY_THRESHOLD,
     };
   },
   created() {
@@ -249,6 +251,113 @@ export default {
           No G2P disease models are currently available.
         </p>
       </div>
+      <div
+        v-if="
+          geneSummaryData.records_summary?.length === 0 &&
+          geneFunctionData.gene_stats
+        "
+      >
+        <h4 class="py-3">Predictions of likely gene-disease mechanism</h4>
+        <p>
+          These values predict likely mechanism if changes in the gene can be
+          disease-causing. See
+          <a
+            href="https://europepmc.org/article/MED/39172982"
+            target="_blank"
+            style="text-decoration: none"
+            >Badonyi and Marsh, 2024</a
+          >
+        </p>
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-5 col-xl-4">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td>
+                    Gain of Function (pGOF)
+                    <ToolTip :toolTipText="HELP_TEXT.GAIN_OF_FUNCTION" />
+                  </td>
+                  <td>
+                    <span
+                      v-if="
+                        geneFunctionData.gene_stats.gain_of_function_mp >
+                        MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
+                      "
+                      class="badge red-text-box"
+                    >
+                      {{ geneFunctionData.gene_stats.gain_of_function_mp }}
+                    </span>
+                    <span
+                      v-else-if="
+                        geneFunctionData.gene_stats.gain_of_function_mp <=
+                        MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
+                      "
+                      class="badge green-text-box"
+                    >
+                      {{ geneFunctionData.gene_stats.gain_of_function_mp }}
+                    </span>
+                    <span v-else class="text-muted">Not Available</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Loss of Function (pLOF)
+                    <ToolTip :toolTipText="HELP_TEXT.LOSS_OF_FUNCTION" />
+                  </td>
+                  <td>
+                    <span
+                      v-if="
+                        geneFunctionData.gene_stats.loss_of_function_mp >
+                        MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
+                      "
+                      class="badge red-text-box"
+                    >
+                      {{ geneFunctionData.gene_stats.loss_of_function_mp }}
+                    </span>
+                    <span
+                      v-else-if="
+                        geneFunctionData.gene_stats.loss_of_function_mp <=
+                        MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
+                      "
+                      class="badge green-text-box"
+                    >
+                      {{ geneFunctionData.gene_stats.loss_of_function_mp }}
+                    </span>
+                    <span v-else class="text-muted">Not Available</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Dominant Negative (pDN)
+                    <ToolTip :toolTipText="HELP_TEXT.DOMINANT_NEGATIVE" />
+                  </td>
+                  <td>
+                    <span
+                      v-if="
+                        geneFunctionData.gene_stats.dominant_negative_mp >
+                        MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
+                      "
+                      class="badge red-text-box"
+                    >
+                      {{ geneFunctionData.gene_stats.dominant_negative_mp }}
+                    </span>
+                    <span
+                      v-else-if="
+                        geneFunctionData.gene_stats.dominant_negative_mp <=
+                        MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
+                      "
+                      class="badge green-text-box"
+                    >
+                      {{ geneFunctionData.gene_stats.dominant_negative_mp }}
+                    </span>
+                    <span v-else class="text-muted">Not Available</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       <h4 class="py-3">External Links</h4>
       <div class="row mx-3 pb-3">
         <ul>
@@ -337,5 +446,13 @@ export default {
 <style scoped>
 th {
   white-space: nowrap;
+}
+.red-text-box {
+  color: white;
+  background-color: rgb(255, 21, 0);
+}
+.green-text-box {
+  color: black;
+  background-color: rgb(0, 243, 148);
 }
 </style>
