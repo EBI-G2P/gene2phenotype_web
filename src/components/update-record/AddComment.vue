@@ -70,7 +70,7 @@ export default {
     submit any additional comments.
   </p>
   <hr />
-  <h5>Comments</h5>
+  <h5>Submit Comments</h5>
   <div
     class="d-flex justify-content-center"
     v-if="isApiCallLoading"
