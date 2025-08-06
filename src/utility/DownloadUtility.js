@@ -369,9 +369,9 @@ const preparePublicationsEvidenceObj = (
       // If user is authenticated, then include comment column data
       if (isAuthenticated) {
         bodyRow.push(
-          item.publication?.comments?.length > 0
+          item.comments?.length > 0
             ? {
-                ul: item.publication.comments.map(
+                ul: item.comments.map(
                   (commentItem) =>
                     `${commentItem.comment} (${commentItem.date})`
                 ),

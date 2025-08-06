@@ -943,12 +943,11 @@ export default {
                             </td>
                             <td v-if="isAuthenticated" class="ps-0">
                               <ul
-                                v-if="item.publication?.comments?.length > 0"
+                                v-if="item.comments?.length > 0"
                                 class="mb-0"
                               >
                                 <li
-                                  v-for="commentItem in item.publication
-                                    .comments"
+                                  v-for="commentItem in item.comments"
                                   :key="commentItem.comment"
                                 >
                                   {{ commentItem.comment }} ({{
