@@ -11,6 +11,7 @@ import UpdateVariantConsequences from "../components/update-record/UpdateVariant
 import UpdateVariantTypes from "../components/update-record/UpdateVariantTypes.vue";
 import UpdateDisease from "../components/update-record/UpdateDisease.vue";
 import UpdateReviewStatus from "../components/update-record/UpdateReviewStatus.vue";
+import UpdateComment from "../components/update-record/UpdateComment.vue";
 
 export default {
   data() {
@@ -32,6 +33,7 @@ export default {
     UpdateVariantTypes,
     UpdateDisease,
     UpdateReviewStatus,
+    UpdateComment,
   },
   created() {
     // watch the params of the route to fetch the data again
@@ -145,6 +147,10 @@ export default {
       <UpdateReviewStatus
         :stableId="stableId"
         :currentUnderReviewStatus="locusGeneDiseaseData.under_review"
+      />
+      <UpdateComment
+        :stableId="stableId"
+        :currentComments="locusGeneDiseaseData.comments"
       />
       <AddComment :stableId="stableId" />
     </div>
