@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       comments: this.currentComments,
-      commentToDelete: null,
+      commentIdToDelete: null,
       deleteApiCallErrorMsg: null,
       isDeleteApiCallLoading: false,
       isDeleteApiCallSuccess: false,
@@ -24,14 +24,14 @@ export default {
   },
   methods: {
     deleteComment() {
-      if (!this.commentToDelete) {
+      if (!this.commentIdToDelete) {
         return;
       }
       this.deleteApiCallErrorMsg = this.deleteApiCallSuccessMsg = null;
       this.isDeleteApiCallSuccess = false;
       this.isDeleteApiCallLoading = true;
       const requestBody = {
-        comment: this.commentToDelete,
+        comment_id: this.commentIdToDelete,
       };
       api
         .patch(
@@ -43,10 +43,10 @@ export default {
           this.deleteApiCallSuccessMsg = response.data.message;
           // Remove the deleted delete from comments list
           this.comments = this.comments.filter(
-            (item) => item.text !== this.commentToDelete
+            (item) => item.id !== this.commentIdToDelete
           );
-          // Clear commentToDelete
-          this.clearCommentToDelete();
+          // Clear commentIdToDelete
+          this.clearCommentIdToDelete();
         })
         .catch((error) => {
           this.deleteApiCallErrorMsg = fetchAndLogApiResponseErrorMsg(
@@ -60,13 +60,13 @@ export default {
           this.isDeleteApiCallLoading = false;
         });
     },
-    setCommentToDelete(commentText) {
-      // Set commentToDelete
-      this.commentToDelete = commentText;
+    setCommentIdToDelete(commentId) {
+      // Set commentIdToDelete
+      this.commentIdToDelete = commentId;
     },
-    clearCommentToDelete() {
-      // Clear commentToDelete
-      this.commentToDelete = null;
+    clearCommentIdToDelete() {
+      // Clear commentIdToDelete
+      this.commentIdToDelete = null;
     },
   },
 };
@@ -115,7 +115,7 @@ export default {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in comments" :key="item.text">
+                  <tr v-for="item in comments" :key="item.id">
                     <td>{{ item.text }} ({{ item.date }})</td>
                     <td>
                       {{
@@ -131,7 +131,7 @@ export default {
                         class="btn btn-outline-danger"
                         data-bs-toggle="modal"
                         data-bs-target="#delete-comment-modal"
-                        @click="setCommentToDelete(item.text)"
+                        @click="setCommentIdToDelete(item.id)"
                       >
                         <i class="bi bi-trash-fill"></i> Delete
                       </button>
@@ -166,7 +166,7 @@ export default {
             </div>
           </div>
           <DeleteCommentModal
-            @cancel="clearCommentToDelete"
+            @cancel="clearCommentIdToDelete"
             @delete="deleteComment"
           />
         </div>
