@@ -6,6 +6,7 @@ import api from "../services/api.js";
 import {
   fetchAndLogGeneralErrorMsg,
   fetchAndLogApiResponseErrorMsg,
+  logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 
 export default {
@@ -17,6 +18,8 @@ export default {
       routeQuery: null,
       errorMsg: null,
       geneData: null,
+      mergedDataMsg: null,
+      mergedStableId: null,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
     };
@@ -43,6 +46,8 @@ export default {
         this.routeQuery =
         this.errorMsg =
         this.geneData =
+        this.mergedDataMsg =
+        this.mergedStableId =
           null;
       this.isDataLoading = true;
       let url = "";
@@ -87,6 +92,12 @@ export default {
               this.isDataLoading = false;
               this.searchDataNotFoundMsg = searchDataNotFoundMsg;
             }
+          } else if (error.response?.status === 410) {
+            this.routeQuery = this.$route.query;
+            this.isDataLoading = false;
+            logGeneralErrorMsg(error);
+            this.mergedDataMsg = error.response.data?.message;
+            this.mergedStableId = error.response.data?.stable_id;
           } else {
             this.isDataLoading = false;
             this.errorMsg = fetchAndLogGeneralErrorMsg(
@@ -139,15 +150,15 @@ export default {
       >
     </h2>
     <div
-      class="d-flex justify-content-center"
       v-if="isDataLoading"
+      class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div class="alert alert-danger mt-3" role="alert" v-if="errorMsg">
+    <div v-if="errorMsg" class="alert alert-danger mt-3" role="alert">
       <div><i class="bi bi-exclamation-circle-fill"></i> {{ errorMsg }}</div>
     </div>
     <div
@@ -171,6 +182,20 @@ export default {
           class="fw-bold"
         >
           {{ geneData.gene_symbol }}
+        </router-link>
+      </div>
+    </div>
+    <div v-if="mergedDataMsg" class="alert alert-primary mt-3" role="alert">
+      <div>
+        <i class="bi bi-info-circle"></i>
+        {{ mergedDataMsg }} <br />
+        See the merged record here:
+        <router-link
+          v-if="mergedStableId"
+          :to="`/lgd/${mergedStableId}`"
+          class="fw-bold"
+        >
+          {{ mergedStableId }}
         </router-link>
       </div>
     </div>
