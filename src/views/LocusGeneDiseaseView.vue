@@ -17,6 +17,8 @@ export default {
       isDataLoading: false,
       locusGeneDiseaseData: null,
       errorMsg: null,
+      mergedDataMsg: null,
+      mergedStableId: null,
       isRecordPartOfUserPanels: false,
       stableId: null,
       userPanels: null,
@@ -32,12 +34,30 @@ export default {
     ...mapState(useAuthStore, ["isAuthenticated"]),
   },
   created() {
-    this.fetchRecordData();
+    // watch the params of the route to fetch the data again
+    this.$watch(
+      () => this.$route.params.stableId,
+      (newStableId, oldStableId) => {
+        if (newStableId !== oldStableId) {
+          this.fetchRecordData();
+        }
+      },
+      // fetch the data when the view is created and the data is
+      // already being observed
+      { immediate: true }
+    );
   },
+  // created() {
+  //   this.fetchRecordData();
+  // },
   methods: {
     fetchRecordData() {
       this.stableId = this.$route.params.stableId;
-      this.errorMsg = this.locusGeneDiseaseData = null;
+      this.errorMsg =
+        this.locusGeneDiseaseData =
+        this.mergedDataMsg =
+        this.mergedStableId =
+          null;
       this.isDataLoading = true;
       api
         .get(LGD_RECORD_URL.replace(":stableid", this.stableId))
@@ -48,10 +68,16 @@ export default {
           }
         })
         .catch((error) => {
-          this.errorMsg = fetchAndLogGeneralErrorMsg(
-            error,
-            "Unable to fetch record data. Please try again later."
-          );
+          if (error?.response?.status === 410) {
+            logGeneralErrorMsg(error);
+            this.mergedDataMsg = error.response.data?.message;
+            this.mergedStableId = error.response.data?.stable_id;
+          } else {
+            this.errorMsg = fetchAndLogGeneralErrorMsg(
+              error,
+              "Unable to fetch record data. Please try again later."
+            );
+          }
         })
         .finally(() => {
           this.isDataLoading = false;
@@ -97,18 +123,32 @@ export default {
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
     <div
-      class="d-flex justify-content-center"
       v-if="isDataLoading"
+      class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div class="alert alert-danger mt-3" role="alert" v-if="errorMsg">
+    <div v-if="errorMsg" class="alert alert-danger mt-3" role="alert">
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
         {{ errorMsg }}
+      </div>
+    </div>
+    <div v-if="mergedDataMsg" class="alert alert-primary mt-3" role="alert">
+      <div>
+        <i class="bi bi-info-circle"></i>
+        {{ mergedDataMsg }} <br />
+        See the merged record here:
+        <router-link
+          v-if="mergedStableId"
+          :to="`/lgd/${mergedStableId}`"
+          class="fw-bold"
+        >
+          {{ mergedStableId }}
+        </router-link>
       </div>
     </div>
     <div v-if="locusGeneDiseaseData">
