@@ -54,3 +54,11 @@ export const MARSH_PROBABILITY_THRESHOLD = {
 
 export const NOT_AVAILABLE = "Not Available";
 export const NOT_ASSIGNED = "Not Assigned";
+
+export const PRIVACY_POLICY_CONFIG = {
+  STORAGE_KEY_NAME: "gene2phenotype.privacy-policy.version",
+  VERSION: "1.0.0",
+  PRIVACY_POLICY_URL:
+    "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/privacy_notices/",
+  TERMS_OF_USE_URL: "https://www.ebi.ac.uk/about/terms-of-use/#general",
+};

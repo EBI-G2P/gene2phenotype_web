@@ -2,6 +2,7 @@
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
 import { ALL_PANELS_URL, DOWNLOAD_PANEL_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
+import { trackPanelDownload } from "../utility/AnalyticsUtility.js";
 
 export default {
   data() {
@@ -47,6 +48,7 @@ export default {
         });
     },
     downloadPanelData(panelName) {
+      trackPanelDownload(panelName);
       this.dataDownloadErrorMsg = null;
       this.isDataLoading = true;
       api
