@@ -72,6 +72,7 @@ export default {
       }
     },
     downloadPanelData(panelName) {
+      trackPanelDownload(panelName);
       this.dataDownloadErrorMsg = null;
       // before fetching panel data for download, activeDownloadPanelName is set to panelName
       // after fetching data, it is set to null
