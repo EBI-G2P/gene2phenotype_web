@@ -2,7 +2,7 @@
   <footer class="footer mt-auto py-3 footer-bg-color">
     <div class="container">
       <div class="row">
-        <div class="col-md-4 col-lg col-xl-2 mb-3">
+        <div class="col-sm-3 col-md-3 col-lg mb-3">
           <h5>Information</h5>
           <ul class="nav flex-column">
             <li class="nav-item mb-2">
@@ -39,31 +39,15 @@
             </li>
             <li class="nav-item mb-2">
               <router-link
-                to="/publications"
-                class="nav-link p-0 text-body-secondary"
-              >
-                Citing G2P
-              </router-link>
-            </li>
-            <li class="nav-item mb-2">
-              <router-link
                 to="/using-this-site"
                 class="nav-link p-0 text-body-secondary"
               >
                 Using this site
               </router-link>
             </li>
-            <li class="nav-item mb-2">
-              <router-link
-                to="/contact"
-                class="nav-link p-0 text-body-secondary"
-              >
-                Contact us
-              </router-link>
-            </li>
           </ul>
         </div>
-        <div class="col-md-4 col-lg col-xl-2 mb-3">
+        <div class="col-sm-3 col-md-3 col-lg mb-3">
           <h5>Policies</h5>
           <ul class="nav flex-column">
             <li class="nav-item mb-2">
@@ -103,7 +87,7 @@
             </li>
           </ul>
         </div>
-        <div class="col-md-4 col-lg col-xl-1 mb-3">
+        <div class="col-sm-3 col-md-3 col-lg mb-3">
           <h5>Data</h5>
           <ul class="nav flex-column">
             <li class="nav-item mb-2">
@@ -122,30 +106,39 @@
                 G2P API
               </router-link>
             </li>
+            <li class="nav-item mb-2">
+              <router-link
+                to="/publications"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Citing G2P
+              </router-link>
+            </li>
           </ul>
         </div>
-        <div class="col-md-4 col-lg col-xl-2 mb-3 text-center">
-          <a href="https://www.ebi.ac.uk/" target="_blank">
-            <img
-              alt="EMBL-EBI logo"
-              src="../../assets/EMBL-EBI-logo.png"
-              width="150px"
-              height="auto"
-            />
-          </a>
+        <div class="col-sm-3 col-md-3 col-lg mb-3">
+          <h5>Connect</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <router-link
+                to="/contact"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Contact us
+              </router-link>
+            </li>
+            <li class="nav-item mb-2">
+              <a
+                href="https://bsky.app/profile/gene2phenotype.bsky.social"
+                target="_blank"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Follow us on Bluesky
+              </a>
+            </li>
+          </ul>
         </div>
-        <div class="col-md-4 col-lg col-xl-2 mb-3 text-center">
-          <p>Funded by Wellcome.</p>
-          <a href="https://wellcome.org/" target="_blank">
-            <img
-              alt="WELLCOME logo"
-              src="../../assets/WELLCOME-logo.png"
-              width="75px"
-              height="auto"
-            />
-          </a>
-        </div>
-        <div class="col-md-4 col-lg col-xl-3 mb-3 text-center">
+        <div class="col-md-4 col-lg mb-3 text-center">
           <p>G2P is part of the PARADIGM initiative.</p>
           <a href="https://paradigmgenomics.org/" target="_blank">
             <img
@@ -156,11 +149,32 @@
             />
           </a>
         </div>
+        <div class="col-md-4 col-lg mb-3 text-center">
+          <p>Funded by Wellcome.</p>
+          <a href="https://wellcome.org/" target="_blank">
+            <img
+              alt="WELLCOME logo"
+              src="../../assets/WELLCOME-logo.png"
+              width="75px"
+              height="auto"
+            />
+          </a>
+        </div>
+        <div class="col-md-4 col-lg mb-3 text-center">
+          <a href="https://www.ebi.ac.uk/" target="_blank">
+            <img
+              alt="EMBL-EBI logo"
+              src="../../assets/EMBL-EBI-logo.png"
+              width="140px"
+              height="auto"
+            />
+          </a>
+        </div>
       </div>
       <div
         class="d-flex flex-column flex-sm-row pt-3 pb-2 mt-3 mb-2 border-top"
       >
-        <p style="margin-right: 12px">&copy; EMBL-EBI 2025</p>
+        <p>&copy; EMBL-EBI 2025</p>
       </div>
     </div>
   </footer>
