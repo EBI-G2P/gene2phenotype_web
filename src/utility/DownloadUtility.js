@@ -16,6 +16,7 @@ import {
   OMIM_URL,
   SEQUENCE_ONTOLOGY_URL,
 } from "./UrlConstants.js";
+import { trackRecordDownload } from "./AnalyticsUtility.js";
 
 // Set the fonts
 pdfMake.addVirtualFileSystem(pdfFonts);
@@ -799,6 +800,7 @@ const createDocumentDefinition = (
 };
 
 export const exportRecordPdf = (locusGeneDiseaseData, isAuthenticated) => {
+  trackRecordDownload(locusGeneDiseaseData.stable_id);
   const downloadedDate = new Date();
   const documentDefinition = createDocumentDefinition(
     locusGeneDiseaseData,

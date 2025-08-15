@@ -6,3 +6,10 @@ export const trackPanelDownload = (panelName) => {
     panel_name: panelName,
   });
 };
+
+export const trackRecordDownload = (stableId) => {
+  // track record download event
+  event("download_record_data", {
+    record_stable_id: stableId,
+  });
+};
