@@ -9,6 +9,7 @@ import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import { trackPanelDownload } from "../utility/AnalyticsUtility.js";
 
 export default {
   data() {
@@ -110,6 +111,7 @@ export default {
         });
     },
     downloadAllData() {
+      trackPanelDownload(this.$route.params.panel);
       this.downloadAllDataErrorMsg = null;
       this.isDownloadAllDataLoading = true;
       api

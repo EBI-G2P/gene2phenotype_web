@@ -4,7 +4,8 @@ import { ALL_PANELS_URL, DOWNLOAD_PANEL_URL } from "../utility/UrlConstants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
-import { HELP_TEXT } from "@/utility/Constants.js";
+import { HELP_TEXT } from "../utility/Constants.js";
+import { trackPanelDownload } from "../utility/AnalyticsUtility.js";
 
 export default {
   data() {
@@ -71,6 +72,7 @@ export default {
       }
     },
     downloadPanelData(panelName) {
+      trackPanelDownload(panelName);
       this.dataDownloadErrorMsg = null;
       // before fetching panel data for download, activeDownloadPanelName is set to panelName
       // after fetching data, it is set to null
