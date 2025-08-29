@@ -189,14 +189,15 @@ export default {
       <div>
         <i class="bi bi-info-circle"></i>
         {{ mergedDataMsg }} <br />
-        See the merged record here:
-        <router-link
-          v-if="mergedStableId"
-          :to="`/lgd/${mergedStableId}`"
-          class="fw-bold"
-        >
-          {{ mergedStableId }}
-        </router-link>
+        <template v-if="mergedStableId">
+          See the merged record here:
+          <router-link
+            :to="`/lgd/${mergedStableId}`"
+            class="fw-bold"
+          >
+            {{ mergedStableId }}
+          </router-link>
+        </template>
       </div>
     </div>
     <div v-if="searchData">
