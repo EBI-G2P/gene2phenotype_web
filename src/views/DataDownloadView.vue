@@ -11,6 +11,7 @@ export default {
       panelData: [],
       panelErrorMsg: null,
       dataDownloadErrorMsg: null,
+      isMaintenance: false,
     };
   },
   created() {
@@ -38,6 +39,9 @@ export default {
           }
         })
         .catch((error) => {
+          if (error.status === 503 || error.status === 500) {
+            this.isMaintenance = true;
+          }
           this.panelErrorMsg = fetchAndLogGeneralErrorMsg(
             error,
             "Unable to fetch panels data. Please try again later."
@@ -110,7 +114,7 @@ export default {
         <i class="bi bi-exclamation-circle-fill"></i> {{ panelErrorMsg }}
       </div>
     </div>
-    <div v-if="!isDataLoading">
+    <div v-if="!isDataLoading && !isMaintenance">
       <ul class="list-unstyled">
         <li>
           <button

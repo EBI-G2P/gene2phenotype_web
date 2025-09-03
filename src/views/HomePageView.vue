@@ -18,6 +18,7 @@ export default {
       searchInput: "",
       selectedSearchType: "all",
       selectedSearchPanel: "all",
+      isMaintenance: false,
       HELP_TEXT,
     };
   },
@@ -46,6 +47,9 @@ export default {
           this.panelData = response.data;
         })
         .catch((error) => {
+          if (error.status === 503 || error.status === 500) {
+            this.isMaintenance = true;
+          }
           this.errorMsg = fetchAndLogGeneralErrorMsg(
             error,
             "Unable to fetch panel data. Please try again later."
@@ -145,7 +149,7 @@ export default {
               with information on allelic requirement, observed variant classes
               and disease mechanism.
             </p>
-            <div class="mt-3">
+            <div class="mt-3" v-if="!isMaintenance">
               <div class="input-group">
                 <input
                   type="text"
