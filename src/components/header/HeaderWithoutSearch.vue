@@ -4,6 +4,7 @@ import api from "../../services/api.js";
 import { useAuthStore } from "../../store/auth.js";
 import { mapState } from "pinia";
 import { logGeneralErrorMsg } from "../../utility/ErrorUtility.js";
+import MaintenanceAlert from "../../components/alert/MaintenanceAlert.vue";
 
 export default {
   data() {
@@ -27,6 +28,9 @@ export default {
       // already being observed
       { immediate: true }
     );
+  },
+  components: {
+    MaintenanceAlert,
   },
   methods: {
     fetchPanelData() {
@@ -251,17 +255,7 @@ export default {
       </ul>
     </div>
   </nav>
-  <nav class="navbar bg-maintenance"
-    v-if="isMaintenance"
-  >
-    <div class="container-fluid justify-content-center" style="height: 80px;">
-      <span class="navbar-brand text-dark fw-bold text-center fs-4">
-        <i class="bi bi-exclamation-triangle mx-2 fs-1"></i>
-        We are performing scheduled maintenance and will be back online shortly
-        <i class="bi bi-exclamation-triangle mx-2 fs-1"></i>
-      </span>
-    </div>
-  </nav>
+  <MaintenanceAlert v-if="isMaintenance"/>
 </template>
 <style scoped>
 .top-header {
@@ -277,12 +271,5 @@ export default {
 }
 .bottom-header {
   background-color: #4d89dc;
-}
-.bg-maintenance {
-  background-color: #f4d65e;
-}
-.navbar-maintenance-text {
-  font-size: 1.5rem;
-  line-height: 1.2;
 }
 </style>
