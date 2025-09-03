@@ -32,11 +32,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.status === 503 || error.status === 500) {
-      router.push("/maintenance");
-      return; // stop further processing
-    }
-
     // Check if error is due to an expired access token
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // Mark the request to avoid infinite loops
