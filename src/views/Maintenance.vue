@@ -18,7 +18,7 @@ export default {
             height="auto"
             />
         </router-link>
-        <h1>Website Under Maintenance</h1>
+        <h1>Website under maintenance</h1>
         <p>We are performing scheduled maintenance and will be back online shortly.</p>
     </div>
   </div>
