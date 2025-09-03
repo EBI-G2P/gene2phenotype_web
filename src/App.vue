@@ -7,9 +7,9 @@ import PrivacyBanner from "./views/PrivacyBanner.vue";
 </script>
 
 <template>
-  <HeaderWithoutSearch v-if="$route.path === '/' && $route.path !== '/maintenance'"/>
-  <Header v-else-if="$route.path !== '/maintenance'"/>
+  <HeaderWithoutSearch v-if="$route.path === '/'" />
+  <Header v-else />
   <RouterView />
-  <Footer v-if="$route.path !== '/maintenance'"/>
+  <Footer />
   <PrivacyBanner />
 </template>
