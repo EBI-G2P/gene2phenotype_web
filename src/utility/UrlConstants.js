@@ -50,6 +50,7 @@ export const HPO_URL = "https://hpo.jax.org/app/browse/term/";
 export const SEQUENCE_ONTOLOGY_URL =
   "http://www.sequenceontology.org/browser/current_release/term/";
 export const EUROPE_PMC_URL = "https://europepmc.org/article/MED/";
+export const EUROPE_PMC_QUERY_URL = "https://europepmc.org/search?query=";
 export const DECIPHER_URL = "https://www.deciphergenomics.org/gene/";
 export const OMIM_URL = "https://www.omim.org/entry/";
 export const HGNC_URL =

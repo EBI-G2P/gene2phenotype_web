@@ -6,6 +6,7 @@ import {
   DECIPHER_URL,
   ENSEMBL_GENE_URL,
   ENSEMBL_LOCATION_URL,
+  EUROPE_PMC_QUERY_URL,
   EUROPE_PMC_URL,
   HGNC_URL,
   HPO_URL,
@@ -38,6 +39,9 @@ export default {
       OMIM_URL,
       SEQUENCE_ONTOLOGY_URL,
       exportRecordPdf,
+      selectedPublicationsList: this.getInitialSelectedPublications(
+        this.locusGeneDiseaseData?.publications
+      ),
     };
   },
   created() {
@@ -73,6 +77,27 @@ export default {
             .classList.remove("active");
         }
       });
+    },
+    getInitialSelectedPublications(publications) {
+      let initialSelectedPublicationsList = [];
+      if (publications) {
+        // Initially, all publications are selected by default
+        initialSelectedPublicationsList = publications.map(
+          (item) => item.publication?.pmid
+        );
+      }
+      return initialSelectedPublicationsList;
+    },
+    viewSelectedPublications() {
+      // Prepare EuropePMC url
+      // Example:
+      // If selectedPublicationsList = [1,2]
+      // Then expected EuropePMC URL is "https://europepmc.org/search?query=((EXT_ID:(1) AND SRC:MED) OR (EXT_ID:(2) AND SRC:MED))"
+      const url = `${EUROPE_PMC_QUERY_URL}(${this.selectedPublicationsList
+        .map((pmid) => `(EXT_ID:(${pmid}) AND SRC:MED)`)
+        .join(" OR ")})`;
+      // Open in new tab
+      window.open(url, "_blank", "noopener,noreferrer");
     },
   },
 };
@@ -898,6 +923,12 @@ export default {
                       <table class="table table-bordered mb-0">
                         <thead>
                           <tr>
+                            <th class="text-nowrap px-1">
+                              View
+                              <ToolTip
+                                toolTipText="Select papers and click 'View selected publications in EuropePMC' to view them there"
+                              />
+                            </th>
                             <th>PMID</th>
                             <th>Title</th>
                             <th>Individuals</th>
@@ -906,6 +937,15 @@ export default {
                         </thead>
                         <tbody>
                           <tr v-for="item in locusGeneDiseaseData.publications">
+                            <td class="text-center">
+                              <input
+                                v-if="item.publication?.pmid"
+                                type="checkbox"
+                                :id="`publication-select-${item.publication.pmid}`"
+                                v-model="selectedPublicationsList"
+                                :value="item.publication.pmid"
+                              />
+                            </td>
                             <td>
                               <a
                                 v-if="item.publication?.pmid"
@@ -942,10 +982,7 @@ export default {
                               </span>
                             </td>
                             <td v-if="isAuthenticated" class="ps-0">
-                              <ul
-                                v-if="item.comments?.length > 0"
-                                class="mb-0"
-                              >
+                              <ul v-if="item.comments?.length > 0" class="mb-0">
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.comment"
@@ -959,6 +996,16 @@ export default {
                           </tr>
                         </tbody>
                       </table>
+                      <button
+                        type="button"
+                        class="btn btn-link pt-1 px-0 pb-0"
+                        style="text-decoration: none"
+                        @click="viewSelectedPublications"
+                        :disabled="selectedPublicationsList.length === 0"
+                      >
+                        View selected publications in EuropePMC
+                        <i class="bi bi-box-arrow-up-right"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
