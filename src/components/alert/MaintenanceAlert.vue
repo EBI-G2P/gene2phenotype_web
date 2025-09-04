@@ -13,10 +13,6 @@
 .bg-maintenance {
   background-color: #f4d65e;
 }
-.navbar-maintenance-text {
-  font-size: 1.5rem;
-  line-height: 1.2;
-}
 .maintenance-container {
   height: 80px;
 }
