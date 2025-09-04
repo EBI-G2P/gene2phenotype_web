@@ -902,11 +902,11 @@ export default {
                 <div class="accordion-item">
                   <h2 class="accordion-header border">
                     <button
-                      class="accordion-button collapsed"
+                      class="accordion-button"
                       type="button"
                       data-bs-toggle="collapse"
                       data-bs-target="#collapsiblePublicationsTable"
-                      aria-expanded="false"
+                      aria-expanded="true"
                       aria-controls="collapsiblePublicationsTable"
                     >
                       Publications ({{
@@ -916,7 +916,7 @@ export default {
                   </h2>
                   <div
                     id="collapsiblePublicationsTable"
-                    class="accordion-collapse collapse"
+                    class="accordion-collapse collapse show"
                     data-bs-parent="#accordionPublications"
                   >
                     <div class="accordion-body p-0">
