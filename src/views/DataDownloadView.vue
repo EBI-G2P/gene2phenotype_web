@@ -110,7 +110,7 @@ export default {
         <i class="bi bi-exclamation-circle-fill"></i> {{ panelErrorMsg }}
       </div>
     </div>
-    <div v-if="!isDataLoading">
+    <div v-if="!isDataLoading && !panelErrorMsg">
       <ul class="list-unstyled">
         <li>
           <button
