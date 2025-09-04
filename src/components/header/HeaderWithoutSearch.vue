@@ -4,12 +4,14 @@ import api from "../../services/api.js";
 import { useAuthStore } from "../../store/auth.js";
 import { mapState } from "pinia";
 import { logGeneralErrorMsg } from "../../utility/ErrorUtility.js";
+import MaintenanceAlert from "../../components/alert/MaintenanceAlert.vue";
 
 export default {
   data() {
     return {
       panelData: null,
       isLogoutInProgress: false,
+      isMaintenance: false,
     };
   },
   computed: {
@@ -27,6 +29,9 @@ export default {
       { immediate: true }
     );
   },
+  components: {
+    MaintenanceAlert,
+  },
   methods: {
     fetchPanelData() {
       this.panelData = null;
@@ -36,6 +41,9 @@ export default {
           this.panelData = response.data;
         })
         .catch((error) => {
+          if (error.status === 503 || error.status === 500) {
+            this.isMaintenance = true;
+          }
           logGeneralErrorMsg(error);
         })
         .finally(() => {
@@ -247,6 +255,7 @@ export default {
       </ul>
     </div>
   </nav>
+  <MaintenanceAlert v-if="isMaintenance"/>
 </template>
 <style scoped>
 .top-header {

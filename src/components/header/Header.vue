@@ -4,6 +4,7 @@ import api from "../../services/api.js";
 import { useAuthStore } from "../../store/auth.js";
 import { mapState } from "pinia";
 import { logGeneralErrorMsg } from "../../utility/ErrorUtility.js";
+import MaintenanceAlert from "../../components/alert/MaintenanceAlert.vue";
 
 export default {
   data() {
@@ -14,6 +15,7 @@ export default {
       searchInput: "",
       selectedSearchType: "all",
       selectedSearchPanel: "all",
+      isMaintenance: false,
     };
   },
   computed: {
@@ -31,6 +33,9 @@ export default {
       { immediate: true }
     );
   },
+  components: {
+    MaintenanceAlert,
+  },
   methods: {
     fetchPanelData() {
       this.searchInput = "";
@@ -44,6 +49,9 @@ export default {
           this.panelData = response.data;
         })
         .catch((error) => {
+          if (error.status === 503 || error.status === 500) {
+            this.isMaintenance = true;
+          }
           logGeneralErrorMsg(error);
         })
         .finally(() => {
@@ -115,7 +123,7 @@ export default {
           Gene2Phenotype
         </span>
       </router-link>
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center" v-if="!isMaintenance">
         <div class="input-group w-100">
           <input
             type="text"
@@ -422,6 +430,7 @@ export default {
       </ul>
     </div>
   </nav>
+  <MaintenanceAlert v-if="isMaintenance"/>
 </template>
 <style scoped>
 .top-header {
