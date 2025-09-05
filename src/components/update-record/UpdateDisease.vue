@@ -12,6 +12,8 @@ import {
 } from "../../utility/UrlConstants.js";
 import api from "../../services/api.js";
 import DeleteCrossReferenceModal from "../modal/DeleteCrossReferenceModal.vue";
+import { mapState } from "pinia";
+import { useAuthStore } from "../../store/auth.js";
 
 export default {
   props: {
@@ -67,6 +69,9 @@ export default {
   },
   components: {
     DeleteCrossReferenceModal,
+  },
+  computed: {
+    ...mapState(useAuthStore, ["isSuperUser"]),
   },
   methods: {
     fetchGeneDiseaseData() {
@@ -531,7 +536,7 @@ export default {
                     <th>Accession</th>
                     <th>Term</th>
                     <th>Source</th>
-                    <th>Action</th>
+                    <th v-if="isSuperUser">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -557,7 +562,7 @@ export default {
                     </td>
                     <td>{{ item.term }}</td>
                     <td>{{ item.source }}</td>
-                    <td>
+                    <td v-if="isSuperUser">
                       <button
                         class="btn btn-outline-danger"
                         data-bs-toggle="modal"

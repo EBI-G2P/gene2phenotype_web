@@ -9,15 +9,17 @@ export const useAuthStore = defineStore("auth", {
     userName: null,
     userEmail: null,
     userPanels: null,
+    isSuperUser: null,
     refreshTokenExpiry: null,
     expiryTimeOut: null,
   }),
   actions: {
     login(data) {
       this.isAuthenticated = true;
-      this.userName = data.user_name;
+      this.userName = data.full_name;
       this.userEmail = data.email;
       this.userPanels = data.panels;
+      this.isSuperUser = data.is_superuser;
       this.refreshTokenExpiry = new Date(data.refresh_token_time);
 
       // auto logout after refresh token is expired
@@ -32,6 +34,7 @@ export const useAuthStore = defineStore("auth", {
       this.userName = null;
       this.userEmail = null;
       this.userPanels = null;
+      this.isSuperUser = null;
       this.refreshTokenExpiry = null;
       if (this.expiryTimeOut) clearTimeout(this.expiryTimeOut);
     },
