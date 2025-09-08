@@ -12,6 +12,8 @@ import UpdateVariantTypes from "../components/update-record/UpdateVariantTypes.v
 import UpdateDisease from "../components/update-record/UpdateDisease.vue";
 import UpdateReviewStatus from "../components/update-record/UpdateReviewStatus.vue";
 import UpdateComment from "../components/update-record/UpdateComment.vue";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/auth.js";
 
 export default {
   data() {
@@ -71,6 +73,9 @@ export default {
         });
     },
   },
+  computed: {
+    ...mapState(useAuthStore, ["isSuperUser"]),
+  },
 };
 </script>
 <template>
@@ -104,10 +109,14 @@ export default {
       <p class="mb-2">
         <i class="bi bi-info-circle"></i> For this record, only these sections
         can be updated:
-        <b
-          >Phenotypic features, Variant types, Variant consequences, Mechanism,
-          Disease Cross References, Panel, Confidence, Review status</b
-        >
+        <b v-if="isSuperUser">
+          Phenotypic features, Variant types, Variant consequences, Mechanism,
+          Disease Cross References, Panel, Confidence, Review status
+        </b>
+        <b v-else>
+          Phenotypic features, Variant types, Variant consequences, Mechanism,
+          Disease Cross References, Panel, Confidence
+        </b>
       </p>
       <UpdatePhenotype
         :stableId="stableId"
@@ -145,6 +154,7 @@ export default {
         :currentConfidence="locusGeneDiseaseData.confidence"
       />
       <UpdateReviewStatus
+        v-if="isSuperUser"
         :stableId="stableId"
         :currentUnderReviewStatus="locusGeneDiseaseData.under_review"
       />
