@@ -126,6 +126,7 @@ export default {
                             <li
                               v-for="commentItem in item.comments"
                               :key="commentItem.comment"
+                              style="white-space: pre-wrap;"
                             >
                               {{ commentItem.comment }} ({{ commentItem.date }})
                             </li>

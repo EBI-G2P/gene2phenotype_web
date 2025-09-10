@@ -355,6 +355,7 @@ export default {
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.text"
+                                  style="white-space: pre-wrap;"
                                 >
                                   {{ commentItem.text }} ({{
                                     commentItem.date
@@ -710,7 +711,7 @@ export default {
                                 v-if="value?.descriptions?.length > 0"
                                 class="mb-0"
                               >
-                                <li v-for="item in value.descriptions">
+                                <li v-for="item in value.descriptions" style="white-space: pre-wrap;">
                                   {{ item }}
                                 </li>
                               </ul>
@@ -876,7 +877,7 @@ export default {
                                 {{ item.publication }}
                               </a>
                             </td>
-                            <td>
+                            <td style="white-space: pre-wrap;">
                               {{ item.summary }}
                             </td>
                           </tr>
@@ -986,6 +987,7 @@ export default {
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.comment"
+                                  style="white-space: pre-wrap;"
                                 >
                                   {{ commentItem.comment }} ({{
                                     commentItem.date
@@ -1303,7 +1305,7 @@ export default {
                           <tr
                             v-for="commentObj in locusGeneDiseaseData.comments"
                           >
-                            <td>{{ commentObj.text }}</td>
+                            <td style="white-space: pre-wrap;">{{ commentObj.text }}</td>
                             <td>
                               {{
                                 commentObj.is_public == 1
