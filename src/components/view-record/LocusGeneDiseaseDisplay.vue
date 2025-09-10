@@ -865,7 +865,7 @@ export default {
                         </thead>
                         <tbody>
                           <tr
-                            v-for="item in locusGeneDiseaseData.phenotype_summary" style="white-space: pre-wrap;"
+                            v-for="item in locusGeneDiseaseData.phenotype_summary"
                           >
                             <td>
                               <a
@@ -877,7 +877,7 @@ export default {
                                 {{ item.publication }}
                               </a>
                             </td>
-                            <td>
+                            <td style="white-space: pre-wrap;">
                               {{ item.summary }}
                             </td>
                           </tr>
@@ -1303,9 +1303,9 @@ export default {
                         </thead>
                         <tbody>
                           <tr
-                            v-for="commentObj in locusGeneDiseaseData.comments" style="white-space: pre-wrap;"
+                            v-for="commentObj in locusGeneDiseaseData.comments"
                           >
-                            <td>{{ commentObj.text }}</td>
+                            <td style="white-space: pre-wrap;">{{ commentObj.text }}</td>
                             <td>
                               {{
                                 commentObj.is_public == 1
