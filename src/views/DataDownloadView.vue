@@ -147,31 +147,6 @@ export default {
       </div>
     </div>
     <div v-if="!isDataLoading">
-      <h4 class="pb-2">Download via the API</h4>
-      <p>The G2P API provides a programmatic way to access panel data. The base URL is:</p>
-      <div class="citation-div">
-        <p>
-          https://www.ebi.ac.uk/gene2phenotype/api/panel/<em>name</em>/download
-        </p>
-      </div>
-      <p>Example: Download Skeletal Disorders panel</p>
-      <div class="citation-div">
-        <p>
-          curl -L  -o SkeletalG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/Skeletal/download
-        </p>
-      </div>
-      <p>Example: Download all panels</p>
-      <div class="citation-div">
-        <p>
-          curl -L  -o AllG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/all/download
-        </p>
-      </div>
-      <p style="margin-bottom: 45px;">See the
-        <a href="/gene2phenotype/g2p-api-info" target="_blank">
-          API page
-        </a>
-        for more documentation.
-      </p>
       <p>
         Download format is available
         <a
@@ -191,6 +166,35 @@ export default {
           >FTP site</a
         >.
       </p>
+      <h4 class="pb-2">Download via the API</h4>
+      <p>The G2P API provides a programmatic way to access panel data. The base URL is:</p>
+      <div class="citation-div">
+        <p>
+          https://www.ebi.ac.uk/gene2phenotype/api/panel/{panel-name}/download
+        </p>
+      </div>
+      <p><b>Examples</b></p>
+      <ul>
+        <li>Download Skeletal disorders panel</li>
+        <div class="citation-div">
+          <p>
+            curl -L  -o SkeletalG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/Skeletal/download
+          </p>
+        </div>
+        <li>Download all panels</li>
+        <div class="citation-div">
+          <p>
+            curl -L  -o AllG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/all/download
+          </p>
+        </div>
+      </ul>
+      <p>See the
+        <a href="/gene2phenotype/g2p-api-info" target="_blank" style="text-decoration: none">
+          API page
+        </a>
+        for more documentation.
+      </p>
+      <h4 class="pb-2">Additional information</h4>
       <p>
         The gene2phenotype dataset (G2P) integrates data on genes, variants and
         phenotypes for example relating to developmental disorders. It is

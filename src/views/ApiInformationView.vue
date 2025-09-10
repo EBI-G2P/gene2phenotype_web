@@ -88,7 +88,7 @@
         </p>
       </div>
     </ul>
-    <h4 class="pb-2">Fetch a specific record</h4>
+    <h4 class="pb-2">How to fetch a specific record</h4>
     <p><b>Endpoint</b></p>
     <div class="citation-div">
       <p>
@@ -102,7 +102,7 @@
         https://www.ebi.ac.uk/gene2phenotype/api/lgd/G2P03507
       </p>
     </div>
-    <h4 class="pb-2">Fetch counts by panel</h4>
+    <h4 class="pb-2">How to fetch counts for all panels</h4>
     <p><b>Endpoint</b></p>
     <div class="citation-div">
       <p>
