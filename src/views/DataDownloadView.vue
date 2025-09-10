@@ -147,6 +147,31 @@ export default {
       </div>
     </div>
     <div v-if="!isDataLoading">
+      <h4 class="pb-2">Download via the API</h4>
+      <p>The G2P API provides a programmatic way to access panel data. The base URL is:</p>
+      <div class="citation-div">
+        <p>
+          https://www.ebi.ac.uk/gene2phenotype/api/panel/<em>name</em>/download
+        </p>
+      </div>
+      <p>Example: Download Skeletal Disorders panel</p>
+      <div class="citation-div">
+        <p>
+          curl -L  -o SkeletalG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/Skeletal/download
+        </p>
+      </div>
+      <p>Example: Download all panels</p>
+      <div class="citation-div">
+        <p>
+          curl -L  -o AllG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/all/download
+        </p>
+      </div>
+      <p style="margin-bottom: 45px;">See the
+        <a href="/gene2phenotype/g2p-api-info" target="_blank">
+          API page
+        </a>
+        for more documentation.
+      </p>
       <p>
         Download format is available
         <a
@@ -198,3 +223,14 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.citation-div {
+  margin: 0;
+}
+.citation-div p {
+  padding: 15px;
+  background: #f4f4f4;
+  border-radius: 5px;
+  font-family: courier, monospace;
+}
+</style>
