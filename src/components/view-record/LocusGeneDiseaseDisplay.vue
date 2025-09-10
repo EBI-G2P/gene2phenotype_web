@@ -355,6 +355,7 @@ export default {
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.text"
+                                  style="white-space: pre-wrap;"
                                 >
                                   {{ commentItem.text }} ({{
                                     commentItem.date
@@ -710,7 +711,7 @@ export default {
                                 v-if="value?.descriptions?.length > 0"
                                 class="mb-0"
                               >
-                                <li v-for="item in value.descriptions">
+                                <li v-for="item in value.descriptions" style="white-space: pre-wrap;">
                                   {{ item }}
                                 </li>
                               </ul>
@@ -864,7 +865,7 @@ export default {
                         </thead>
                         <tbody>
                           <tr
-                            v-for="item in locusGeneDiseaseData.phenotype_summary"
+                            v-for="item in locusGeneDiseaseData.phenotype_summary" style="white-space: pre-wrap;"
                           >
                             <td>
                               <a
@@ -986,6 +987,7 @@ export default {
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.comment"
+                                  style="white-space: pre-wrap;"
                                 >
                                   {{ commentItem.comment }} ({{
                                     commentItem.date
@@ -1301,7 +1303,7 @@ export default {
                         </thead>
                         <tbody>
                           <tr
-                            v-for="commentObj in locusGeneDiseaseData.comments"
+                            v-for="commentObj in locusGeneDiseaseData.comments" style="white-space: pre-wrap;"
                           >
                             <td>{{ commentObj.text }}</td>
                             <td>
