@@ -110,6 +110,7 @@ export default {
                 <thead>
                   <tr>
                     <th>Comment</th>
+                    <th>User</th>
                     <th>Type</th>
                     <th>Action</th>
                   </tr>
@@ -117,6 +118,7 @@ export default {
                 <tbody>
                   <tr v-for="item in comments" :key="item.id">
                     <td>{{ item.text }} ({{ item.date }})</td>
+                    <td>{{ item.user }}</td>
                     <td>
                       {{
                         item.is_public === 1
