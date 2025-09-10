@@ -110,15 +110,14 @@ export default {
                 <thead>
                   <tr>
                     <th>Comment</th>
-                    <th>User</th>
                     <th>Type</th>
+                    <th>User</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="item in comments" :key="item.id">
                     <td>{{ item.text }} ({{ item.date }})</td>
-                    <td>{{ item.user }}</td>
                     <td>
                       {{
                         item.is_public === 1
@@ -128,6 +127,7 @@ export default {
                           : ""
                       }}
                     </td>
+                    <td>{{ item.user }}</td>
                     <td>
                       <button
                         class="btn btn-outline-danger"
