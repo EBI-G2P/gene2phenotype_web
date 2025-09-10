@@ -111,6 +111,7 @@ export default {
                   <tr>
                     <th>Comment</th>
                     <th>Type</th>
+                    <th>Created by</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -126,6 +127,7 @@ export default {
                           : ""
                       }}
                     </td>
+                    <td>{{ item.user }}</td>
                     <td>
                       <button
                         class="btn btn-outline-danger"
