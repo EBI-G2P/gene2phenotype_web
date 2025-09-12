@@ -45,7 +45,7 @@
       <li>Full G2P records</li>
     </ul>
     <h4 class="pb-2">How to search records</h4>
-    <p><b>Endpoint</b></p>
+    <h6>Endpoint</h6>
     <div class="citation-div">
       <p>
         https://www.ebi.ac.uk/gene2phenotype/api/search
@@ -55,15 +55,20 @@
       The search endpoint matches on partial text while other endpoints look up
       data based on exact text matches.
     </p>
-    <p><b>Parameters</b></p>
+    <h6>Parameters</h6>
     <ul>
       <li>query (mandatory)</li>
       <li>type</li>
       <li>panel</li>
     </ul>
-    <p><b>Examples</b></p>
+    <h6>Examples</h6>
     <ul>
       <li>Search by gene</li>
+      <div class="citation-div">
+        <p>
+          https://www.ebi.ac.uk/gene2phenotype/api/search/?query=TP53
+        </p>
+      </div>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=TP53&type=gene
@@ -72,10 +77,15 @@
       <li>Search by phenotype</li>
       <div class="citation-div">
         <p>
+          https://www.ebi.ac.uk/gene2phenotype/api/search/?query=HP:0003416
+        </p>
+      </div>
+      <div class="citation-div">
+        <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=HP:0003416&type=phenotype
         </p>
       </div>
-      <li>Generic search across all categories</li>
+      <li>Search by disease</li>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=Weill-Marchesani syndrome
@@ -89,28 +99,28 @@
       </div>
     </ul>
     <h4 class="pb-2">How to fetch a specific record</h4>
-    <p><b>Endpoint</b></p>
+    <h6>Endpoint</h6>
     <div class="citation-div">
       <p>
-        https://www.ebi.ac.uk/gene2phenotype/api/lgd/<em>stable_id</em>
+        https://www.ebi.ac.uk/gene2phenotype/api/lgd/{stable_id}
       </p>
     </div>
     <p>This endpoint returns detailed information about a specific record using the G2P stable ID.</p>
-    <p><b>Example</b></p>
+    <h6>Example</h6>
     <div class="citation-div">
       <p>
         https://www.ebi.ac.uk/gene2phenotype/api/lgd/G2P03507
       </p>
     </div>
     <h4 class="pb-2">How to fetch counts for all panels</h4>
-    <p><b>Endpoint</b></p>
+    <h6>Endpoint</h6>
     <div class="citation-div">
       <p>
         https://www.ebi.ac.uk/gene2phenotype/api/panels
       </p>
     </div>
     <p>This endpoint returns summary counts for all G2P panels.</p>
-    <p style="margin-top: 45px;">
+    <p>
       See
       <a
         href="https://www.ebi.ac.uk/gene2phenotype/api/"

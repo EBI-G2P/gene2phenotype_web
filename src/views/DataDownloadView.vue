@@ -167,13 +167,13 @@ export default {
         >.
       </p>
       <h4 class="pb-2">Download via the API</h4>
-      <p>The G2P API provides a programmatic way to access panel data. The base URL is:</p>
+      <p>The G2P API provides a programmatic way to access the latest data by panel. The base URL is:</p>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/panel/{panel-name}/download
         </p>
       </div>
-      <p><b>Examples</b></p>
+      <h6>Examples</h6>
       <ul>
         <li>Download Skeletal disorders panel</li>
         <div class="citation-div">
