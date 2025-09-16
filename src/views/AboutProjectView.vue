@@ -15,12 +15,12 @@ export default {
   <div class="container px-5 py-3" style="min-height: 60vh">
     <h2 class="pb-3">The G2P Project</h2>
     <p>
-      The G2P project shares detailed, evidence-based gene-disease models,
-      curated from the literature by experts. These data can be used in the G2P
-      extension of the Ensembl Variant Effect Predictor (Ensembl VEP) to
-      efficiently filter genotype data from the exome or genome wide sequencing
-      of people with genetic disorders to identify likely causative variants and
-      accelerate diagnosis.
+      The G2P project, hosted at EMBL-EBI, shares detailed, evidence-based
+      gene-disease models, curated from the literature by experts. These data
+      can be used in the G2P extension of the Ensembl Variant Effect Predictor
+      (Ensembl VEP) to efficiently filter genotype data from the exome or genome
+      wide sequencing of people with genetic disorders to identify likely
+      causative variants and accelerate diagnosis.
     </p>
     <p>
       The G2P project was established by David FitzPatrick in 2012 with the aim
