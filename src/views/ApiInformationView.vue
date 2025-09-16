@@ -58,34 +58,36 @@
     <h6>Parameters</h6>
     <ul>
       <li>query (mandatory)</li>
-      <li>type</li>
-      <li>panel</li>
+      <li>type (optional): specifies the type of your search. If omitted, the endpoint performs a generic search across all types.</li>
+      <li>panel (optional): filters results to a specific panel by name.</li>
     </ul>
     <h6>Examples</h6>
     <ul>
-      <li>Search by gene</li>
+      <li>Generic search by gene</li>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=TP53
         </p>
       </div>
+      <li>Search by gene</li>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=TP53&type=gene
         </p>
       </div>
-      <li>Search by phenotype</li>
+      <li>Generic search by phenotype</li>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=HP:0003416
         </p>
       </div>
+      <li>Search by phenotype</li>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=HP:0003416&type=phenotype
         </p>
       </div>
-      <li>Search by disease</li>
+      <li>Generic search by disease</li>
       <div class="citation-div">
         <p>
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=Weill-Marchesani syndrome
