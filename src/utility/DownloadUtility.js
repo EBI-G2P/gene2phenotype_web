@@ -361,8 +361,10 @@ const preparePublicationsEvidenceObj = (
               ul: [
                 `Number of Families: ${item.number_of_families ?? ""}`,
                 `Affected Individuals: ${item.affected_individuals ?? ""}`,
-                `Ancestry: ${item.ancestry ?? ""}`,
-                `Consanguinity: ${item.consanguinity ?? ""}`,
+                item.ancestry ? `Ancestry: ${item.ancestry}` : "",
+                item.consanguinity && item.consanguinity !== "unknown"
+                  ? `Consanguinity: ${item.consanguinity}`
+                  : "",
               ],
             }
           : "",
