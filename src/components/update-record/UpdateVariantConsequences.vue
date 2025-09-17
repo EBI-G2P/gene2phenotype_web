@@ -94,6 +94,19 @@ export default {
     },
     getVariantConsequenceCssClass,
   },
+  computed: {
+    isUpdateBtnDisabled() {
+      if (this.variantConsequences) {
+        // IF data has not been changed THEN disable button ELSE do not disable button
+        return Object.keys(this.variantConsequences).every(
+          (key) =>
+            this.initialCurrentVariantConsequences[key] ===
+            this.variantConsequences[key]
+        );
+      }
+      return true;
+    },
+  },
 };
 </script>
 <template>
@@ -197,10 +210,15 @@ export default {
                   </tbody>
                 </table>
               </div>
+              <p v-if="isUpdateBtnDisabled">
+                <i class="bi bi-info-circle"></i> Select values to update
+                variant consequences.
+              </p>
               <button
                 type="button"
                 class="btn btn-primary"
                 @click="updateVariantConsequence"
+                :disabled="isUpdateBtnDisabled"
               >
                 <i class="bi bi-pencil-square"></i> Update variant consequences
               </button>
