@@ -355,6 +355,7 @@ export default {
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.text"
+                                  style="white-space: pre-wrap"
                                 >
                                   {{ commentItem.text }} ({{
                                     commentItem.date
@@ -710,7 +711,10 @@ export default {
                                 v-if="value?.descriptions?.length > 0"
                                 class="mb-0"
                               >
-                                <li v-for="item in value.descriptions">
+                                <li
+                                  v-for="item in value.descriptions"
+                                  style="white-space: pre-wrap"
+                                >
                                   {{ item }}
                                 </li>
                               </ul>
@@ -876,7 +880,7 @@ export default {
                                 {{ item.publication }}
                               </a>
                             </td>
-                            <td>
+                            <td style="white-space: pre-wrap">
                               {{ item.summary }}
                             </td>
                           </tr>
@@ -973,12 +977,21 @@ export default {
                                 <hr class="m-0" />
                                 Affected Individuals:
                                 {{ item.affected_individuals }}
-                                <hr class="m-0" />
-                                Ancestry:
-                                {{ item.ancestry }}
-                                <hr class="m-0" />
-                                Consanguinity:
-                                {{ item.consanguinity }}
+                                <template v-if="item.ancestry">
+                                  <hr class="m-0" />
+                                  Ancestry:
+                                  {{ item.ancestry }}
+                                </template>
+                                <template
+                                  v-if="
+                                    item.consanguinity &&
+                                    item.consanguinity !== 'unknown'
+                                  "
+                                >
+                                  <hr class="m-0" />
+                                  Consanguinity:
+                                  {{ item.consanguinity }}
+                                </template>
                               </span>
                             </td>
                             <td v-if="isAuthenticated" class="ps-0">
@@ -986,6 +999,7 @@ export default {
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.comment"
+                                  style="white-space: pre-wrap"
                                 >
                                   {{ commentItem.comment }} ({{
                                     commentItem.date
@@ -1303,7 +1317,9 @@ export default {
                           <tr
                             v-for="commentObj in locusGeneDiseaseData.comments"
                           >
-                            <td>{{ commentObj.text }}</td>
+                            <td style="white-space: pre-wrap">
+                              {{ commentObj.text }}
+                            </td>
                             <td>
                               {{
                                 commentObj.is_public == 1

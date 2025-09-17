@@ -175,7 +175,12 @@ export const VariantConsequencesAttribs = [
 export const EvidenceTypesAttribs = [
   {
     primaryType: "Function",
-    secondaryType: ["Biochemical", "Protein Interaction", "Protein Expression"],
+    secondaryType: [
+      "Biochemical",
+      "Protein Interaction",
+      "Protein Expression",
+      "In Silico Modelling",
+    ],
   },
   {
     primaryType: "Functional Alteration",

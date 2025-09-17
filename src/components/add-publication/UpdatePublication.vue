@@ -110,22 +110,29 @@ export default {
                             <hr class="m-0" />
                             Affected Individuals:
                             {{ item.affected_individuals }}
-                            <hr class="m-0" />
-                            Ancestry:
-                            {{ item.ancestry }}
-                            <hr class="m-0" />
-                            Consanguinity:
-                            {{ item.consanguinity }}
+                            <template v-if="item.ancestry">
+                              <hr class="m-0" />
+                              Ancestry:
+                              {{ item.ancestry }}
+                            </template>
+                            <template
+                              v-if="
+                                item.consanguinity &&
+                                item.consanguinity !== 'unknown'
+                              "
+                            >
+                              <hr class="m-0" />
+                              Consanguinity:
+                              {{ item.consanguinity }}
+                            </template>
                           </span>
                         </td>
                         <td class="ps-0">
-                          <ul
-                            v-if="item.comments?.length > 0"
-                            class="mb-0"
-                          >
+                          <ul v-if="item.comments?.length > 0" class="mb-0">
                             <li
                               v-for="commentItem in item.comments"
                               :key="commentItem.comment"
+                              style="white-space: pre-wrap"
                             >
                               {{ commentItem.comment }} ({{ commentItem.date }})
                             </li>
