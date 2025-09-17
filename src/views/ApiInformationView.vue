@@ -44,6 +44,15 @@
       <li>Summaries of G2P records</li>
       <li>Full G2P records</li>
     </ul>
+    <p>
+      See
+      <a
+        href="https://www.ebi.ac.uk/gene2phenotype/api/"
+        target="_blank"
+        >https://www.ebi.ac.uk/gene2phenotype/api/</a
+      >
+      for full documentation.
+    </p>
     <h4 class="pb-2">How to search records</h4>
     <h6>Endpoint</h6>
     <div class="citation-div">
@@ -122,15 +131,6 @@
       </p>
     </div>
     <p>This endpoint returns summary counts for all G2P panels.</p>
-    <p>
-      See
-      <a
-        href="https://www.ebi.ac.uk/gene2phenotype/api/"
-        target="_blank"
-        >https://www.ebi.ac.uk/gene2phenotype/api/</a
-      >
-      for full documentation.
-    </p>
   </div>
 </template>
 <style scoped>
