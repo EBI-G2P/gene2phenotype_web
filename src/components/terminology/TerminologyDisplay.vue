@@ -262,6 +262,56 @@ export default {
           </table>
         </div>
       </section>
+      <section id="mechanism-evidence-section" class="pt-3">
+        <h4>Molecular Mechanism Evidence Types</h4>
+        <h6>
+          G2P evidence classifications reuse terms from the ClinGen gene-disease
+          validity SOP Experimental Evidence Summary Matrix. More information
+          can be found
+          <a
+            href="https://clinicalgenome.org/docs/gene-disease-validity-standard-operating-procedures-version-10/"
+            style="text-decoration: none"
+            target="_blank"
+            >here</a
+          >.
+        </h6>
+        <div class="pt-1 table-responsive-xl">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Evidence Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template
+                v-for="primaryEvidenceType in Object.keys(
+                  molecularDescriptionData.evidence
+                )"
+                :key="primaryEvidenceType"
+              >
+                <tr
+                  v-for="(secondaryTypeObj, index) in molecularDescriptionData
+                    .evidence[primaryEvidenceType]"
+                  :key="index"
+                >
+                  <td>{{ primaryEvidenceType }}</td>
+                  <td>{{ Object.keys(secondaryTypeObj)[0] }}</td>
+                  <td>
+                    <span v-if="Object.values(secondaryTypeObj)[0]">
+                      {{ Object.values(secondaryTypeObj)[0] }}
+                    </span>
+                    <span v-else class="text-muted">
+                      No description available
+                    </span>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
       <section id="variant-consequence-section" class="pt-3">
         <h4>Variant Consequence</h4>
         <h6>
@@ -402,6 +452,9 @@ export default {
         </a>
         <a class="nav-link" href="#mechanism-synopsis-section">
           Molecular Mechanism Synopsis
+        </a>
+        <a class="nav-link" href="#mechanism-evidence-section">
+          Molecular Mechanism Evidence Types
         </a>
         <a class="nav-link" href="#variant-consequence-section">
           Variant Consequence
