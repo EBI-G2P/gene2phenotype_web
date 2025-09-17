@@ -84,9 +84,16 @@ export default {
     <h6>Examples</h6>
     <ul>
       <li>
-        Generic search by gene
-        <CodeBlock class="mb-3">
+        Generic searches
+        <CodeBlock class="mb-2">
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=TP53
+        </CodeBlock>
+        <CodeBlock class="mb-2">
+          https://www.ebi.ac.uk/gene2phenotype/api/search/?query=HP:0003416
+        </CodeBlock>
+        <CodeBlock class="mb-3">
+          https://www.ebi.ac.uk/gene2phenotype/api/search/?query=Weill-Marchesani
+          syndrome
         </CodeBlock>
       </li>
       <li>
@@ -96,28 +103,15 @@ export default {
         </CodeBlock>
       </li>
       <li>
-        Generic search by phenotype
-        <CodeBlock class="mb-3">
-          https://www.ebi.ac.uk/gene2phenotype/api/search/?query=HP:0003416
-        </CodeBlock>
-      </li>
-      <li>
         Search by phenotype
         <CodeBlock class="mb-3">
           https://www.ebi.ac.uk/gene2phenotype/api/search/?query=HP:0003416&type=phenotype
         </CodeBlock>
       </li>
       <li>
-        Generic search by disease
-        <CodeBlock class="mb-3">
-          https://www.ebi.ac.uk/gene2phenotype/api/search/?query=Weill-Marchesani
-          syndrome
-        </CodeBlock>
-      </li>
-      <li>
         Search gene within a specific panel
         <CodeBlock class="mb-3">
-          https://www.ebi.ac.uk/gene2phenotype/api/search/?type=gene&query=FBN1&panel=DD
+          https://www.ebi.ac.uk/gene2phenotype/api/search/?query=FBN1&type=gene&panel=DD
         </CodeBlock>
       </li>
     </ul>
