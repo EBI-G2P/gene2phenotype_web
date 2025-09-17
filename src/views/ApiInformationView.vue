@@ -137,7 +137,7 @@ export default {
     <h4 class="py-2">How to fetch counts for all panels</h4>
     <h6>Endpoint</h6>
     <CodeBlock class="mb-3">
-      https://www.ebi.ac.uk/gene2phenotype/api/Panels
+      https://www.ebi.ac.uk/gene2phenotype/api/panels
     </CodeBlock>
     <p>This endpoint returns summary counts for all G2P panels.</p>
   </div>
