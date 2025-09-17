@@ -114,7 +114,6 @@ export default {
       </div>
     </div>
     <div v-if="!isDataLoading && !panelErrorMsg">
-      <h4>Download CSV files</h4>
       <ul class="list-unstyled">
         <li>
           <button
@@ -152,7 +151,7 @@ export default {
     </div>
     <div v-if="!isDataLoading">
       <p>
-        Download format is available
+        Download is in CSV format. The full format can be found
         <a
           href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/Data_download_format_202508.txt"
           target="_blank"
