@@ -3,7 +3,7 @@ import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
 import { ALL_PANELS_URL, DOWNLOAD_PANEL_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
 import { trackPanelDownload } from "../utility/AnalyticsUtility.js";
-
+import CodeBlock from "../components/code-block/CodeBlock.vue";
 export default {
   data() {
     return {
@@ -91,6 +91,9 @@ export default {
         });
     },
   },
+  components: {
+    CodeBlock,
+  },
 };
 </script>
 <template>
@@ -148,7 +151,7 @@ export default {
     </div>
     <div v-if="!isDataLoading">
       <p>
-        Download format is available
+        Download is in CSV format. The full format can be found
         <a
           href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/Data_download_format_202508.txt"
           target="_blank"
@@ -166,37 +169,43 @@ export default {
           >FTP site</a
         >.
       </p>
-      <h4 class="pb-2">Download via the API</h4>
-      <p>The G2P API provides a programmatic way to access the latest data by panel. The base URL is:</p>
-      <div class="citation-div">
-        <p>
-          https://www.ebi.ac.uk/gene2phenotype/api/panel/{panel-name}/download
-        </p>
-      </div>
-      <h6>Examples</h6>
-      <ul>
-        <li>Download Skeletal disorders panel</li>
-        <div class="citation-div">
-          <p>
-            curl -L  -o SkeletalG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/Skeletal/download
-          </p>
-        </div>
-        <li>Download all panels</li>
-        <div class="citation-div">
-          <p>
-            curl -L  -o AllG2P.csv https://www.ebi.ac.uk/gene2phenotype/api/panel/all/download
-          </p>
-        </div>
-      </ul>
-      <p>See the
-        <a href="/gene2phenotype/g2p-api-info" target="_blank" style="text-decoration: none">
-          API page
+      <h4 class="py-2">Download via the API</h4>
+      <p>
+        The G2P API provides a programmatic way to access the latest data by
+        panel. See the
+        <a
+          href="/gene2phenotype/g2p-api-info"
+          target="_blank"
+          style="text-decoration: none"
+        >
+          G2P API page
         </a>
         for more documentation.
       </p>
-      <h4 class="pb-2">Additional information</h4>
+      <h6>Endpoint</h6>
+      <CodeBlock class="mb-3">
+        https://www.ebi.ac.uk/gene2phenotype/api/panel/{panel-name}/download
+      </CodeBlock>
+      <h6>Examples</h6>
+      <ul>
+        <li>
+          Download Skeletal disorders panel
+          <CodeBlock class="mb-3">
+            curl -L -o SkeletalG2P.csv
+            https://www.ebi.ac.uk/gene2phenotype/api/panel/Skeletal/download
+          </CodeBlock>
+        </li>
+        <li>
+          Download all panels
+          <CodeBlock>
+            curl -L -o AllG2P.csv
+            https://www.ebi.ac.uk/gene2phenotype/api/panel/all/download
+          </CodeBlock>
+        </li>
+      </ul>
+      <h4 class="py-2">Additional information</h4>
       <p>
-        The gene2phenotype dataset (G2P) integrates data on genes, variants and
+        The Gene2Phenotype dataset (G2P) integrates data on genes, variants and
         phenotypes for example relating to developmental disorders. It is
         constructed from published literature, and is primarily an inclusion
         list to allow targeted filtering of genome-wide data for diagnostic
@@ -222,19 +231,8 @@ export default {
           target="_blank"
           style="text-decoration: none"
           >https://www.nature.com/articles/s41467-019-10016-3</a
-        >)
+        >).
       </p>
     </div>
   </div>
 </template>
-<style scoped>
-.citation-div {
-  margin: 0;
-}
-.citation-div p {
-  padding: 15px;
-  background: #f4f4f4;
-  border-radius: 5px;
-  font-family: courier, monospace;
-}
-</style>
