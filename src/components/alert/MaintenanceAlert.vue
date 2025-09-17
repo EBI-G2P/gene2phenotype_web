@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar bg-maintenance">
+  <nav class="navbar bg-maintenance">
     <div class="container-fluid justify-content-center maintenance-container">
       <span class="navbar-brand text-dark fw-bold text-center fs-4">
         <i class="bi bi-exclamation-triangle mx-2 fs-1"></i>

@@ -386,7 +386,7 @@ export default {
                                 {{ item.publication }}
                               </a>
                             </td>
-                            <td style="white-space: pre-wrap;">
+                            <td style="white-space: pre-wrap">
                               {{ item.summary }}
                             </td>
                           </tr>

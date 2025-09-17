@@ -508,7 +508,10 @@ export default {
                                 v-if="value?.descriptions?.length > 0"
                                 class="mb-0"
                               >
-                                <li v-for="item in value.descriptions" style="white-space: pre-wrap;">
+                                <li
+                                  v-for="item in value.descriptions"
+                                  style="white-space: pre-wrap"
+                                >
                                   {{ item }}
                                 </li>
                               </ul>
