@@ -117,7 +117,9 @@ export default {
                 </thead>
                 <tbody>
                   <tr v-for="item in comments" :key="item.id">
-                    <td style="white-space: pre-wrap;">{{ item.text }} ({{ item.date }})</td>
+                    <td style="white-space: pre-wrap">
+                      {{ item.text }} ({{ item.date }})
+                    </td>
                     <td>
                       {{
                         item.is_public === 1

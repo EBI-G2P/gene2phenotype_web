@@ -270,7 +270,7 @@ export default {
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.text"
-                                  style="white-space: pre-wrap;"
+                                  style="white-space: pre-wrap"
                                 >
                                   {{ commentItem.text }} ({{
                                     commentItem.date

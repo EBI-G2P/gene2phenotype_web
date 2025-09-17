@@ -255,7 +255,7 @@ export default {
       </ul>
     </div>
   </nav>
-  <MaintenanceAlert v-if="isMaintenance"/>
+  <MaintenanceAlert v-if="isMaintenance" />
 </template>
 <style scoped>
 .top-header {
