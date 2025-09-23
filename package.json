@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "chart.js": "^4.4.7",
     "lodash": "^4.17.21",
     "pdfmake": "^0.2.20",
