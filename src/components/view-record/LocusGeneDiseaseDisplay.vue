@@ -99,6 +99,14 @@ export default {
       // Open in new tab
       window.open(url, "_blank", "noopener,noreferrer");
     },
+    selectAllPublications() {
+      this.selectedPublicationsList = this.getInitialSelectedPublications(
+        this.locusGeneDiseaseData?.publications
+      );
+    },
+    unselectAllPublications() {
+      this.selectedPublicationsList = [];
+    },
   },
 };
 </script>
@@ -928,7 +936,7 @@ export default {
                         <thead>
                           <tr>
                             <th class="text-nowrap px-1">
-                              View
+                              Select
                               <ToolTip
                                 toolTipText="Select papers and click 'View selected publications in EuropePMC' to view them there"
                               />
@@ -1010,6 +1018,30 @@ export default {
                           </tr>
                         </tbody>
                       </table>
+                      <div class="pt-1 px-0 pb-0">
+                        <button
+                          type="button"
+                          class="btn btn-link p-0"
+                          style="text-decoration: none"
+                          @click="selectAllPublications"
+                          :disabled="
+                            selectedPublicationsList.length ===
+                            locusGeneDiseaseData.publications.length
+                          "
+                        >
+                          Select all
+                        </button>
+                        |
+                        <button
+                          type="button"
+                          class="btn btn-link p-0"
+                          style="text-decoration: none"
+                          @click="unselectAllPublications"
+                          :disabled="selectedPublicationsList.length === 0"
+                        >
+                          Deselect all
+                        </button>
+                      </div>
                       <button
                         type="button"
                         class="btn btn-link pt-1 px-0 pb-0"
