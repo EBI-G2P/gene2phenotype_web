@@ -10,6 +10,7 @@ import {
   DECIPHER_URL,
   ENSEMBL_GENE_URL,
   GENCC_URL,
+  CLINGEN_URL,
 } from "../utility/UrlConstants.js";
 import {
   CONFIDENCE_COLOR_MAP,
@@ -39,6 +40,7 @@ export default {
       OMIM_URL,
       PANELAPP_URL,
       UNIPROT_URL,
+      CLINGEN_URL,
       MARSH_PROBABILITY_THRESHOLD,
     };
   },
@@ -428,6 +430,16 @@ export default {
               target="_blank"
             >
               GenCC
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+          </li>
+          <li v-if="geneData.ids?.HGNC">
+            <a
+              :href="CLINGEN_URL + geneData.ids.HGNC"
+              style="text-decoration: none"
+              target="_blank"
+            >
+              ClinGen
               <i class="bi bi-box-arrow-up-right"></i>
             </a>
           </li>
