@@ -64,3 +64,4 @@ export const PANELAPP_URL =
   "https://panelapp.genomicsengland.co.uk/panels/entities/";
 export const GENCC_URL = "https://search.thegencc.org/genes/";
 export const UNIPROT_URL = "https://www.uniprot.org/uniprotkb/";
+export const CLINGEN_URL = "https://search.clinicalgenome.org/kb/genes/";
