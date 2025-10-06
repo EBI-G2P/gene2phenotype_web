@@ -190,7 +190,7 @@ const prepareVariantConsequencesObj = (locusGeneDiseaseData) => {
               SEQUENCE_ONTOLOGY_URL + item.accession
             )
           : item.variant_consequence,
-        item.support,
+        item.variant_consequence !== "uncertain" ? item.support : "",
       ]);
     // Prepare table rows (header and body rows)
     const variantConsequencesTableRows = [

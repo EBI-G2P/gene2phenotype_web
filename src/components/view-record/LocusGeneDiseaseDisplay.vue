@@ -525,7 +525,11 @@ export default {
                               <span v-else>{{ item.variant_consequence }}</span>
                             </td>
                             <td>
-                              {{ item.support }}
+                              <template
+                                v-if="item.variant_consequence !== 'uncertain'"
+                              >
+                                {{ item.support }}
+                              </template>
                             </td>
                           </tr>
                         </tbody>
