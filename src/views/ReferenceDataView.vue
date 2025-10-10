@@ -49,6 +49,12 @@ export default {
       if (geneReferenceData) {
         referenceData["geneData"] = geneReferenceData;
       }
+      const geneSymbolReferenceData = response.find(
+        (item) => item.key === "locus_gene_symbol_update"
+      );
+      if (geneSymbolReferenceData) {
+        referenceData["geneSymbolData"] = geneSymbolReferenceData;
+      }
       const geneFunctionReferenceData = response.find(
         (item) => item.key === "import_uniprot"
       );
@@ -116,8 +122,8 @@ export default {
             </tr>
             <tr>
               <td>Gene names/ HGNC ids/ OMIM ids</td>
-              <td>{{ referenceData.geneData?.source }}</td>
-              <td>{{ referenceData.geneData?.version }}</td>
+              <td>{{ referenceData.geneSymbolData?.source }}</td>
+              <td>{{ referenceData.geneSymbolData?.version }}</td>
             </tr>
             <tr>
               <td>Gene Function</td>
