@@ -140,7 +140,7 @@ export const VariantConsequencesAttribs = [
     hierarchyLevel: 1,
     accession: "SO:0002314",
     description:
-      "A sequence variant that alters the level or amount of gene product produced. This high-level term can be applied where the direction of level change (increased vs decreased gene product level) is unknown or not confirmed, eg, promoter or enhancer variants, some splice variants.",
+      "A sequence variant that alters the level or amount of gene product produced. This high-level term can be applied where the direction of level change (increased vs decreased gene product level) is unknown or not confirmed, e.g., promoter or enhancer variants, some splice variants.",
   },
   {
     labelText: "Decreased_gene_product_level",
@@ -148,7 +148,7 @@ export const VariantConsequencesAttribs = [
     hierarchyLevel: 2,
     accession: "SO:0002316",
     description:
-      "A sequence variant that decreases the level or amount of gene product produced, eg, a 5′ UTR variant that reduced protein levels by disrupting translation, a 3′ UTR variant that affects RNA stability, splice variants that decrease but do not stop expression, variants leading to nonsense-mediated-decay (NMD)-competent premature termination codon (PTCs), or gene-disrupting structural variants.",
+      "A sequence variant that decreases the level or amount of gene product produced, e.g., a 5′ UTR variant that reduced protein levels by disrupting translation, a 3′ UTR variant that affects RNA stability, splice variants that decrease but do not stop expression, variants leading to nonsense-mediated-decay (NMD)-competent premature termination codon (PTCs), or gene-disrupting structural variants.",
   },
   {
     labelText: "Absent_gene_product",
@@ -156,7 +156,7 @@ export const VariantConsequencesAttribs = [
     hierarchyLevel: 3,
     accession: "SO:0002317",
     description:
-      "A sequence variant that results in no gene product. eg, whole gene or other large scale disruptive structural variant, variants producing NMD-competent PTCs.",
+      "A sequence variant that results in no gene product. e.g., whole gene or other large scale disruptive structural variant, variants producing NMD-competent PTCs.",
   },
   {
     labelText: "Increased_gene_product_level",
@@ -164,7 +164,7 @@ export const VariantConsequencesAttribs = [
     hierarchyLevel: 2,
     accession: "SO:0002315",
     description:
-      "A variant that increases the level or amount of gene product produced, eg, non-disruptive gene duplications, some promoter or enhancer variants.",
+      "A variant that increases the level or amount of gene product produced, e.g., non-disruptive gene duplications, some promoter or enhancer variants.",
   },
   {
     labelText: "Altered_gene_product_structure",
@@ -172,7 +172,7 @@ export const VariantConsequencesAttribs = [
     hierarchyLevel: 1,
     accession: "SO:0002318",
     description:
-      "A sequence variant that alters the sequence of a gene product. eg, missense variants, NMD-incompetent PTCs, and other length-changing variants (in-frame indels, stop loss).",
+      "A sequence variant that alters the sequence of a gene product. e.g., missense variants, NMD-incompetent PTCs, and other length-changing variants (in-frame indels, stop loss).",
   },
   {
     labelText: "Uncertain",
