@@ -109,8 +109,8 @@ export default {
               crossReferencesResponse.push({
                 accession: item.identifier,
                 source: item.source,
-                term: item.original_disease_name,
-                description: item.original_disease_name,
+                term: item.disease_name,
+                description: item.disease_name,
               });
             });
             this.allSuggestedCrossReferences = crossReferencesResponse;
