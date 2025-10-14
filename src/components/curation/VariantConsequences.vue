@@ -26,15 +26,16 @@ export default {
     <div class="col-12">
       <h5>Variant Consequences<span class="text-danger">*</span></h5>
     </div>
-    <div class="col-xl-6 col-12">
+    <div class="col-12">
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th style="width: 70%">
+            <th>
               Altered protein for protein-coding genes or altered RNA level for
               non-protein coding genes
             </th>
-            <th style="width: 30%">Source</th>
+            <th>Description</th>
+            <th style="width: 140px">Source</th>
           </tr>
         </thead>
         <tbody>
@@ -51,6 +52,18 @@ export default {
               <span v-else>
                 {{ item.labelText }}
               </span>
+            </td>
+            <td>
+              <template v-if="item.description">
+                {{ item.description }} <br />
+                See table
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11039201/figure/F2/"
+                  style="text-decoration: none"
+                  target="_blank"
+                  >here</a
+                >.
+              </template>
             </td>
             <td>
               <select

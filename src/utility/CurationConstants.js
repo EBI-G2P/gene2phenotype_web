@@ -139,36 +139,47 @@ export const VariantConsequencesAttribs = [
     inputKey: "altered_gene_product_level",
     hierarchyLevel: 1,
     accession: "SO:0002314",
+    description:
+      "A sequence variant that alters the level or amount of gene product produced. This high-level term can be applied where the direction of level change (increased vs decreased gene product level) is unknown or not confirmed, e.g., promoter or enhancer variants, some splice variants.",
   },
   {
     labelText: "Decreased_gene_product_level",
     inputKey: "decreased_gene_product_level",
     hierarchyLevel: 2,
     accession: "SO:0002316",
+    description:
+      "A sequence variant that decreases the level or amount of gene product produced, e.g., a 5′ UTR variant that reduced protein levels by disrupting translation, a 3′ UTR variant that affects RNA stability, splice variants that decrease but do not stop expression, variants leading to nonsense-mediated-decay (NMD)-competent premature termination codon (PTCs), or gene-disrupting structural variants.",
   },
   {
     labelText: "Absent_gene_product",
     inputKey: "absent_gene_product",
     hierarchyLevel: 3,
     accession: "SO:0002317",
+    description:
+      "A sequence variant that results in no gene product. e.g., whole gene or other large scale disruptive structural variant, variants producing NMD-competent PTCs.",
   },
   {
     labelText: "Increased_gene_product_level",
     inputKey: "increased_gene_product_level",
     hierarchyLevel: 2,
     accession: "SO:0002315",
+    description:
+      "A variant that increases the level or amount of gene product produced, e.g., non-disruptive gene duplications, some promoter or enhancer variants.",
   },
   {
     labelText: "Altered_gene_product_structure",
     inputKey: "altered_gene_product_structure",
     hierarchyLevel: 1,
     accession: "SO:0002318",
+    description:
+      "A sequence variant that alters the sequence of a gene product. e.g., missense variants, NMD-incompetent PTCs, and other length-changing variants (in-frame indels, stop loss).",
   },
   {
     labelText: "Uncertain",
     inputKey: "uncertain",
     hierarchyLevel: 1,
     accession: null,
+    description: null,
   },
 ];
 
