@@ -10,6 +10,9 @@ export default {
     goToAddPublicationPage() {
       this.$router.push(`/lgd/add-publication/${this.stableId}`);
     },
+    goToReviewMinedPublicationPage() {
+      this.$router.push(`/lgd/review-mined-publication/${this.stableId}`);
+    },
   },
 };
 </script>
@@ -21,7 +24,7 @@ export default {
     aria-labelledby="update-record-modal-label"
     aria-hidden="true"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="update-record-modal-label">
@@ -47,11 +50,20 @@ export default {
             </button>
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-primary me-3"
               data-bs-dismiss="modal"
               @click="goToAddPublicationPage"
             >
               <i class="bi bi-plus-circle-fill"></i> Add Publication(s)
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              @click="goToReviewMinedPublicationPage"
+            >
+              <i class="bi bi-file-earmark-text-fill"></i>
+              Review All Mined Publication(s)
             </button>
           </div>
         </div>
