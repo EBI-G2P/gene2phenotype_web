@@ -28,6 +28,7 @@ import VerifyEmailView from "../views/VerifyEmailView.vue";
 import ReferenceDataView from "../views/ReferenceDataView.vue";
 import ApiInformationView from "../views/ApiInformationView.vue";
 import HelpView from "../views/HelpView.vue";
+import ReviewMinedPublicationView from "../views/ReviewMinedPublicationView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -104,6 +105,12 @@ const router = createRouter({
       path: "/lgd/update/:stableId",
       name: "update-g2p-record",
       component: UpdateRecordView,
+      meta: { requiresLogIn: true },
+    },
+    {
+      path: "/lgd/review-mined-publication/:stableId",
+      name: "review-mined-publication",
+      component: ReviewMinedPublicationView,
       meta: { requiresLogIn: true },
     },
     {

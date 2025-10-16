@@ -1,8 +1,8 @@
 <script>
 import { LGD_RECORD_URL } from "../utility/UrlConstants.js";
-import AddPublication from "../components/add-publication/AddPublication.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import ReviewMinedPublication from "../components/review-mined-publication/ReviewMinedPublication.vue";
 
 export default {
   data() {
@@ -11,11 +11,10 @@ export default {
       locusGeneDiseaseData: null,
       errorMsg: null,
       stableId: null,
-      publicationQueryParam: null,
     };
   },
   components: {
-    AddPublication,
+    ReviewMinedPublication,
   },
   created() {
     // watch the params of the route to fetch the data again
@@ -31,9 +30,6 @@ export default {
   },
   methods: {
     fetchRecordData() {
-      if (this.$route.query?.publication) {
-        this.publicationQueryParam = this.$route.query.publication;
-      }
       this.stableId = this.$route.params.stableId;
       this.errorMsg = this.locusGeneDiseaseData = null;
       this.isApiCallLoading = true;
@@ -58,7 +54,7 @@ export default {
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
     <div class="d-flex justify-content-between align-items-start pb-2">
-      <h2>Add Publication(s) to G2P Record</h2>
+      <h2>Review mined publications</h2>
       <router-link class="btn btn-outline-primary" :to="`/lgd/${stableId}`">
         <i class="bi bi-arrow-left-circle"></i> Return to record
       </router-link>
@@ -83,10 +79,9 @@ export default {
         {{ locusGeneDiseaseData.disease.name }}
       </h4>
       <h4 v-else class="text-muted pb-2">Disease Name Not Available</h4>
-      <AddPublication
+      <ReviewMinedPublication
         :stableId="stableId"
-        :locusGeneDiseaseData="locusGeneDiseaseData"
-        :publicationQueryParam="publicationQueryParam"
+        :currentMinedPublications="locusGeneDiseaseData.mined_publications"
       />
     </div>
   </div>
