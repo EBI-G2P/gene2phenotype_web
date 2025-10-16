@@ -11,6 +11,7 @@ export default {
       locusGeneDiseaseData: null,
       errorMsg: null,
       stableId: null,
+      publicationQueryParam: null,
     };
   },
   components: {
@@ -30,6 +31,9 @@ export default {
   },
   methods: {
     fetchRecordData() {
+      if (this.$route.query?.publication) {
+        this.publicationQueryParam = this.$route.query.publication;
+      }
       this.stableId = this.$route.params.stableId;
       this.errorMsg = this.locusGeneDiseaseData = null;
       this.isApiCallLoading = true;
@@ -82,6 +86,7 @@ export default {
       <AddPublication
         :stableId="stableId"
         :locusGeneDiseaseData="locusGeneDiseaseData"
+        :publicationQueryParam="publicationQueryParam"
       />
     </div>
   </div>
