@@ -1088,7 +1088,9 @@ export default {
               </div>
               <p v-else class="text-muted">Not Available</p>
               <div
-                v-if="minedPublicationsUnderReview.length > 0"
+                v-if="
+                  isAuthenticated && minedPublicationsUnderReview.length > 0
+                "
                 class="accordion accordion-flush mt-2"
                 id="accordionMinedPublications"
               >
