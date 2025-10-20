@@ -122,7 +122,7 @@ export default {
                 >
               </p>
               <div class="col-xl-5 col-lg-6">
-                <table class="table table-bordered">
+                <table class="table table-bordered mb-0">
                   <tbody>
                     <tr>
                       <td style="width: 60%">
@@ -201,6 +201,46 @@ export default {
                           class="badge green-text-box"
                         >
                           {{ mechanismGeneStats.dominant_negative_mp }}
+                        </span>
+                        <span v-else class="text-muted">Not Available</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="mb-0 fw-bold">gnomAD constraint metrics</p>
+              <div class="col-xl-5 col-lg-6">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <td style="width: 60%">
+                        pLI (probability of being loss-of-function intolerant)
+                      </td>
+                      <td style="width: 40%">
+                        <span
+                          v-if="
+                            mechanismGeneStats?.pli_gnomAD != null &&
+                            mechanismGeneStats?.pli_gnomAD !== ''
+                          "
+                        >
+                          {{ mechanismGeneStats.pli_gnomAD }}
+                        </span>
+                        <span v-else class="text-muted">Not Available</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 60%">
+                        LOEUF (loss-of-function observed/expected upper bound
+                        fraction)
+                      </td>
+                      <td style="width: 40%">
+                        <span
+                          v-if="
+                            mechanismGeneStats?.loeuf_gnomAD != null &&
+                            mechanismGeneStats?.loeuf_gnomAD !== ''
+                          "
+                        >
+                          {{ mechanismGeneStats.loeuf_gnomAD }}
                         </span>
                         <span v-else class="text-muted">Not Available</span>
                       </td>
