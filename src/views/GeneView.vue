@@ -275,11 +275,11 @@ export default {
             <table class="table table-bordered">
               <tbody>
                 <tr>
-                  <td>
+                  <td style="width: 75%">
                     Gain of Function (pGOF)
                     <ToolTip :toolTipText="HELP_TEXT.GAIN_OF_FUNCTION" />
                   </td>
-                  <td>
+                  <td style="width: 25%">
                     <span
                       v-if="
                         geneFunctionData.gene_stats.gain_of_function_mp >
@@ -302,11 +302,11 @@ export default {
                   </td>
                 </tr>
                 <tr>
-                  <td>
+                  <td style="width: 75%">
                     Loss of Function (pLOF)
                     <ToolTip :toolTipText="HELP_TEXT.LOSS_OF_FUNCTION" />
                   </td>
-                  <td>
+                  <td style="width: 25%">
                     <span
                       v-if="
                         geneFunctionData.gene_stats.loss_of_function_mp >
@@ -329,11 +329,11 @@ export default {
                   </td>
                 </tr>
                 <tr>
-                  <td>
+                  <td style="width: 75%">
                     Dominant Negative (pDN)
                     <ToolTip :toolTipText="HELP_TEXT.DOMINANT_NEGATIVE" />
                   </td>
-                  <td>
+                  <td style="width: 25%">
                     <span
                       v-if="
                         geneFunctionData.gene_stats.dominant_negative_mp >
@@ -351,6 +351,59 @@ export default {
                       class="badge green-text-box"
                     >
                       {{ geneFunctionData.gene_stats.dominant_negative_mp }}
+                    </span>
+                    <span v-else class="text-muted">Not Available</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <h4 class="py-3">gnomAD constraint metrics</h4>
+        <p>
+          These values predict the likelihood that the gene is tolerant to
+          change. See
+          <a
+            href="https://gnomad.broadinstitute.org/downloads#v4-constraint"
+            target="_blank"
+            style="text-decoration: none"
+            >here</a
+          >
+          for more information.
+        </p>
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-5 col-xl-4">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td style="width: 75%">
+                    pLI (probability of being loss-of-function intolerant)
+                  </td>
+                  <td style="width: 25%">
+                    <span
+                      v-if="
+                        geneFunctionData.gene_stats.pli_gnomAD != null &&
+                        geneFunctionData.gene_stats.pli_gnomAD !== ''
+                      "
+                    >
+                      {{ geneFunctionData.gene_stats.pli_gnomAD }}
+                    </span>
+                    <span v-else class="text-muted">Not Available</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 75%">
+                    LOEUF (loss-of-function observed/expected upper bound
+                    fraction)
+                  </td>
+                  <td style="width: 25%">
+                    <span
+                      v-if="
+                        geneFunctionData.gene_stats.loeuf_gnomAD != null &&
+                        geneFunctionData.gene_stats.loeuf_gnomAD !== ''
+                      "
+                    >
+                      {{ geneFunctionData.gene_stats.loeuf_gnomAD }}
                     </span>
                     <span v-else class="text-muted">Not Available</span>
                   </td>
