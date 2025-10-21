@@ -1110,7 +1110,7 @@ export default {
                       }})
                       <ToolTip
                         class="ms-1"
-                        toolTipText="help text for mined publications table"
+                        :toolTipText="HELP_TEXT.MINED_PUBLICATIONS"
                       />
                     </button>
                   </h2>
@@ -1134,6 +1134,10 @@ export default {
                               <div class="d-flex justify-content-between">
                                 <span class="align-middle">Title</span>
                                 <button
+                                  v-if="
+                                    !isPanelDataLoading &&
+                                    isRecordPartOfUserPanels
+                                  "
                                   class="btn btn-link p-0 m-0"
                                   style="text-decoration: none"
                                   @click="goToReviewMinedPublicationPage"
