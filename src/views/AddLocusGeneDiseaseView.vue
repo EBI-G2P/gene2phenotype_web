@@ -19,6 +19,7 @@ import {
   updateHpoTermsInputHelperWithNewPublicationsData,
   updateInputWithRemovedPublications,
   updateHpoTermsInputHelperWithRemovedPublications,
+  checkRecordWarnings,
 } from "../utility/CurationUtility.js";
 import SaveSuccessAlert from "../components/alert/SaveSuccessAlert.vue";
 import AlertModal from "../components/modal/AlertModal.vue";
@@ -44,6 +45,7 @@ import {
   fetchAndLogApiResponseErrorMsg,
   fetchAndLogGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
+import RecordWarningModal from "../components/modal/RecordWarningModal.vue";
 
 export default {
   data() {
@@ -78,6 +80,7 @@ export default {
       stableId: null,
       isDisplayGeneExistingData: false, // variable used to display ExistingGeneInformation component
       notifyExistingGeneInformation: false, // variable used to notify ExistingGeneInformation component to fetch existing data for gene
+      recordWarnings: [],
     };
   },
   beforeRouteLeave(to, from) {
@@ -113,6 +116,7 @@ export default {
     RemovePublicationModal,
     ExistingGeneInformation,
     Comment,
+    RecordWarningModal,
   },
   methods: {
     geneSearchBtnClickHandler() {
@@ -178,6 +182,7 @@ export default {
       this.panelErrorMsg = null;
       this.panelData = null;
       this.isPanelDataLoading = false;
+      this.recordWarnings = [];
     },
     fetchGeneInformation() {
       this.geneErrorMsg =
@@ -379,6 +384,52 @@ export default {
         .finally(() => {
           this.hpoTermsInputHelper[pmid].isLoadingValue = false;
         });
+    },
+    saveAndPublishClickHandler() {
+      this.recordWarnings = checkRecordWarnings(
+        this.input.confidence,
+        this.input.publications,
+        this.input.variant_consequences,
+        this.input.variant_types
+      );
+      const modalId = this.recordWarnings.length
+        ? "record-warning-modal"
+        : "publish-entry-modal";
+      const modalElement = document.getElementById(modalId);
+      let modal = bootstrap.Modal.getInstance(modalElement);
+      if (!modal) {
+        modal = new bootstrap.Modal(modalElement);
+      }
+      modal.show();
+    },
+    openPublishModal() {
+      // Hide record-warning-modal
+      const recordWarningModalElement = document.getElementById(
+        "record-warning-modal"
+      );
+      const recordWarningModal = bootstrap.Modal.getInstance(
+        recordWarningModalElement
+      );
+      if (!recordWarningModal) {
+        recordWarningModal = new bootstrap.Modal(recordWarningModalElement);
+      }
+      recordWarningModal.hide();
+
+      // Wait for record-warning-modal to be hidden before showing publish-entry-modal
+      recordWarningModalElement.addEventListener(
+        "hidden.bs.modal",
+        () => {
+          const publishModalElement = document.getElementById(
+            "publish-entry-modal"
+          );
+          let publishModal = bootstrap.Modal.getInstance(publishModalElement);
+          if (!publishModal) {
+            publishModal = new bootstrap.Modal(publishModalElement);
+          }
+          publishModal.show();
+        },
+        { once: true } // ensure it only fires once
+      );
     },
     saveDraft() {
       this.publishErrorMsg =
@@ -679,11 +730,7 @@ export default {
       >
         <i class="bi bi-floppy-fill"></i> Save Draft
       </button>
-      <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#publish-entry-modal"
-      >
+      <button class="btn btn-primary" @click="saveAndPublishClickHandler">
         <i class="bi bi-floppy-fill"></i> Save and Publish
       </button>
     </div>
@@ -718,6 +765,10 @@ export default {
     <RemovePublicationModal
       :pmidList="Object.keys(input.publications)"
       @removePublication="(pmid) => removePublication(pmid)"
+    />
+    <RecordWarningModal
+      :recordWarnings="recordWarnings"
+      @confirm-click-handler="openPublishModal"
     />
   </div>
 </template>
