@@ -4,6 +4,7 @@ import {
   CONFIDENCE_COLOR_MAP,
   NOT_AVAILABLE,
   NOT_ASSIGNED,
+  NO_CURATED_PUBLICATIONS_AVAILABLE,
 } from "./Constants.js";
 import {
   DECIPHER_URL,
@@ -393,7 +394,7 @@ const prepareCuratedPublicationsObj = (
     // Return table object
     return createTableObj(publicationsEvidenceTableRows);
   }
-  return NOT_AVAILABLE;
+  return NO_CURATED_PUBLICATIONS_AVAILABLE;
 };
 
 const prepareMinedPublicationsObj = (locusGeneDiseaseData) => {
@@ -640,10 +641,9 @@ const createDocumentDefinition = (
   );
   // Mined publications section
   const isDisplayMinedPublicationsSection =
-    isAuthenticated &&
     locusGeneDiseaseData.mined_publications?.filter(
       (item) => item.status === "mined"
-    );
+    ).length > 0;
   const minedPublicationsHeaderObj = createSubSubHeader(
     "Additional Mined Publications Awaiting Review"
   );

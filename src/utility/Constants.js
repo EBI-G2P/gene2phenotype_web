@@ -56,6 +56,8 @@ export const MARSH_PROBABILITY_THRESHOLD = {
 
 export const NOT_AVAILABLE = "Not Available";
 export const NOT_ASSIGNED = "Not Assigned";
+export const NO_CURATED_PUBLICATIONS_AVAILABLE =
+  "No curated publications available";
 
 export const PRIVACY_POLICY_CONFIG = {
   STORAGE_KEY_NAME: "gene2phenotype.privacy-policy.version",

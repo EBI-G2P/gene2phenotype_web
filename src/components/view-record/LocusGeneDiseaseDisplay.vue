@@ -1037,61 +1037,63 @@ export default {
                           </tr>
                         </tbody>
                       </table>
-                      <div class="pt-1 px-0 pb-0">
+                      <div class="d-flex justify-content-between">
+                        <div class="pt-1 px-0 pb-0">
+                          <button
+                            type="button"
+                            class="btn btn-link p-0"
+                            style="text-decoration: none"
+                            @click="
+                              selectedCuratedPublicationsList =
+                                getAllSelectedCuratedPublications(
+                                  locusGeneDiseaseData.publications
+                                )
+                            "
+                            :disabled="
+                              selectedCuratedPublicationsList.length ===
+                              locusGeneDiseaseData.publications.length
+                            "
+                          >
+                            Select all
+                          </button>
+                          |
+                          <button
+                            type="button"
+                            class="btn btn-link p-0"
+                            style="text-decoration: none"
+                            @click="selectedCuratedPublicationsList = []"
+                            :disabled="
+                              selectedCuratedPublicationsList.length === 0
+                            "
+                          >
+                            Deselect all
+                          </button>
+                        </div>
                         <button
                           type="button"
-                          class="btn btn-link p-0"
+                          class="btn btn-link pt-1 px-0 pb-0"
                           style="text-decoration: none"
                           @click="
-                            selectedCuratedPublicationsList =
-                              getAllSelectedCuratedPublications(
-                                locusGeneDiseaseData.publications
-                              )
+                            viewSelectedPublications(
+                              selectedCuratedPublicationsList
+                            )
                           "
-                          :disabled="
-                            selectedCuratedPublicationsList.length ===
-                            locusGeneDiseaseData.publications.length
-                          "
-                        >
-                          Select all
-                        </button>
-                        |
-                        <button
-                          type="button"
-                          class="btn btn-link p-0"
-                          style="text-decoration: none"
-                          @click="selectedCuratedPublicationsList = []"
                           :disabled="
                             selectedCuratedPublicationsList.length === 0
                           "
                         >
-                          Deselect all
+                          View selected publications in EuropePMC
+                          <i class="bi bi-box-arrow-up-right"></i>
                         </button>
                       </div>
-                      <button
-                        type="button"
-                        class="btn btn-link pt-1 px-0 pb-0"
-                        style="text-decoration: none"
-                        @click="
-                          viewSelectedPublications(
-                            selectedCuratedPublicationsList
-                          )
-                        "
-                        :disabled="selectedCuratedPublicationsList.length === 0"
-                      >
-                        View selected publications in EuropePMC
-                        <i class="bi bi-box-arrow-up-right"></i>
-                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              <p v-else class="text-muted">Not Available</p>
+              <p v-else class="text-muted">No curated publications available</p>
               <div
-                v-if="
-                  isAuthenticated && minedPublicationsUnderReview.length > 0
-                "
-                class="accordion accordion-flush mt-2"
+                v-if="minedPublicationsUnderReview.length > 0"
+                class="accordion accordion-flush mt-4"
                 id="accordionMinedPublications"
               >
                 <div class="accordion-item">
@@ -1136,6 +1138,7 @@ export default {
                                 <button
                                   v-if="
                                     !isPanelDataLoading &&
+                                    isAuthenticated &&
                                     isRecordPartOfUserPanels
                                   "
                                   class="btn btn-link p-0 m-0"
@@ -1176,49 +1179,53 @@ export default {
                           </tr>
                         </tbody>
                       </table>
-                      <div class="pt-1 px-0 pb-0">
+                      <div class="d-flex justify-content-between">
+                        <div class="pt-1 px-0 pb-0">
+                          <button
+                            type="button"
+                            class="btn btn-link p-0"
+                            style="text-decoration: none"
+                            @click="
+                              selectedMinedPublicationsList =
+                                getAllSelectedMinedPublications(
+                                  locusGeneDiseaseData.mined_publications
+                                )
+                            "
+                            :disabled="
+                              selectedMinedPublicationsList.length ===
+                              minedPublicationsUnderReview.length
+                            "
+                          >
+                            Select all
+                          </button>
+                          |
+                          <button
+                            type="button"
+                            class="btn btn-link p-0"
+                            style="text-decoration: none"
+                            @click="selectedMinedPublicationsList = []"
+                            :disabled="
+                              selectedMinedPublicationsList.length === 0
+                            "
+                          >
+                            Deselect all
+                          </button>
+                        </div>
                         <button
                           type="button"
-                          class="btn btn-link p-0"
+                          class="btn btn-link pt-1 px-0 pb-0"
                           style="text-decoration: none"
                           @click="
-                            selectedMinedPublicationsList =
-                              getAllSelectedMinedPublications(
-                                locusGeneDiseaseData.mined_publications
-                              )
+                            viewSelectedPublications(
+                              selectedMinedPublicationsList
+                            )
                           "
-                          :disabled="
-                            selectedMinedPublicationsList.length ===
-                            minedPublicationsUnderReview.length
-                          "
-                        >
-                          Select all
-                        </button>
-                        |
-                        <button
-                          type="button"
-                          class="btn btn-link p-0"
-                          style="text-decoration: none"
-                          @click="selectedMinedPublicationsList = []"
                           :disabled="selectedMinedPublicationsList.length === 0"
                         >
-                          Deselect all
+                          View selected publications in EuropePMC
+                          <i class="bi bi-box-arrow-up-right"></i>
                         </button>
                       </div>
-                      <button
-                        type="button"
-                        class="btn btn-link pt-1 px-0 pb-0"
-                        style="text-decoration: none"
-                        @click="
-                          viewSelectedPublications(
-                            selectedMinedPublicationsList
-                          )
-                        "
-                        :disabled="selectedMinedPublicationsList.length === 0"
-                      >
-                        View selected publications in EuropePMC
-                        <i class="bi bi-box-arrow-up-right"></i>
-                      </button>
                     </div>
                   </div>
                 </div>
