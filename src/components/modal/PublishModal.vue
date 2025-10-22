@@ -15,7 +15,7 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal=title" id="publish-entry-modal-label">
-            <strong>Publish Record</strong>
+            Publish Record
           </h5>
           <button
             type="button"
@@ -26,7 +26,7 @@ export default {
         </div>
         <div class="modal-body">
           <div class="row g-3 py-3">
-            <p>You are about to publish this record?</p>
+            <p>You are about to publish this record. Do you want to proceed?</p>
           </div>
         </div>
         <div class="modal-footer">
@@ -35,7 +35,7 @@ export default {
           </button>
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-success"
             @click="$emit('publish')"
             data-bs-dismiss="modal"
           >
