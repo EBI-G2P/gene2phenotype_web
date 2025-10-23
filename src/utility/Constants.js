@@ -44,6 +44,8 @@ export const HELP_TEXT = {
   CLICK_HPO_SUGGESTION: "Click any term to select it.",
   GENE_LOCATION:
     "The location of the gene on the GRCh38 reference assembly. The format is chromosome:start:end:strand where '1' is forward strand and '-1' is reverse strand.",
+  MINED_PUBLICATIONS:
+    "These publications have been mined from PubMed (Publication: 'Domain-wide Mapping of Peer-reviewed Literature for Genetic Developmental Disorders using Machine Learning and Gene2Phenotype' coming soon) and have not yet been reviewed.",
 };
 
 export const MARSH_PROBABILITY_THRESHOLD = {
@@ -54,6 +56,14 @@ export const MARSH_PROBABILITY_THRESHOLD = {
 
 export const NOT_AVAILABLE = "Not Available";
 export const NOT_ASSIGNED = "Not Assigned";
+export const NO_CURATED_PUBLICATIONS_AVAILABLE =
+  "No curated publications available";
+
+export const MINED_PUBLICATION_STATUS = {
+  MINED: "mined",
+  CURATED: "curated",
+  REJECTED: "rejected",
+};
 
 export const PRIVACY_POLICY_CONFIG = {
   STORAGE_KEY_NAME: "gene2phenotype.privacy-policy.version",

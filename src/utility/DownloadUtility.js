@@ -4,6 +4,8 @@ import {
   CONFIDENCE_COLOR_MAP,
   NOT_AVAILABLE,
   NOT_ASSIGNED,
+  NO_CURATED_PUBLICATIONS_AVAILABLE,
+  MINED_PUBLICATION_STATUS,
 } from "./Constants.js";
 import {
   DECIPHER_URL,
@@ -328,7 +330,7 @@ const preparePhenotypicSummaryObj = (locusGeneDiseaseData) => {
   return NOT_AVAILABLE;
 };
 
-const preparePublicationsEvidenceObj = (
+const prepareCuratedPublicationsObj = (
   locusGeneDiseaseData,
   isAuthenticated
 ) => {
@@ -393,7 +395,34 @@ const preparePublicationsEvidenceObj = (
     // Return table object
     return createTableObj(publicationsEvidenceTableRows);
   }
-  return NOT_AVAILABLE;
+  return NO_CURATED_PUBLICATIONS_AVAILABLE;
+};
+
+const prepareMinedPublicationsObj = (locusGeneDiseaseData) => {
+  // Prepare table header row
+  const minedPublicationsHeaders = ["PMID", "Title"];
+  const minedPublicationsTableHeaderRow = createTableHeaderRow(
+    minedPublicationsHeaders
+  );
+  // Prepare table body rows
+  const minedPublicationsUnderReview =
+    locusGeneDiseaseData.mined_publications.filter(
+      (item) => item.status === MINED_PUBLICATION_STATUS.MINED
+    );
+  const minedPublicationsTableBodyRows = minedPublicationsUnderReview.map(
+    (item) => [
+      item.pmid ? createLinkObj(item.pmid, EUROPE_PMC_URL + item.pmid) : "",
+      item.title,
+    ]
+  );
+  // Prepare table rows (header and body rows)
+  const minedPublicationsTableRows = [
+    minedPublicationsTableHeaderRow,
+    ...minedPublicationsTableBodyRows,
+  ];
+
+  // Return table object
+  return createTableObj(minedPublicationsTableRows);
 };
 
 const prepareExternalLinksObj = (locusGeneDiseaseData) => {
@@ -601,12 +630,26 @@ const createDocumentDefinition = (
   const phenotypicSummaryHeaderObj = createSubHeader("Phenotypic Summary");
   const phenotypicSummaryObj =
     preparePhenotypicSummaryObj(locusGeneDiseaseData);
-  // Publications evidence section
-  const publicationsEvidenceHeaderObj = createSubHeader("Evidence");
-  const publicationsEvidenceObj = preparePublicationsEvidenceObj(
+  // Evidence section
+  const evidenceHeaderObj = createSubHeader("Evidence");
+  // Curated publications section
+  const curatedPublicationsHeaderObj = createSubSubHeader(
+    "Curated Publications"
+  );
+  const curatedPublicationsObj = prepareCuratedPublicationsObj(
     locusGeneDiseaseData,
     isAuthenticated
   );
+  // Mined publications section
+  const isDisplayMinedPublicationsSection =
+    locusGeneDiseaseData.mined_publications?.filter(
+      (item) => item.status === MINED_PUBLICATION_STATUS.MINED
+    ).length > 0;
+  const minedPublicationsHeaderObj = createSubSubHeader(
+    "Additional Mined Publications Awaiting Review"
+  );
+  const minedPublicationsObj =
+    prepareMinedPublicationsObj(locusGeneDiseaseData);
   // Gene information section
   const geneInformationHeaderObj = createSubHeader("Gene Information");
   // Gene symbol section
@@ -723,9 +766,14 @@ const createDocumentDefinition = (
       phenotypicSummaryHeaderObj,
       phenotypicSummaryObj,
       "\n",
-      publicationsEvidenceHeaderObj,
-      publicationsEvidenceObj,
+      evidenceHeaderObj,
       "\n",
+      curatedPublicationsHeaderObj,
+      curatedPublicationsObj,
+      "\n",
+      isDisplayMinedPublicationsSection ? minedPublicationsHeaderObj : "",
+      isDisplayMinedPublicationsSection ? minedPublicationsObj : "",
+      isDisplayMinedPublicationsSection ? "\n" : "",
       geneInformationHeaderObj,
       "\n",
       geneSymbolHeaderObj,

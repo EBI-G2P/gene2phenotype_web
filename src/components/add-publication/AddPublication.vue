@@ -30,6 +30,7 @@ export default {
   props: {
     stableId: String,
     locusGeneDiseaseData: Object,
+    publicationQueryParam: String,
   },
   components: {
     UpdatePublication,
@@ -51,7 +52,7 @@ export default {
       hpoTermsInputHelper: {},
       publicationsApiErrorMsg: null,
       isPublicationsDataLoading: false,
-      inputPmids: "",
+      inputPmids: this.publicationQueryParam || "",
       isInputPmidsValid: true,
       inputPmidsInvalidMsg: "",
     };
