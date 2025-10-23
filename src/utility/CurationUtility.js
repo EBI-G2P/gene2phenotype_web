@@ -3,6 +3,7 @@ import {
   VariantConsequencesAttribs,
   EvidenceTypesAttribs,
   MechanismSynopsisAttribs,
+  CURATION_WARNINGS,
 } from "./CurationConstants.js";
 import cloneDeep from "lodash/cloneDeep";
 
@@ -648,4 +649,145 @@ export const getVariantConsequenceCssClass = (hierarchyLevel) => {
     return "text-end";
   }
   return "text-start";
+};
+
+export const checkRecordWarnings = (
+  confidence,
+  publications,
+  variant_consequences,
+  variant_types
+) => {
+  let recordWarnings = [];
+  // IF "definitive" confidence is selected THEN there should be atleast 2 publications over 3 years time
+  if (confidence === "definitive") {
+    const currentYear = new Date().getFullYear();
+    let filteredCount = Object.values(publications).filter(
+      (item) => currentYear - item.year >= 3
+    ).length;
+    if (filteredCount < 2) {
+      recordWarnings.push(CURATION_WARNINGS["CONFIDENCE_WARNING"]);
+    }
+  }
+  // IF "altered_gene_product_level" variant consequence is selected
+  // THEN atleast one of the below variant types should be selected:
+  // "frameshift_variant", "stop_gained", "splice_donor_variant", "start_lost"
+  if (variant_consequences["altered_gene_product_level"] !== "") {
+    if (
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["frameshift_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["stop_gained"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["splice_variants"]["splice_donor_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["other_variants"]["start_lost"],
+        false
+      )
+    ) {
+      recordWarnings.push(
+        CURATION_WARNINGS["ALTERED_GENE_PRODUCT_LEVEL_WARNING"]
+      );
+    }
+  }
+  // IF "decreased_gene_product_level" variant consequence is selected
+  // THEN atleast one of the below variant types should be selected:
+  // "frameshift_variant", "stop_gained", "splice_donor_variant", "splice_acceptor_variant", "start_lost"
+  if (variant_consequences["decreased_gene_product_level"] !== "") {
+    if (
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["frameshift_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["stop_gained"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["splice_variants"]["splice_donor_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["splice_variants"]["splice_acceptor_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["other_variants"]["start_lost"],
+        false
+      )
+    ) {
+      recordWarnings.push(
+        CURATION_WARNINGS["DECREASED_GENE_PRODUCT_LEVEL_WARNING"]
+      );
+    }
+  }
+  // IF "absent_gene_product" variant consequence is selected
+  // THEN atleast one of the below variant types should be selected:
+  // "frameshift_variant", "stop_gained"(with NMD), "splice_donor_variant", "start_lost"
+  if (variant_consequences["absent_gene_product"] !== "") {
+    if (
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["frameshift_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["stop_gained"],
+        true
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["splice_variants"]["splice_donor_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["other_variants"]["start_lost"],
+        false
+      )
+    ) {
+      recordWarnings.push(CURATION_WARNINGS["ABSENT_GENE_PRODUCT_WARNING"]);
+    }
+  }
+  // IF "altered_gene_product_structure" variant consequence is selected
+  // THEN atleast one of the below variant types should be selected:
+  // "missense_variant", "inframe_insertion", "inframe_deletion", "stop_lost"
+  if (variant_consequences["altered_gene_product_structure"] !== "") {
+    if (
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["missense_variant"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["inframe_insertion"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["protein_changing"]["inframe_deletion"],
+        false
+      ) &&
+      !isVariantTypeSelected(
+        variant_types["other_variants"]["stop_lost"],
+        false
+      )
+    ) {
+      recordWarnings.push(
+        CURATION_WARNINGS["ALTERED_GENE_PRODUCT_STRUCTURE_WARNING"]
+      );
+    }
+  }
+  return recordWarnings;
+};
+
+const isVariantTypeSelected = (variantTypeObj, isNmdEscape) => {
+  return (
+    variantTypeObj.nmd_escape === isNmdEscape &&
+    (variantTypeObj.de_novo ||
+      variantTypeObj.inherited ||
+      variantTypeObj.unknown_inheritance ||
+      variantTypeObj.comment.trim() !== "" ||
+      variantTypeObj.supporting_papers.length > 0)
+  );
 };

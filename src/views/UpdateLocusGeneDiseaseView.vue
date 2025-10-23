@@ -19,6 +19,7 @@ import {
   updateHpoTermsInputHelperWithNewPublicationsData,
   updateInputWithRemovedPublications,
   updateHpoTermsInputHelperWithRemovedPublications,
+  checkRecordWarnings,
 } from "../utility/CurationUtility.js";
 import SaveSuccessAlert from "../components/alert/SaveSuccessAlert.vue";
 import AlertModal from "../components/modal/AlertModal.vue";
@@ -43,6 +44,7 @@ import {
 } from "../utility/ErrorUtility.js";
 import api from "../services/api.js";
 import axios from "axios";
+import RecordWarningModal from "../components/modal/RecordWarningModal.vue";
 
 export default {
   created() {
@@ -85,6 +87,7 @@ export default {
       isPanelDataLoading: false,
       panelData: null,
       stableID: null,
+      recordWarnings: [],
     };
   },
   beforeRouteLeave(to, from) {
@@ -119,6 +122,7 @@ export default {
     AlertModal,
     RemovePublicationModal,
     Comment,
+    RecordWarningModal,
   },
   methods: {
     fetchPreviousCurationInput() {
@@ -349,6 +353,52 @@ export default {
         .finally(() => {
           this.hpoTermsInputHelper[pmid].isLoadingValue = false;
         });
+    },
+    saveAndPublishClickHandler() {
+      this.recordWarnings = checkRecordWarnings(
+        this.previousInput.confidence,
+        this.previousInput.publications,
+        this.previousInput.variant_consequences,
+        this.previousInput.variant_types
+      );
+      const modalId = this.recordWarnings.length
+        ? "record-warning-modal"
+        : "publish-entry-modal";
+      const modalElement = document.getElementById(modalId);
+      let modal = bootstrap.Modal.getInstance(modalElement);
+      if (!modal) {
+        modal = new bootstrap.Modal(modalElement);
+      }
+      modal.show();
+    },
+    openPublishModal() {
+      // Hide record-warning-modal
+      const recordWarningModalElement = document.getElementById(
+        "record-warning-modal"
+      );
+      const recordWarningModal = bootstrap.Modal.getInstance(
+        recordWarningModalElement
+      );
+      if (!recordWarningModal) {
+        recordWarningModal = new bootstrap.Modal(recordWarningModalElement);
+      }
+      recordWarningModal.hide();
+
+      // Wait for record-warning-modal to be hidden before showing publish-entry-modal
+      recordWarningModalElement.addEventListener(
+        "hidden.bs.modal",
+        () => {
+          const publishModalElement = document.getElementById(
+            "publish-entry-modal"
+          );
+          let publishModal = bootstrap.Modal.getInstance(publishModalElement);
+          if (!publishModal) {
+            publishModal = new bootstrap.Modal(publishModalElement);
+          }
+          publishModal.show();
+        },
+        { once: true } // ensure it only fires once
+      );
     },
     saveDraft() {
       this.publishErrorMsg =
@@ -601,11 +651,7 @@ export default {
       <button type="button" class="btn btn-primary" @click="saveDraft">
         <i class="bi bi-floppy-fill"></i> Save Draft
       </button>
-      <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#publish-entry-modal"
-      >
+      <button class="btn btn-primary" @click="saveAndPublishClickHandler">
         <i class="bi bi-floppy-fill"></i> Save and Publish
       </button>
     </div>
@@ -631,6 +677,10 @@ export default {
     <RemovePublicationModal
       :pmidList="Object.keys(previousInput?.publications || {})"
       @removePublication="(pmid) => removePublication(pmid)"
+    />
+    <RecordWarningModal
+      :recordWarnings="recordWarnings"
+      @confirm-click-handler="openPublishModal"
     />
   </div>
 </template>

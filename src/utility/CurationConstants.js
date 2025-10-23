@@ -1,3 +1,4 @@
+// API specific curation constants
 export const VariantTypesAttribs = [
   {
     primaryType: {
@@ -242,3 +243,17 @@ export const ConfidenceAttribsOrder = [
   "disputed",
   "refuted",
 ];
+
+// Website specific curation constants
+export const CURATION_WARNINGS = {
+  CONFIDENCE_WARNING:
+    "A record should only be given 'definitive' confidence status if it has been upheld over time - at least 2 independent publications over 3 years time.",
+  ALTERED_GENE_PRODUCT_LEVEL_WARNING:
+    "'Altered_gene_product_level' is selected without a matching variant type of 'splice_donor_variant', 'start_lost', 'frameshift_variant' or 'stop_gained'",
+  DECREASED_GENE_PRODUCT_LEVEL_WARNING:
+    "'Decreased_gene_product_level' is selected without a matching variant type of 'splice_acceptor_variant', 'splice_donor_variant', 'start_lost', 'frameshift_variant' or 'stop_gained'",
+  ABSENT_GENE_PRODUCT_WARNING:
+    "'Absent_gene_product' is selected without a matching variant type of 'splice_donor_variant', 'start_lost', 'frameshift_variant' or 'stop_gained variants'(with NMD)",
+  ALTERED_GENE_PRODUCT_STRUCTURE_WARNING:
+    "'Altered_gene_product_structure' is selected without a matching variant type of 'stop_lost', 'missense_variant', 'inframe_insertion' or 'inframe_deletion'",
+};
