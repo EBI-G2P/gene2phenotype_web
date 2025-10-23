@@ -52,7 +52,7 @@ export default {
       hpoTermsInputHelper: {},
       publicationsApiErrorMsg: null,
       isPublicationsDataLoading: false,
-      inputPmids: this.publicationQueryParam ? this.publicationQueryParam : "",
+      inputPmids: this.publicationQueryParam || "",
       isInputPmidsValid: true,
       inputPmidsInvalidMsg: "",
     };

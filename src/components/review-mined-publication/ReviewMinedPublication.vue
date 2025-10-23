@@ -5,6 +5,7 @@ import {
   UPDATE_MINED_PUBLICATION_URL,
 } from "../../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
+import { MINED_PUBLICATION_STATUS } from "../../utility/Constants.js";
 
 export default {
   props: {
@@ -21,6 +22,7 @@ export default {
       isUpdateDataSuccess: false,
       updateDataSuccessMsg: null,
       EUROPE_PMC_URL,
+      MINED_PUBLICATION_STATUS,
     };
   },
   computed: {
@@ -41,7 +43,7 @@ export default {
       // };
       let minedPublicationsInput = {};
       currentMinedPublications
-        .filter((item) => item.status === "mined")
+        .filter((item) => item.status === MINED_PUBLICATION_STATUS.MINED)
         .forEach((item) => {
           minedPublicationsInput[item.pmid] = {
             isRejected: false,
@@ -86,7 +88,7 @@ export default {
         if (valueObj.isRejected) {
           minedPublicationsList.push({
             pmid: pmid,
-            status: "rejected",
+            status: MINED_PUBLICATION_STATUS.REJECTED,
             comment: valueObj.comment,
           });
         }
@@ -143,7 +145,7 @@ export default {
           <td>
             {{ item.title }}
           </td>
-          <template v-if="item.status === 'mined'">
+          <template v-if="item.status === MINED_PUBLICATION_STATUS.MINED">
             <td>
               <a
                 :href="`/gene2phenotype/lgd/add-publication/${stableId}?publication=${item.pmid}`"
@@ -162,7 +164,10 @@ export default {
                   type="checkbox"
                   v-model="minedPublicationsInput[item.pmid].isRejected"
                 />
-                <label class="form-check-label" for="checkDefault">
+                <label
+                  class="form-check-label"
+                  :for="`input-reject-checkbox-${item.pmid}`"
+                >
                   Reject
                 </label>
               </div>
@@ -180,10 +185,14 @@ export default {
           </template>
           <template v-else>
             <td>
-              <span v-if="item.status === 'curated'">Curated</span>
+              <span v-if="item.status === MINED_PUBLICATION_STATUS.CURATED"
+                >Curated</span
+              >
             </td>
             <td>
-              <span v-if="item.status === 'rejected'">Rejected</span>
+              <span v-if="item.status === MINED_PUBLICATION_STATUS.REJECTED"
+                >Rejected</span
+              >
             </td>
             <td>
               {{ item.comment }}

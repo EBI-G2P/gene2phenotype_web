@@ -5,6 +5,7 @@ import {
   NOT_AVAILABLE,
   NOT_ASSIGNED,
   NO_CURATED_PUBLICATIONS_AVAILABLE,
+  MINED_PUBLICATION_STATUS,
 } from "./Constants.js";
 import {
   DECIPHER_URL,
@@ -406,7 +407,7 @@ const prepareMinedPublicationsObj = (locusGeneDiseaseData) => {
   // Prepare table body rows
   const minedPublicationsUnderReview =
     locusGeneDiseaseData.mined_publications.filter(
-      (item) => item.status === "mined"
+      (item) => item.status === MINED_PUBLICATION_STATUS.MINED
     );
   const minedPublicationsTableBodyRows = minedPublicationsUnderReview.map(
     (item) => [
@@ -642,7 +643,7 @@ const createDocumentDefinition = (
   // Mined publications section
   const isDisplayMinedPublicationsSection =
     locusGeneDiseaseData.mined_publications?.filter(
-      (item) => item.status === "mined"
+      (item) => item.status === MINED_PUBLICATION_STATUS.MINED
     ).length > 0;
   const minedPublicationsHeaderObj = createSubSubHeader(
     "Additional Mined Publications Awaiting Review"

@@ -1,5 +1,9 @@
 <script>
-import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../../utility/Constants.js";
+import {
+  CONFIDENCE_COLOR_MAP,
+  HELP_TEXT,
+  MINED_PUBLICATION_STATUS,
+} from "../../utility/Constants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 import { exportRecordPdf } from "../../utility/DownloadUtility.js";
 import {
@@ -29,7 +33,7 @@ export default {
       isDisplayComments: this.locusGeneDiseaseData?.comments?.length > 0,
       minedPublicationsUnderReview:
         this.locusGeneDiseaseData?.mined_publications.filter(
-          (item) => item.status === "mined"
+          (item) => item.status === MINED_PUBLICATION_STATUS.MINED
         ),
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
@@ -96,7 +100,7 @@ export default {
     },
     getAllSelectedMinedPublications(minedPublications) {
       const filteredMinedPublications = minedPublications?.filter(
-        (item) => item.status === "mined"
+        (item) => item.status === MINED_PUBLICATION_STATUS.MINED
       );
       let allSelectedMinedPublications = [];
       if (filteredMinedPublications) {

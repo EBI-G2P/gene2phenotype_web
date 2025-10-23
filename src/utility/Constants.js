@@ -59,6 +59,12 @@ export const NOT_ASSIGNED = "Not Assigned";
 export const NO_CURATED_PUBLICATIONS_AVAILABLE =
   "No curated publications available";
 
+export const MINED_PUBLICATION_STATUS = {
+  MINED: "mined",
+  CURATED: "curated",
+  REJECTED: "rejected",
+};
+
 export const PRIVACY_POLICY_CONFIG = {
   STORAGE_KEY_NAME: "gene2phenotype.privacy-policy.version",
   VERSION: "1.0.0",
