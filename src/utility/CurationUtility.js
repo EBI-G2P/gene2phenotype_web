@@ -658,13 +658,13 @@ export const checkRecordWarnings = (
   variant_types
 ) => {
   let recordWarnings = [];
-  // IF "definitive" confidence is selected THEN there should be atleast 2 publications over 3 years time
+  // IF "definitive" confidence is selected THEN there should be atleast 4 publications over 5 years time
   if (confidence === "definitive") {
     const currentYear = new Date().getFullYear();
     let filteredCount = Object.values(publications).filter(
-      (item) => currentYear - item.year >= 3
+      (item) => currentYear - item.year >= 5
     ).length;
-    if (filteredCount < 2) {
+    if (filteredCount < 4) {
       recordWarnings.push(CURATION_WARNINGS["CONFIDENCE_WARNING"]);
     }
   }
