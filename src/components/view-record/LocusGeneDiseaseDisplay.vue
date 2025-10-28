@@ -937,6 +937,7 @@ export default {
                 <div class="accordion-item">
                   <h2 class="accordion-header border">
                     <button
+                      id="accordionPublicationsBtn"
                       class="accordion-button"
                       type="button"
                       data-bs-toggle="collapse"
@@ -1648,5 +1649,12 @@ h5,
 h6,
 p {
   margin-bottom: 0;
+}
+
+/* Fix to make sure ToolTip in #accordionMinedPublications is visible when
+ #accordionPublicationsBtn is in focus */
+/* Tooltip has z-index=5 so #accordionPublicationsBtn z-index is set to 1 when in focus */
+#accordionPublicationsBtn:focus {
+  z-index: 1 !important;
 }
 </style>
