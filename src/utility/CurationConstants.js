@@ -247,7 +247,7 @@ export const ConfidenceAttribsOrder = [
 // Website specific curation constants
 export const CURATION_WARNINGS = {
   CONFIDENCE_WARNING:
-    "A record should only be given 'definitive' confidence status if it has been upheld over time - at least 2 independent publications over 3 years time.",
+    "A record should only be given 'definitive' confidence status if it has been upheld over time - this usually means at least 4 publications over 5 years.",
   ALTERED_GENE_PRODUCT_LEVEL_WARNING:
     "'Altered_gene_product_level' is selected without a matching variant type of 'splice_donor_variant', 'start_lost', 'frameshift_variant' or 'stop_gained'",
   DECREASED_GENE_PRODUCT_LEVEL_WARNING:
