@@ -153,7 +153,7 @@ export default {
       <p>
         Download is in CSV format. The full format can be found
         <a
-          href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/Data_download_format_202508.txt"
+          href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/G2P_data_downloads/Data_download_format_202511.txt"
           target="_blank"
           style="text-decoration: none"
           >here</a
