@@ -111,11 +111,11 @@ export default {
         can be updated:
         <b v-if="isSuperUser">
           Phenotypic features, Variant types, Variant consequences, Mechanism,
-          Disease Cross References, Panel, Confidence, Review status
+          Disease, Panel, Confidence, Review status
         </b>
         <b v-else>
           Phenotypic features, Variant types, Variant consequences, Mechanism,
-          Disease Cross References, Panel, Confidence
+          Disease, Panel, Confidence
         </b>
       </p>
       <UpdatePhenotype
@@ -142,6 +142,7 @@ export default {
         :stableId="stableId"
         :gene="locusGeneDiseaseData.locus?.gene_symbol"
         :diseaseName="locusGeneDiseaseData.disease?.name"
+        :diseaseId="locusGeneDiseaseData.disease?.id"
         :currentCrossReferences="locusGeneDiseaseData.disease?.ontology_terms"
       />
       <UpdatePanel

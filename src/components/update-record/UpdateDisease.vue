@@ -14,12 +14,14 @@ import api from "../../services/api.js";
 import DeleteCrossReferenceModal from "../modal/DeleteCrossReferenceModal.vue";
 import { mapState } from "pinia";
 import { useAuthStore } from "../../store/auth.js";
+import UpdateDiseaseName from "./UpdateDiseaseName.vue";
 
 export default {
   props: {
     stableId: String,
     gene: String,
     diseaseName: String,
+    diseaseId: Number,
     currentCrossReferences: Array,
   },
   created() {
@@ -69,6 +71,7 @@ export default {
   },
   components: {
     DeleteCrossReferenceModal,
+    UpdateDiseaseName,
   },
   computed: {
     ...mapState(useAuthStore, ["isSuperUser"]),
@@ -168,7 +171,7 @@ export default {
       };
       api
         .post(
-          UPDATE_CROSS_REFERENCE_URL.replace(":diseasename", this.diseaseName),
+          UPDATE_CROSS_REFERENCE_URL.replace(":diseaseid", this.diseaseId),
           requestBody
         )
         .then((response) => {
@@ -220,7 +223,7 @@ export default {
       };
       api
         .delete(
-          UPDATE_CROSS_REFERENCE_URL.replace(":diseasename", this.diseaseName),
+          UPDATE_CROSS_REFERENCE_URL.replace(":diseaseid", this.diseaseId),
           requestBody
         )
         .then((response) => {
@@ -442,7 +445,7 @@ export default {
       };
       api
         .post(
-          UPDATE_CROSS_REFERENCE_URL.replace(":diseasename", this.diseaseName),
+          UPDATE_CROSS_REFERENCE_URL.replace(":diseaseid", this.diseaseId),
           requestBody
         )
         .then((response) => {
@@ -487,7 +490,7 @@ export default {
           aria-expanded="false"
           aria-controls="update-disease-section-body"
         >
-          Disease Cross References
+          Disease
           <span
             class="badge rounded-pill text-bg-success mx-2"
             v-if="isAddApiCallSuccess || isDeleteApiCallSuccess"
@@ -499,17 +502,10 @@ export default {
       <div id="update-disease-section-body" class="accordion-collapse collapse">
         <div class="accordion-body">
           <div class="row g-3 p-2">
-            <h5>Disease Name</h5>
-            <a
-              v-if="diseaseName"
-              :href="`/gene2phenotype/disease/${diseaseName}`"
-              style="text-decoration: none"
-              target="_blank"
-              class="pt-0 mt-0"
-            >
-              {{ diseaseName }}
-            </a>
-            <p v-else class="text-muted pt-0 mt-0">Not Available</p>
+            <UpdateDiseaseName
+              :diseaseId="diseaseId"
+              :currentDiseaseName="diseaseName"
+            />
             <div
               class="d-flex justify-content-center"
               v-if="

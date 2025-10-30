@@ -82,3 +82,36 @@ export const fetchAndLogApiResponseErrorListMsg = (
   }
   return errorMsg;
 };
+
+export const fetchAndLogApiResponseErrorListObjectMsg = (
+  error,
+  defaultMsg,
+  msgPrefix = null
+) => {
+  let errorMsg = defaultMsg;
+  if (error.response) {
+    if (
+      error.response.data?.error?.length > 0 &&
+      error.response.data.error[0]?.error
+    ) {
+      const apiResponseErrorMsg = error.response.data.error[0].error;
+      if (msgPrefix) {
+        errorMsg = `${msgPrefix} Error: ${apiResponseErrorMsg}`;
+      } else {
+        errorMsg = apiResponseErrorMsg;
+      }
+      console.log(
+        `Error code: ${error.response.status}, Error: ${apiResponseErrorMsg}`
+      );
+    } else {
+      console.log(
+        `Error code: ${error.response.status}, Error: ${JSON.stringify(
+          error.response.data
+        )}`
+      );
+    }
+  } else {
+    console.log("Error message: ", JSON.stringify(error.message));
+  }
+  return errorMsg;
+};
