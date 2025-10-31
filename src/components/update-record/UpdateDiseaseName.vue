@@ -84,6 +84,7 @@ export default {
       <input
         id="disease-name-input"
         class="form-control"
+        type="text"
         v-model.trim="inputDiseaseName"
       />
       <button
