@@ -589,7 +589,7 @@ export default {
               <p v-else class="text-muted">Not Available</p>
             </td>
           </tr>
-          <tr class="align-middle">
+          <tr>
             <td class="w-25 text-end">
               <h6>
                 Categorisation
@@ -614,10 +614,11 @@ export default {
                       aria-expanded="false"
                       aria-controls="collapsibleMechanismSynopsisTable"
                     >
-                      Categorisation ({{
+                      {{
                         locusGeneDiseaseData.molecular_mechanism.synopsis
-                          .length
-                      }})
+                          .map((x) => x.synopsis)
+                          .join(", ")
+                      }}
                     </button>
                   </h2>
                   <div
