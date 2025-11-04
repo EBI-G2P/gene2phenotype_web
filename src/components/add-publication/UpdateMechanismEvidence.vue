@@ -351,13 +351,13 @@ export default {
                               {{ key }}
                             </a>
                           </td>
-                          <td class="ps-0">
+                          <td>
                             <ul
                               v-if="
                                 Object.keys(value?.functional_studies || {})
                                   .length > 0
                               "
-                              class="mb-0"
+                              class="mb-0 ps-3"
                             >
                               <li
                                 v-for="(
@@ -374,10 +374,10 @@ export default {
                               </li>
                             </ul>
                           </td>
-                          <td class="ps-0">
+                          <td>
                             <ul
                               v-if="value?.descriptions?.length > 0"
-                              class="mb-0"
+                              class="mb-0 ps-3"
                             >
                               <li v-for="item in value.descriptions">
                                 {{ item }}
