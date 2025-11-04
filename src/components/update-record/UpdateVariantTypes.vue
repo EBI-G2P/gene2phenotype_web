@@ -218,14 +218,14 @@ export default {
                               </a>
                               <span v-else>{{ item.term }}</span>
                             </td>
-                            <td class="ps-0">
+                            <td>
                               <ul
                                 v-if="
                                   item.de_novo ||
                                   item.inherited ||
                                   item.unknown_inheritance
                                 "
-                                class="mb-0"
+                                class="mb-0 ps-3"
                               >
                                 <li v-if="item.de_novo">De Novo</li>
                                 <li v-if="item.inherited">Inherited</li>
@@ -265,8 +265,11 @@ export default {
                                 </span>
                               </span>
                             </td>
-                            <td class="ps-0">
-                              <ul v-if="item.comments?.length > 0" class="mb-0">
+                            <td>
+                              <ul
+                                v-if="item.comments?.length > 0"
+                                class="mb-0 ps-3"
+                              >
                                 <li
                                   v-for="commentItem in item.comments"
                                   :key="commentItem.text"

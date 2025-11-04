@@ -19,6 +19,7 @@ import {
   SEQUENCE_ONTOLOGY_URL,
 } from "./UrlConstants.js";
 import { trackRecordDownload } from "./AnalyticsUtility.js";
+import cloneDeep from "lodash/cloneDeep";
 
 // Set the fonts
 pdfMake.addVirtualFileSystem(pdfFonts);
@@ -358,11 +359,15 @@ const prepareCuratedPublicationsObj = (
         item.number_of_families ||
         item.affected_individuals ||
         item.ancestry ||
-        item.consanguinity
+        (item.consanguinity && item.consanguinity !== "unknown")
           ? {
               ul: [
-                `Number of Families: ${item.number_of_families ?? ""}`,
-                `Affected Individuals: ${item.affected_individuals ?? ""}`,
+                item.number_of_families
+                  ? `Number of Families: ${item.number_of_families}`
+                  : "",
+                item.affected_individuals
+                  ? `Affected Individuals: ${item.affected_individuals}`
+                  : "",
                 item.ancestry ? `Ancestry: ${item.ancestry}` : "",
                 item.consanguinity && item.consanguinity !== "unknown"
                   ? `Consanguinity: ${item.consanguinity}`
@@ -850,15 +855,15 @@ const createDocumentDefinition = (
 };
 
 export const exportRecordPdf = (locusGeneDiseaseData, isAuthenticated) => {
-  trackRecordDownload(locusGeneDiseaseData.stable_id);
+  const clonedLocusGeneDiseaseData = cloneDeep(locusGeneDiseaseData);
   const downloadedDate = new Date();
+  const recordStableId = clonedLocusGeneDiseaseData.stable_id;
+  trackRecordDownload(recordStableId);
   const documentDefinition = createDocumentDefinition(
-    locusGeneDiseaseData,
+    clonedLocusGeneDiseaseData,
     isAuthenticated,
     downloadedDate
   );
-  const fileName = `${
-    locusGeneDiseaseData.stable_id
-  }_${downloadedDate.toISOString()}.pdf`;
+  const fileName = `${recordStableId}_${downloadedDate.toISOString()}.pdf`;
   pdfMake.createPdf(documentDefinition).download(fileName);
 };

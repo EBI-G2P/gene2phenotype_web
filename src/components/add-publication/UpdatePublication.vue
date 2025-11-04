@@ -97,38 +97,44 @@ export default {
                           {{ item.publication?.title }}
                         </td>
                         <td>
-                          <span
+                          <ul
                             v-if="
                               item.number_of_families ||
                               item.affected_individuals ||
                               item.ancestry ||
-                              item.consanguinity
+                              (item.consanguinity &&
+                                item.consanguinity !== 'unknown')
                             "
+                            class="mb-0 ps-3"
                           >
-                            Number of Families:
-                            {{ item.number_of_families }}
-                            <hr class="m-0" />
-                            Affected Individuals:
-                            {{ item.affected_individuals }}
-                            <template v-if="item.ancestry">
-                              <hr class="m-0" />
+                            <li v-if="item.number_of_families">
+                              Number of Families:
+                              {{ item.number_of_families }}
+                            </li>
+                            <li v-if="item.affected_individuals">
+                              Affected Individuals:
+                              {{ item.affected_individuals }}
+                            </li>
+                            <li v-if="item.ancestry">
                               Ancestry:
                               {{ item.ancestry }}
-                            </template>
-                            <template
+                            </li>
+                            <li
                               v-if="
                                 item.consanguinity &&
                                 item.consanguinity !== 'unknown'
                               "
                             >
-                              <hr class="m-0" />
                               Consanguinity:
                               {{ item.consanguinity }}
-                            </template>
-                          </span>
+                            </li>
+                          </ul>
                         </td>
-                        <td class="ps-0">
-                          <ul v-if="item.comments?.length > 0" class="mb-0">
+                        <td>
+                          <ul
+                            v-if="item.comments?.length > 0"
+                            class="mb-0 ps-3"
+                          >
                             <li
                               v-for="commentItem in item.comments"
                               :key="commentItem.comment"
