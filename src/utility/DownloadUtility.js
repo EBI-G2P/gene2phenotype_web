@@ -358,11 +358,15 @@ const prepareCuratedPublicationsObj = (
         item.number_of_families ||
         item.affected_individuals ||
         item.ancestry ||
-        item.consanguinity
+        (item.consanguinity && item.consanguinity !== "unknown")
           ? {
               ul: [
-                `Number of Families: ${item.number_of_families ?? ""}`,
-                `Affected Individuals: ${item.affected_individuals ?? ""}`,
+                item.number_of_families
+                  ? `Number of Families: ${item.number_of_families}`
+                  : "",
+                item.affected_individuals
+                  ? `Affected Individuals: ${item.affected_individuals}`
+                  : "",
                 item.ancestry ? `Ancestry: ${item.ancestry}` : "",
                 item.consanguinity && item.consanguinity !== "unknown"
                   ? `Consanguinity: ${item.consanguinity}`
