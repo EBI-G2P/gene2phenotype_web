@@ -89,6 +89,12 @@ export default {
       conditions where possible.
     </p>
     <p>
+      Publications in the 'Mined Publications' table have been identified by
+      filtering the scientific literature for relevant reports using a new ML
+      pipeline. See
+      <a href="" target="_blank" style="text-decoration: none">Yates et al</a>
+    </p>
+    <p>
       The following additional reference data, is used to supplement G2P
       records:
     </p>
