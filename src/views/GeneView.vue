@@ -16,11 +16,11 @@ import {
   CONFIDENCE_COLOR_MAP,
   HELP_TEXT,
   MARSH_PROBABILITY_THRESHOLD,
-  MAX_CHARACTERS,
 } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import GeneFunction from "../components/text/GeneFunction.vue";
 export default {
   data() {
     return {
@@ -29,9 +29,7 @@ export default {
       geneData: null,
       geneFunctionData: null,
       errorMsg: null,
-      isReadMoreActivated: false,
       CONFIDENCE_COLOR_MAP,
-      MAX_CHARACTERS,
       HELP_TEXT,
       DECIPHER_URL,
       ENSEMBL_GENE_URL,
@@ -56,7 +54,7 @@ export default {
       { immediate: true }
     );
   },
-  components: { ToolTip },
+  components: { ToolTip, GeneFunction },
   methods: {
     fetchData() {
       this.errorMsg =
@@ -85,9 +83,6 @@ export default {
         .finally(() => {
           this.isDataLoading = false;
         });
-    },
-    toggleReadMore() {
-      this.isReadMoreActivated = !this.isReadMoreActivated;
     },
   },
 };
@@ -118,43 +113,12 @@ export default {
       </div>
       <h4 class="py-3">Function</h4>
       <div class="row">
-        <p v-if="geneFunctionData?.function?.protein_function">
-          <span
-            v-if="
-              !isReadMoreActivated &&
-              geneFunctionData.function.protein_function.length > MAX_CHARACTERS
-            "
-          >
-            {{
-              geneFunctionData.function.protein_function.slice(
-                0,
-                MAX_CHARACTERS
-              )
-            }}&hellip;
-          </span>
-          <span v-else>
-            {{ geneFunctionData.function.protein_function }}
-          </span>
-          <button
-            class="btn btn-link p-0 ml-2 align-baseline"
-            @click="toggleReadMore"
-            v-if="
-              geneFunctionData.function.protein_function.length > MAX_CHARACTERS
-            "
-          >
-            {{ isReadMoreActivated ? "Show less" : "Show more" }}
-          </button>
-          <br />
-          <b>Source:</b>
-          <a
-            :href="UNIPROT_URL + geneFunctionData.function.uniprot_accession"
-            style="text-decoration: none"
-            target="_blank"
-          >
-            UniProt
-          </a>
-        </p>
-        <p v-else class="text-muted">Not Available</p>
+        <GeneFunction
+          v-if="geneFunctionData?.function?.protein_function"
+          :geneFunctionText="geneFunctionData.function.protein_function"
+          :uniprotAccession="geneFunctionData.function.uniprot_accession"
+        />
+        <p v-else class="text-muted mb-0">Not Available</p>
       </div>
       <h4 class="py-3">G2P records</h4>
       <div class="table-responsive-xl">
