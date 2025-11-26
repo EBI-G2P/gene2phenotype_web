@@ -83,14 +83,25 @@
         https://doi.org/10.1186/s13073-023-01246-8
       </p>
     </div>
-    <a href="" style="text-decoration: none" target="_blank">
+    <a
+      href="https://doi.org/10.1101/2025.11.24.25340871"
+      style="text-decoration: none"
+      target="_blank"
+    >
       <h6>
         Domain-wide Mapping of Peer-reviewed Literature for Genetic
         Developmental Disorders using Machine Learning and Gene2Phenotype
       </h6>
     </a>
     <div class="pb-2 citation-div">
-      <p>To be added</p>
+      <p>
+        Thabo Michael Yates, Sarah E Hunt, Diana Lemos, Seeta Ramaraju
+        Pericherla, Elena Cibrian Uhalte, Morad Ansari, Louise Thompson, Simona
+        E Doneva, Caroline F Wright, Helen V Firth, T Ian Simpson. Domain-wide
+        Mapping of Peer-reviewed Literature for Genetic Developmental Disorders
+        using Machine Learning and Gene2Phenotype. medRxiv 2025.11.24.25340871;
+        doi: https://doi.org/10.1101/2025.11.24.25340871
+      </p>
     </div>
   </div>
 </template>
