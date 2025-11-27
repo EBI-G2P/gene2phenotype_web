@@ -47,9 +47,6 @@ export default {
       { immediate: true }
     );
   },
-  // created() {
-  //   this.fetchRecordData();
-  // },
   methods: {
     fetchRecordData() {
       this.stableId = this.$route.params.stableId;
