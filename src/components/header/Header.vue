@@ -5,6 +5,7 @@ import { useAuthStore } from "../../store/auth.js";
 import { mapState } from "pinia";
 import { logGeneralErrorMsg } from "../../utility/ErrorUtility.js";
 import MaintenanceAlert from "../../components/alert/MaintenanceAlert.vue";
+import { SEARCH_FILTER } from "../../utility/Constants.js";
 
 export default {
   data() {
@@ -13,9 +14,10 @@ export default {
       isLogoutInProgress: false,
       panelData: null,
       searchInput: "",
-      selectedSearchType: "all",
-      selectedSearchPanel: "all",
+      selectedSearchType: SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES,
+      selectedSearchPanel: SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS,
       isMaintenance: false,
+      SEARCH_FILTER,
     };
   },
   computed: {
@@ -39,8 +41,8 @@ export default {
   methods: {
     fetchPanelData() {
       this.searchInput = "";
-      this.selectedSearchType = "all";
-      this.selectedSearchPanel = "all";
+      this.selectedSearchType = SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES;
+      this.selectedSearchPanel = SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS;
       this.panelData = null;
       this.isDataLoading = true;
       api
@@ -63,11 +65,11 @@ export default {
         let routeQuery = {
           query: this.searchInput,
           type:
-            this.selectedSearchType === "all"
+            this.selectedSearchType === SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES
               ? undefined
               : this.selectedSearchType,
           panel:
-            this.selectedSearchPanel === "all"
+            this.selectedSearchPanel === SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS
               ? undefined
               : this.selectedSearchPanel,
         };
@@ -148,7 +150,7 @@ export default {
               <input
                 class="form-check-input"
                 type="radio"
-                value="all"
+                :value="SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES"
                 v-model="selectedSearchType"
                 id="header-filter-input-type-all"
               />
@@ -163,7 +165,7 @@ export default {
               <input
                 class="form-check-input"
                 type="radio"
-                value="gene"
+                :value="SEARCH_FILTER.SEARCH_TYPE.GENE"
                 v-model="selectedSearchType"
                 id="header-filter-input-type-gene"
               />
@@ -178,7 +180,7 @@ export default {
               <input
                 class="form-check-input"
                 type="radio"
-                value="disease"
+                :value="SEARCH_FILTER.SEARCH_TYPE.DISEASE"
                 v-model="selectedSearchType"
                 id="header-filter-input-type-disease"
               />
@@ -193,7 +195,7 @@ export default {
               <input
                 class="form-check-input"
                 type="radio"
-                value="phenotype"
+                :value="SEARCH_FILTER.SEARCH_TYPE.PHENOTYPE"
                 v-model="selectedSearchType"
                 id="header-filter-input-type-phenotype"
               />
@@ -208,7 +210,7 @@ export default {
               <input
                 class="form-check-input"
                 type="radio"
-                value="stable_id"
+                :value="SEARCH_FILTER.SEARCH_TYPE.G2P_ID"
                 v-model="selectedSearchType"
                 id="header-filter-input-type-g2p-id"
               />
@@ -226,7 +228,7 @@ export default {
                 <input
                   class="form-check-input"
                   type="radio"
-                  value="all"
+                  :value="SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS"
                   v-model="selectedSearchPanel"
                   id="header-filter-input-panel-all"
                 />
