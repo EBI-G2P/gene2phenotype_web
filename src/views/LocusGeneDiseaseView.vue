@@ -140,10 +140,7 @@ export default {
         {{ mergedDataMsg }} <br />
         <template v-if="mergedStableId">
           See the merged record here:
-          <router-link
-            :to="`/lgd/${mergedStableId}`"
-            class="fw-bold"
-          >
+          <router-link :to="`/lgd/${mergedStableId}`" class="fw-bold">
             {{ mergedStableId }}
           </router-link>
         </template>

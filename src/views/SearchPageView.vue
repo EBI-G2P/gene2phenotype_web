@@ -1,6 +1,10 @@
 <script>
 import { GENE_URL, SEARCH_URL } from "../utility/UrlConstants.js";
-import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../utility/Constants.js";
+import {
+  CONFIDENCE_COLOR_MAP,
+  HELP_TEXT,
+  SEARCH_FILTER,
+} from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import {
@@ -22,6 +26,7 @@ export default {
       mergedStableId: null,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
+      SEARCH_FILTER,
     };
   },
   created() {
@@ -84,7 +89,7 @@ export default {
               "No results found. Please try another search."
             );
             const queryType = this.$route.query?.type;
-            if (!queryType || queryType === "gene") {
+            if (!queryType || queryType === SEARCH_FILTER.SEARCH_TYPE.GENE) {
               // if it is a general query or query for type "gene" and no search results are found then call gene api to check if it is a valid gene
               this.fetchGeneData(searchDataNotFoundMsg);
             } else {
@@ -141,7 +146,9 @@ export default {
       <span v-if="routeQuery?.type || routeQuery?.query"> for </span>
       <span v-if="routeQuery?.type">
         <i>{{
-          routeQuery.type === "stable_id" ? "G2P ID" : routeQuery.type
+          routeQuery.type === SEARCH_FILTER.SEARCH_TYPE.G2P_ID
+            ? "G2P ID"
+            : routeQuery.type
         }}</i>
       </span>
       <span v-if="routeQuery?.query"> '{{ routeQuery.query }}'</span>
@@ -191,10 +198,7 @@ export default {
         {{ mergedDataMsg }} <br />
         <template v-if="mergedStableId">
           See the merged record here:
-          <router-link
-            :to="`/lgd/${mergedStableId}`"
-            class="fw-bold"
-          >
+          <router-link :to="`/lgd/${mergedStableId}`" class="fw-bold">
             {{ mergedStableId }}
           </router-link>
         </template>
