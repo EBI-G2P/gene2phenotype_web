@@ -119,8 +119,8 @@ export default {
           <button
             @click="downloadPanelData('all')"
             type="button"
-            class="btn btn-link"
-            style="margin: 0; padding: 0; text-decoration: none"
+            class="btn btn-link m-0 p-0"
+            style="text-decoration: none"
           >
             <i class="bi bi-cloud-arrow-down-fill fs-5"></i>
             All data
@@ -130,8 +130,8 @@ export default {
           <button
             @click="downloadPanelData(item.name)"
             type="button"
-            class="btn btn-link"
-            style="margin: 0; padding: 0; text-decoration: none"
+            class="btn btn-link m-0 p-0"
+            style="text-decoration: none"
           >
             <i class="bi bi-cloud-arrow-down-fill fs-5"></i>
             {{ item.description ? item.description : item.name }} gene-disease

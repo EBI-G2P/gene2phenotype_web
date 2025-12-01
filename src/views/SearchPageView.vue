@@ -90,7 +90,8 @@ export default {
             );
             const queryType = this.$route.query?.type;
             if (!queryType || queryType === SEARCH_FILTER.SEARCH_TYPE.GENE) {
-              // if it is a general query or query for type "gene" and no search results are found then call gene api to check if it is a valid gene
+              // if it is a general query or query for type "gene" and no search results are found
+              // then call gene api to check if it is a valid gene
               this.fetchGeneData(searchDataNotFoundMsg);
             } else {
               // else display error message
