@@ -47,9 +47,6 @@ export default {
       { immediate: true }
     );
   },
-  // created() {
-  //   this.fetchRecordData();
-  // },
   methods: {
     fetchRecordData() {
       this.stableId = this.$route.params.stableId;
@@ -143,10 +140,7 @@ export default {
         {{ mergedDataMsg }} <br />
         <template v-if="mergedStableId">
           See the merged record here:
-          <router-link
-            :to="`/lgd/${mergedStableId}`"
-            class="fw-bold"
-          >
+          <router-link :to="`/lgd/${mergedStableId}`" class="fw-bold">
             {{ mergedStableId }}
           </router-link>
         </template>

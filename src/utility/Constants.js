@@ -65,6 +65,19 @@ export const MINED_PUBLICATION_STATUS = {
   REJECTED: "rejected",
 };
 
+export const SEARCH_FILTER = {
+  SEARCH_TYPE: {
+    ALL_TYPES: "all",
+    GENE: "gene",
+    DISEASE: "disease",
+    PHENOTYPE: "phenotype",
+    G2P_ID: "stable_id",
+  },
+  SEARCH_PANEL: {
+    ALL_PANELS: "all",
+  },
+};
+
 export const PRIVACY_POLICY_CONFIG = {
   STORAGE_KEY_NAME: "gene2phenotype.privacy-policy.version",
   VERSION: "1.0.0",

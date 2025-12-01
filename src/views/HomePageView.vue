@@ -4,7 +4,7 @@ import { ALL_PANELS_URL, DOWNLOAD_PANEL_URL } from "../utility/UrlConstants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
-import { HELP_TEXT } from "../utility/Constants.js";
+import { HELP_TEXT, SEARCH_FILTER } from "../utility/Constants.js";
 import { trackPanelDownload } from "../utility/AnalyticsUtility.js";
 
 export default {
@@ -16,10 +16,11 @@ export default {
       errorMsg: null,
       dataDownloadErrorMsg: null,
       searchInput: "",
-      selectedSearchType: "all",
-      selectedSearchPanel: "all",
+      selectedSearchType: SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES,
+      selectedSearchPanel: SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS,
       isMaintenance: false,
       HELP_TEXT,
+      SEARCH_FILTER,
     };
   },
   created() {
@@ -64,11 +65,11 @@ export default {
         let routeQuery = {
           query: this.searchInput,
           type:
-            this.selectedSearchType === "all"
+            this.selectedSearchType === SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES
               ? undefined
               : this.selectedSearchType,
           panel:
-            this.selectedSearchPanel === "all"
+            this.selectedSearchPanel === SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS
               ? undefined
               : this.selectedSearchPanel,
         };
@@ -175,7 +176,7 @@ export default {
                     <input
                       class="form-check-input"
                       type="radio"
-                      value="all"
+                      :value="SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES"
                       v-model="selectedSearchType"
                       id="filter-input-type-all"
                     />
@@ -187,7 +188,7 @@ export default {
                     <input
                       class="form-check-input"
                       type="radio"
-                      value="gene"
+                      :value="SEARCH_FILTER.SEARCH_TYPE.GENE"
                       v-model="selectedSearchType"
                       id="filter-input-type-gene"
                     />
@@ -202,7 +203,7 @@ export default {
                     <input
                       class="form-check-input"
                       type="radio"
-                      value="disease"
+                      :value="SEARCH_FILTER.SEARCH_TYPE.DISEASE"
                       v-model="selectedSearchType"
                       id="filter-input-type-disease"
                     />
@@ -217,7 +218,7 @@ export default {
                     <input
                       class="form-check-input"
                       type="radio"
-                      value="phenotype"
+                      :value="SEARCH_FILTER.SEARCH_TYPE.PHENOTYPE"
                       v-model="selectedSearchType"
                       id="filter-input-type-phenotype"
                     />
@@ -232,7 +233,7 @@ export default {
                     <input
                       class="form-check-input"
                       type="radio"
-                      value="stable_id"
+                      :value="SEARCH_FILTER.SEARCH_TYPE.G2P_ID"
                       v-model="selectedSearchType"
                       id="filter-input-type-g2p-id"
                     />
@@ -250,7 +251,7 @@ export default {
                       <input
                         class="form-check-input"
                         type="radio"
-                        value="all"
+                        :value="SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS"
                         v-model="selectedSearchPanel"
                         id="filter-input-panel-all"
                       />
@@ -291,7 +292,10 @@ export default {
                 <router-link
                   :to="{
                     path: '/search',
-                    query: { query: 'FBN1', type: 'gene' },
+                    query: {
+                      query: 'FBN1',
+                      type: SEARCH_FILTER.SEARCH_TYPE.GENE,
+                    },
                   }"
                   style="text-decoration: none"
                 >
@@ -303,7 +307,7 @@ export default {
                     path: '/search',
                     query: {
                       query: 'Weill-Marchesani syndrome',
-                      type: 'disease',
+                      type: SEARCH_FILTER.SEARCH_TYPE.DISEASE,
                     },
                   }"
                   style="text-decoration: none"
@@ -314,7 +318,10 @@ export default {
                 <router-link
                   :to="{
                     path: '/search',
-                    query: { query: 'Tuberous sclerosis', type: 'disease' },
+                    query: {
+                      query: 'Tuberous sclerosis',
+                      type: SEARCH_FILTER.SEARCH_TYPE.DISEASE,
+                    },
                   }"
                   style="text-decoration: none"
                 >

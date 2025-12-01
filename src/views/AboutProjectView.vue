@@ -1,16 +1,3 @@
-<script>
-export default {
-  data() {
-    return {
-      gencc: "https://thegencc.org/",
-      initialpaper: "https://doi.org/10.1038/s41467-019-10016-3",
-      curationpaper:
-        "https://genomemedicine.biomedcentral.com/articles/10.1186/s13073-024-01398-1",
-      variantfiltering: "/variant-filtering",
-    };
-  },
-};
-</script>
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
     <h2 class="pb-3">The G2P Project</h2>
@@ -33,7 +20,10 @@ export default {
     </p>
     <p>
       All data is made freely available. The initial paper is available
-      <a :href="initialpaper" target="_blank" style="text-decoration: none"
+      <a
+        href="https://doi.org/10.1038/s41467-019-10016-3"
+        target="_blank"
+        style="text-decoration: none"
         >here</a
       >.
     </p>
@@ -61,7 +51,10 @@ export default {
     <p>
       The full curation process is described here and terminology used is
       described
-      <a :href="curationpaper" target="_blank" style="text-decoration: none"
+      <a
+        href="https://genomemedicine.biomedcentral.com/articles/10.1186/s13073-024-01398-1"
+        target="_blank"
+        style="text-decoration: none"
         >here</a
       >.
     </p>
@@ -70,13 +63,13 @@ export default {
       genotypes to allelic requirements and genes reported in the literature to
       identify likely causative genes and variants. Full information is
       available
-      <router-link :to="variantfiltering" style="text-decoration: none"
+      <router-link to="/variant-filtering" style="text-decoration: none"
         >here</router-link
       >.
     </p>
     <p>
       G2P is a member of the Gene Curation Coalition (<a
-        :href="gencc"
+        href="https://thegencc.org/"
         target="_blank"
         style="text-decoration: none"
         >GenCC</a
