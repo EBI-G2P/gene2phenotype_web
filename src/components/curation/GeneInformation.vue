@@ -4,34 +4,26 @@ import {
   ENSEMBL_GENE_URL,
   HGNC_URL,
   OMIM_URL,
-  UNIPROT_URL,
 } from "../../utility/UrlConstants.js";
-import { MAX_CHARACTERS } from "../../utility/Constants.js";
+import GeneFunction from "../text/GeneFunction.vue";
 export default {
-  data() {
-    return {
-      isReadMoreActivated: false,
-      MAX_CHARACTERS,
-      DECIPHER_URL,
-      ENSEMBL_GENE_URL,
-      HGNC_URL,
-      OMIM_URL,
-      UNIPROT_URL,
-    };
-  },
   props: {
     geneData: Object,
     geneFunctionData: Object,
   },
-  methods: {
-    toggleReadMore() {
-      this.isReadMoreActivated = !this.isReadMoreActivated;
-    },
+  data() {
+    return {
+      DECIPHER_URL,
+      ENSEMBL_GENE_URL,
+      HGNC_URL,
+      OMIM_URL,
+    };
   },
+  components: { GeneFunction },
 };
 </script>
 <template>
-  <div class="accordion py-1" id="gene-info-section" v-if="geneData">
+  <div v-if="geneData" class="accordion py-1" id="gene-info-section">
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button
@@ -49,7 +41,7 @@ export default {
         <div class="accordion-body">
           <div class="row">
             <div style="width: 10%">
-              <strong><p>Symbol</p></strong>
+              <p><strong>Symbol</strong></p>
             </div>
             <div style="width: 90%">
               <a
@@ -65,7 +57,7 @@ export default {
           </div>
           <div class="row">
             <div style="width: 10%">
-              <strong><p>Synonyms</p></strong>
+              <p><strong>Synonyms</strong></p>
             </div>
             <div style="width: 90%">
               <p v-if="geneData.synonyms?.length > 0">
@@ -76,61 +68,26 @@ export default {
           </div>
           <div class="row">
             <div style="width: 10%">
-              <strong><p>Function</p></strong>
+              <p><strong>Function</strong></p>
             </div>
-            <div style="width: 90%">
-              <p v-if="geneFunctionData?.function?.protein_function">
-                <span
-                  v-if="
-                    isReadMoreActivated ||
-                    geneFunctionData.function.protein_function.length <=
-                      MAX_CHARACTERS
-                  "
-                >
-                  {{ geneFunctionData.function.protein_function }}
-                </span>
-                <span v-else>
-                  {{
-                    geneFunctionData.function.protein_function.slice(
-                      0,
-                      MAX_CHARACTERS
-                    )
-                  }}&hellip;
-                </span>
-                <button
-                  class="btn btn-link p-0 ml-2 align-baseline"
-                  @click="toggleReadMore"
-                  v-if="
-                    geneFunctionData.function.protein_function.length >
-                    MAX_CHARACTERS
-                  "
-                >
-                  {{ isReadMoreActivated ? "Show less" : "Show more" }}
-                </button>
-                <br />
-                <b>Source:</b>
-                <a
-                  :href="
-                    UNIPROT_URL + geneFunctionData.function.uniprot_accession
-                  "
-                  style="text-decoration: none"
-                  target="_blank"
-                >
-                  UniProt
-                </a>
-              </p>
-              <p v-else class="text-muted">Not Available</p>
+            <div class="pb-3" style="width: 90%">
+              <GeneFunction
+                v-if="geneFunctionData?.function?.protein_function"
+                :geneFunctionText="geneFunctionData.function.protein_function"
+                :uniprotAccession="geneFunctionData.function.uniprot_accession"
+              />
+              <p v-else class="text-muted mb-0">Not Available</p>
             </div>
           </div>
           <div class="row">
             <div style="width: 10%">
-              <strong><p>OMIM</p></strong>
+              <p><strong>OMIM</strong></p>
             </div>
             <div style="width: 90%">
               <a
+                v-if="geneData.ids?.OMIM"
                 :href="OMIM_URL + geneData.ids.OMIM"
                 style="text-decoration: none"
-                v-if="geneData.ids?.OMIM"
                 target="_blank"
               >
                 {{ geneData.ids.OMIM }}
@@ -140,13 +97,13 @@ export default {
           </div>
           <div class="row">
             <div style="width: 10%">
-              <strong><p>HGNC ID</p></strong>
+              <p><strong>HGNC ID</strong></p>
             </div>
             <div style="width: 90%">
               <a
+                v-if="geneData.ids?.HGNC"
                 :href="HGNC_URL + geneData.ids.HGNC"
                 style="text-decoration: none"
-                v-if="geneData.ids?.HGNC"
                 target="_blank"
               >
                 {{ geneData.ids.HGNC }}
@@ -156,13 +113,13 @@ export default {
           </div>
           <div class="row">
             <div style="width: 10%">
-              <strong><p>Ensembl ID</p></strong>
+              <p><strong>Ensembl ID</strong></p>
             </div>
             <div style="width: 90%">
               <a
+                v-if="geneData.ids?.Ensembl"
                 :href="ENSEMBL_GENE_URL + geneData.ids.Ensembl"
                 style="text-decoration: none"
-                v-if="geneData.ids?.Ensembl"
                 target="_blank"
               >
                 {{ geneData.ids.Ensembl }}
