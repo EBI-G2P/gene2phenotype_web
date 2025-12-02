@@ -61,6 +61,7 @@ export default {
       isPreviousInputDataLoading: false,
       previousInput: null,
       errorMsg: null,
+      userLocusMismatchMsg: null,
       hpoTermsInputHelper: {},
       isGeneDataLoading: false,
       isGeneDiseaseDataLoading: false,
@@ -139,8 +140,9 @@ export default {
               this.hpoTermsInputHelper,
               pmidList
             );
-          this.fetchGeneInformation();
-          this.fetchGeneDiseaseInformation();
+          const inputLocus = this.previousInput.locus;
+          this.fetchGeneInformation(inputLocus);
+          this.fetchGeneDiseaseInformation(inputLocus);
           this.fetchPanels();
         })
         .catch((error) => {
@@ -153,7 +155,7 @@ export default {
           this.isPreviousInputDataLoading = false;
         });
     },
-    fetchGeneInformation() {
+    fetchGeneInformation(inputLocus) {
       this.geneErrorMsg =
         this.geneFunctionData =
         this.geneData =
@@ -161,14 +163,27 @@ export default {
           null;
       this.isGeneDataLoading = true;
       Promise.all([
-        api.get(GENE_FUNCTION_URL.replace(":locus", this.previousInput.locus)),
-        api.get(GENE_URL.replace(":locus", this.previousInput.locus)),
+        api.get(GENE_FUNCTION_URL.replace(":locus", inputLocus)),
+        api.get(GENE_URL.replace(":locus", inputLocus)),
         api.get(ATTRIBS_URL),
       ])
         .then(([response1, response2, response3]) => {
           this.geneFunctionData = response1.data;
           this.geneData = response2.data;
           this.attributesData = response3.data;
+
+          const latestGeneSymbol = response2.data?.gene_symbol;
+
+          // Check if there is mismatch between previousInput gene symbol and latest gene symbol
+          if (
+            latestGeneSymbol?.toUpperCase() !== inputLocus.trim().toUpperCase()
+          ) {
+            // If there is a mismatch
+            // Then display mismatch msg
+            this.userLocusMismatchMsg = `Note: '${latestGeneSymbol}' is the latest gene symbol of '${inputLocus}'. The 'Gene Information' and 'Disease Name' sections have been updated to use '${latestGeneSymbol}'.`;
+            // And set previousInput.locus to the latest gene symbol fetched from the database
+            this.previousInput.locus = latestGeneSymbol;
+          }
         })
         .catch((error) => {
           this.geneErrorMsg = fetchAndLogGeneralErrorMsg(
@@ -180,11 +195,11 @@ export default {
           this.isGeneDataLoading = false;
         });
     },
-    fetchGeneDiseaseInformation() {
+    fetchGeneDiseaseInformation(inputLocus) {
       this.geneDiseaseErrorMsg = this.geneDiseaseData = null;
       this.isGeneDiseaseDataLoading = true;
       api
-        .get(GENE_DISEASE_URL.replace(":locus", this.previousInput.locus))
+        .get(GENE_DISEASE_URL.replace(":locus", inputLocus))
         .then((response) => {
           this.geneDiseaseData = response.data;
         })
@@ -535,6 +550,12 @@ export default {
         !isPublishSuccess
       "
     >
+      <div v-if="userLocusMismatchMsg" class="alert alert-warning" role="alert">
+        <div>
+          <i class="bi bi-info-circle"></i>
+          {{ userLocusMismatchMsg }}
+        </div>
+      </div>
       <GeneInformation
         :geneData="geneData"
         :geneFunctionData="geneFunctionData"
