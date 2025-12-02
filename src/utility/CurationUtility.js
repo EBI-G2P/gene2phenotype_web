@@ -386,9 +386,6 @@ export const prepareInputForDataSubmission = (input) => {
   }
   preparedInput.mechanism_synopsis = mechanismSynopsisArray;
 
-  // convert locus to uppercase
-  preparedInput.locus = preparedInput.locus.toUpperCase();
-
   // trim disease name
   preparedInput.disease.disease_name =
     preparedInput.disease.disease_name.trim();
@@ -585,10 +582,11 @@ export const prepareInputForUpdating = (previousInput) => {
       }
     });
   }
-  //cleaning the disease name
-  let prefix_to_remove = clonedpreviousInput.locus + "-related ";
-  let disease_name = clonedpreviousInput.disease.disease_name.replace(
-    prefix_to_remove,
+
+  // Remove locus prefix from disease name
+  let prefixToRemove = `${clonedpreviousInput.locus}-related `;
+  let diseaseName = clonedpreviousInput.disease.disease_name.replace(
+    prefixToRemove,
     ""
   );
 
@@ -610,7 +608,7 @@ export const prepareInputForUpdating = (previousInput) => {
     ),
     mechanism_evidence: MechanismEvidenceObj,
     disease: {
-      disease_name: disease_name,
+      disease_name: diseaseName,
       cross_references: clonedpreviousInput.disease.cross_references,
     },
     panels: clonedpreviousInput.panels,
