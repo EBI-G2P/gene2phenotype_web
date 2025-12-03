@@ -514,17 +514,13 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="container px-5 py-3"
-    style="min-height: 60vh"
-    id="curation-form-section"
-  >
+  <div class="container px-5 py-3" style="min-height: 60vh">
     <h2>Update G2P Record Draft</h2>
     <div
-      class="d-flex justify-content-center"
       v-if="
         isPreviousInputDataLoading || isGeneDataLoading || isSubmitDataLoading
       "
+      class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
@@ -532,9 +528,9 @@ export default {
       </div>
     </div>
     <div
+      v-if="errorMsg || geneErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="errorMsg || geneErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
@@ -645,18 +641,18 @@ export default {
       </p>
     </div>
     <div
+      v-if="!isSubmitDataLoading && submitErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="!isSubmitDataLoading && submitErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i> {{ submitErrorMsg }}
       </div>
     </div>
     <div
+      v-if="!isSubmitDataLoading && saveBeforePublishErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="!isSubmitDataLoading && saveBeforePublishErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
@@ -664,7 +660,6 @@ export default {
       </div>
     </div>
     <div
-      class="d-flex justify-content-between py-3"
       v-if="
         geneData &&
         !isSubmitDataLoading &&
@@ -672,6 +667,7 @@ export default {
         !isSaveBeforePublishSuccess &&
         !isPublishSuccess
       "
+      class="d-flex justify-content-between py-3"
     >
       <button type="button" class="btn btn-primary" @click="saveDraft">
         <i class="bi bi-floppy-fill"></i> Save Draft

@@ -543,13 +543,13 @@ export default {
   <div class="container px-5 py-3" style="min-height: 60vh">
     <h2>Add New G2P Record</h2>
     <div
-      class="row g-3 pt-3 pb-1"
       v-if="
         !isSubmitDataLoading &&
         !isSubmitSuccess &&
         !isSaveBeforePublishSuccess &&
         !isPublishSuccess
       "
+      class="row g-3 pt-3 pb-1"
     >
       <div class="col-auto">
         <label for="gene-symbol-input" class="col-form-label">
@@ -598,15 +598,15 @@ export default {
       <b>Search</b> to proceed further.
     </p>
     <div
-      class="d-flex justify-content-center"
       v-if="isGeneDataLoading || isSubmitDataLoading"
+      class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div class="alert alert-danger mt-3" role="alert" v-if="geneErrorMsg">
+    <div v-if="geneErrorMsg" class="alert alert-danger mt-3" role="alert">
       <div>
         <i class="bi bi-exclamation-circle-fill"></i> {{ geneErrorMsg }}
       </div>
@@ -621,7 +621,6 @@ export default {
       "
     />
     <div
-      id="curation-form-section"
       v-if="
         geneData &&
         !isSubmitDataLoading &&
@@ -716,9 +715,9 @@ export default {
       </p>
     </div>
     <div
+      v-if="!isSubmitDataLoading && submitErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="!isSubmitDataLoading && submitErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
@@ -726,9 +725,9 @@ export default {
       </div>
     </div>
     <div
+      v-if="!isSubmitDataLoading && saveBeforePublishErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="!isSubmitDataLoading && saveBeforePublishErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
@@ -736,7 +735,6 @@ export default {
       </div>
     </div>
     <div
-      class="d-flex justify-content-between py-3"
       v-if="
         geneData &&
         !isSubmitDataLoading &&
@@ -744,6 +742,7 @@ export default {
         !isSaveBeforePublishSuccess &&
         !isPublishSuccess
       "
+      class="d-flex justify-content-between py-3"
     >
       <button
         class="btn btn-primary"
