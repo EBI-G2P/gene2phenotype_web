@@ -550,7 +550,11 @@ export default {
         !isPublishSuccess
       "
     >
-      <div v-if="userLocusMismatchMsg" class="alert alert-warning" role="alert">
+      <div
+        v-if="userLocusMismatchMsg"
+        class="alert alert-warning mt-3"
+        role="alert"
+      >
         <div>
           <i class="bi bi-info-circle"></i>
           {{ userLocusMismatchMsg }}
