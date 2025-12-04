@@ -61,6 +61,7 @@ export default {
       isPreviousInputDataLoading: false,
       previousInput: null,
       errorMsg: null,
+      userLocusMismatchMsg: null,
       hpoTermsInputHelper: {},
       isGeneDataLoading: false,
       isGeneDiseaseDataLoading: false,
@@ -139,8 +140,9 @@ export default {
               this.hpoTermsInputHelper,
               pmidList
             );
-          this.fetchGeneInformation();
-          this.fetchGeneDiseaseInformation();
+          const inputLocus = this.previousInput.locus;
+          this.fetchGeneInformation(inputLocus);
+          this.fetchGeneDiseaseInformation(inputLocus);
           this.fetchPanels();
         })
         .catch((error) => {
@@ -153,7 +155,7 @@ export default {
           this.isPreviousInputDataLoading = false;
         });
     },
-    fetchGeneInformation() {
+    fetchGeneInformation(inputLocus) {
       this.geneErrorMsg =
         this.geneFunctionData =
         this.geneData =
@@ -161,14 +163,27 @@ export default {
           null;
       this.isGeneDataLoading = true;
       Promise.all([
-        api.get(GENE_FUNCTION_URL.replace(":locus", this.previousInput.locus)),
-        api.get(GENE_URL.replace(":locus", this.previousInput.locus)),
+        api.get(GENE_FUNCTION_URL.replace(":locus", inputLocus)),
+        api.get(GENE_URL.replace(":locus", inputLocus)),
         api.get(ATTRIBS_URL),
       ])
         .then(([response1, response2, response3]) => {
           this.geneFunctionData = response1.data;
           this.geneData = response2.data;
           this.attributesData = response3.data;
+
+          const latestGeneSymbol = response2.data?.gene_symbol;
+
+          // Check if there is mismatch between previousInput gene symbol and latest gene symbol
+          if (
+            latestGeneSymbol?.toUpperCase() !== inputLocus.trim().toUpperCase()
+          ) {
+            // If there is a mismatch
+            // Then display mismatch msg
+            this.userLocusMismatchMsg = `Note: '${latestGeneSymbol}' is the latest gene symbol of '${inputLocus}'. The 'Gene Information' and 'Disease Name' sections have been updated to use '${latestGeneSymbol}'.`;
+            // And set previousInput.locus to the latest gene symbol fetched from the database
+            this.previousInput.locus = latestGeneSymbol;
+          }
         })
         .catch((error) => {
           this.geneErrorMsg = fetchAndLogGeneralErrorMsg(
@@ -180,11 +195,11 @@ export default {
           this.isGeneDataLoading = false;
         });
     },
-    fetchGeneDiseaseInformation() {
+    fetchGeneDiseaseInformation(inputLocus) {
       this.geneDiseaseErrorMsg = this.geneDiseaseData = null;
       this.isGeneDiseaseDataLoading = true;
       api
-        .get(GENE_DISEASE_URL.replace(":locus", this.previousInput.locus))
+        .get(GENE_DISEASE_URL.replace(":locus", inputLocus))
         .then((response) => {
           this.geneDiseaseData = response.data;
         })
@@ -499,17 +514,13 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="container px-5 py-3"
-    style="min-height: 60vh"
-    id="curation-form-section"
-  >
+  <div class="container px-5 py-3" style="min-height: 60vh">
     <h2>Update G2P Record Draft</h2>
     <div
-      class="d-flex justify-content-center"
       v-if="
         isPreviousInputDataLoading || isGeneDataLoading || isSubmitDataLoading
       "
+      class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
@@ -517,9 +528,9 @@ export default {
       </div>
     </div>
     <div
+      v-if="errorMsg || geneErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="errorMsg || geneErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
@@ -535,6 +546,16 @@ export default {
         !isPublishSuccess
       "
     >
+      <div
+        v-if="userLocusMismatchMsg"
+        class="alert alert-warning mt-3"
+        role="alert"
+      >
+        <div>
+          <i class="bi bi-info-circle"></i>
+          {{ userLocusMismatchMsg }}
+        </div>
+      </div>
       <GeneInformation
         :geneData="geneData"
         :geneFunctionData="geneFunctionData"
@@ -620,18 +641,18 @@ export default {
       </p>
     </div>
     <div
+      v-if="!isSubmitDataLoading && submitErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="!isSubmitDataLoading && submitErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i> {{ submitErrorMsg }}
       </div>
     </div>
     <div
+      v-if="!isSubmitDataLoading && saveBeforePublishErrorMsg"
       class="alert alert-danger mt-3"
       role="alert"
-      v-if="!isSubmitDataLoading && saveBeforePublishErrorMsg"
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
@@ -639,7 +660,6 @@ export default {
       </div>
     </div>
     <div
-      class="d-flex justify-content-between py-3"
       v-if="
         geneData &&
         !isSubmitDataLoading &&
@@ -647,6 +667,7 @@ export default {
         !isSaveBeforePublishSuccess &&
         !isPublishSuccess
       "
+      class="d-flex justify-content-between py-3"
     >
       <button type="button" class="btn btn-primary" @click="saveDraft">
         <i class="bi bi-floppy-fill"></i> Save Draft

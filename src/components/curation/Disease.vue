@@ -83,7 +83,7 @@ export default {
               </div>
               <div class="col input-group">
                 <span class="input-group-text"
-                  >{{ inputGeneSymbol.toUpperCase() }}-related</span
+                  >{{ inputGeneSymbol }}-related</span
                 >
                 <input
                   class="form-control"
