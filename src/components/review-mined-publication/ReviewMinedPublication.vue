@@ -6,11 +6,15 @@ import {
 } from "../../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import { MINED_PUBLICATION_STATUS } from "../../utility/Constants.js";
+import ToolTip from "../tooltip/ToolTip.vue";
 
 export default {
   props: {
     stableId: String,
     currentMinedPublications: Array,
+  },
+  components: {
+    ToolTip,
   },
   data() {
     return {
@@ -124,10 +128,13 @@ export default {
       <thead>
         <tr>
           <th width="10%">PMID</th>
-          <th width="44%">Title</th>
+          <th width="38%">Title</th>
+          <th width="8%">
+            Score <ToolTip toolTipText="Gemini scores"></ToolTip>
+          </th>
           <th width="8%">Curate</th>
           <th width="8%">Status</th>
-          <th width="30%">Comment</th>
+          <th width="28%">Comment</th>
         </tr>
       </thead>
       <tbody>
@@ -144,6 +151,16 @@ export default {
           </td>
           <td>
             {{ item.title }}
+          </td>
+          <td>
+            <template v-if="item.score">
+              {{ item.score }}
+              <ToolTip
+                :toolTipText="`Score comment: ${
+                  item.score_comment ?? 'Not available'
+                }`"
+              ></ToolTip>
+            </template>
           </td>
           <template v-if="item.status === MINED_PUBLICATION_STATUS.MINED">
             <td>
