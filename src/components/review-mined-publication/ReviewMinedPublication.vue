@@ -6,7 +6,8 @@ import {
 } from "../../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import { MINED_PUBLICATION_STATUS } from "../../utility/Constants.js";
-import ToolTip from "../tooltip/ToolTip.vue";
+import ScoreModal from "../modal/ScoreModal.vue";
+import ScoreCommentModal from "../modal/ScoreCommentModal.vue";
 
 export default {
   props: {
@@ -14,7 +15,8 @@ export default {
     currentMinedPublications: Array,
   },
   components: {
-    ToolTip,
+    ScoreModal,
+    ScoreCommentModal,
   },
   data() {
     return {
@@ -25,6 +27,7 @@ export default {
       updateDataErrorMsg: null,
       isUpdateDataSuccess: false,
       updateDataSuccessMsg: null,
+      activeScoreComment: "",
       EUROPE_PMC_URL,
       MINED_PUBLICATION_STATUS,
     };
@@ -99,6 +102,12 @@ export default {
       }
       return minedPublicationsList;
     },
+    setActiveScoreComment(scoreComment) {
+      this.activeScoreComment = scoreComment;
+    },
+    clearActiveScoreComment() {
+      this.activeScoreComment = "";
+    },
   },
 };
 </script>
@@ -130,7 +139,17 @@ export default {
           <th width="10%">PMID</th>
           <th width="38%">Title</th>
           <th width="8%">
-            Score <ToolTip toolTipText="Gemini scores"></ToolTip>
+            <div class="d-flex align-items-center gap-1">
+              <span>Score</span>
+              <button
+                class="btn btn-link m-0 p-0"
+                style="text-decoration: none"
+                data-bs-toggle="modal"
+                data-bs-target="#score-modal"
+              >
+                <i class="bi bi-info-circle"></i>
+              </button>
+            </div>
           </th>
           <th width="8%">Curate</th>
           <th width="8%">Status</th>
@@ -155,11 +174,18 @@ export default {
           <td>
             <template v-if="item.score">
               {{ item.score }}
-              <ToolTip
-                :toolTipText="`Score comment: ${
-                  item.score_comment ?? 'Not available'
-                }`"
-              ></ToolTip>
+              <template v-if="item.score_comment">
+                <br />
+                (<button
+                  class="btn btn-link m-0 p-0"
+                  style="text-decoration: none"
+                  data-bs-toggle="modal"
+                  data-bs-target="#score-comment-modal"
+                  @click="setActiveScoreComment(item.score_comment)"
+                >
+                  <i class="bi bi-file-earmark-text"></i>Details</button
+                >)
+              </template>
             </template>
           </td>
           <template v-if="item.status === MINED_PUBLICATION_STATUS.MINED">
@@ -235,4 +261,9 @@ export default {
       {{ updateDataErrorMsg }}
     </div>
   </div>
+  <ScoreModal />
+  <ScoreCommentModal
+    :comment="activeScoreComment"
+    @close="clearActiveScoreComment"
+  />
 </template>
