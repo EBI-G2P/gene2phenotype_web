@@ -137,7 +137,8 @@ export default {
       <thead>
         <tr>
           <th width="10%">PMID</th>
-          <th width="38%">Title</th>
+          <th width="6%">Year</th>
+          <th width="34%">Title</th>
           <th width="8%">
             <div class="d-flex align-items-center gap-1">
               <span>Score</span>
@@ -153,7 +154,7 @@ export default {
           </th>
           <th width="8%">Curate</th>
           <th width="8%">Status</th>
-          <th width="28%">Comment</th>
+          <th width="26%">Comment</th>
         </tr>
       </thead>
       <tbody>
@@ -167,6 +168,9 @@ export default {
             >
               {{ item.pmid }}
             </a>
+          </td>
+          <td>
+            {{ item.year }}
           </td>
           <td>
             {{ item.title }}
