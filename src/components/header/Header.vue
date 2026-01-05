@@ -315,6 +315,11 @@ export default {
               </router-link>
             </li>
             <li>
+              <router-link to="/contributing" class="dropdown-item">
+                Contributing
+              </router-link>
+            </li>
+            <li>
               <router-link to="/download" class="dropdown-item">
                 Downloads
               </router-link>

@@ -2,7 +2,7 @@
   <div class="container px-5 py-3" style="min-height: 60vh">
     <h2>Curators</h2>
     <h6 class="py-4">Each G2P panel is curated by domain experts.</h6>
-    <div class="pb-2">
+    <div class="pb-4">
       <div class="row">
         <div class="col">
           <div class="card h-100">
@@ -168,5 +168,11 @@
         </div>
       </div>
     </div>
+    <p>
+      If you are interested in contributing to G2P see here:
+      <router-link to="/contributing" style="text-decoration: none"
+        >Contributing page</router-link
+      >
+    </p>
   </div>
 </template>
