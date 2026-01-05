@@ -1147,6 +1147,7 @@ export default {
                               />
                             </th>
                             <th>PMID</th>
+                            <th>Year</th>
                             <th>
                               <div class="d-flex justify-content-between">
                                 <span class="align-middle">Title</span>
@@ -1187,6 +1188,9 @@ export default {
                               >
                                 {{ item.pmid }}
                               </a>
+                            </td>
+                            <td>
+                              {{ item.year }}
                             </td>
                             <td>
                               {{ item.title }}
