@@ -121,18 +121,18 @@
           <ul class="nav flex-column">
             <li class="nav-item mb-2">
               <router-link
-                to="/contributing"
-                class="nav-link p-0 text-body-secondary"
-              >
-                Contributing
-              </router-link>
-            </li>
-            <li class="nav-item mb-2">
-              <router-link
                 to="/contact"
                 class="nav-link p-0 text-body-secondary"
               >
                 Contact us
+              </router-link>
+            </li>
+            <li class="nav-item mb-2">
+              <router-link
+                to="/contributing"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Contributing
               </router-link>
             </li>
             <li class="nav-item mb-2">

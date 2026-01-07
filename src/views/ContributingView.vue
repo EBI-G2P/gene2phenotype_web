@@ -46,10 +46,7 @@
       tasks like deleting and updating key attributes in G2P records in the
       panel(s) for which they are responsible.
     </p>
-    <p>
-      Institute member pages and publication records are used to confirm a
-      potential contributor's suitability.
-    </p>
+    <h4 class="pb-2">Contribute</h4>
     <p>
       Contact us if you are interested in contributing (<a
         href="mailto:g2p-help@ebi.ac.uk"
@@ -57,6 +54,10 @@
         target="_blank"
         >g2p-help@ebi.ac.uk</a
       >).
+    </p>
+    <p>
+      Institute member pages and publication records are used to confirm a
+      potential contributor's suitability.
     </p>
   </div>
 </template>
