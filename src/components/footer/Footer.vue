@@ -128,6 +128,14 @@
               </router-link>
             </li>
             <li class="nav-item mb-2">
+              <router-link
+                to="/contributing"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Contributing
+              </router-link>
+            </li>
+            <li class="nav-item mb-2">
               <a
                 href="https://bsky.app/profile/gene2phenotype.bsky.social"
                 target="_blank"

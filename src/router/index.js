@@ -29,6 +29,7 @@ import ReferenceDataView from "../views/ReferenceDataView.vue";
 import ApiInformationView from "../views/ApiInformationView.vue";
 import HelpView from "../views/HelpView.vue";
 import ReviewMinedPublicationView from "../views/ReviewMinedPublicationView.vue";
+import ContributingView from "../views/ContributingView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,6 +90,11 @@ const router = createRouter({
       path: "/curators",
       name: "curators",
       component: CuratorsView,
+    },
+    {
+      path: "/contributing",
+      name: "contributing",
+      component: ContributingView,
     },
     {
       path: "/disclaimer",

@@ -10,7 +10,7 @@
         style="text-decoration: none"
         target="_blank"
         >g2p-help@ebi.ac.uk</a
-      >.
+      >
     </p>
   </div>
 </template>
