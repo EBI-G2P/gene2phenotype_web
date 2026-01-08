@@ -174,7 +174,7 @@
       <div
         class="d-flex flex-column flex-sm-row pt-3 pb-2 mt-3 mb-2 border-top"
       >
-        <p>&copy; EMBL-EBI 2025</p>
+        <p>&copy; EMBL-EBI 2026</p>
       </div>
     </div>
   </footer>
