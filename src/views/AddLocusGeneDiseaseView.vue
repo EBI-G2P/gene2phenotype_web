@@ -24,7 +24,6 @@ import {
 import SaveSuccessAlert from "../components/alert/SaveSuccessAlert.vue";
 import AlertModal from "../components/modal/AlertModal.vue";
 import RemovePublicationModal from "../components/modal/RemovePublicationModal.vue";
-import cloneDeep from "lodash/cloneDeep";
 import {
   ATTRIBS_URL,
   GENE_DISEASE_URL,
@@ -137,10 +136,6 @@ export default {
     existingGeneDataSearchHandler() {
       if (this.userLocus !== "") {
         this.isInputLocusValid = true;
-
-        // Reset data variables of current gene before fetching data for another gene
-        this.resetData();
-
         // Display ExistingGeneInformation component
         this.isDisplayGeneExistingData = true;
         // Notify ExistingGeneInformation component to fetch existing data for gene
@@ -148,44 +143,6 @@ export default {
       } else {
         this.isInputLocusValid = false;
       }
-    },
-    resetData() {
-      // if we are fetching data for another gene then we should reset the input obj
-      const resetInput = getInitialInputForNewCuration();
-      this.input = { ...cloneDeep(resetInput) };
-
-      // these variables wont be part of reset logic in this function:
-      // userLocus, isInputLocusValid, stableId, isDisplayGeneExistingData, notifyExistingGeneInformation
-
-      // other data variables have to be reset
-      this.userLocusMismatchMsg = null;
-      this.hpoTermsInputHelper = {};
-      this.isSubmitDataLoading = false;
-      this.submitErrorMsg = null;
-      this.isSubmitSuccess = false;
-      this.submitSuccessMsg = null;
-      this.publishErrorMsg = null;
-      this.isPublishSuccess = false;
-      this.publishSuccessMsg = null;
-      this.publicationsErrorMsg = null;
-      this.isPublicationsDataLoading = false;
-      this.inputPmids = "";
-      this.isInputPmidsValid = true;
-      this.inputPmidsInvalidMsg = "";
-      this.isSaveBeforePublishSuccess = false;
-      this.saveBeforePublishErrorMsg = null;
-      this.geneErrorMsg = null;
-      this.geneFunctionData = null;
-      this.geneData = null;
-      this.attributesData = null;
-      this.isGeneDataLoading = false;
-      this.geneDiseaseErrorMsg = null;
-      this.geneDiseaseData = null;
-      this.isGeneDiseaseDataLoading = false;
-      this.panelErrorMsg = null;
-      this.panelData = null;
-      this.isPanelDataLoading = false;
-      this.recordWarnings = [];
     },
     fetchGeneInformation() {
       this.geneErrorMsg =
@@ -447,6 +404,10 @@ export default {
         { once: true } // ensure it only fires once
       );
     },
+    refreshPage() {
+      // Refresh current page
+      this.$router.go();
+    },
     saveDraft() {
       this.publishErrorMsg =
         this.publishSucessMsg =
@@ -557,6 +518,7 @@ export default {
         </label>
       </div>
       <div class="col-3">
+        <!-- TODO: Disable below input while also fetching existing gene data -->
         <input
           :class="
             isInputLocusValid ? 'form-control' : 'form-control is-invalid'
@@ -565,23 +527,31 @@ export default {
           v-model.trim="userLocus"
           aria-describedby="invalid-gene-symbol-input-feedback"
           @keyup.enter="existingGeneDataSearchHandler"
+          :disabled="isGeneDataLoading || geneData || geneErrorMsg"
         />
         <div id="invalid-gene-symbol-input-feedback" class="invalid-feedback">
           Please enter a valid Gene.
         </div>
       </div>
       <div class="col-auto">
-        <!-- TODO: Handle logic to disable below btns when fetching existing gene data is loading -->
         <button
           v-if="geneData"
-          :disabled="isGeneDataLoading"
           type="button"
-          class="btn btn-primary mb-3"
+          class="btn btn-outline-danger mb-3"
           data-bs-toggle="modal"
           data-bs-target="#all-input-alert-modal"
         >
-          <i class="bi bi-search"></i> Search
+          <i class="bi bi-trash-fill"></i> Clear
         </button>
+        <button
+          v-else-if="geneErrorMsg"
+          type="button"
+          class="btn btn-outline-danger mb-3"
+          @click="refreshPage"
+        >
+          <i class="bi bi-trash-fill"></i> Clear
+        </button>
+        <!-- TODO: Disable below button while also fetching existing gene data -->
         <button
           v-else
           :disabled="isGeneDataLoading"
@@ -593,7 +563,14 @@ export default {
         </button>
       </div>
     </div>
-    <p v-if="!isGeneDataLoading && !geneData && !isDisplayGeneExistingData">
+    <p
+      v-if="
+        !isGeneDataLoading &&
+        !geneData &&
+        !isDisplayGeneExistingData &&
+        !geneErrorMsg
+      "
+    >
       <i class="bi bi-info-circle"></i> Please enter Gene and click
       <b>Search</b> to proceed further.
     </p>
@@ -781,7 +758,7 @@ export default {
     <AlertModal
       modalId="all-input-alert-modal"
       alertText="The data you have input will be lost. Are you sure you want to proceed?"
-      @confirm-click-handler="existingGeneDataSearchHandler"
+      @confirm-click-handler="refreshPage"
     />
     <RemovePublicationModal
       :pmidList="Object.keys(input.publications)"
