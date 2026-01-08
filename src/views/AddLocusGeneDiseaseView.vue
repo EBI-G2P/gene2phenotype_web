@@ -518,6 +518,7 @@ export default {
         </label>
       </div>
       <div class="col-3">
+        <!-- TODO: Disable below input while also fetching existing gene data -->
         <input
           :class="
             isInputLocusValid ? 'form-control' : 'form-control is-invalid'
@@ -526,7 +527,7 @@ export default {
           v-model.trim="userLocus"
           aria-describedby="invalid-gene-symbol-input-feedback"
           @keyup.enter="existingGeneDataSearchHandler"
-          :disabled="geneData"
+          :disabled="isGeneDataLoading || geneData || geneErrorMsg"
         />
         <div id="invalid-gene-symbol-input-feedback" class="invalid-feedback">
           Please enter a valid Gene.
@@ -542,6 +543,14 @@ export default {
         >
           <i class="bi bi-trash-fill"></i> Clear
         </button>
+        <button
+          v-else-if="geneErrorMsg"
+          type="button"
+          class="btn btn-outline-danger mb-3"
+          @click="refreshPage"
+        >
+          <i class="bi bi-trash-fill"></i> Clear
+        </button>
         <!-- TODO: Disable below button while also fetching existing gene data -->
         <button
           v-else
@@ -554,7 +563,14 @@ export default {
         </button>
       </div>
     </div>
-    <p v-if="!isGeneDataLoading && !geneData && !isDisplayGeneExistingData">
+    <p
+      v-if="
+        !isGeneDataLoading &&
+        !geneData &&
+        !isDisplayGeneExistingData &&
+        !geneErrorMsg
+      "
+    >
       <i class="bi bi-info-circle"></i> Please enter Gene and click
       <b>Search</b> to proceed further.
     </p>
