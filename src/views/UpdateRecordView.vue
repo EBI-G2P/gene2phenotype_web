@@ -37,6 +37,14 @@ export default {
     UpdateReviewStatus,
     UpdateComment,
   },
+  beforeRouteLeave(to, from) {
+    if (to?.path !== "/login") {
+      const answer = window.confirm(
+        "Any unsaved changes will be lost. Are you sure you want to leave?"
+      );
+      if (!answer) return false;
+    }
+  },
   created() {
     // watch the params of the route to fetch the data again
     this.$watch(
