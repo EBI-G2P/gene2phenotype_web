@@ -19,7 +19,7 @@ import {
 } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
-import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
 import GeneFunction from "../components/text/GeneFunction.vue";
 export default {
   data() {
@@ -75,9 +75,11 @@ export default {
           this.geneData = response3.data;
         })
         .catch((error) => {
-          this.errorMsg = fetchAndLogGeneralErrorMsg(
+          this.errorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch gene data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch gene data. Please try again later.",
+            "Unable to fetch gene data."
           );
         })
         .finally(() => {

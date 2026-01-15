@@ -4,7 +4,7 @@ import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../../utility/Constants.js";
 import { SEARCH_URL } from "../../utility/UrlConstants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 import { useAuthStore } from "../../store/auth.js";
-import { fetchAndLogGeneralErrorMsg } from "../../utility/ErrorUtility.js";
+import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 
 export default {
   props: {
@@ -59,9 +59,11 @@ export default {
         })
         .catch((error) => {
           if (error.response?.status !== 404) {
-            this.geneExistingDraftsErrorMsg = fetchAndLogGeneralErrorMsg(
+            this.geneExistingDraftsErrorMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              "Unable to fetch existing gene drafts. Please try again later."
+              error?.response?.data?.error,
+              "Unable to fetch existing gene drafts. Please try again later.",
+              "Unable to fetch existing gene drafts."
             );
           }
         })
@@ -91,9 +93,11 @@ export default {
         })
         .catch((error) => {
           if (error.response?.status !== 404) {
-            this.geneExistingRecordsErrorMsg = fetchAndLogGeneralErrorMsg(
+            this.geneExistingRecordsErrorMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              "Unable to fetch existing gene records. Please try again later."
+              error?.response?.data?.error,
+              "Unable to fetch existing gene records. Please try again later.",
+              "Unable to fetch existing gene records."
             );
           }
         })
@@ -171,7 +175,10 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in geneExistingDrafts.results" :key="item.stable_id">
+              <tr
+                v-for="item in geneExistingDrafts.results"
+                :key="item.stable_id"
+              >
                 <td>
                   {{ item.stable_id }}
                 </td>
@@ -275,7 +282,10 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in geneExistingRecords.results" :key="item.stable_id">
+              <tr
+                v-for="item in geneExistingRecords.results"
+                :key="item.stable_id"
+              >
                 <td>
                   {{ item.stable_id }}
                 </td>

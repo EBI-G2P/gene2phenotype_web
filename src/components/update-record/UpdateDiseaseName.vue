@@ -46,6 +46,7 @@ export default {
           this.updateDiseaseNameErrorMsg =
             fetchAndLogApiResponseErrorListObjectMsg(
               error,
+              error?.response?.data?.error,
               "Unable to update disease name. Please try again later.",
               "Unable to update disease name."
             );

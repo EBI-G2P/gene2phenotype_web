@@ -4,7 +4,7 @@ import UpdateConfidence from "../components/update-record/UpdateConfidence.vue";
 import UpdatePanel from "../components/update-record/UpdatePanel.vue";
 import UpdateMechanism from "../components/update-record/UpdateMechanism.vue";
 import api from "../services/api.js";
-import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
 import AddComment from "../components/update-record/AddComment.vue";
 import UpdatePhenotype from "../components/update-record/UpdatePhenotype.vue";
 import UpdateVariantConsequences from "../components/update-record/UpdateVariantConsequences.vue";
@@ -71,9 +71,11 @@ export default {
           this.locusGeneDiseaseData = response2.data;
         })
         .catch((error) => {
-          this.errorMsg = fetchAndLogGeneralErrorMsg(
+          this.errorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch record data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch record data. Please try again later.",
+            "Unable to fetch record data."
           );
         })
         .finally(() => {

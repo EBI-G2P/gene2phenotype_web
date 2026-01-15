@@ -175,9 +175,11 @@ export default {
           }
         })
         .catch((error) => {
-          this.geneErrorMsg = fetchAndLogGeneralErrorMsg(
+          this.geneErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch gene data. Please check the gene name is correct and contact us at g2p-help@ebi.ac.uk if the problem continues."
+            error?.response?.data?.error,
+            "Unable to fetch gene data. Please check the gene name is correct and contact us at g2p-help@ebi.ac.uk if the problem continues.",
+            "Unable to fetch gene data."
           );
         })
         .finally(() => {
@@ -193,9 +195,11 @@ export default {
           this.geneDiseaseData = response.data;
         })
         .catch((error) => {
-          this.geneDiseaseErrorMsg = fetchAndLogGeneralErrorMsg(
+          this.geneDiseaseErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch gene disease data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch gene disease data. Please try again later.",
+            "Unable to fetch gene disease data."
           );
         })
         .finally(() => {
@@ -256,18 +260,12 @@ export default {
           }
         })
         .catch((error) => {
-          if (error.response?.status === 404) {
-            this.publicationsErrorMsg = fetchAndLogApiResponseErrorMsg(
-              error,
-              error?.response?.data?.error,
-              "Unable to fetch publications data."
-            );
-          } else {
-            this.publicationsErrorMsg = fetchAndLogGeneralErrorMsg(
-              error,
-              "Unable to fetch publications data. Please try again later."
-            );
-          }
+          this.publicationsErrorMsg = fetchAndLogApiResponseErrorMsg(
+            error,
+            error?.response?.data?.error,
+            "Unable to fetch publications. Please try again later.",
+            "Unable to fetch publications."
+          );
         })
         .finally(() => {
           this.isPublicationsDataLoading = false;
@@ -286,6 +284,13 @@ export default {
         .trim()
         .split(";")
         .filter((item) => item);
+
+      // check if inputPmidsList is empty list
+      // Eg: ";;;" => []
+      if (inputPmidsList.length === 0) {
+        this.inputPmidsInvalidMsg = "Input is empty";
+        return false;
+      }
 
       // check for duplicate input publications
       const duplicatePmidsList = inputPmidsList.filter(
@@ -434,6 +439,7 @@ export default {
         .catch((error) => {
           this.submitErrorMsg = fetchAndLogApiResponseErrorListMsg(
             error,
+            error?.response?.data?.error,
             "Unable to save draft. Please try again later.",
             "Unable to save draft."
           );
@@ -491,6 +497,7 @@ export default {
         } else {
           this.saveBeforePublishErrorMsg = fetchAndLogApiResponseErrorListMsg(
             error,
+            error?.response?.data?.error,
             "Unable to save and publish data. Please try again later.",
             "Unable to save and publish data."
           );
