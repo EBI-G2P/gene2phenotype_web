@@ -40,7 +40,6 @@ import Comment from "../components/curation/Comment.vue";
 import api from "../services/api.js";
 import axios from "axios";
 import {
-  fetchAndLogApiResponseErrorListMsg,
   fetchAndLogApiResponseErrorMsg,
   fetchAndLogGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
@@ -437,7 +436,7 @@ export default {
           this.submitSuccessMsg = response.data.message;
         })
         .catch((error) => {
-          this.submitErrorMsg = fetchAndLogApiResponseErrorListMsg(
+          this.submitErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
             error?.response?.data?.error,
             "Unable to save draft. Please try again later.",
@@ -495,7 +494,7 @@ export default {
             "Saved draft but unable to publish data."
           );
         } else {
-          this.saveBeforePublishErrorMsg = fetchAndLogApiResponseErrorListMsg(
+          this.saveBeforePublishErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
             error?.response?.data?.error,
             "Unable to save and publish data. Please try again later.",
