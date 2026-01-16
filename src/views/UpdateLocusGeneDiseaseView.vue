@@ -38,7 +38,6 @@ import {
 } from "../utility/UrlConstants.js";
 import Comment from "../components/curation/Comment.vue";
 import {
-  fetchAndLogApiResponseErrorListMsg,
   fetchAndLogApiResponseErrorMsg,
   fetchAndLogGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
@@ -146,9 +145,11 @@ export default {
           this.fetchPanels();
         })
         .catch((error) => {
-          this.errorMsg = fetchAndLogGeneralErrorMsg(
+          this.errorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch curation information. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch curation data. Please try again later.",
+            "Unable to fetch curation data."
           );
         })
         .finally(() => {
@@ -186,9 +187,11 @@ export default {
           }
         })
         .catch((error) => {
-          this.geneErrorMsg = fetchAndLogGeneralErrorMsg(
+          this.geneErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch gene data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch gene data. Please try again later.",
+            "Unable to fetch gene data."
           );
         })
         .finally(() => {
@@ -204,9 +207,11 @@ export default {
           this.geneDiseaseData = response.data;
         })
         .catch((error) => {
-          this.geneDiseaseErrorMsg = fetchAndLogGeneralErrorMsg(
+          this.geneDiseaseErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch gene disease data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch gene disease data. Please try again later.",
+            "Unable to fetch gene disease data."
           );
         })
         .finally(() => {
@@ -267,18 +272,12 @@ export default {
           }
         })
         .catch((error) => {
-          if (error.response?.status === 404) {
-            this.publicationsErrorMsg = fetchAndLogApiResponseErrorMsg(
-              error,
-              error?.response?.data?.error,
-              "Unable to fetch publications data."
-            );
-          } else {
-            this.publicationsErrorMsg = fetchAndLogGeneralErrorMsg(
-              error,
-              "Unable to fetch publications data. Please try again later."
-            );
-          }
+          this.publicationsErrorMsg = fetchAndLogApiResponseErrorMsg(
+            error,
+            error?.response?.data?.error,
+            "Unable to fetch publications. Please try again later.",
+            "Unable to fetch publications."
+          );
         })
         .finally(() => {
           this.isPublicationsDataLoading = false;
@@ -297,6 +296,13 @@ export default {
         .trim()
         .split(";")
         .filter((item) => item);
+
+      // check if inputPmidsList is empty list
+      // Eg: ";;;" => []
+      if (inputPmidsList.length === 0) {
+        this.inputPmidsInvalidMsg = "Input is empty";
+        return false;
+      }
 
       // check for duplicate input publications
       const duplicatePmidsList = inputPmidsList.filter(
@@ -444,8 +450,9 @@ export default {
           this.submitSuccessMsg = response.data.message;
         })
         .catch((error) => {
-          this.submitErrorMsg = fetchAndLogApiResponseErrorListMsg(
+          this.submitErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
+            error?.response?.data?.error,
             "Unable to save draft. Please try again later.",
             "Unable to save draft."
           );
@@ -502,8 +509,9 @@ export default {
             "Saved draft but unable to publish data."
           );
         } else {
-          this.saveBeforePublishErrorMsg = fetchAndLogApiResponseErrorListMsg(
+          this.saveBeforePublishErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
+            error?.response?.data?.error,
             "Unable to save and publish data. Please try again later.",
             "Unable to save and publish data."
           );

@@ -1,7 +1,7 @@
 <script>
 import { LGD_RECORD_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
-import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
 import ReviewMinedPublication from "../components/review-mined-publication/ReviewMinedPublication.vue";
 
 export default {
@@ -39,9 +39,11 @@ export default {
           this.locusGeneDiseaseData = response.data;
         })
         .catch((error) => {
-          this.errorMsg = fetchAndLogGeneralErrorMsg(
+          this.errorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch record data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch record data. Please try again later.",
+            "Unable to fetch record data."
           );
         })
         .finally(() => {

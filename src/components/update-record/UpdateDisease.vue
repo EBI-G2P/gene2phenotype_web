@@ -1,8 +1,5 @@
 <script>
-import {
-  fetchAndLogApiResponseErrorMsg,
-  fetchAndLogGeneralErrorMsg,
-} from "../../utility/ErrorUtility.js";
+import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import {
   CROSS_REFERENCE_URL,
   GENE_DISEASE_URL,
@@ -124,9 +121,11 @@ export default {
         })
         .catch((error) => {
           if (error.response?.status !== 404) {
-            this.geneDiseaseErrorMsg = fetchAndLogGeneralErrorMsg(
+            this.geneDiseaseErrorMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              "Unable to fetch cross references. Please try again later."
+              error?.response?.data?.error,
+              "Unable to fetch cross references. Please try again later.",
+              "Unable to fetch cross references."
             );
           }
           /*
@@ -282,6 +281,13 @@ export default {
         .split(";")
         .filter((item) => item);
 
+      // check if inputCrossReferencesList is empty list
+      // Eg: ";;;" => []
+      if (inputCrossReferencesList.length === 0) {
+        this.inputCrossReferencesStrInvalidMsg = "Input is empty";
+        return false;
+      }
+
       // check for format of input cross references
       // Currently, only MONDO terms are supported, so the format must be MONDO:#######
       // TODO: Remove this check, when OMIM terms are also supported
@@ -416,21 +422,13 @@ export default {
           }
         })
         .catch((error) => {
-          if (error.response?.status === 404) {
-            this.fetchInputCrossReferencesApiCallErrorMsg =
-              fetchAndLogApiResponseErrorMsg(
-                error,
-                error?.response?.data?.error,
-                "Unable to fetch cross references data. Please try again later.",
-                "Unable to fetch cross references data."
-              );
-          } else {
-            this.fetchInputCrossReferencesApiCallErrorMsg =
-              fetchAndLogGeneralErrorMsg(
-                error,
-                "Unable to fetch cross references data. Please try again later."
-              );
-          }
+          this.fetchInputCrossReferencesApiCallErrorMsg =
+            fetchAndLogApiResponseErrorMsg(
+              error,
+              error?.response?.data?.error,
+              "Unable to fetch cross references. Please try again later.",
+              "Unable to fetch cross references."
+            );
         })
         .finally(() => {
           this.isFetchInputCrossReferencesApiCallLoading = false;

@@ -23,6 +23,10 @@ export const logGeneralErrorMsg = (error) => {
   }
 };
 
+// This function expects API error response format as:
+// {
+// 	"error": "msg"
+// }
 export const fetchAndLogApiResponseErrorMsg = (
   error,
   apiResponseErrorMsg,
@@ -53,15 +57,20 @@ export const fetchAndLogApiResponseErrorMsg = (
   return errorMsg;
 };
 
+// This function expects API error response format as:
+// {
+// 	"error": ["msg"]
+// }
 export const fetchAndLogApiResponseErrorListMsg = (
   error,
+  apiResponseErrorList,
   defaultMsg,
   msgPrefix = null
 ) => {
   let errorMsg = defaultMsg;
   if (error.response) {
-    if (error.response.data?.error?.message?.length > 0) {
-      const apiResponseErrorMsg = error.response.data.error.message[0];
+    if (apiResponseErrorList?.length > 0) {
+      const apiResponseErrorMsg = apiResponseErrorList[0];
       if (msgPrefix) {
         errorMsg = `${msgPrefix} Error: ${apiResponseErrorMsg}`;
       } else {
@@ -83,18 +92,25 @@ export const fetchAndLogApiResponseErrorListMsg = (
   return errorMsg;
 };
 
+// This function expects API error response format as:
+// {
+// 	"error": [
+// 		{
+// 			"error": "msg",
+//      ...
+// 		}
+// 	]
+// }
 export const fetchAndLogApiResponseErrorListObjectMsg = (
   error,
+  apiResponseErrorList,
   defaultMsg,
   msgPrefix = null
 ) => {
   let errorMsg = defaultMsg;
   if (error.response) {
-    if (
-      error.response.data?.error?.length > 0 &&
-      error.response.data.error[0]?.error
-    ) {
-      const apiResponseErrorMsg = error.response.data.error[0].error;
+    if (apiResponseErrorList?.length > 0 && apiResponseErrorList[0]?.error) {
+      const apiResponseErrorMsg = apiResponseErrorList[0].error;
       if (msgPrefix) {
         errorMsg = `${msgPrefix} Error: ${apiResponseErrorMsg}`;
       } else {

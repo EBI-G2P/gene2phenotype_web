@@ -6,7 +6,7 @@ import { mapState } from "pinia";
 import { useAuthStore } from "../store/auth.js";
 import api from "../services/api.js";
 import {
-  fetchAndLogGeneralErrorMsg,
+  fetchAndLogApiResponseErrorMsg,
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import LocusGeneDiseaseDisplay from "../components/view-record/LocusGeneDiseaseDisplay.vue";
@@ -70,9 +70,11 @@ export default {
             this.mergedDataMsg = error.response.data?.message;
             this.mergedStableId = error.response.data?.stable_id;
           } else {
-            this.errorMsg = fetchAndLogGeneralErrorMsg(
+            this.errorMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              "Unable to fetch record data. Please try again later."
+              error?.response?.data?.error,
+              "Unable to fetch record data. Please try again later.",
+              "Unable to fetch record data."
             );
           }
         })
