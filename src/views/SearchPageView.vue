@@ -8,7 +8,6 @@ import {
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import {
-  fetchAndLogGeneralErrorMsg,
   fetchAndLogApiResponseErrorMsg,
   logGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
@@ -106,9 +105,11 @@ export default {
             this.mergedStableId = error.response.data?.stable_id;
           } else {
             this.isDataLoading = false;
-            this.errorMsg = fetchAndLogGeneralErrorMsg(
+            this.errorMsg = fetchAndLogApiResponseErrorMsg(
               error,
-              "Unable to fetch search results. Please try again later."
+              error?.response?.data?.error,
+              "Unable to fetch search results. Please try again later.",
+              "Unable to fetch search results."
             );
           }
         });
@@ -121,10 +122,7 @@ export default {
           this.geneData = response.data;
         })
         .catch((error) => {
-          fetchAndLogGeneralErrorMsg(
-            error,
-            "Unable to fetch gene data. Please try again later."
-          );
+          logGeneralErrorMsg(error);
           this.searchDataNotFoundMsg = searchDataNotFoundMsg;
         })
         .finally(() => {

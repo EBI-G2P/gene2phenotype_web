@@ -8,7 +8,10 @@ import BarChart from "../components/chart/BarChart.vue";
 import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
-import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import {
+  fetchAndLogGeneralErrorMsg,
+  fetchAndLogApiResponseErrorMsg,
+} from "../utility/ErrorUtility.js";
 import { trackPanelDownload } from "../utility/AnalyticsUtility.js";
 
 export default {
@@ -101,9 +104,11 @@ export default {
           };
         })
         .catch((error) => {
-          this.errorMsg = fetchAndLogGeneralErrorMsg(
+          this.errorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch panel data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch panel data. Please try again later.",
+            "Unable to fetch panel data."
           );
         })
         .finally(() => {

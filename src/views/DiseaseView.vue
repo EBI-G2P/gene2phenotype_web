@@ -8,7 +8,7 @@ import {
 import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../utility/Constants.js";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
-import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
 
 export default {
   data() {
@@ -49,9 +49,11 @@ export default {
           this.diseaseData = response2.data;
         })
         .catch((error) => {
-          this.errorMsg = fetchAndLogGeneralErrorMsg(
+          this.errorMsg = fetchAndLogApiResponseErrorMsg(
             error,
-            "Unable to fetch disease data. Please try again later."
+            error?.response?.data?.error,
+            "Unable to fetch disease data. Please try again later.",
+            "Unable to fetch disease data."
           );
         })
         .finally(() => {

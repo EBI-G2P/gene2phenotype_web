@@ -33,7 +33,7 @@ export default {
         .catch((error) => {
           this.errorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to fetch Curation entries. Please try again later."
+            "Unable to fetch saved curation entries. Please try again later."
           );
         })
         .finally(() => {

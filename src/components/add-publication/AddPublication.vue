@@ -101,6 +101,13 @@ export default {
         .split(";")
         .filter((item) => item);
 
+      // check if inputPmidsList is empty list
+      // Eg: ";;;" => []
+      if (inputPmidsList.length === 0) {
+        this.inputPmidsInvalidMsg = "Input is empty";
+        return false;
+      }
+
       // check for duplicate input publications
       const duplicatePmidsList = inputPmidsList.filter(
         (item, index) => inputPmidsList.indexOf(item) !== index
@@ -188,19 +195,12 @@ export default {
           }
         })
         .catch((error) => {
-          if (error.response?.status === 404) {
-            this.publicationsApiErrorMsg = fetchAndLogApiResponseErrorMsg(
-              error,
-              error?.response?.data?.error,
-              "Unable to fetch publications data. Please try again later.",
-              "Unable to fetch publications data."
-            );
-          } else {
-            this.publicationsApiErrorMsg = fetchAndLogGeneralErrorMsg(
-              error,
-              "Unable to fetch publications data. Please try again later."
-            );
-          }
+          this.publicationsApiErrorMsg = fetchAndLogApiResponseErrorMsg(
+            error,
+            error?.response?.data?.error,
+            "Unable to fetch publications. Please try again later.",
+            "Unable to fetch publications."
+          );
         })
         .finally(() => {
           this.isPublicationsDataLoading = false;
