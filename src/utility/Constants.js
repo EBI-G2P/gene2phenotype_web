@@ -80,7 +80,7 @@ export const SEARCH_FILTER = {
 
 export const PRIVACY_POLICY_CONFIG = {
   STORAGE_KEY_NAME: "gene2phenotype.privacy-policy.version",
-  VERSION: "1.0.0",
+  VERSION: "2.0.0",
   PRIVACY_POLICY_URL:
     "https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/privacy_notices/",
   TERMS_OF_USE_URL: "https://www.ebi.ac.uk/about/terms-of-use/#general",
