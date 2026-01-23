@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       minedPublicationsInput: this.getMinedPublicationsInput(
-        this.currentMinedPublications
+        this.currentMinedPublications,
       ),
       isUpdateApiCallLoading: false,
       updateDataErrorMsg: null,
@@ -35,7 +35,7 @@ export default {
   computed: {
     isDisableSubmitBtn() {
       return Object.values(this.minedPublicationsInput).every(
-        (item) => !item.isRejected
+        (item) => !item.isRejected,
       );
     },
   },
@@ -65,13 +65,13 @@ export default {
       this.isUpdateApiCallLoading = true;
       const requestBody = {
         mined_publications: this.prepareRequestData(
-          this.minedPublicationsInput
+          this.minedPublicationsInput,
         ),
       };
       api
         .put(
           UPDATE_MINED_PUBLICATION_URL.replace(":stableid", this.stableId),
-          requestBody
+          requestBody,
         )
         .then((response) => {
           this.updateDataSuccessMsg = response.data.message;
@@ -81,7 +81,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to update mined publications. Please try again later.",
-            "Unable to update mined publications."
+            "Unable to update mined publications.",
           );
         })
         .finally(() => {
@@ -176,21 +176,19 @@ export default {
             {{ item.title }}
           </td>
           <td>
-            <template v-if="item.score">
+            <button
+              v-if="item.score && item.score_comment"
+              class="btn btn-link m-0 p-0"
+              style="text-decoration: none"
+              data-bs-toggle="modal"
+              data-bs-target="#score-comment-modal"
+              @click="setActiveScoreComment(item.score_comment)"
+            >
               {{ item.score }}
-              <template v-if="item.score_comment">
-                <br />
-                (<button
-                  class="btn btn-link m-0 p-0"
-                  style="text-decoration: none"
-                  data-bs-toggle="modal"
-                  data-bs-target="#score-comment-modal"
-                  @click="setActiveScoreComment(item.score_comment)"
-                >
-                  <i class="bi bi-file-earmark-text"></i>Details</button
-                >)
-              </template>
-            </template>
+            </button>
+            <span v-else-if="item.score">
+              {{ item.score }}
+            </span>
           </td>
           <template v-if="item.status === MINED_PUBLICATION_STATUS.MINED">
             <td>
