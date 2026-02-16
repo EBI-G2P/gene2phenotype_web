@@ -566,7 +566,7 @@ export default {
           {{ userLocusMismatchMsg }}
         </div>
       </div>
-      <div class="mb-3">
+      <div class="my-3">
         <a
           href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/curation_documentation/"
           style="text-decoration: none"

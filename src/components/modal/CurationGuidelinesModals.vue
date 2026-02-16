@@ -20,7 +20,7 @@ export default {
         creating a new G2P record.
       </p>
       <h5>Existing G2P records (Published records for Gene)</h5>
-      <p>Key criteria to review in:</p>
+      <p>Key criteria to review:</p>
       <ul>
         <li>
           <strong>Allelic requirement</strong>
@@ -57,8 +57,7 @@ export default {
                 href="https://www.ebi.ac.uk/gene2phenotype/search?query=FGFR3"
                 style="text-decoration: none"
                 target="_blank"
-              >
-                FGFR3 associations </a
+                >FGFR3 associations</a
               >.
             </li>
           </ul>
@@ -81,8 +80,7 @@ export default {
                 href="https://www.ebi.ac.uk/gene2phenotype/search?query=INPP5E"
                 style="text-decoration: none"
                 target="_blank"
-              >
-                INPP5E </a
+                >INPP5E</a
               >.
             </li>
             <li>
@@ -145,9 +143,9 @@ export default {
       <p>
         Once you have confirmed the gene-disease association you are curating is
         not already in G2P as a published record or a curation draft, click on
-        the <b>Create new record</b> to create a new curation template with an
-        automatically populated <b>Gene information</b> section and all the
-        curation fields to annotate the new gene-disease association.
+        the <b>Create new record</b> button to create a new curation template
+        with an automatically populated <b>Gene information</b> section and all
+        the curation fields to annotate the new gene-disease association.
       </p>
     </div>
   </GuidelinesModal>
@@ -179,11 +177,11 @@ export default {
         created for each reported mechanism.
       </p>
       <p>
-        Mechanism can be annotated as Inferred (supporting data is based on
-        computational or biological prediction, or the experimental evidence
-        suggests but not demonstrates the mechanism) or as Evidence (supporting
-        data is based on experimental biological functional studies and
-        unequivocally demonstrates the mechanism).
+        Mechanism can be annotated as <b>Inferred</b> (supporting data is based
+        on computational or biological prediction, or the experimental evidence
+        suggests but does not demonstrates the mechanism) or as <b>Evidence</b>
+        (supporting data is based on experimental biological functional studies
+        and unequivocally demonstrates the mechanism).
       </p>
     </div>
   </GuidelinesModal>
@@ -195,20 +193,20 @@ export default {
       <h4>Functional studies</h4>
       <p>
         To capture the experimental evidence supporting the annotated mechanism,
-        use the Functional Studies section to record the type of evidence
+        use the <b>Functional Studies</b> section to record the type of evidence
         reported in each publication. For each publication in the curation
         record, one Functional Studies section will be displayed. The Functional
         Studies section can be used for any Mechanism annotation and for both
-        evidence supported levels Inferred and Evidence.
+        levels of mechanism support (Inferred and Evidence).
       </p>
     </div>
   </GuidelinesModal>
   <GuidelinesModal modal-id="disease-name-guidelines-modal" title="Guidelines">
     <div class="p-3">
-      <h4>Disease names style guide</h4>
+      <h4>Disease name style guide</h4>
       <ol>
         <li>
-          Follow the dyadic naming system as 'HGNC GENE SYMBOL-related phenotype
+          Follow the dyadic naming system: 'HGNC GENE SYMBOL-related phenotype
           descriptor'. Examples:
           <ul>
             <li>
@@ -224,7 +222,7 @@ export default {
         <li>
           Do not include allelic requirement. Exception, the same gene-disease
           association presents as mono- and biallelic forms, add '(monoallelic)'
-          or ('biallelic') as appropriate (example: ALDH18A1-related spastic
+          or '(biallelic)' as appropriate (example: ALDH18A1-related spastic
           paraplegia (monoallelic) and ALDH18A1-related spastic paraplegia
           (biallelic)).
         </li>
@@ -239,7 +237,7 @@ export default {
         </li>
       </ol>
       <p>
-        Please, contact the G2P team
+        Please contact the G2P team
         <a
           href="mailto:g2p-help@ebi.ac.uk"
           style="text-decoration: none"
