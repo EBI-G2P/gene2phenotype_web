@@ -16,8 +16,8 @@ export default {
       </p>
       <p>
         If the gene you are curating is already in G2P, please review ALL
-        existing G2P record(s) available for the gene of interest before
-        creating a new G2P record.
+        existing G2P record(s) for the gene of interest before creating a new
+        G2P record.
       </p>
       <h5>Existing G2P records (Published records for Gene)</h5>
       <p>Key criteria to review:</p>
