@@ -14,7 +14,7 @@ export default {
         this.attributesData?.confidence_category?.sort(
           (a, b) =>
             ConfidenceAttribsOrder.indexOf(a) -
-            ConfidenceAttribsOrder.indexOf(b)
+            ConfidenceAttribsOrder.indexOf(b),
         ) || [],
       GENCC_URL,
       PANELAPP_URL,
@@ -60,7 +60,7 @@ export default {
                             currentValue.families
                               ? accumulator + currentValue.families
                               : accumulator,
-                          0
+                          0,
                         )
                       }}
                     </td>
@@ -74,7 +74,7 @@ export default {
                             currentValue.affectedIndividuals
                               ? accumulator + currentValue.affectedIndividuals
                               : accumulator,
-                          0
+                          0,
                         )
                       }}
                     </td>
@@ -112,7 +112,14 @@ export default {
           <p class="mb-0 fw-bold">Confidence</p>
           <div class="row g-3 py-3 w-50">
             <label for="confidence-level-input" class="col-lg-3 col-form-label">
-              Level<span class="text-danger">*</span>
+              Level<span class="text-danger">* </span>
+              <a
+                href="/gene2phenotype/about/terminology#g2p-confidence-section"
+                style="text-decoration: none"
+                target="_blank"
+              >
+                <i class="bi bi-question-circle"></i>
+              </a>
             </label>
             <div class="col-lg-6">
               <select

@@ -15,7 +15,7 @@ export default {
       } else {
         updatedCrossCuttingModifiers.splice(
           updatedCrossCuttingModifiers.indexOf(crossCuttingModifier),
-          1
+          1,
         );
       }
       this.$emit("update:crossCuttingModifiers", updatedCrossCuttingModifiers);
@@ -64,8 +64,21 @@ export default {
                 </select>
               </div>
             </div>
-
-            <fieldset class="row g-3">
+            <div class="row g-3 mt-0">
+              <div class="col-auto mt-0">
+                <button
+                  type="button"
+                  class="btn btn-link m-0 p-0"
+                  style="text-decoration: none"
+                  data-bs-toggle="modal"
+                  data-bs-target="#allelic-requirement-guidelines-modal"
+                >
+                  Guidelines
+                  <i class="bi bi-file-earmark-text"></i>
+                </button>
+              </div>
+            </div>
+            <fieldset class="row g-3 mt-0">
               <legend class="col-form-label col-auto">
                 Cross Cutting Modifier(s)
               </legend>

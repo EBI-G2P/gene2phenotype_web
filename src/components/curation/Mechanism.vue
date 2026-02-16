@@ -294,7 +294,7 @@ export default {
                   @input="
                     $emit(
                       'update:molecularMechanismSupport',
-                      $event.target.value
+                      $event.target.value,
                     )
                   "
                   aria-describedby="invalid-mechanism-input-source-feedback"
@@ -310,6 +310,20 @@ export default {
                 >
                   {{ molecularMechanismSupportErrorMsg }}
                 </div>
+              </div>
+            </div>
+            <div class="row g-3 px-3 mt-0">
+              <div class="col-auto mt-0">
+                <button
+                  type="button"
+                  class="btn btn-link m-0 p-0"
+                  style="text-decoration: none"
+                  data-bs-toggle="modal"
+                  data-bs-target="#mechanism-guidelines-modal"
+                >
+                  Guidelines
+                  <i class="bi bi-file-earmark-text"></i>
+                </button>
               </div>
             </div>
             <div class="row g-3 px-3 py-3">
@@ -351,7 +365,7 @@ export default {
                           @input="
                             mechanismSynopsisInputHandler(
                               item,
-                              $event.target.value
+                              $event.target.value,
                             )
                           "
                           :aria-describedby="`invalid-categorisation-input-source-feedback-${item}`"
