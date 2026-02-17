@@ -19,7 +19,7 @@ export default {
           updatedMechanismEvidence[pmid].evidence_types[key].indexOf(value);
         updatedMechanismEvidence[pmid].evidence_types[key].splice(
           indexToBeRemoved,
-          1
+          1,
         );
       }
       this.$emit("updateMechanismEvidence", updatedMechanismEvidence);
@@ -61,6 +61,20 @@ export default {
     <div class="row g-3 px-3 pt-3">
       <h5>Functional Studies</h5>
     </div>
+    <div class="row g-3 px-3 mt-0">
+      <div class="col-auto mt-0">
+        <button
+          type="button"
+          class="btn btn-link m-0 p-0"
+          style="text-decoration: none"
+          data-bs-toggle="modal"
+          data-bs-target="#functional-studies-guidelines-modal"
+        >
+          Guidelines
+          <i class="bi bi-file-earmark-text"></i>
+        </button>
+      </div>
+    </div>
     <div
       class="row g-3 px-3 py-3"
       v-for="pmid in Object.keys(mechanismEvidence)"
@@ -79,7 +93,7 @@ export default {
                     class="form-check-input"
                     type="checkbox"
                     :id="`evidence-type-input-${pmid}-${kebabCase(
-                      item.primaryType
+                      item.primaryType,
                     )}-${kebabCase(secondaryTypeItem)}`"
                     :checked="
                       mechanismEvidence[pmid].evidence_types[
@@ -91,14 +105,14 @@ export default {
                         item.primaryType,
                         pmid,
                         $event.target.checked,
-                        secondaryTypeItem
+                        secondaryTypeItem,
                       )
                     "
                   />
                   <label
                     class="form-check-label"
                     :for="`evidence-type-input-${pmid}-${kebabCase(
-                      item.primaryType
+                      item.primaryType,
                     )}-${kebabCase(secondaryTypeItem)}`"
                   >
                     {{ secondaryTypeItem }}
@@ -112,7 +126,7 @@ export default {
       <p
         v-if="
           Object.values(mechanismEvidence[pmid].evidence_types).every(
-            (arr) => arr.length === 0
+            (arr) => arr.length === 0,
           ) && mechanismEvidence[pmid].description.length === 0
         "
         class="m-0"
@@ -123,7 +137,7 @@ export default {
       <p
         v-if="
           Object.values(mechanismEvidence[pmid].evidence_types).every(
-            (arr) => arr.length === 0
+            (arr) => arr.length === 0,
           ) && mechanismEvidence[pmid].description.length > 0
         "
         class="m-0"
@@ -149,7 +163,7 @@ export default {
           @input="mechanismEvidenceInputHandler(pmid, $event.target.value)"
           :disabled="
             Object.values(mechanismEvidence[pmid].evidence_types).every(
-              (arr) => arr.length === 0
+              (arr) => arr.length === 0,
             )
           "
         >

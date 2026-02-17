@@ -23,13 +23,13 @@ export default {
         updatedDiseaseCrossReferences.push(diseaseCrossReference);
       } else {
         const elementIndexToBeRemoved = updatedDiseaseCrossReferences.findIndex(
-          (item) => item.identifier === diseaseCrossReference.identifier
+          (item) => item.identifier === diseaseCrossReference.identifier,
         );
         updatedDiseaseCrossReferences.splice(elementIndexToBeRemoved, 1);
       }
       this.$emit(
         "update:diseaseCrossReferences",
-        updatedDiseaseCrossReferences
+        updatedDiseaseCrossReferences,
       );
     },
     useDiseaseName(diseaseCrossReference) {
@@ -37,7 +37,7 @@ export default {
         this.$emit("update:diseaseName", diseaseCrossReference.disease_name);
         // check if disease cross reference is present in list of selected disease cross references
         const index = this.diseaseCrossReferences.findIndex(
-          (item) => item.identifier === diseaseCrossReference.identifier
+          (item) => item.identifier === diseaseCrossReference.identifier,
         );
         // if disease cross reference is not present then select it
         if (index === -1) {
@@ -94,8 +94,22 @@ export default {
                 />
               </div>
             </div>
+            <div class="row g-3 mt-0">
+              <div class="col-auto mt-0">
+                <button
+                  type="button"
+                  class="btn btn-link m-0 p-0"
+                  style="text-decoration: none"
+                  data-bs-toggle="modal"
+                  data-bs-target="#disease-name-guidelines-modal"
+                >
+                  Guidelines
+                  <i class="bi bi-file-earmark-text"></i>
+                </button>
+              </div>
+            </div>
             <div
-              class="row g-3 px-3"
+              class="row g-3 px-3 mt-0"
               v-if="
                 !geneDiseaseErrorMsg && geneDiseaseData?.results?.length > 0
               "
@@ -125,7 +139,7 @@ export default {
                           diseaseCrossReferences.findIndex(
                             (diseaseCrossReference) =>
                               diseaseCrossReference.identifier ===
-                              item.identifier
+                              item.identifier,
                           ) !== -1
                         "
                         @input="checkboxHandler(item, $event.target.checked)"

@@ -44,6 +44,7 @@ import {
   fetchAndLogGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
 import RecordWarningModal from "../components/modal/RecordWarningModal.vue";
+import CurationGuidelinesModals from "../components/modal/CurationGuidelinesModals.vue";
 
 export default {
   data() {
@@ -92,7 +93,7 @@ export default {
       to?.path !== "/login"
     ) {
       const answer = window.confirm(
-        "Are you sure you want to leave? You have unsaved changes which will be lost. Consider saving your changes before leaving."
+        "Are you sure you want to leave? You have unsaved changes which will be lost. Consider saving your changes before leaving.",
       );
       if (!answer) return false;
     }
@@ -117,6 +118,7 @@ export default {
     ExistingGeneInformation,
     Comment,
     RecordWarningModal,
+    CurationGuidelinesModals,
   },
   methods: {
     geneSearchBtnClickHandler() {
@@ -178,7 +180,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to fetch gene data. Please check the gene name is correct and contact us at g2p-help@ebi.ac.uk if the problem continues.",
-            "Unable to fetch gene data."
+            "Unable to fetch gene data.",
           );
         })
         .finally(() => {
@@ -198,7 +200,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to fetch gene disease data. Please try again later.",
-            "Unable to fetch gene disease data."
+            "Unable to fetch gene disease data.",
           );
         })
         .finally(() => {
@@ -216,7 +218,7 @@ export default {
         .catch((error) => {
           this.panelErrorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to fetch panel data. Please try again later."
+            "Unable to fetch panel data. Please try again later.",
           );
         })
         .finally(() => {
@@ -246,13 +248,13 @@ export default {
           if (publicationsData?.results) {
             this.input = updateInputWithNewPublicationsData(
               this.input,
-              publicationsData
+              publicationsData,
             );
             let pmidList = publicationsData.results.map((item) => item.pmid);
             this.hpoTermsInputHelper =
               updateHpoTermsInputHelperWithNewPublicationsData(
                 this.hpoTermsInputHelper,
-                pmidList
+                pmidList,
               );
             // clear inputPmids
             this.inputPmids = "";
@@ -263,7 +265,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to fetch publications. Please try again later.",
-            "Unable to fetch publications."
+            "Unable to fetch publications.",
           );
         })
         .finally(() => {
@@ -293,11 +295,11 @@ export default {
 
       // check for duplicate input publications
       const duplicatePmidsList = inputPmidsList.filter(
-        (item, index) => inputPmidsList.indexOf(item) !== index
+        (item, index) => inputPmidsList.indexOf(item) !== index,
       );
       if (duplicatePmidsList.length > 0) {
         this.inputPmidsInvalidMsg = `Duplicate publication(s): ${duplicatePmidsList.join(
-          ", "
+          ", ",
         )}`;
         return false;
       }
@@ -305,11 +307,11 @@ export default {
       // check if any input publication has already been added
       const addedPmidsList = Object.keys(this.input.publications);
       const pmidsAlreadyAddedList = inputPmidsList.filter((item) =>
-        addedPmidsList.includes(item)
+        addedPmidsList.includes(item),
       );
       if (pmidsAlreadyAddedList.length > 0) {
         this.inputPmidsInvalidMsg = `Publication(s) already added: ${pmidsAlreadyAddedList.join(
-          ", "
+          ", ",
         )}`;
         return false;
       }
@@ -320,12 +322,12 @@ export default {
     removePublication(removedPmidList) {
       this.input = updateInputWithRemovedPublications(
         this.input,
-        removedPmidList
+        removedPmidList,
       );
       this.hpoTermsInputHelper =
         updateHpoTermsInputHelperWithRemovedPublications(
           this.hpoTermsInputHelper,
-          removedPmidList
+          removedPmidList,
         );
     },
     fetchAndSearchHPO(pmid, inputValue) {
@@ -355,7 +357,7 @@ export default {
           this.hpoTermsInputHelper[pmid].HPOAPIerrormsg =
             fetchAndLogGeneralErrorMsg(
               error,
-              "Failed to fetch HPO data. Please try again later."
+              "Failed to fetch HPO data. Please try again later.",
             );
         })
         .finally(() => {
@@ -367,7 +369,7 @@ export default {
         this.input.confidence,
         this.input.publications,
         this.input.variant_consequences,
-        this.input.variant_types
+        this.input.variant_types,
       );
       const modalId = this.recordWarnings.length
         ? "record-warning-modal"
@@ -382,10 +384,10 @@ export default {
     openPublishModal() {
       // Hide record-warning-modal
       const recordWarningModalElement = document.getElementById(
-        "record-warning-modal"
+        "record-warning-modal",
       );
       const recordWarningModal = bootstrap.Modal.getInstance(
-        recordWarningModalElement
+        recordWarningModalElement,
       );
       if (!recordWarningModal) {
         recordWarningModal = new bootstrap.Modal(recordWarningModalElement);
@@ -397,7 +399,7 @@ export default {
         "hidden.bs.modal",
         () => {
           const publishModalElement = document.getElementById(
-            "publish-entry-modal"
+            "publish-entry-modal",
           );
           let publishModal = bootstrap.Modal.getInstance(publishModalElement);
           if (!publishModal) {
@@ -405,7 +407,7 @@ export default {
           }
           publishModal.show();
         },
-        { once: true } // ensure it only fires once
+        { once: true }, // ensure it only fires once
       );
     },
     refreshPage() {
@@ -440,7 +442,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to save draft. Please try again later.",
-            "Unable to save draft."
+            "Unable to save draft.",
           );
         })
         .finally(() => {
@@ -477,7 +479,7 @@ export default {
 
         // Call API to Publish Data
         const publishResponse = await api.post(
-          PUBLISH_URL.replace(":stableid", this.stableId)
+          PUBLISH_URL.replace(":stableid", this.stableId),
         );
         const publishResponseJson = publishResponse.data;
 
@@ -491,14 +493,14 @@ export default {
             error,
             error?.response?.data?.error,
             "Saved draft but unable to publish data. Please try again later.",
-            "Saved draft but unable to publish data."
+            "Saved draft but unable to publish data.",
           );
         } else {
           this.saveBeforePublishErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
             error?.response?.data?.error,
             "Unable to save and publish data. Please try again later.",
-            "Unable to save and publish data."
+            "Unable to save and publish data.",
           );
         }
       }
@@ -617,6 +619,15 @@ export default {
           <i class="bi bi-info-circle"></i>
           {{ userLocusMismatchMsg }}
         </div>
+      </div>
+      <div class="mb-3">
+        <a
+          href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/curation_documentation/"
+          style="text-decoration: none"
+          target="_blank"
+        >
+          Full curation guidelines <i class="bi bi-box-arrow-up-right"></i>
+        </a>
       </div>
       <GeneInformation
         :geneData="geneData"
@@ -774,6 +785,7 @@ export default {
       :recordWarnings="recordWarnings"
       @confirm-click-handler="openPublishModal"
     />
+    <CurationGuidelinesModals />
   </div>
 </template>
 <style scoped>

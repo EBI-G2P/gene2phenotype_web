@@ -63,7 +63,7 @@ export default {
               error,
               error?.response?.data?.error,
               "Unable to fetch existing gene drafts. Please try again later.",
-              "Unable to fetch existing gene drafts."
+              "Unable to fetch existing gene drafts.",
             );
           }
         })
@@ -97,7 +97,7 @@ export default {
               error,
               error?.response?.data?.error,
               "Unable to fetch existing gene records. Please try again later.",
-              "Unable to fetch existing gene records."
+              "Unable to fetch existing gene records.",
             );
           }
         })
@@ -140,13 +140,6 @@ export default {
       </div>
     </div>
     <div v-else>
-      <button
-        type="button"
-        class="btn btn-primary mt-3"
-        @click="geneSearchBtnClickHandler"
-      >
-        Create new record
-      </button>
       <div v-if="!geneExistingDrafts && !geneExistingRecords">
         <p class="pt-3">
           <i class="bi bi-info-circle"></i> There are no saved drafts or
@@ -260,6 +253,9 @@ export default {
       </div>
       <div v-if="geneExistingRecords?.results?.length > 0">
         <h3 class="pt-3">Published records for Gene</h3>
+        <p class="text-muted mb-0">
+          View existing records to add to your panel
+        </p>
         <div class="mx-1 pt-3 table-responsive-xl">
           <table class="table table-hover table-bordered">
             <thead>
@@ -381,6 +377,31 @@ export default {
             </button>
           </div>
         </div>
+      </div>
+      <div class="my-3">
+        <h6 class="mb-3">
+          Adding a novel disease or an association with a different mechanism or
+          allelic requirement?
+        </h6>
+        <div>
+          <button
+            type="button"
+            class="btn btn-link m-0 p-0"
+            style="text-decoration: none"
+            data-bs-toggle="modal"
+            data-bs-target="#record-guidelines-modal"
+          >
+            Please read this information before creating a new record
+            <i class="bi bi-file-earmark-text"></i>
+          </button>
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary mt-3"
+          @click="geneSearchBtnClickHandler"
+        >
+          Create new record
+        </button>
       </div>
     </div>
   </div>

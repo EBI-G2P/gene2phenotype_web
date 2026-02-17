@@ -118,8 +118,10 @@ export default {
                   href="https://europepmc.org/article/MED/39172982"
                   target="_blank"
                   style="text-decoration: none"
-                  >Badonyi and Marsh, 2024</a
                 >
+                  Badonyi and Marsh, 2024
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
               </p>
               <div class="col-xl-5 col-lg-6">
                 <table class="table table-bordered mb-0">
@@ -294,7 +296,7 @@ export default {
                   @input="
                     $emit(
                       'update:molecularMechanismSupport',
-                      $event.target.value
+                      $event.target.value,
                     )
                   "
                   aria-describedby="invalid-mechanism-input-source-feedback"
@@ -310,6 +312,20 @@ export default {
                 >
                   {{ molecularMechanismSupportErrorMsg }}
                 </div>
+              </div>
+            </div>
+            <div class="row g-3 px-3 mt-0">
+              <div class="col-auto mt-0">
+                <button
+                  type="button"
+                  class="btn btn-link m-0 p-0"
+                  style="text-decoration: none"
+                  data-bs-toggle="modal"
+                  data-bs-target="#mechanism-guidelines-modal"
+                >
+                  Guidelines
+                  <i class="bi bi-file-earmark-text"></i>
+                </button>
               </div>
             </div>
             <div class="row g-3 px-3 py-3">
@@ -351,7 +367,7 @@ export default {
                           @input="
                             mechanismSynopsisInputHandler(
                               item,
-                              $event.target.value
+                              $event.target.value,
                             )
                           "
                           :aria-describedby="`invalid-categorisation-input-source-feedback-${item}`"
