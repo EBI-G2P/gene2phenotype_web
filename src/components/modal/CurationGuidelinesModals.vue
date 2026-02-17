@@ -179,7 +179,7 @@ export default {
       <p>
         Mechanism can be annotated as <b>Inferred</b> (supporting data is based
         on computational or biological prediction, or the experimental evidence
-        suggests but does not demonstrates the mechanism) or as <b>Evidence</b>
+        suggests but does not demonstrate the mechanism) or as <b>Evidence</b>
         (supporting data is based on experimental biological functional studies
         and unequivocally demonstrates the mechanism).
       </p>
