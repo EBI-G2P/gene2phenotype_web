@@ -118,8 +118,10 @@ export default {
                   href="https://europepmc.org/article/MED/39172982"
                   target="_blank"
                   style="text-decoration: none"
-                  >Badonyi and Marsh, 2024</a
                 >
+                  Badonyi and Marsh, 2024
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
               </p>
               <div class="col-xl-5 col-lg-6">
                 <table class="table table-bordered mb-0">

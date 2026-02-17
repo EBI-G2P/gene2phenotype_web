@@ -9,18 +9,19 @@ export default {
 <template>
   <GuidelinesModal modal-id="record-guidelines-modal" title="Guidelines">
     <div class="p-3">
-      <h4>When to create a new record if the gene is already in G2P</h4>
+      <h4 class="pb-2">
+        When to create a new record if the gene is already in G2P
+      </h4>
       <p>
         A G2P record is defined as a unique
         Locus-Genotype-Mechanism-Disease-Evidence (LGMDE) thread.
-      </p>
-      <p>
+        <br />
         If the gene you are curating is already in G2P, please review ALL
         existing G2P record(s) for the gene of interest before creating a new
         G2P record.
       </p>
       <h5>Existing G2P records (Published records for Gene)</h5>
-      <p>Key criteria to review:</p>
+      <p class="mb-0">Key criteria to review:</p>
       <ul>
         <li>
           <strong>Allelic requirement</strong>
@@ -28,18 +29,18 @@ export default {
             <li>
               Diseases that present both as monoallelic and biallelic (example
               <a
-                href="https://www.ebi.ac.uk/gene2phenotype/search?query=FBN1"
+                href="/gene2phenotype/search?query=FBN1"
                 style="text-decoration: none"
                 target="_blank"
                 >FBN1-related Marfan syndrome</a
               >) are recorded as independent records, but using the same disease
               name, with 'monoallelic' or 'biallelic' added as in '<a
-                href="https://www.ebi.ac.uk/gene2phenotype/disease/FBN1-related Marfan syndrome (monoallelic)"
+                href="/gene2phenotype/disease/FBN1-related%20Marfan%20syndrome%20(monoallelic)"
                 style="text-decoration: none"
                 target="_blank"
                 >FBN1-related Marfan syndrome (monoallelic)</a
               >' and '<a
-                href="https://www.ebi.ac.uk/gene2phenotype/disease/FBN1-related Marfan syndrome (monoallelic)"
+                href="/gene2phenotype/disease/FBN1-related%20Marfan%20syndrome%20(biallelic)"
                 style="text-decoration: none"
                 target="_blank"
                 >FBN1-related Marfan syndrome (biallelic)</a
@@ -54,7 +55,7 @@ export default {
               specific protein domain) can result in different disorders for the
               same allelic requirement. See monoallelic
               <a
-                href="https://www.ebi.ac.uk/gene2phenotype/search?query=FGFR3"
+                href="/gene2phenotype/search?query=FGFR3"
                 style="text-decoration: none"
                 target="_blank"
                 >FGFR3 associations</a
@@ -77,7 +78,7 @@ export default {
               via loss of interaction versus LoF via loss of activity) can
               result in distinct disease entities. See
               <a
-                href="https://www.ebi.ac.uk/gene2phenotype/search?query=INPP5E"
+                href="/gene2phenotype/search?query=INPP5E"
                 style="text-decoration: none"
                 target="_blank"
                 >INPP5E</a
@@ -109,20 +110,19 @@ export default {
           >'. This is common when first describing a disorder. As additional
           evidence is published and the phenotypic features are better defined,
           these disease names will be updated to reflect that knowledge.
+          <br />
+          Nosological authorities: OMIM, MONDO (Monarch Initiative), Orphanet,
+          and GeneReviews. Please, contact the G2P team
+          <a
+            href="mailto:g2p-help@ebi.ac.uk"
+            style="text-decoration: none"
+            target="_blank"
+            >g2p-help@ebi.ac.uk</a
+          >
+          if you are unsure about a new disease name or you want to update an
+          existing one.
         </li>
       </ul>
-      <p>
-        Nosological authorities: OMIM, MONDO (Monarch Initiative), Orphanet, and
-        GeneReviews. Please, contact the G2P team
-        <a
-          href="mailto:g2p-help@ebi.ac.uk"
-          style="text-decoration: none"
-          target="_blank"
-          >g2p-help@ebi.ac.uk</a
-        >
-        if you are unsure about a new disease name or you want to update an
-        existing one.
-      </p>
       <p>
         If after reviewing these criteria, it is concluded the gene-disease
         association being curated matches an existing gene-disease G2P record,
@@ -154,7 +154,7 @@ export default {
     title="Guidelines"
   >
     <div class="py-3 px-5">
-      <h4>Allelic requirement</h4>
+      <h4 class="pb-2">Allelic requirement</h4>
       <p>
         Allelic requirement is unique for each G2P record. If the publication(s)
         provides evidence supporting more than one allelic requirement for the
@@ -169,7 +169,7 @@ export default {
   </GuidelinesModal>
   <GuidelinesModal modal-id="mechanism-guidelines-modal" title="Guidelines">
     <div class="py-3 px-5">
-      <h4>Mechanism</h4>
+      <h4 class="pb-2">Mechanism</h4>
       <p>
         Each record in the curation tool can only be annotated with one
         Mechanism. For disorders for which more than one mechanism has been
@@ -190,30 +190,43 @@ export default {
     title="Guidelines"
   >
     <div class="py-3 px-5">
-      <h4>Functional studies</h4>
+      <h4 class="pb-2">Functional studies</h4>
       <p>
         To capture the experimental evidence supporting the annotated mechanism,
         use the <b>Functional Studies</b> section to record the type of evidence
         reported in each publication. For each publication in the curation
-        record, one Functional Studies section will be displayed. The Functional
-        Studies section can be used for any Mechanism annotation and for both
-        levels of mechanism support (Inferred and Evidence).
+        record, one <b>Functional Studies</b> section will be displayed. The
+        <b>Functional Studies</b> section can be used for any Mechanism
+        annotation and for both levels of mechanism support (Inferred and
+        Evidence).
       </p>
     </div>
   </GuidelinesModal>
   <GuidelinesModal modal-id="disease-name-guidelines-modal" title="Guidelines">
     <div class="p-3">
-      <h4>Disease name style guide</h4>
+      <h4 class="pb-2">Disease name style guide</h4>
       <ol>
         <li>
           Follow the dyadic naming system: 'HGNC GENE SYMBOL-related phenotype
           descriptor'. Examples:
           <ul>
             <li>
-              AMOTL1-related orofacial clefting, cardiac anomalies, and tall
-              stature
+              <a
+                href="/gene2phenotype/lgd/G2P03429"
+                style="text-decoration: none"
+                target="_blank"
+                >AMOTL1-related orofacial clefting, cardiac anomalies, and tall
+                stature</a
+              >
             </li>
-            <li>PTPN11-related Noonan syndrome</li>
+            <li>
+              <a
+                href="/gene2phenotype/lgd/G2P03310"
+                style="text-decoration: none"
+                target="_blank"
+                >PTPN11-related Noonan syndrome</a
+              >
+            </li>
           </ul>
         </li>
         <li>
@@ -222,18 +235,42 @@ export default {
         <li>
           Do not include allelic requirement. Exception, the same gene-disease
           association presents as mono- and biallelic forms, add '(monoallelic)'
-          or '(biallelic)' as appropriate (example: ALDH18A1-related spastic
-          paraplegia (monoallelic) and ALDH18A1-related spastic paraplegia
-          (biallelic)).
+          or '(biallelic)' as appropriate (example:
+          <a
+            href="/gene2phenotype/lgd/G2P00159"
+            style="text-decoration: none"
+            target="_blank"
+            >ALDH18A1-related spastic paraplegia (monoallelic)</a
+          >
+          and
+          <a
+            href="/gene2phenotype/lgd/G2P02080"
+            style="text-decoration: none"
+            target="_blank"
+            >ALDH18A1-related spastic paraplegia (biallelic)</a
+          >).
         </li>
         <li>
           Do not include the number/letter used to define genetic heterogeneity.
         </li>
         <li>
-          Use lower case for everything except: Proper names (TRIM32-related
-          Bardet-Biedl syndrome), Acronyms (FGFR3-related
-          lacrimo-auriculo-dento-digital syndrome (LADD)), Chemical names
-          (HADH-related 3-hydroxyacyl-CoA dehydrogenase deficiency).
+          Use lower case for everything except: Proper names (<a
+            href="/gene2phenotype/lgd/G2P00010"
+            style="text-decoration: none"
+            target="_blank"
+            >TRIM32-related Bardet-Biedl syndrome</a
+          >),
+          <a
+            href="/gene2phenotype/lgd/G2P00012"
+            style="text-decoration: none"
+            target="_blank"
+            >FGFR3-related lacrimo-auriculo-dento-digital syndrome (LADD)</a
+          >), Chemical names (<a
+            href="/gene2phenotype/lgd/G2P00085"
+            style="text-decoration: none"
+            target="_blank"
+            >HADH-related 3-hydroxyacyl-CoA dehydrogenase deficiency</a
+          >).
         </li>
       </ol>
       <p>
