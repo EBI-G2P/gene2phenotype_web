@@ -17,7 +17,7 @@ export default {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal=title" id="score-comment-modal-label">
+          <h5 class="modal-title" id="score-comment-modal-label">
             Score justification
           </h5>
           <button

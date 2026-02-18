@@ -14,7 +14,7 @@ export default {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal=title" id="publish-entry-modal-label">
+          <h5 class="modal-title" id="publish-entry-modal-label">
             Publish Record
           </h5>
           <button
