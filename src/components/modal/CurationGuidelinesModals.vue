@@ -13,10 +13,10 @@ export default {
         When to create a new record if the gene is already in G2P
       </h4>
       <p>
-        A G2P record is defined as a unique
+        A G2P record is defined as a <b>unique</b>
         Locus-Genotype-Mechanism-Disease-Evidence (LGMDE) thread.
         <br />
-        If the gene you are curating is already in G2P, please review ALL
+        If the gene you are curating is already in G2P, please review <b>ALL</b>
         existing G2P record(s) for the gene of interest before creating a new
         G2P record.
       </p>
@@ -128,9 +128,8 @@ export default {
         association being curated matches an existing gene-disease G2P record,
         add the existing record to your panel. Once a G2P record has been added
         to your panel, you can update it. Please, for major updates (for
-        example, Disease name, molecular mechanism and/or Confidence level)
-        contact the members of the other panel(s) to inform or discuss the
-        updates.
+        example, Disease Name, Mechanism and/or Confidence) contact the members
+        of the other panel(s) to inform or discuss the updates.
       </p>
       <h5>Existing G2P saved drafts (Saved drafts for Gene)</h5>
       <p>
@@ -259,8 +258,7 @@ export default {
             style="text-decoration: none"
             target="_blank"
             >TRIM32-related Bardet-Biedl syndrome</a
-          >),
-          <a
+          >), Acronyms (<a
             href="/gene2phenotype/lgd/G2P00012"
             style="text-decoration: none"
             target="_blank"
