@@ -14,6 +14,7 @@ import UpdateReviewStatus from "../components/update-record/UpdateReviewStatus.v
 import UpdateComment from "../components/update-record/UpdateComment.vue";
 import { mapState } from "pinia";
 import { useAuthStore } from "../store/auth.js";
+import UpdatePublication from "../components/update-record/UpdatePublication.vue";
 
 export default {
   data() {
@@ -36,11 +37,12 @@ export default {
     UpdateDisease,
     UpdateReviewStatus,
     UpdateComment,
+    UpdatePublication,
   },
   beforeRouteLeave(to, from) {
     if (to?.path !== "/login") {
       const answer = window.confirm(
-        "Any unsaved changes will be lost. Are you sure you want to leave?"
+        "Any unsaved changes will be lost. Are you sure you want to leave?",
       );
       if (!answer) return false;
     }
@@ -54,7 +56,7 @@ export default {
       },
       // fetch the data when the view is created and the data is
       // already being observed
-      { immediate: true }
+      { immediate: true },
     );
   },
   methods: {
@@ -75,7 +77,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to fetch record data. Please try again later.",
-            "Unable to fetch record data."
+            "Unable to fetch record data.",
           );
         })
         .finally(() => {
@@ -120,14 +122,19 @@ export default {
         <i class="bi bi-info-circle"></i> For this record, only these sections
         can be updated:
         <b v-if="isSuperUser">
-          Phenotypic features, Variant types, Variant consequences, Mechanism,
-          Disease, Panel, Confidence, Review status
+          Publications, Phenotypic features, Variant types, Variant
+          consequences, Mechanism, Disease, Panel, Confidence, Review status
         </b>
         <b v-else>
           Phenotypic features, Variant types, Variant consequences, Mechanism,
           Disease, Panel, Confidence
         </b>
       </p>
+      <UpdatePublication
+        v-if="isSuperUser"
+        :stableId="stableId"
+        :currentPublications="locusGeneDiseaseData.publications"
+      />
       <UpdatePhenotype
         :stableId="stableId"
         :currentPublications="locusGeneDiseaseData.publications"
