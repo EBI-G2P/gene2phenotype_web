@@ -204,7 +204,7 @@ export default {
                           class="form-control"
                           type="text"
                           :value="pmid"
-                          aria-label="readonly input example"
+                          aria-label="Publication pmid input"
                           :id="`publication-pmid-input-${pmid}`"
                           disabled
                         />
@@ -221,7 +221,7 @@ export default {
                           type="text"
                           :id="`publication-year-input-${pmid}`"
                           :value="publications[pmid].year"
-                          aria-label="readonly input example"
+                          aria-label="Publication year input"
                           disabled
                         />
                       </div>
@@ -237,7 +237,7 @@ export default {
                           type="text"
                           :id="`publication-title-input-${pmid}`"
                           :value="publications[pmid].title"
-                          aria-label="readonly input example"
+                          aria-label="Publication title input"
                           disabled
                         />
                       </div>
@@ -253,7 +253,7 @@ export default {
                           type="text"
                           :id="`publication-authors-input-${pmid}`"
                           :value="publications[pmid].authors"
-                          aria-label="readonly input example"
+                          aria-label="Publication authors input"
                           disabled
                         />
                       </div>
@@ -269,7 +269,7 @@ export default {
                           :class="
                             getFamiliesInputErrorMsg(
                               publications[pmid].families,
-                              publications[pmid].affectedIndividuals
+                              publications[pmid].affectedIndividuals,
                             )
                               ? 'form-control is-invalid'
                               : 'form-control'
@@ -281,7 +281,7 @@ export default {
                             inputHandler(
                               'families',
                               pmid,
-                              Number($event.target.value)
+                              Number($event.target.value),
                             )
                           "
                           aria-describedby="invalid-families-input-feedback"
@@ -293,7 +293,7 @@ export default {
                           {{
                             getFamiliesInputErrorMsg(
                               publications[pmid].families,
-                              publications[pmid].affectedIndividuals
+                              publications[pmid].affectedIndividuals,
                             )
                           }}
                         </div>
@@ -310,7 +310,7 @@ export default {
                           :class="
                             getAffectedIndividualsInputErrorMsg(
                               publications[pmid].families,
-                              publications[pmid].affectedIndividuals
+                              publications[pmid].affectedIndividuals,
                             )
                               ? 'form-control is-invalid'
                               : 'form-control'
@@ -322,7 +322,7 @@ export default {
                             inputHandler(
                               'affectedIndividuals',
                               pmid,
-                              Number($event.target.value)
+                              Number($event.target.value),
                             )
                           "
                           aria-describedby="invalid-affected-individuals-input-feedback"
@@ -334,7 +334,7 @@ export default {
                           {{
                             getAffectedIndividualsInputErrorMsg(
                               publications[pmid].families,
-                              publications[pmid].affectedIndividuals
+                              publications[pmid].affectedIndividuals,
                             )
                           }}
                         </div>
@@ -353,7 +353,7 @@ export default {
                             inputHandler(
                               'consanguineous',
                               pmid,
-                              $event.target.value
+                              $event.target.value,
                             )
                           "
                         >
@@ -378,7 +378,7 @@ export default {
                             inputHandler(
                               'ancestries',
                               pmid,
-                              $event.target.value
+                              $event.target.value,
                             )
                           "
                         />
