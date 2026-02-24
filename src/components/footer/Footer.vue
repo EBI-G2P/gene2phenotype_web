@@ -137,6 +137,15 @@
             </li>
             <li class="nav-item mb-2">
               <a
+                href="https://ebi-g2p.gitdocs.ebi.ac.uk/g2p-blog/"
+                target="_blank"
+                class="nav-link p-0 text-body-secondary"
+              >
+                G2P Blog
+              </a>
+            </li>
+            <li class="nav-item mb-2">
+              <a
                 href="https://bsky.app/profile/gene2phenotype.bsky.social"
                 target="_blank"
                 class="nav-link p-0 text-body-secondary"
