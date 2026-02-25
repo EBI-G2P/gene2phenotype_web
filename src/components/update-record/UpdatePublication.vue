@@ -78,9 +78,8 @@ export default {
               affectedIndividuals: item.affected_individuals,
               ancestry: item.ancestry,
               newComment: "",
-              prevComments: item.comments?.map(
-                (commentObj) => commentObj.comment,
-              ),
+              prevComments:
+                item.comments?.map((commentObj) => commentObj.comment) ?? [],
             };
           }
         });
