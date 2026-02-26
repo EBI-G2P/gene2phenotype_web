@@ -207,6 +207,16 @@ export default {
       </div>
       <table class="table table-borderless my-3">
         <tbody>
+          <tr id="record-summary-section" class="pb-3">
+            <td colspan="2">
+              <div class="record-summary-callout mb-3">
+                <p v-if="locusGeneDiseaseData.summary" class="fs-5">
+                  {{ locusGeneDiseaseData.summary }}
+                </p>
+                <p v-else class="text-muted fs-5">Not Available</p>
+              </div>
+            </td>
+          </tr>
           <tr id="allelic-requirement-section" class="align-middle">
             <td class="w-25 text-end">
               <h5>
@@ -1657,6 +1667,17 @@ main > nav {
 
 #record-content-div {
   width: 82%;
+}
+
+.record-summary-callout {
+  background: #f7f9fb;
+  border-left: 4px solid #9bb7d3;
+  border-radius: 0.25rem;
+  padding: 0.9rem 1rem;
+}
+
+.record-summary-callout p {
+  line-height: 1.4;
 }
 
 h5,
