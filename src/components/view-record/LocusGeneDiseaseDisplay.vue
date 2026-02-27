@@ -1671,7 +1671,6 @@ main > nav {
 
 .record-summary-callout {
   background: #f7f9fb;
-  border-left: 4px solid #9bb7d3;
   border-radius: 0.25rem;
   padding: 0.9rem 1rem;
 }
