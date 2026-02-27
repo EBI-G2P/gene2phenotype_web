@@ -207,13 +207,16 @@ export default {
       </div>
       <table class="table table-borderless my-3">
         <tbody>
-          <tr id="record-summary-section" class="pb-3">
+          <tr
+            id="record-summary-section"
+            class="pb-3"
+            v-if="locusGeneDiseaseData.summary"
+          >
             <td colspan="2">
               <div class="record-summary-callout mb-3">
-                <p v-if="locusGeneDiseaseData.summary" class="fs-5">
+                <p class="fs-5">
                   {{ locusGeneDiseaseData.summary }}
                 </p>
-                <p v-else class="text-muted fs-5">Not Available</p>
               </div>
             </td>
           </tr>
