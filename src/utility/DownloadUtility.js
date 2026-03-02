@@ -562,6 +562,13 @@ const createDocumentDefinition = (
         style: "reviewStatusText",
       }
     : reviewStatus;
+  // Record summary section (intro paragraph, no header)
+  const recordSummaryObj = locusGeneDiseaseData.summary
+    ? {
+        text: locusGeneDiseaseData.summary,
+        style: "recordSummaryText",
+      }
+    : "";
   // Allelic requirement section
   const allelicRequirementHeaderObj = createSubHeader("Allelic Requirement");
   const allelicRequirementObj = locusGeneDiseaseData.genotype
@@ -733,6 +740,7 @@ const createDocumentDefinition = (
       diseaseNameObj,
       confidenceObj,
       reviewStatusObj,
+      recordSummaryObj,
       "\n",
       allelicRequirementHeaderObj,
       allelicRequirementObj,
@@ -849,6 +857,11 @@ const createDocumentDefinition = (
         color: "white",
         background: "#ffc107",
         marginTop: 5,
+      },
+      recordSummaryText: {
+        fontSize: 13,
+        marginTop: 6,
+        marginBottom: 8,
       },
     },
   };
