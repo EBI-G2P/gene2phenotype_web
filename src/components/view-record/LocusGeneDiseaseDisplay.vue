@@ -1672,13 +1672,13 @@ main > nav {
   width: 82%;
 }
 
-.record-summary-callout {
+.record-summary-div {
   background: #f7f9fb;
   border-radius: 0.25rem;
   padding: 0.9rem 1rem;
 }
 
-.record-summary-callout p {
+.record-summary-div p {
   line-height: 1.4;
 }
 
