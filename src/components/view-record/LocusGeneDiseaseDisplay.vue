@@ -204,22 +204,17 @@ export default {
             </div>
           </div>
         </div>
-      </div>
-      <table class="table table-borderless my-3">
-        <tbody>
-          <tr
-            id="record-summary-section"
-            class="pb-3"
-            v-if="locusGeneDiseaseData.summary"
-          >
-            <td colspan="2">
-              <div class="record-summary-callout mb-3">
-                <p class="fs-5">
-                  {{ locusGeneDiseaseData.summary }}
-                </p>
-              </div>
-            </td>
-          </tr>
+     </div>
+     <div
+        v-if="locusGeneDiseaseData.summary"
+        class="record-summary-div my-3"
+     >
+       <p>
+         {{ locusGeneDiseaseData.summary }}
+       </p>
+     </div>
+     <table class="table table-borderless my-3">
+       <tbody>
           <tr id="allelic-requirement-section" class="align-middle">
             <td class="w-25 text-end">
               <h5>
