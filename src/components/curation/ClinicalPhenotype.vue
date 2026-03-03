@@ -25,7 +25,7 @@ export default {
       // IF the selected term is not already present in hpo_terms list THEN add it
       if (
         !this.clinicalPhenotype[pmid].hpo_terms.find(
-          (item) => item.accession === term.id
+          (item) => item.accession === term.id,
         )
       ) {
         let updatedClinicalPhenotype = { ...this.clinicalPhenotype };
@@ -223,11 +223,14 @@ export default {
               </div>
             </div>
           </div>
-          <div v-else class="row g-3 px-3 py-3">
-            <p>
-              <i class="bi bi-info-circle"></i> Please enter Publication(s) to
-              fill this section.
-            </p>
+          <div v-else class="row g-3 p-3">
+            <div class="col-12">
+              <div class="alert alert-warning mb-0" role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                Please enter at least one publication to complete the
+                <strong>Phenotypic Features</strong> section.
+              </div>
+            </div>
           </div>
         </div>
       </div>
