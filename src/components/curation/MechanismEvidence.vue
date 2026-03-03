@@ -57,10 +57,10 @@ export default {
 };
 </script>
 <template>
+  <div class="row g-3 px-3 pt-3">
+    <h5>Functional Studies</h5>
+  </div>
   <div v-if="isDisplayEvidenceForm">
-    <div class="row g-3 px-3 pt-3">
-      <h5>Functional Studies</h5>
-    </div>
     <div class="row g-3 px-3 mt-0">
       <div class="col-auto mt-0">
         <button
@@ -171,10 +171,13 @@ export default {
       </div>
     </div>
   </div>
-  <div class="row g-3 px-3 pt-3" v-else>
-    <p>
-      <i class="bi bi-info-circle"></i> Please enter Publication(s) to provide
-      information on functional studies.
-    </p>
+  <div v-else class="row g-3 p-3">
+    <div class="col-12">
+      <div class="alert alert-warning mb-0" role="alert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        Please enter at least one publication to complete the
+        <strong>Functional Studies</strong> section.
+      </div>
+    </div>
   </div>
 </template>

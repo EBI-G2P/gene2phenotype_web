@@ -328,7 +328,7 @@ export default {
                 </button>
               </div>
             </div>
-            <div class="row g-3 px-3 py-3">
+            <div class="row g-3 px-3 pt-3">
               <p class="mb-0">Categorisation</p>
               <div class="col-xl-6 col-12">
                 <table class="table table-bordered">
