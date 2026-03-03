@@ -4,7 +4,7 @@ import { VariantTypesAttribs } from "../../utility/CurationConstants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 export default {
   props: {
-    publicationsData: Object,
+    pmidList: Array,
     variantTypes: Object,
     currentVariantTypes: Array,
   },
@@ -15,7 +15,7 @@ export default {
       primaryType,
       secondaryType,
       key,
-      checked
+      checked,
     ) {
       let updatedVariantTypes = { ...this.variantTypes };
       if (checked) {
@@ -30,7 +30,7 @@ export default {
       secondaryType,
       key,
       checked,
-      value
+      value,
     ) {
       let updatedVariantTypes = { ...this.variantTypes };
       if (checked) {
@@ -38,7 +38,7 @@ export default {
       } else {
         updatedVariantTypes[primaryType][secondaryType][key].splice(
           updatedVariantTypes[primaryType][secondaryType][key].indexOf(value),
-          1
+          1,
         );
       }
       this.$emit("updateVariantTypes", updatedVariantTypes);
@@ -125,26 +125,26 @@ export default {
                   <td>
                     <span v-if="item.publications?.length > 0">
                       <span
-                        v-for="(publicationItem, index) in item.publications"
-                        :key="publicationItem"
+                        v-for="(pmid, index) in item.publications"
+                        :key="pmid"
                       >
                         <span v-if="index < item.publications.length - 1">
                           <a
-                            :href="EUROPE_PMC_URL + publicationItem"
+                            :href="EUROPE_PMC_URL + pmid"
                             style="text-decoration: none"
                             target="_blank"
                           >
-                            {{ publicationItem }}
+                            {{ pmid }}
                           </a>
                           ,
                         </span>
                         <a
                           v-else
-                          :href="EUROPE_PMC_URL + publicationItem"
+                          :href="EUROPE_PMC_URL + pmid"
                           style="text-decoration: none"
                           target="_blank"
                         >
-                          {{ publicationItem }}
+                          {{ pmid }}
                         </a>
                       </span>
                     </span>
@@ -166,7 +166,7 @@ export default {
         </div>
       </div>
     </div>
-    <p v-else>
+    <p v-else class="mb-0">
       <i class="bi bi-info-circle"></i> No Variant Types available for this
       record.
     </p>
@@ -176,13 +176,12 @@ export default {
         <!-- sticky header is collapsing the borders so a border styling fix is made in the style section below -->
         <thead class="sticky-top">
           <tr>
-            <th style="width: 20%">Types</th>
-            <th style="width: 15%"></th>
-            <th style="width: 10%">De Novo</th>
-            <th style="width: 10%">Inherited</th>
-            <th style="width: 10%">Unknown Inheritance</th>
-            <th style="width: 15%">Supporting Papers</th>
-            <th style="width: 35%">
+            <th>Types</th>
+            <th>De Novo</th>
+            <th>Inherited</th>
+            <th>Unknown Inheritance</th>
+            <th>Supporting Papers</th>
+            <th>
               Comment (Private
               <ToolTip
                 toolTipText="This comment will only be visible to logged-in users"
@@ -201,117 +200,83 @@ export default {
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
             </tr>
             <tr v-for="secondaryTypeItem in item.secondaryType">
               <td>{{ secondaryTypeItem.labelText }}</td>
-              <td>
-                <div
-                  class="form-check"
-                  v-if="secondaryTypeItem.displayNmdEscape"
-                >
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-nmd_escape`"
-                    :checked="
-                      variantTypes[item.primaryType.inputKey][
-                        secondaryTypeItem.inputKey
-                      ].nmd_escape
-                    "
-                    @input="
-                      variantTypesSingleCheckboxHandler(
-                        item.primaryType.inputKey,
-                        secondaryTypeItem.inputKey,
-                        'nmd_escape',
-                        $event.target.checked
-                      )
-                    "
-                  />
-                  <label
-                    class="form-check-label"
-                    :for="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-nmd_escape`"
-                  >
-                    NMD_escape
-                  </label>
-                </div>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  class="form-check-input custom-checkbox-border-color"
+                  :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-de_novo`"
+                  :checked="
+                    variantTypes[item.primaryType.inputKey][
+                      secondaryTypeItem.inputKey
+                    ].de_novo
+                  "
+                  @input="
+                    variantTypesSingleCheckboxHandler(
+                      item.primaryType.inputKey,
+                      secondaryTypeItem.inputKey,
+                      'de_novo',
+                      $event.target.checked,
+                    )
+                  "
+                />
               </td>
-              <td>
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-de_novo`"
-                    :checked="
-                      variantTypes[item.primaryType.inputKey][
-                        secondaryTypeItem.inputKey
-                      ].de_novo
-                    "
-                    @input="
-                      variantTypesSingleCheckboxHandler(
-                        item.primaryType.inputKey,
-                        secondaryTypeItem.inputKey,
-                        'de_novo',
-                        $event.target.checked
-                      )
-                    "
-                  />
-                </div>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  class="form-check-input custom-checkbox-border-color"
+                  :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-inherited`"
+                  :checked="
+                    variantTypes[item.primaryType.inputKey][
+                      secondaryTypeItem.inputKey
+                    ].inherited
+                  "
+                  @input="
+                    variantTypesSingleCheckboxHandler(
+                      item.primaryType.inputKey,
+                      secondaryTypeItem.inputKey,
+                      'inherited',
+                      $event.target.checked,
+                    )
+                  "
+                />
               </td>
-              <td>
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-inherited`"
-                    :checked="
-                      variantTypes[item.primaryType.inputKey][
-                        secondaryTypeItem.inputKey
-                      ].inherited
-                    "
-                    @input="
-                      variantTypesSingleCheckboxHandler(
-                        item.primaryType.inputKey,
-                        secondaryTypeItem.inputKey,
-                        'inherited',
-                        $event.target.checked
-                      )
-                    "
-                  />
-                </div>
-              </td>
-              <td>
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-unknown_inheritance`"
-                    :checked="
-                      variantTypes[item.primaryType.inputKey][
-                        secondaryTypeItem.inputKey
-                      ].unknown_inheritance
-                    "
-                    @input="
-                      variantTypesSingleCheckboxHandler(
-                        item.primaryType.inputKey,
-                        secondaryTypeItem.inputKey,
-                        'unknown_inheritance',
-                        $event.target.checked
-                      )
-                    "
-                  />
-                </div>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  class="form-check-input custom-checkbox-border-color"
+                  :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-unknown_inheritance`"
+                  :checked="
+                    variantTypes[item.primaryType.inputKey][
+                      secondaryTypeItem.inputKey
+                    ].unknown_inheritance
+                  "
+                  @input="
+                    variantTypesSingleCheckboxHandler(
+                      item.primaryType.inputKey,
+                      secondaryTypeItem.inputKey,
+                      'unknown_inheritance',
+                      $event.target.checked,
+                    )
+                  "
+                />
               </td>
               <td>
                 <div
-                  class="form-check"
-                  v-for="publicationItem in publicationsData"
+                  v-for="pmid in pmidList"
+                  :key="pmid"
+                  class="form-check ms-2"
                 >
                   <input
-                    class="form-check-input"
+                    class="form-check-input custom-checkbox-border-color"
                     type="checkbox"
-                    :id="`input-${publicationItem}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
+                    :id="`input-${pmid}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
                     :checked="
                       variantTypes[item.primaryType.inputKey][
                         secondaryTypeItem.inputKey
-                      ].supporting_papers.includes(publicationItem)
+                      ].supporting_papers.includes(pmid)
                     "
                     @input="
                       variantTypesMultiCheckboxHandler(
@@ -319,15 +284,15 @@ export default {
                         secondaryTypeItem.inputKey,
                         'supporting_papers',
                         $event.target.checked,
-                        publicationItem
+                        pmid,
                       )
                     "
                   />
                   <label
                     class="form-check-label"
-                    :for="`input-${publicationItem}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
+                    :for="`input-${pmid}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
                   >
-                    {{ publicationItem }}
+                    {{ pmid }}
                   </label>
                 </div>
               </td>
@@ -346,7 +311,7 @@ export default {
                       item.primaryType.inputKey,
                       secondaryTypeItem.inputKey,
                       'comment',
-                      $event.target.value
+                      $event.target.value,
                     )
                   "
                 >
@@ -372,6 +337,8 @@ table th {
   border-top: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
+  /* Keep header text on one line */
+  white-space: nowrap;
 }
 
 table td {
@@ -386,4 +353,8 @@ table td:first-child {
   border-left: 1px solid #dee2e6;
 }
 /* Border styling fix for sticky header - END */
+
+.custom-checkbox-border-color {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
 </style>

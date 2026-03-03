@@ -37,7 +37,6 @@ export const getInitialInputForNewCuration = () => {
     variantTypesObj[item.primaryType.inputKey] = {};
     for (const secondaryTypeObj of item.secondaryType) {
       variantTypesObj[item.primaryType.inputKey][secondaryTypeObj.inputKey] = {
-        nmd_escape: false,
         de_novo: false,
         inherited: false,
         unknown_inheritance: false,
@@ -123,7 +122,7 @@ export const updateInputWithRemovedPublications = (input, removedPmidList) => {
           .supporting_papers;
       // filter supporting papers by removing pmids
       const filteredSupportingPapers = supportingPapers.filter(
-        (supportingPaper) => !removedPmidList.includes(supportingPaper)
+        (supportingPaper) => !removedPmidList.includes(supportingPaper),
       );
       updatedInput.variant_types[primaryTypeKey][
         secondaryTypeKey
@@ -151,7 +150,7 @@ const convertVariantConsequencesArrayToObject = (variantConsequencesArray) => {
 };
 
 const convertMechanismSynopsisArrayToObject = (
-  mechanismSynopsisPreviousInput
+  mechanismSynopsisPreviousInput,
 ) => {
   // convert mechanism synopsis from array of objects to object
   let mechanismSynopsisObj = {};
@@ -217,7 +216,7 @@ const convertMechanismSynopsisArrayToObject = (
 
 export const updateHpoTermsInputHelperWithNewPublicationsData = (
   hpoTermsInputHelper,
-  pmidList
+  pmidList,
 ) => {
   let updatedHpoTermsInputHelper = { ...hpoTermsInputHelper };
   pmidList.forEach((pmid) => {
@@ -233,7 +232,7 @@ export const updateHpoTermsInputHelperWithNewPublicationsData = (
 
 export const updateHpoTermsInputHelperWithRemovedPublications = (
   hpoTermsInputHelper,
-  removedPmidList
+  removedPmidList,
 ) => {
   let updatedHpoTermsInputHelper = { ...hpoTermsInputHelper };
   removedPmidList.forEach((pmid) => {
@@ -248,7 +247,7 @@ export const prepareInputForDataSubmission = (input) => {
   // convert publications from object to array of objects and remove some keys and trim some key values
   let publicationsArray = [];
   for (const [pmidKey, valueObj] of Object.entries(
-    preparedInput.publications
+    preparedInput.publications,
   )) {
     let publicationObj = { pmid: pmidKey };
     const keysToTrimValues = ["ancestries", "comment"];
@@ -288,11 +287,11 @@ export const prepareInputForDataSubmission = (input) => {
   // convert mechanism evidence from object to array of objects and include evidence that have non empty evidence types
   let mechanismEvidenceArray = [];
   for (const [publicationPmid, valueObj] of Object.entries(
-    preparedInput.mechanism_evidence
+    preparedInput.mechanism_evidence,
   )) {
     let evidenceTypesArray = [];
     for (const [primaryType, secondaryTypesArray] of Object.entries(
-      valueObj.evidence_types
+      valueObj.evidence_types,
     )) {
       if (secondaryTypesArray.length > 0) {
         let evidenceTypeObj = {
@@ -317,15 +316,14 @@ export const prepareInputForDataSubmission = (input) => {
   // convert variant types from object to array of objects and include variant types that have any non empty field data
   let variantTypesArray = [];
   for (const [primaryType, primaryTypeValueObj] of Object.entries(
-    preparedInput.variant_types
+    preparedInput.variant_types,
   )) {
     for (const [secondaryType, secondaryTypeValueObj] of Object.entries(
-      primaryTypeValueObj
+      primaryTypeValueObj,
     )) {
       if (
         secondaryTypeValueObj.de_novo ||
         secondaryTypeValueObj.inherited ||
-        secondaryTypeValueObj.nmd_escape ||
         secondaryTypeValueObj.unknown_inheritance ||
         secondaryTypeValueObj.comment.trim() !== "" ||
         secondaryTypeValueObj.supporting_papers.length > 0
@@ -345,7 +343,7 @@ export const prepareInputForDataSubmission = (input) => {
   // convert variant descriptions from object to array of objects and include variant descriptions that have non empty description
   let variantDescriptionsArray = [];
   for (const [pmidKey, valueObj] of Object.entries(
-    preparedInput.variant_descriptions
+    preparedInput.variant_descriptions,
   )) {
     if (valueObj.description.trim() !== "") {
       let variantDescriptionObj = {
@@ -361,7 +359,7 @@ export const prepareInputForDataSubmission = (input) => {
   // convert variant consequences from object to array of objects and include variant consequence that have non empty support
   let variantConsequencesArray = [];
   for (const [key, value] of Object.entries(
-    preparedInput.variant_consequences
+    preparedInput.variant_consequences,
   )) {
     if (value !== "") {
       let variantConsequencesObj = {
@@ -488,12 +486,11 @@ export const prepareInputForUpdating = (previousInput) => {
   });
 
   let variantTypesObj = {};
-  let variantTypes = clonedpreviousInput.variant_types;
+  // Initialise variantTypesObj with default values
   for (const item of VariantTypesAttribs) {
     variantTypesObj[item.primaryType.inputKey] = {};
     for (const secondaryTypeObj of item.secondaryType) {
       variantTypesObj[item.primaryType.inputKey][secondaryTypeObj.inputKey] = {
-        nmd_escape: false,
         de_novo: false,
         inherited: false,
         unknown_inheritance: false,
@@ -503,27 +500,25 @@ export const prepareInputForUpdating = (previousInput) => {
     }
   }
 
+  let variantTypes = clonedpreviousInput.variant_types;
+  // Update variantTypesObj with previous input values
   variantTypes.forEach((variantType) => {
     const {
-      comment,
-      de_novo,
-      inherited,
-      nmd_escape,
       primary_type,
       secondary_type,
-      supporting_papers,
+      de_novo,
+      inherited,
       unknown_inheritance,
+      supporting_papers,
+      comment,
     } = variantType;
-
-    // Ensure the primary_type key exists
     if (variantTypesObj[primary_type][secondary_type]) {
       variantTypesObj[primary_type][secondary_type] = {
-        comment,
         de_novo,
         inherited,
-        nmd_escape,
-        supporting_papers,
         unknown_inheritance,
+        supporting_papers,
+        comment,
       };
     }
   });
@@ -533,7 +528,8 @@ export const prepareInputForUpdating = (previousInput) => {
     support: clonedpreviousInput.molecular_mechanism.support,
   };
 
-  // if MechanismNameObj.name is 'undetermined' and MechanismNameObj.support is 'inferred' then set MechanismNameObj.support to blank
+  // IF MechanismNameObj.name is 'undetermined' and MechanismNameObj.support is 'inferred'
+  // THEN set MechanismNameObj.support to blank
   if (
     MechanismNameObj.name === "undetermined" &&
     MechanismNameObj.support === "inferred"
@@ -572,7 +568,7 @@ export const prepareInputForUpdating = (previousInput) => {
           const { primary_type, secondary_type } = types;
           if (
             MechanismEvidenceObj[pmid].evidence_types.hasOwnProperty(
-              primary_type
+              primary_type,
             )
           ) {
             MechanismEvidenceObj[pmid].evidence_types[primary_type] =
@@ -587,7 +583,7 @@ export const prepareInputForUpdating = (previousInput) => {
   let prefixToRemove = `${clonedpreviousInput.locus}-related `;
   let diseaseName = clonedpreviousInput.disease.disease_name.replace(
     prefixToRemove,
-    ""
+    "",
   );
 
   return {
@@ -600,11 +596,11 @@ export const prepareInputForUpdating = (previousInput) => {
     variant_types: variantTypesObj,
     variant_descriptions: variantDescObj,
     variant_consequences: convertVariantConsequencesArrayToObject(
-      clonedpreviousInput.variant_consequences
+      clonedpreviousInput.variant_consequences,
     ),
     molecular_mechanism: MechanismNameObj,
     mechanism_synopsis: convertMechanismSynopsisArrayToObject(
-      clonedpreviousInput.mechanism_synopsis
+      clonedpreviousInput.mechanism_synopsis,
     ),
     mechanism_evidence: MechanismEvidenceObj,
     disease: {
@@ -630,7 +626,7 @@ export const getFamiliesInputErrorMsg = (families, affectedIndividuals) => {
 
 export const getAffectedIndividualsInputErrorMsg = (
   families,
-  affectedIndividuals
+  affectedIndividuals,
 ) => {
   if (families && !affectedIndividuals) {
     return "Affected individuals can not be empty or zero";
@@ -653,139 +649,97 @@ export const checkRecordWarnings = (
   confidence,
   publications,
   variant_consequences,
-  variant_types
+  variant_types,
 ) => {
   let recordWarnings = [];
   // IF "definitive" confidence is selected THEN there should be atleast 4 publications over 5 years time
   if (confidence === "definitive") {
     const currentYear = new Date().getFullYear();
     let filteredCount = Object.values(publications).filter(
-      (item) => currentYear - item.year >= 5
+      (item) => currentYear - item.year >= 5,
     ).length;
     if (filteredCount < 4) {
       recordWarnings.push(CURATION_WARNINGS["CONFIDENCE_WARNING"]);
     }
   }
-  // IF "altered_gene_product_level" variant consequence is selected
-  // THEN atleast one of the below variant types should be selected:
-  // "frameshift_variant", "stop_gained", "splice_donor_variant", "start_lost"
+  // Check variant_consequences vs variant_types selections
   if (variant_consequences["altered_gene_product_level"] !== "") {
-    if (
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["frameshift_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["stop_gained"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["splice_variants"]["splice_donor_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["other_variants"]["start_lost"],
-        false
-      )
-    ) {
+    const variantTypesToCheck = [
+      variant_types["protein_changing"]["frameshift_variant"],
+      variant_types["protein_changing"]["frameshift_variant_NMD_triggering"],
+      variant_types["protein_changing"]["stop_gained"],
+      variant_types["protein_changing"]["stop_gained_NMD_triggering"],
+      variant_types["splice_variants"]["splice_donor_variant"],
+      variant_types["splice_variants"]["splice_donor_variant_NMD_triggering"],
+      variant_types["other_variants"]["start_lost"],
+    ];
+    if (!isAnyVariantTypeSelected(variantTypesToCheck)) {
       recordWarnings.push(
-        CURATION_WARNINGS["ALTERED_GENE_PRODUCT_LEVEL_WARNING"]
+        CURATION_WARNINGS["ALTERED_GENE_PRODUCT_LEVEL_WARNING"],
       );
     }
   }
-  // IF "decreased_gene_product_level" variant consequence is selected
-  // THEN atleast one of the below variant types should be selected:
-  // "frameshift_variant", "stop_gained", "splice_donor_variant", "splice_acceptor_variant", "start_lost"
   if (variant_consequences["decreased_gene_product_level"] !== "") {
-    if (
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["frameshift_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["stop_gained"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["splice_variants"]["splice_donor_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["splice_variants"]["splice_acceptor_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["other_variants"]["start_lost"],
-        false
-      )
-    ) {
+    const variantTypesToCheck = [
+      variant_types["protein_changing"]["frameshift_variant"],
+      variant_types["protein_changing"]["frameshift_variant_NMD_triggering"],
+      variant_types["protein_changing"]["stop_gained"],
+      variant_types["protein_changing"]["stop_gained_NMD_triggering"],
+      variant_types["splice_variants"]["splice_donor_variant"],
+      variant_types["splice_variants"]["splice_donor_variant_NMD_triggering"],
+      variant_types["splice_variants"]["splice_acceptor_variant"],
+      variant_types["splice_variants"][
+        "splice_acceptor_variant_NMD_triggering"
+      ],
+      variant_types["other_variants"]["start_lost"],
+    ];
+    if (!isAnyVariantTypeSelected(variantTypesToCheck)) {
       recordWarnings.push(
-        CURATION_WARNINGS["DECREASED_GENE_PRODUCT_LEVEL_WARNING"]
+        CURATION_WARNINGS["DECREASED_GENE_PRODUCT_LEVEL_WARNING"],
       );
     }
   }
-  // IF "absent_gene_product" variant consequence is selected
-  // THEN atleast one of the below variant types should be selected:
-  // "frameshift_variant", "stop_gained"(with NMD), "splice_donor_variant", "start_lost"
   if (variant_consequences["absent_gene_product"] !== "") {
-    if (
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["frameshift_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["stop_gained"],
-        true
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["splice_variants"]["splice_donor_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["other_variants"]["start_lost"],
-        false
-      )
-    ) {
+    const variantTypesToCheck = [
+      variant_types["protein_changing"]["frameshift_variant"],
+      variant_types["protein_changing"]["frameshift_variant_NMD_triggering"],
+      variant_types["protein_changing"]["stop_gained"],
+      variant_types["protein_changing"]["stop_gained_NMD_triggering"],
+      variant_types["splice_variants"]["splice_donor_variant"],
+      variant_types["splice_variants"]["splice_donor_variant_NMD_triggering"],
+      variant_types["other_variants"]["start_lost"],
+    ];
+    if (!isAnyVariantTypeSelected(variantTypesToCheck)) {
       recordWarnings.push(CURATION_WARNINGS["ABSENT_GENE_PRODUCT_WARNING"]);
     }
   }
-  // IF "altered_gene_product_structure" variant consequence is selected
-  // THEN atleast one of the below variant types should be selected:
-  // "missense_variant", "inframe_insertion", "inframe_deletion", "stop_lost"
   if (variant_consequences["altered_gene_product_structure"] !== "") {
-    if (
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["missense_variant"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["inframe_insertion"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["protein_changing"]["inframe_deletion"],
-        false
-      ) &&
-      !isVariantTypeSelected(
-        variant_types["other_variants"]["stop_lost"],
-        false
-      )
-    ) {
+    const variantTypesToCheck = [
+      variant_types["protein_changing"]["missense_variant"],
+      variant_types["protein_changing"]["inframe_insertion"],
+      variant_types["protein_changing"]["inframe_deletion"],
+      variant_types["other_variants"]["stop_lost"],
+      variant_types["protein_changing"]["frameshift_variant_NMD_escaping"],
+      variant_types["protein_changing"]["stop_gained_NMD_escaping"],
+      variant_types["splice_variants"]["splice_acceptor_variant_NMD_escaping"],
+      variant_types["splice_variants"]["splice_donor_variant_NMD_escaping"],
+    ];
+    if (!isAnyVariantTypeSelected(variantTypesToCheck)) {
       recordWarnings.push(
-        CURATION_WARNINGS["ALTERED_GENE_PRODUCT_STRUCTURE_WARNING"]
+        CURATION_WARNINGS["ALTERED_GENE_PRODUCT_STRUCTURE_WARNING"],
       );
     }
   }
   return recordWarnings;
 };
 
-const isVariantTypeSelected = (variantTypeObj, isNmdEscape) => {
-  return (
-    variantTypeObj.nmd_escape === isNmdEscape &&
-    (variantTypeObj.de_novo ||
-      variantTypeObj.inherited ||
-      variantTypeObj.unknown_inheritance ||
-      variantTypeObj.comment.trim() !== "" ||
-      variantTypeObj.supporting_papers.length > 0)
+const isAnyVariantTypeSelected = (variantTypesList) => {
+  return variantTypesList.some(
+    (item) =>
+      item.de_novo ||
+      item.inherited ||
+      item.unknown_inheritance ||
+      item.comment.trim() !== "" ||
+      item.supporting_papers.length > 0,
   );
 };

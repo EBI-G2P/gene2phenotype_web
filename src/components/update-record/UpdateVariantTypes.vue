@@ -18,7 +18,7 @@ export default {
     return {
       variantTypes: this.getInitialVariantTypes(),
       currentPublicationPMIDs: this.getCurrentPublicationPMIDs(
-        this.currentPublications
+        this.currentPublications,
       ),
       isUpdateApiCallLoading: false,
       updateVariantTypeErrorMsg: null,
@@ -38,7 +38,6 @@ export default {
           variantTypesObj[item.primaryType.inputKey][
             secondaryTypeObj.inputKey
           ] = {
-            nmd_escape: false,
             de_novo: false,
             inherited: false,
             unknown_inheritance: false,
@@ -69,7 +68,7 @@ export default {
       api
         .post(
           UPDATE_VARIANT_TYPE_URL.replace(":stableid", this.stableId),
-          requestBody
+          requestBody,
         )
         .then((response) => {
           this.isUpdateVariantTypeSuccess = true;
@@ -80,7 +79,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to update variant types. Please try again later.",
-            "Unable to update variant types."
+            "Unable to update variant types.",
           );
         })
         .finally(() => {
@@ -91,15 +90,14 @@ export default {
       // convert variant types from object to array of objects and include variant types that have any non empty field data
       let variantTypesArray = [];
       for (const [primaryType, primaryTypeValueObj] of Object.entries(
-        this.variantTypes
+        this.variantTypes,
       )) {
         for (const [secondaryType, secondaryTypeValueObj] of Object.entries(
-          primaryTypeValueObj
+          primaryTypeValueObj,
         )) {
           if (
             secondaryTypeValueObj.de_novo ||
             secondaryTypeValueObj.inherited ||
-            secondaryTypeValueObj.nmd_escape ||
             secondaryTypeValueObj.unknown_inheritance ||
             secondaryTypeValueObj.comment.trim() !== "" ||
             secondaryTypeValueObj.supporting_papers.length > 0
@@ -237,30 +235,28 @@ export default {
                             <td>
                               <span v-if="item.publications?.length > 0">
                                 <span
-                                  v-for="(
-                                    publicationItem, index
-                                  ) in item.publications"
-                                  :key="publicationItem"
+                                  v-for="(pmid, index) in item.publications"
+                                  :key="pmid"
                                 >
                                   <span
                                     v-if="index < item.publications.length - 1"
                                   >
                                     <a
-                                      :href="EUROPE_PMC_URL + publicationItem"
+                                      :href="EUROPE_PMC_URL + pmid"
                                       style="text-decoration: none"
                                       target="_blank"
                                     >
-                                      {{ publicationItem }}
+                                      {{ pmid }}
                                     </a>
                                     ,
                                   </span>
                                   <a
                                     v-else
-                                    :href="EUROPE_PMC_URL + publicationItem"
+                                    :href="EUROPE_PMC_URL + pmid"
                                     style="text-decoration: none"
                                     target="_blank"
                                   >
-                                    {{ publicationItem }}
+                                    {{ pmid }}
                                   </a>
                                 </span>
                               </span>
@@ -297,13 +293,12 @@ export default {
                   <!-- sticky header is collapsing the borders so a border styling fix is made in the style section below -->
                   <thead class="sticky-top">
                     <tr>
-                      <th style="width: 20%">Types</th>
-                      <th style="width: 15%"></th>
-                      <th style="width: 10%">De Novo</th>
-                      <th style="width: 10%">Inherited</th>
-                      <th style="width: 10%">Unknown Inheritance</th>
-                      <th style="width: 15%">Supporting Papers</th>
-                      <th style="width: 35%">
+                      <th>Types</th>
+                      <th>De Novo</th>
+                      <th>Inherited</th>
+                      <th>Unknown Inheritance</th>
+                      <th>Supporting Papers</th>
+                      <th>
                         Comment (Private
                         <ToolTip
                           toolTipText="This comment will only be visible to logged-in users"
@@ -322,79 +317,53 @@ export default {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
                       </tr>
                       <tr v-for="secondaryTypeItem in item.secondaryType">
                         <td>{{ secondaryTypeItem.labelText }}</td>
-                        <td>
-                          <div
-                            class="form-check"
-                            v-if="secondaryTypeItem.displayNmdEscape"
-                          >
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-nmd_escape`"
-                              v-model="
-                                variantTypes[item.primaryType.inputKey][
-                                  secondaryTypeItem.inputKey
-                                ].nmd_escape
-                              "
-                            />
-                            <label
-                              class="form-check-label"
-                              :for="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-nmd_escape`"
-                            >
-                              NMD_escape
-                            </label>
-                          </div>
+                        <td class="text-center">
+                          <input
+                            type="checkbox"
+                            class="form-check-input custom-checkbox-border-color"
+                            :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-de_novo`"
+                            v-model="
+                              variantTypes[item.primaryType.inputKey][
+                                secondaryTypeItem.inputKey
+                              ].de_novo
+                            "
+                          />
                         </td>
-                        <td>
-                          <div class="form-check">
-                            <input
-                              type="checkbox"
-                              :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-de_novo`"
-                              v-model="
-                                variantTypes[item.primaryType.inputKey][
-                                  secondaryTypeItem.inputKey
-                                ].de_novo
-                              "
-                            />
-                          </div>
+                        <td class="text-center">
+                          <input
+                            type="checkbox"
+                            class="form-check-input custom-checkbox-border-color"
+                            :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-inherited`"
+                            v-model="
+                              variantTypes[item.primaryType.inputKey][
+                                secondaryTypeItem.inputKey
+                              ].inherited
+                            "
+                          />
                         </td>
-                        <td>
-                          <div class="form-check">
-                            <input
-                              type="checkbox"
-                              :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-inherited`"
-                              v-model="
-                                variantTypes[item.primaryType.inputKey][
-                                  secondaryTypeItem.inputKey
-                                ].inherited
-                              "
-                            />
-                          </div>
-                        </td>
-                        <td>
-                          <div class="form-check">
-                            <input
-                              type="checkbox"
-                              :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-unknown_inheritance`"
-                              v-model="
-                                variantTypes[item.primaryType.inputKey][
-                                  secondaryTypeItem.inputKey
-                                ].unknown_inheritance
-                              "
-                            />
-                          </div>
+                        <td class="text-center">
+                          <input
+                            type="checkbox"
+                            class="form-check-input custom-checkbox-border-color"
+                            :id="`input-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-unknown_inheritance`"
+                            v-model="
+                              variantTypes[item.primaryType.inputKey][
+                                secondaryTypeItem.inputKey
+                              ].unknown_inheritance
+                            "
+                          />
                         </td>
                         <td>
                           <div
-                            class="form-check"
                             v-for="pmid in currentPublicationPMIDs"
+                            :key="pmid"
+                            class="form-check ms-2"
                           >
                             <input
-                              class="form-check-input"
+                              class="form-check-input custom-checkbox-border-color"
                               type="checkbox"
                               :id="`input-${pmid}-${item.primaryType.inputKey}-${secondaryTypeItem.inputKey}-supporting_papers`"
                               v-model="
@@ -467,6 +436,8 @@ table th {
   border-top: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
+  /* Keep header text on one line */
+  white-space: nowrap;
 }
 
 table td {
@@ -481,4 +452,8 @@ table td:first-child {
   border-left: 1px solid #dee2e6;
 }
 /* Border styling fix for sticky header - END */
+
+.custom-checkbox-border-color {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
 </style>

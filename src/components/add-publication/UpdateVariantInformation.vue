@@ -5,7 +5,7 @@ export default {
   props: {
     currentVariantDescription: Array,
     currentVariantTypes: Array,
-    publicationsData: Object,
+    pmidList: Array,
     variantTypes: Object,
     variantDescriptions: Object,
   },
@@ -44,7 +44,7 @@ export default {
         <div class="accordion-body">
           <form>
             <UpdateVariantTypes
-              :publicationsData="publicationsData"
+              :pmidList="pmidList"
               :variantTypes="variantTypes"
               @update-variant-types="
                 (updatedVariantTypes) =>
@@ -167,7 +167,7 @@ export default {
                       @input="
                         variantDescriptionsInputHandler(
                           pmid,
-                          $event.target.value
+                          $event.target.value,
                         )
                       "
                       placeholder="Eg. ENST00000641515:c.4A>C"

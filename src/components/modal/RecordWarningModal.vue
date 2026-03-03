@@ -34,7 +34,7 @@ export default {
               proceed?
             </p>
             <ol class="mx-3">
-              <li v-for="text in recordWarnings" :key="text">
+              <li v-for="text in recordWarnings" :key="text" class="py-1">
                 {{ text }}
               </li>
             </ol>
