@@ -2,7 +2,7 @@ import { VariantTypesAttribs } from "./CurationConstants.js";
 import cloneDeep from "lodash/cloneDeep";
 
 export const getInitialInputForAddingNewPublicationData = (
-  locusGeneDiseaseData
+  locusGeneDiseaseData,
 ) => {
   const clonedLocusGeneDiseaseData = cloneDeep(locusGeneDiseaseData);
   const currentMechanism = clonedLocusGeneDiseaseData?.molecular_mechanism;
@@ -28,7 +28,6 @@ export const getInitialInputForAddingNewPublicationData = (
     variantTypesObj[item.primaryType.inputKey] = {};
     for (const secondaryTypeObj of item.secondaryType) {
       variantTypesObj[item.primaryType.inputKey][secondaryTypeObj.inputKey] = {
-        nmd_escape: false,
         de_novo: false,
         inherited: false,
         unknown_inheritance: false,
@@ -44,7 +43,7 @@ export const getInitialInputForAddingNewPublicationData = (
 
 export const prepareInputForNewPublicationDataSubmission = (
   input,
-  locusGeneDiseaseData
+  locusGeneDiseaseData,
 ) => {
   let clonedInput = cloneDeep(input);
   let preparedInput = {};
@@ -86,11 +85,11 @@ export const prepareInputForNewPublicationDataSubmission = (
   // convert mechanism evidence from object to array of objects and include evidence that have non empty evidence types
   let mechanismEvidenceArray = [];
   for (const [publicationPmid, valueObj] of Object.entries(
-    clonedInput.mechanism_evidence
+    clonedInput.mechanism_evidence,
   )) {
     let evidenceTypesArray = [];
     for (const [primaryType, secondaryTypesArray] of Object.entries(
-      valueObj.evidence_types
+      valueObj.evidence_types,
     )) {
       if (secondaryTypesArray.length > 0) {
         let evidenceTypeObj = {
@@ -137,15 +136,14 @@ export const prepareInputForNewPublicationDataSubmission = (
   // convert variant types from object to array of objects and include variant types that have any non empty field data
   let variantTypesArray = [];
   for (const [primaryType, primaryTypeValueObj] of Object.entries(
-    clonedInput.variant_types
+    clonedInput.variant_types,
   )) {
     for (const [secondaryType, secondaryTypeValueObj] of Object.entries(
-      primaryTypeValueObj
+      primaryTypeValueObj,
     )) {
       if (
         secondaryTypeValueObj.de_novo ||
         secondaryTypeValueObj.inherited ||
-        secondaryTypeValueObj.nmd_escape ||
         secondaryTypeValueObj.unknown_inheritance ||
         secondaryTypeValueObj.comment.trim() !== "" ||
         secondaryTypeValueObj.supporting_papers.length > 0
@@ -168,7 +166,7 @@ export const prepareInputForNewPublicationDataSubmission = (
   // convert variant descriptions from object to array of objects and include variant descriptions that have non empty description
   let variantDescriptionsArray = [];
   for (const [pmidKey, valueObj] of Object.entries(
-    clonedInput.variant_descriptions
+    clonedInput.variant_descriptions,
   )) {
     if (valueObj.description.trim() !== "") {
       let variantDescriptionObj = {

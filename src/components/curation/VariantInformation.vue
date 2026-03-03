@@ -3,7 +3,7 @@ import VariantTypes from "./VariantTypes.vue";
 import VariantConsequences from "./VariantConsequences.vue";
 export default {
   props: {
-    publicationsData: Object,
+    pmidList: Array,
     variantTypes: Object,
     variantDescriptions: Object,
     variantConsequences: Object,
@@ -42,23 +42,22 @@ export default {
         <div class="accordion-body">
           <form>
             <VariantTypes
-              :publicationsData="publicationsData"
+              :pmidList="pmidList"
               :variantTypes="variantTypes"
               @update-variant-types="
                 (updatedVariantTypes) =>
                   $emit('updateVariantTypes', updatedVariantTypes)
               "
             />
-
+            <div class="row g-3 px-3 pt-3">
+              <div class="col-12"><h5>Variant Description</h5></div>
+            </div>
             <div
               v-if="
                 variantDescriptions &&
                 Object.keys(variantDescriptions).length > 0
               "
             >
-              <div class="row g-3 px-3 pt-3">
-                <div class="col-12"><h5>Variant Description</h5></div>
-              </div>
               <div
                 class="row g-3 px-3 py-3"
                 v-for="pmid in Object.keys(variantDescriptions)"
@@ -101,13 +100,13 @@ export default {
             </div>
             <div v-else class="row g-3 px-3 pt-3">
               <div class="col-12">
-                <p>
-                  <i class="bi bi-info-circle"></i> Please enter Publication(s)
-                  to fill Variant Description section.
-                </p>
+                <div class="alert alert-warning mb-0" role="alert">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  Please enter at least one publication to complete the
+                  <strong>Variant Description</strong> section.
+                </div>
               </div>
             </div>
-
             <VariantConsequences
               :variantConsequences="variantConsequences"
               @update-variant-consequences="

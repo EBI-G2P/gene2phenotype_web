@@ -47,7 +47,7 @@ export default {
       isUpdateDataSuccess: false,
       updateDataSuccessMsg: null,
       input: getInitialInputForAddingNewPublicationData(
-        this.locusGeneDiseaseData
+        this.locusGeneDiseaseData,
       ),
       hpoTermsInputHelper: {},
       publicationsApiErrorMsg: null,
@@ -64,12 +64,12 @@ export default {
       this.isUpdateApiCallLoading = true;
       const requestBody = prepareInputForNewPublicationDataSubmission(
         this.input,
-        this.locusGeneDiseaseData
+        this.locusGeneDiseaseData,
       );
       api
         .post(
           ADD_PUBLICATION_URL.replace(":stableid", this.stableId),
-          requestBody
+          requestBody,
         )
         .then((response) => {
           this.isUpdateDataSuccess = true;
@@ -80,7 +80,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to add new publications. Please try again later.",
-            "Unable to add new publications."
+            "Unable to add new publications.",
           );
         })
         .finally(() => {
@@ -110,25 +110,25 @@ export default {
 
       // check for duplicate input publications
       const duplicatePmidsList = inputPmidsList.filter(
-        (item, index) => inputPmidsList.indexOf(item) !== index
+        (item, index) => inputPmidsList.indexOf(item) !== index,
       );
       if (duplicatePmidsList.length > 0) {
         this.inputPmidsInvalidMsg = `Duplicate publication(s): ${duplicatePmidsList.join(
-          ", "
+          ", ",
         )}`;
         return false;
       }
 
       // check if any input publication exists in current publications
       const currentPmidsList = this.locusGeneDiseaseData.publications.map(
-        (item) => item.publication.pmid.toString()
+        (item) => item.publication.pmid.toString(),
       );
       const pmidsAlreadyExistingList = inputPmidsList.filter((item) =>
-        currentPmidsList.includes(item)
+        currentPmidsList.includes(item),
       );
       if (pmidsAlreadyExistingList.length > 0) {
         this.inputPmidsInvalidMsg = `Publication(s) already exist(s): ${pmidsAlreadyExistingList.join(
-          ", "
+          ", ",
         )}`;
         return false;
       }
@@ -136,11 +136,11 @@ export default {
       // check if any input publication has already been added in new publications
       const addedPmidsList = Object.keys(this.input.publications);
       const pmidsAlreadyAddedList = inputPmidsList.filter((item) =>
-        addedPmidsList.includes(item)
+        addedPmidsList.includes(item),
       );
       if (pmidsAlreadyAddedList.length > 0) {
         this.inputPmidsInvalidMsg = `Publication(s) already added: ${pmidsAlreadyAddedList.join(
-          ", "
+          ", ",
         )}`;
         return false;
       }
@@ -151,12 +151,12 @@ export default {
     removePublication(removedPmidList) {
       this.input = updateInputWithRemovedPublications(
         this.input,
-        removedPmidList
+        removedPmidList,
       );
       this.hpoTermsInputHelper =
         updateHpoTermsInputHelperWithRemovedPublications(
           this.hpoTermsInputHelper,
-          removedPmidList
+          removedPmidList,
         );
     },
     fetchPublications() {
@@ -182,13 +182,13 @@ export default {
           if (publicationsData?.results) {
             this.input = updateInputWithNewPublicationsData(
               this.input,
-              publicationsData
+              publicationsData,
             );
             let pmidList = publicationsData.results.map((item) => item.pmid);
             this.hpoTermsInputHelper =
               updateHpoTermsInputHelperWithNewPublicationsData(
                 this.hpoTermsInputHelper,
-                pmidList
+                pmidList,
               );
             // clear inputPmids
             this.inputPmids = "";
@@ -199,7 +199,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to fetch publications. Please try again later.",
-            "Unable to fetch publications."
+            "Unable to fetch publications.",
           );
         })
         .finally(() => {
@@ -233,7 +233,7 @@ export default {
           this.hpoTermsInputHelper[pmid].HPOAPIerrormsg =
             fetchAndLogGeneralErrorMsg(
               error,
-              "Failed to fetch HPO data. Please try again later."
+              "Failed to fetch HPO data. Please try again later.",
             );
         })
         .finally(() => {
@@ -348,7 +348,7 @@ export default {
         :fetchAndSearchHPO="fetchAndSearchHPO"
       />
       <UpdateVariantInformation
-        :publicationsData="Object.keys(input.publications)"
+        :pmidList="Object.keys(input.publications)"
         :variantTypes="input.variant_types"
         @update-variant-types="
           (updatedVariantTypes) => (input.variant_types = updatedVariantTypes)

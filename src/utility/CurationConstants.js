@@ -7,27 +7,38 @@ export const VariantTypesAttribs = [
     },
     secondaryType: [
       {
-        displayNmdEscape: true,
         labelText: "frameshift_variant",
         inputKey: "frameshift_variant",
       },
       {
-        displayNmdEscape: true,
+        labelText: "frameshift_variant_NMD_escaping",
+        inputKey: "frameshift_variant_NMD_escaping",
+      },
+      {
+        labelText: "frameshift_variant_NMD_triggering",
+        inputKey: "frameshift_variant_NMD_triggering",
+      },
+      {
         labelText: "stop_gained",
         inputKey: "stop_gained",
       },
       {
-        displayNmdEscape: false,
+        labelText: "stop_gained_NMD_escaping",
+        inputKey: "stop_gained_NMD_escaping",
+      },
+      {
+        labelText: "stop_gained_NMD_triggering",
+        inputKey: "stop_gained_NMD_triggering",
+      },
+      {
         labelText: "missense_variant",
         inputKey: "missense_variant",
       },
       {
-        displayNmdEscape: false,
         labelText: "inframe_insertion",
         inputKey: "inframe_insertion",
       },
       {
-        displayNmdEscape: false,
         labelText: "inframe_deletion",
         inputKey: "inframe_deletion",
       },
@@ -40,19 +51,32 @@ export const VariantTypesAttribs = [
     },
     secondaryType: [
       {
-        displayNmdEscape: false,
         labelText: "splice_region_variant",
         inputKey: "splice_region_variant",
       },
       {
-        displayNmdEscape: true,
         labelText: "splice_acceptor_variant",
         inputKey: "splice_acceptor_variant",
       },
       {
-        displayNmdEscape: true,
+        labelText: "splice_acceptor_variant_NMD_escaping",
+        inputKey: "splice_acceptor_variant_NMD_escaping",
+      },
+      {
+        labelText: "splice_acceptor_variant_NMD_triggering",
+        inputKey: "splice_acceptor_variant_NMD_triggering",
+      },
+      {
         labelText: "splice_donor_variant",
         inputKey: "splice_donor_variant",
+      },
+      {
+        labelText: "splice_donor_variant_NMD_escaping",
+        inputKey: "splice_donor_variant_NMD_escaping",
+      },
+      {
+        labelText: "splice_donor_variant_NMD_triggering",
+        inputKey: "splice_donor_variant_NMD_triggering",
       },
     ],
   },
@@ -63,17 +87,14 @@ export const VariantTypesAttribs = [
     },
     secondaryType: [
       {
-        displayNmdEscape: false,
         labelText: "5_prime_UTR_variant",
         inputKey: "5_prime_UTR_variant",
       },
       {
-        displayNmdEscape: false,
         labelText: "3_prime_UTR_variant",
         inputKey: "3_prime_UTR_variant",
       },
       {
-        displayNmdEscape: false,
         labelText: "regulatory_region_variant",
         inputKey: "regulatory_region_variant",
       },
@@ -86,47 +107,38 @@ export const VariantTypesAttribs = [
     },
     secondaryType: [
       {
-        displayNmdEscape: false,
         labelText: "intergenic_variant",
         inputKey: "intergenic_variant",
       },
       {
-        displayNmdEscape: false,
         labelText: "intron_variant",
         inputKey: "intron_variant",
       },
       {
-        displayNmdEscape: false,
         labelText: "synonymous_variant",
         inputKey: "synonymous_variant",
       },
       {
-        displayNmdEscape: false,
         labelText: "stop_lost",
         inputKey: "stop_lost",
       },
       {
-        displayNmdEscape: false,
         labelText: "Whole/partial gene deletion",
         inputKey: "whole_partial_gene_deletion",
       },
       {
-        displayNmdEscape: false,
         labelText: "Whole/partial gene duplication",
         inputKey: "whole_partial_gene_duplication",
       },
       {
-        displayNmdEscape: false,
         labelText: "short_tandem_repeat_change",
         inputKey: "short_tandem_repeat_change",
       },
       {
-        displayNmdEscape: false,
         labelText: "start_lost",
         inputKey: "start_lost",
       },
       {
-        displayNmdEscape: false,
         labelText: "non_coding_transcript_variant",
         inputKey: "non_coding_transcript_variant",
       },
@@ -249,11 +261,11 @@ export const CURATION_WARNINGS = {
   CONFIDENCE_WARNING:
     "A record should only be given 'definitive' confidence status if it has been upheld over time - this usually means at least 4 publications over 5 years.",
   ALTERED_GENE_PRODUCT_LEVEL_WARNING:
-    "'Altered_gene_product_level' is selected without a matching variant type of 'splice_donor_variant', 'start_lost', 'frameshift_variant' or 'stop_gained'",
+    "'Altered_gene_product_level' is selected without a matching variant type of 'splice_donor_variant', 'splice_donor_variant_NMD_triggering', 'start_lost', 'frameshift_variant', 'frameshift_variant_NMD_triggering', 'stop_gained' or 'stop_gained_NMD_triggering'",
   DECREASED_GENE_PRODUCT_LEVEL_WARNING:
-    "'Decreased_gene_product_level' is selected without a matching variant type of 'splice_acceptor_variant', 'splice_donor_variant', 'start_lost', 'frameshift_variant' or 'stop_gained'",
+    "'Decreased_gene_product_level' is selected without a matching variant type of 'splice_acceptor_variant', 'splice_acceptor_variant_NMD_triggering', 'splice_donor_variant', 'splice_donor_variant_NMD_triggering', 'start_lost', 'frameshift_variant', 'frameshift_variant_NMD_triggering', 'stop_gained' or 'stop_gained_NMD_triggering'",
   ABSENT_GENE_PRODUCT_WARNING:
-    "'Absent_gene_product' is selected without a matching variant type of 'splice_donor_variant', 'start_lost', 'frameshift_variant' or 'stop_gained variants'(with NMD)",
+    "'Absent_gene_product' is selected without a matching variant type of 'splice_donor_variant', 'splice_donor_variant_NMD_triggering', 'start_lost', 'frameshift_variant', 'frameshift_variant_NMD_triggering', 'stop_gained' or 'stop_gained_NMD_triggering'",
   ALTERED_GENE_PRODUCT_STRUCTURE_WARNING:
-    "'Altered_gene_product_structure' is selected without a matching variant type of 'stop_lost', 'missense_variant', 'inframe_insertion' or 'inframe_deletion'",
+    "'Altered_gene_product_structure' is selected without a matching variant type of 'stop_lost', 'missense_variant', 'inframe_insertion', 'inframe_deletion', 'frameshift_variant_NMD_escaping', 'stop_gained_NMD_escaping', 'splice_acceptor_variant_NMD_escaping' or 'splice_donor_variant_NMD_escaping'",
 };
