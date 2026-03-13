@@ -7,10 +7,6 @@ export const VariantTypesAttribs = [
     },
     secondaryType: [
       {
-        labelText: "frameshift_variant",
-        inputKey: "frameshift_variant",
-      },
-      {
         labelText: "frameshift_variant_NMD_escaping",
         inputKey: "frameshift_variant_NMD_escaping",
       },
@@ -19,8 +15,8 @@ export const VariantTypesAttribs = [
         inputKey: "frameshift_variant_NMD_triggering",
       },
       {
-        labelText: "stop_gained",
-        inputKey: "stop_gained",
+        labelText: "frameshift_variant (unable to determine NMD status)",
+        inputKey: "frameshift_variant",
       },
       {
         labelText: "stop_gained_NMD_escaping",
@@ -29,6 +25,10 @@ export const VariantTypesAttribs = [
       {
         labelText: "stop_gained_NMD_triggering",
         inputKey: "stop_gained_NMD_triggering",
+      },
+      {
+        labelText: "stop_gained (unable to determine NMD status)",
+        inputKey: "stop_gained",
       },
       {
         labelText: "missense_variant",
@@ -55,10 +55,6 @@ export const VariantTypesAttribs = [
         inputKey: "splice_region_variant",
       },
       {
-        labelText: "splice_acceptor_variant",
-        inputKey: "splice_acceptor_variant",
-      },
-      {
         labelText: "splice_acceptor_variant_NMD_escaping",
         inputKey: "splice_acceptor_variant_NMD_escaping",
       },
@@ -67,8 +63,8 @@ export const VariantTypesAttribs = [
         inputKey: "splice_acceptor_variant_NMD_triggering",
       },
       {
-        labelText: "splice_donor_variant",
-        inputKey: "splice_donor_variant",
+        labelText: "splice_acceptor_variant (unable to determine NMD status)",
+        inputKey: "splice_acceptor_variant",
       },
       {
         labelText: "splice_donor_variant_NMD_escaping",
@@ -77,6 +73,10 @@ export const VariantTypesAttribs = [
       {
         labelText: "splice_donor_variant_NMD_triggering",
         inputKey: "splice_donor_variant_NMD_triggering",
+      },
+      {
+        labelText: "splice_donor_variant (unable to determine NMD status)",
+        inputKey: "splice_donor_variant",
       },
     ],
   },
