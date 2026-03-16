@@ -6,7 +6,6 @@ import {
   DECIPHER_URL,
   ENSEMBL_GENE_URL,
   ENSEMBL_LOCATION_URL,
-  EUROPE_PMC_QUERY_URL,
   EUROPE_PMC_URL,
   HGNC_URL,
   HPO_URL,
@@ -15,6 +14,7 @@ import {
   SEQUENCE_ONTOLOGY_URL,
 } from "../../utility/UrlConstants.js";
 import MinedPublications from "./MinedPublications.vue";
+import Publications from "./Publications.vue";
 export default {
   props: {
     isRecordPartOfUserPanels: Boolean,
@@ -40,9 +40,6 @@ export default {
       OMIM_URL,
       SEQUENCE_ONTOLOGY_URL,
       exportRecordPdf,
-      selectedCuratedPublicationsList: this.getAllSelectedCuratedPublications(
-        this.locusGeneDiseaseData?.publications,
-      ),
     };
   },
   created() {
@@ -63,6 +60,7 @@ export default {
   components: {
     ToolTip,
     MinedPublications,
+    Publications,
   },
   methods: {
     onElementObserved(entries) {
@@ -79,26 +77,6 @@ export default {
             .classList.remove("active");
         }
       });
-    },
-    getAllSelectedCuratedPublications(curatedPublications) {
-      let allSelectedCuratedPublications = [];
-      if (curatedPublications) {
-        allSelectedCuratedPublications = curatedPublications.map(
-          (item) => item.publication?.pmid,
-        );
-      }
-      return allSelectedCuratedPublications;
-    },
-    viewSelectedPublications(selectedPublicationsList) {
-      // Prepare EuropePMC url
-      // Example:
-      // If selectedPublicationsList = [1,2]
-      // Then expected EuropePMC URL is "https://europepmc.org/search?query=((EXT_ID:(1) AND SRC:MED) OR (EXT_ID:(2) AND SRC:MED))"
-      const url = `${EUROPE_PMC_QUERY_URL}(${selectedPublicationsList
-        .map((pmid) => `(EXT_ID:(${pmid}) AND SRC:MED)`)
-        .join(" OR ")})`;
-      // Open in new tab
-      window.open(url, "_blank", "noopener,noreferrer");
     },
   },
 };
@@ -912,179 +890,10 @@ export default {
               <h5>Evidence</h5>
             </td>
             <td class="w-75">
-              <div
-                v-if="locusGeneDiseaseData.publications?.length > 0"
-                class="accordion accordion-flush"
-                id="accordionPublications"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      id="accordionPublicationsBtn"
-                      class="accordion-button"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsiblePublicationsTable"
-                      aria-expanded="true"
-                      aria-controls="collapsiblePublicationsTable"
-                    >
-                      Curated publications ({{
-                        locusGeneDiseaseData.publications.length
-                      }})
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsiblePublicationsTable"
-                    class="accordion-collapse collapse show"
-                    data-bs-parent="#accordionPublications"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th class="text-nowrap px-1">
-                              Select
-                              <ToolTip
-                                toolTipText="Select papers and click 'View selected publications in EuropePMC' to view them there"
-                              />
-                            </th>
-                            <th>PMID</th>
-                            <th>Title</th>
-                            <th>Individuals</th>
-                            <th v-if="isAuthenticated">Comment</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="item in locusGeneDiseaseData.publications">
-                            <td class="text-center">
-                              <input
-                                v-if="item.publication?.pmid"
-                                type="checkbox"
-                                :id="`publication-select-${item.publication.pmid}`"
-                                v-model="selectedCuratedPublicationsList"
-                                :value="item.publication.pmid"
-                              />
-                            </td>
-                            <td>
-                              <a
-                                v-if="item.publication?.pmid"
-                                :href="EUROPE_PMC_URL + item.publication.pmid"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ item.publication.pmid }}
-                              </a>
-                            </td>
-                            <td>
-                              {{ item.publication?.title }}
-                            </td>
-                            <td>
-                              <ul
-                                v-if="
-                                  item.number_of_families ||
-                                  item.affected_individuals ||
-                                  item.ancestry ||
-                                  (item.consanguinity &&
-                                    item.consanguinity !== 'unknown')
-                                "
-                                class="mb-0 ps-3"
-                              >
-                                <li v-if="item.number_of_families">
-                                  Number of Families:
-                                  {{ item.number_of_families }}
-                                </li>
-                                <li v-if="item.affected_individuals">
-                                  Affected Individuals:
-                                  {{ item.affected_individuals }}
-                                </li>
-                                <li v-if="item.ancestry">
-                                  Ancestry:
-                                  {{ item.ancestry }}
-                                </li>
-                                <li
-                                  v-if="
-                                    item.consanguinity &&
-                                    item.consanguinity !== 'unknown'
-                                  "
-                                >
-                                  Consanguinity:
-                                  {{ item.consanguinity }}
-                                </li>
-                              </ul>
-                            </td>
-                            <td v-if="isAuthenticated">
-                              <ul
-                                v-if="item.comments?.length > 0"
-                                class="mb-0 ps-3"
-                              >
-                                <li
-                                  v-for="commentItem in item.comments"
-                                  :key="commentItem.comment"
-                                  style="white-space: pre-wrap"
-                                >
-                                  {{ commentItem.comment }} ({{
-                                    commentItem.date
-                                  }})
-                                </li>
-                              </ul>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <div class="d-flex justify-content-between">
-                        <div class="pt-1 px-0 pb-0">
-                          <button
-                            type="button"
-                            class="btn btn-link p-0"
-                            style="text-decoration: none"
-                            @click="
-                              selectedCuratedPublicationsList =
-                                getAllSelectedCuratedPublications(
-                                  locusGeneDiseaseData.publications,
-                                )
-                            "
-                            :disabled="
-                              selectedCuratedPublicationsList.length ===
-                              locusGeneDiseaseData.publications.length
-                            "
-                          >
-                            Select all
-                          </button>
-                          |
-                          <button
-                            type="button"
-                            class="btn btn-link p-0"
-                            style="text-decoration: none"
-                            @click="selectedCuratedPublicationsList = []"
-                            :disabled="
-                              selectedCuratedPublicationsList.length === 0
-                            "
-                          >
-                            Deselect all
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          class="btn btn-link pt-1 px-0 pb-0"
-                          style="text-decoration: none"
-                          @click="
-                            viewSelectedPublications(
-                              selectedCuratedPublicationsList,
-                            )
-                          "
-                          :disabled="
-                            selectedCuratedPublicationsList.length === 0
-                          "
-                        >
-                          View selected publications in EuropePMC
-                          <i class="bi bi-box-arrow-up-right"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">No curated publications available</p>
+              <Publications
+                :publications="locusGeneDiseaseData.publications"
+                :is-authenticated="isAuthenticated"
+              />
               <MinedPublications
                 :mined-publications="locusGeneDiseaseData.mined_publications"
                 :stable-id="locusGeneDiseaseData.stable_id"
@@ -1516,12 +1325,5 @@ h5,
 h6,
 p {
   margin-bottom: 0;
-}
-
-/* Fix to make sure ToolTip in #accordionMinedPublications is visible when
- #accordionPublicationsBtn is in focus */
-/* Tooltip has z-index=5 so #accordionPublicationsBtn z-index is set to 1 when in focus */
-#accordionPublicationsBtn:focus {
-  z-index: 1 !important;
 }
 </style>
