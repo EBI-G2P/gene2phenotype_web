@@ -1,9 +1,5 @@
 <script>
-import {
-  CONFIDENCE_COLOR_MAP,
-  HELP_TEXT,
-  MINED_PUBLICATION_STATUS,
-} from "../../utility/Constants.js";
+import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../../utility/Constants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 import { exportRecordPdf } from "../../utility/DownloadUtility.js";
 import {
@@ -18,6 +14,7 @@ import {
   OMIM_URL,
   SEQUENCE_ONTOLOGY_URL,
 } from "../../utility/UrlConstants.js";
+import MinedPublications from "./MinedPublications.vue";
 export default {
   props: {
     isRecordPartOfUserPanels: Boolean,
@@ -31,10 +28,6 @@ export default {
     return {
       observer: null,
       isDisplayComments: this.locusGeneDiseaseData?.comments?.length > 0,
-      minedPublicationsUnderReview:
-        this.locusGeneDiseaseData?.mined_publications.filter(
-          (item) => item.status === MINED_PUBLICATION_STATUS.MINED
-        ),
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
       DECIPHER_URL,
@@ -48,10 +41,7 @@ export default {
       SEQUENCE_ONTOLOGY_URL,
       exportRecordPdf,
       selectedCuratedPublicationsList: this.getAllSelectedCuratedPublications(
-        this.locusGeneDiseaseData?.publications
-      ),
-      selectedMinedPublicationsList: this.getAllSelectedMinedPublications(
-        this.locusGeneDiseaseData?.mined_publications
+        this.locusGeneDiseaseData?.publications,
       ),
     };
   },
@@ -72,6 +62,7 @@ export default {
   },
   components: {
     ToolTip,
+    MinedPublications,
   },
   methods: {
     onElementObserved(entries) {
@@ -93,22 +84,10 @@ export default {
       let allSelectedCuratedPublications = [];
       if (curatedPublications) {
         allSelectedCuratedPublications = curatedPublications.map(
-          (item) => item.publication?.pmid
+          (item) => item.publication?.pmid,
         );
       }
       return allSelectedCuratedPublications;
-    },
-    getAllSelectedMinedPublications(minedPublications) {
-      const filteredMinedPublications = minedPublications?.filter(
-        (item) => item.status === MINED_PUBLICATION_STATUS.MINED
-      );
-      let allSelectedMinedPublications = [];
-      if (filteredMinedPublications) {
-        allSelectedMinedPublications = filteredMinedPublications.map(
-          (item) => item.pmid
-        );
-      }
-      return allSelectedMinedPublications;
     },
     viewSelectedPublications(selectedPublicationsList) {
       // Prepare EuropePMC url
@@ -120,11 +99,6 @@ export default {
         .join(" OR ")})`;
       // Open in new tab
       window.open(url, "_blank", "noopener,noreferrer");
-    },
-    goToReviewMinedPublicationPage() {
-      this.$router.push(
-        `/lgd/review-mined-publication/${this.locusGeneDiseaseData.stable_id}`
-      );
     },
   },
 };
@@ -204,17 +178,14 @@ export default {
             </div>
           </div>
         </div>
-     </div>
-     <div
-        v-if="locusGeneDiseaseData.summary"
-        class="record-summary-div my-3"
-     >
-       <p>
-         {{ locusGeneDiseaseData.summary }}
-       </p>
-     </div>
-     <table class="table table-borderless my-3">
-       <tbody>
+      </div>
+      <div v-if="locusGeneDiseaseData.summary" class="record-summary-div my-3">
+        <p>
+          {{ locusGeneDiseaseData.summary }}
+        </p>
+      </div>
+      <table class="table table-borderless my-3">
+        <tbody>
           <tr id="allelic-requirement-section" class="align-middle">
             <td class="w-25 text-end">
               <h5>
@@ -693,7 +664,7 @@ export default {
                     >
                       Evidence ({{
                         Object.keys(
-                          locusGeneDiseaseData.molecular_mechanism.evidence
+                          locusGeneDiseaseData.molecular_mechanism.evidence,
                         ).length
                       }})
                     </button>
@@ -1069,7 +1040,7 @@ export default {
                             @click="
                               selectedCuratedPublicationsList =
                                 getAllSelectedCuratedPublications(
-                                  locusGeneDiseaseData.publications
+                                  locusGeneDiseaseData.publications,
                                 )
                             "
                             :disabled="
@@ -1098,7 +1069,7 @@ export default {
                           style="text-decoration: none"
                           @click="
                             viewSelectedPublications(
-                              selectedCuratedPublicationsList
+                              selectedCuratedPublicationsList,
                             )
                           "
                           :disabled="
@@ -1114,149 +1085,13 @@ export default {
                 </div>
               </div>
               <p v-else class="text-muted">No curated publications available</p>
-              <div
-                v-if="minedPublicationsUnderReview.length > 0"
-                class="accordion accordion-flush mt-4"
-                id="accordionMinedPublications"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleMinedPublicationsTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleMinedPublicationsTable"
-                    >
-                      <i class="bi bi-stars me-1"></i> Additional mined
-                      publications awaiting review ({{
-                        minedPublicationsUnderReview.length
-                      }})
-                      <ToolTip
-                        class="ms-1"
-                        :toolTipText="HELP_TEXT.MINED_PUBLICATIONS"
-                      />
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleMinedPublicationsTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionMinedPublications"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0 table-info">
-                        <thead>
-                          <tr>
-                            <th class="text-nowrap px-1">
-                              Select
-                              <ToolTip
-                                toolTipText="Select papers and click 'View selected publications in EuropePMC' to view them there"
-                              />
-                            </th>
-                            <th>PMID</th>
-                            <th>Year</th>
-                            <th>
-                              <div class="d-flex justify-content-between">
-                                <span class="align-middle">Title</span>
-                                <button
-                                  v-if="
-                                    !isPanelDataLoading &&
-                                    isAuthenticated &&
-                                    isRecordPartOfUserPanels
-                                  "
-                                  class="btn btn-link p-0 m-0"
-                                  style="text-decoration: none"
-                                  @click="goToReviewMinedPublicationPage"
-                                >
-                                  <i class="bi bi-file-earmark-text"></i> Review
-                                  all mined publications
-                                </button>
-                              </div>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="item in minedPublicationsUnderReview">
-                            <td class="text-center">
-                              <input
-                                v-if="item.pmid"
-                                type="checkbox"
-                                :id="`mined-publication-select-${item.pmid}`"
-                                v-model="selectedMinedPublicationsList"
-                                :value="item.pmid"
-                              />
-                            </td>
-                            <td>
-                              <a
-                                v-if="item.pmid"
-                                :href="EUROPE_PMC_URL + item.pmid"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ item.pmid }}
-                              </a>
-                            </td>
-                            <td>
-                              {{ item.year }}
-                            </td>
-                            <td>
-                              {{ item.title }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <div class="d-flex justify-content-between">
-                        <div class="pt-1 px-0 pb-0">
-                          <button
-                            type="button"
-                            class="btn btn-link p-0"
-                            style="text-decoration: none"
-                            @click="
-                              selectedMinedPublicationsList =
-                                getAllSelectedMinedPublications(
-                                  locusGeneDiseaseData.mined_publications
-                                )
-                            "
-                            :disabled="
-                              selectedMinedPublicationsList.length ===
-                              minedPublicationsUnderReview.length
-                            "
-                          >
-                            Select all
-                          </button>
-                          |
-                          <button
-                            type="button"
-                            class="btn btn-link p-0"
-                            style="text-decoration: none"
-                            @click="selectedMinedPublicationsList = []"
-                            :disabled="
-                              selectedMinedPublicationsList.length === 0
-                            "
-                          >
-                            Deselect all
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          class="btn btn-link pt-1 px-0 pb-0"
-                          style="text-decoration: none"
-                          @click="
-                            viewSelectedPublications(
-                              selectedMinedPublicationsList
-                            )
-                          "
-                          :disabled="selectedMinedPublicationsList.length === 0"
-                        >
-                          View selected publications in EuropePMC
-                          <i class="bi bi-box-arrow-up-right"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <MinedPublications
+                :mined-publications="locusGeneDiseaseData.mined_publications"
+                :stable-id="locusGeneDiseaseData.stable_id"
+                :is-panel-data-loading="isPanelDataLoading"
+                :is-authenticated="isAuthenticated"
+                :is-record-part-of-user-panels="isRecordPartOfUserPanels"
+              />
             </td>
           </tr>
           <tr id="gene-information-section" class="align-middle">
@@ -1557,8 +1392,8 @@ export default {
                                 commentObj.is_public == 1
                                   ? "Public"
                                   : commentObj.is_public == 0
-                                  ? "Private"
-                                  : ""
+                                    ? "Private"
+                                    : ""
                               }}
                             </td>
                           </tr>
