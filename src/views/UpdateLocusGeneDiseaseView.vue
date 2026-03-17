@@ -713,7 +713,12 @@ export default {
       :successMsg="publishSuccessMsg"
       :stableId="stableID"
     />
-    <PublishModal @publish="saveAndPublishEntry" />
+    <PublishModal
+      :gene="previousInput?.locus"
+      :mechanism="previousInput?.molecular_mechanism?.name"
+      :allelic-requirement="previousInput?.allelic_requirement"
+      @publish="saveAndPublishEntry"
+    />
     <RemovePublicationModal
       :pmidList="Object.keys(previousInput?.publications || {})"
       @removePublication="(pmid) => removePublication(pmid)"
