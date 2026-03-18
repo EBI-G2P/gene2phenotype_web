@@ -109,7 +109,11 @@ export default {
           </div>
           <div v-else class="px-3">
             <div v-if="duplicateRecords?.results?.length > 0">
-              <h6 class="py-3">
+              <h6 v-if="mechanism === 'undetermined'" class="py-3">
+                One or more diseases with matching gene and allelic requirement
+                are already present:
+              </h6>
+              <h6 v-else class="py-3">
                 One or more diseases with matching gene, allelic requirement and
                 mechanism are already present:
               </h6>
