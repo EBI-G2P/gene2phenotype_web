@@ -771,7 +771,12 @@ export default {
       v-model:sessionname="input.session_name"
       @savedraft="saveDraft"
     />
-    <PublishModal @publish="saveAndPublishEntry" />
+    <PublishModal
+      :gene="input.locus"
+      :mechanism="input.molecular_mechanism.name"
+      :allelic-requirement="input.allelic_requirement"
+      @publish="saveAndPublishEntry"
+    />
     <AlertModal
       modalId="all-input-alert-modal"
       alertText="The data you have input will be lost. Are you sure you want to proceed?"
