@@ -30,6 +30,8 @@ import ApiInformationView from "../views/ApiInformationView.vue";
 import HelpView from "../views/HelpView.vue";
 import ReviewMinedPublicationView from "../views/ReviewMinedPublicationView.vue";
 import ContributingView from "../views/ContributingView.vue";
+import RecordsReviewView from "../views/RecordsReviewView.vue";
+import RecordReviewUpdateView from "../views/RecordReviewUpdateView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -187,6 +189,18 @@ const router = createRouter({
       path: "/using-this-site",
       name: "using-this-site",
       component: HelpView,
+    },
+    {
+      path: "/records-review",
+      name: "records-review",
+      component: RecordsReviewView,
+      meta: { requiresLogIn: true },
+    },
+    {
+      path: "/record-review-update/:caseId",
+      name: "record-review-update",
+      component: RecordReviewUpdateView,
+      meta: { requiresLogIn: true },
     },
     // 404 page route, should always be at end of routes list
     {
