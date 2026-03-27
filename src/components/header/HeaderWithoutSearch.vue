@@ -15,7 +15,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useAuthStore, ["isAuthenticated", "userName"]),
+    ...mapState(useAuthStore, ["isAuthenticated", "userName", "isSuperUser"]),
   },
   created() {
     // watch the params of the route to fetch the data again
@@ -213,6 +213,14 @@ export default {
               </router-link>
             </li>
           </ul>
+        </li>
+        <li class="nav-item" v-if="isAuthenticated && isSuperUser">
+          <router-link
+            to="/records-review"
+            class="nav-link px-1 text-white fw-bold"
+          >
+            Review records
+          </router-link>
         </li>
       </ul>
       <ul class="nav nav-underline">

@@ -13,8 +13,18 @@ export default {
       errorMsg: null,
       saveErrorMsg: null,
       successMsg: null,
+      statusOptions: ["open", "under_review", "resolved"],
       itemStatusOptions: ["open", "under_review", "resolved"],
     };
+  },
+  computed: {
+    isResolvedLocked() {
+      if (!this.formData) return false;
+      if (this.formData.status !== "resolved") return false;
+      return (this.formData.items || []).every(
+        (item) => item.status === "resolved"
+      );
+    },
   },
   created() {
     this.$watch(
@@ -110,7 +120,7 @@ export default {
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
     <div class="d-flex justify-content-between align-items-start pb-2">
-      <h2>Record Review Update</h2>
+      <h2>Review record details</h2>
       <router-link class="btn btn-outline-primary" to="/records-review">
         <i class="bi bi-arrow-left-circle"></i> Return to review list
       </router-link>
@@ -135,35 +145,79 @@ export default {
         <div class="alert alert-danger mt-2" role="alert" v-if="saveErrorMsg">
           <div><i class="bi bi-exclamation-circle-fill"></i> {{ saveErrorMsg }}</div>
         </div>
-        <div class="mb-2"><strong>Case ID:</strong> {{ reviewCase.id }}</div>
         <div class="mb-2">
-          <strong>Stable ID:</strong>&nbsp;
-          <a
-            :href="`/gene2phenotype/lgd/${reviewCase.stable_id}`"
-            style="text-decoration: none"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ reviewCase.stable_id }}
-          </a>
+          <div class="row align-items-center w-75">
+            <label class="col-lg-2 col-form-label fw-bold text-nowrap">
+              G2P ID
+            </label>
+            <div class="col-lg-10">
+              <a
+                :href="`/gene2phenotype/lgd/${reviewCase.stable_id}`"
+                style="text-decoration: none"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ reviewCase.stable_id }}
+              </a>
+            </div>
+          </div>
         </div>
         <div class="mb-2">
-          <strong>Status:</strong> {{ reviewCase.status }}
+          <div class="row align-items-center w-75">
+            <label class="col-lg-2 col-form-label fw-bold text-nowrap">
+              Status
+            </label>
+            <div class="col-lg-10">
+              <select
+                class="form-select"
+                v-model="formData.status"
+                :disabled="isResolvedLocked"
+              >
+                <option
+                  v-for="option in statusOptions"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="mb-2">
-          <strong>Assigned To:</strong>
-          {{ reviewCase.assigned_to || "Unassigned" }}
+          <div class="row align-items-center w-75">
+            <label class="col-lg-2 col-form-label fw-bold text-nowrap">
+              Assigned To
+            </label>
+            <div class="col-lg-10">
+              {{ reviewCase.assigned_to || "Unassigned" }}
+            </div>
+          </div>
         </div>
         <div class="mb-2">
-          <strong>Last Updated:</strong> {{ reviewCase.date_last_update }}
+          <div class="row align-items-center w-75">
+            <label class="col-lg-2 col-form-label fw-bold text-nowrap">
+              Last Updated
+            </label>
+            <div class="col-lg-10">
+              {{ reviewCase.date_last_update }}
+            </div>
+          </div>
         </div>
         <div class="mb-2">
-          <strong>Summary:</strong>
-          <textarea
-            class="form-control"
-            rows="3"
-            v-model="formData.summary"
-          ></textarea>
+          <div class="row align-items-start w-75">
+            <label class="col-lg-2 col-form-label fw-bold text-nowrap">
+              Summary
+            </label>
+            <div class="col-lg-10">
+              <textarea
+                class="form-control"
+                rows="4"
+                v-model="formData.summary"
+                :disabled="isResolvedLocked"
+              ></textarea>
+            </div>
+          </div>
         </div>
         <div class="mt-3">
           <h5>Items</h5>
@@ -182,7 +236,11 @@ export default {
               <tr v-for="item in formData.items" :key="item.component">
                 <td>{{ item.component }}</td>
                 <td>
-                  <select class="form-select" v-model="item.status">
+                  <select
+                    class="form-select"
+                    v-model="item.status"
+                    :disabled="isResolvedLocked"
+                  >
                     <option
                       v-for="option in itemStatusOptions"
                       :key="option"
@@ -197,6 +255,7 @@ export default {
                     class="form-control"
                     rows="3"
                     v-model="item.comment"
+                    :disabled="isResolvedLocked"
                   ></textarea>
                 </td>
               </tr>
@@ -204,7 +263,7 @@ export default {
           </table>
           <p class="text-dark" v-else>No items available for this case.</p>
         </div>
-        <div class="d-flex justify-content-end pt-3">
+        <div class="d-flex justify-content-end pt-3" v-if="!isResolvedLocked">
           <button
             class="btn btn-primary"
             type="button"

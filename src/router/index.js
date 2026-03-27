@@ -32,6 +32,7 @@ import ReviewMinedPublicationView from "../views/ReviewMinedPublicationView.vue"
 import ContributingView from "../views/ContributingView.vue";
 import RecordsReviewView from "../views/RecordsReviewView.vue";
 import RecordReviewUpdateView from "../views/RecordReviewUpdateView.vue";
+import RecordReviewCreateView from "../views/RecordReviewCreateView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -194,13 +195,19 @@ const router = createRouter({
       path: "/records-review",
       name: "records-review",
       component: RecordsReviewView,
-      meta: { requiresLogIn: true },
+      meta: { requiresLogIn: true, requiresSuperUser: true },
     },
     {
       path: "/record-review-update/:caseId",
       name: "record-review-update",
       component: RecordReviewUpdateView,
-      meta: { requiresLogIn: true },
+      meta: { requiresLogIn: true, requiresSuperUser: true },
+    },
+    {
+      path: "/record-review-create",
+      name: "record-review-create",
+      component: RecordReviewCreateView,
+      meta: { requiresLogIn: true, requiresSuperUser: true },
     },
     // 404 page route, should always be at end of routes list
     {
@@ -229,6 +236,8 @@ router.beforeEach(function (to, _, next) {
   const authStore = useAuthStore();
   if (to.meta.requiresLogIn && !authStore.isAuthenticated) {
     next({ path: "/login", query: { redirect: to.fullPath } });
+  } else if (to.meta.requiresSuperUser && !authStore.isSuperUser) {
+    next("/");
   } else if (to.meta.requiresLogOut && authStore.isAuthenticated) {
     next("/");
   } else {
