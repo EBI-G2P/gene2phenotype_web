@@ -15,6 +15,25 @@ export default {
       successMsg: null,
       statusOptions: ["open", "under_review", "resolved"],
       itemStatusOptions: ["open", "under_review", "resolved"],
+      componentOptions: [
+        { value: "disease", label: "Disease" },
+        { value: "disease_cross_reference", label: "Disease cross reference" },
+        { value: "mechanism", label: "Molecular mechanism" },
+        { value: "genotype", label: "Allelic requirement" },
+        { value: "confidence", label: "Confidence" },
+        { value: "publications", label: "Publications" },
+        { value: "mined_publications", label: "Mined publications" },
+        { value: "phenotypes", label: "Phenotypes" },
+        { value: "variant_type", label: "Variant type" },
+        { value: "variant_consequence", label: "Variant consequence" },
+        { value: "panel", label: "Panel" },
+        { value: "duplicate", label: "Duplicate" },
+        { value: "full_review", label: "Full review" },
+        { value: "other", label: "Other" },
+      ],
+      newItemComponent: "",
+      newItemDetails: "",
+      newItemError: null,
     };
   },
   computed: {
@@ -23,6 +42,14 @@ export default {
       if (this.reviewCase.status !== "resolved") return false;
       return (this.reviewCase.items || []).every(
         (item) => item.status === "resolved"
+      );
+    },
+    availableComponentOptions() {
+      const existing = new Set(
+        (this.formData?.items || []).map((item) => item.component)
+      );
+      return this.componentOptions.filter(
+        (option) => !existing.has(option.value)
       );
     },
   },
@@ -36,6 +63,74 @@ export default {
     );
   },
   methods: {
+    normalizeDetails(details) {
+      if (details == null || details === "") return [];
+      if (typeof details === "object") {
+        return Object.entries(details).map(([key, value]) => ({
+          key,
+          value,
+        }));
+      }
+      if (typeof details === "string") {
+        try {
+          const parsed = JSON.parse(details);
+          if (parsed && typeof parsed === "object") {
+            return Object.entries(parsed).map(([key, value]) => ({
+              key,
+              value,
+            }));
+          }
+        } catch (e) {
+          // fall through to raw string rendering
+        }
+        return [{ key: "details", value: details }];
+      }
+      return [{ key: "details", value: String(details) }];
+    },
+    parseDetailsInput(rawDetails) {
+      if (rawDetails == null || rawDetails === "") {
+        return { ok: true, value: "" };
+      }
+      if (typeof rawDetails === "object") {
+        return { ok: true, value: rawDetails };
+      }
+      if (typeof rawDetails === "string") {
+        const trimmed = rawDetails.trim();
+        if (!trimmed) return { ok: true, value: "" };
+        try {
+          const parsed = JSON.parse(trimmed);
+          if (parsed && typeof parsed === "object") {
+            return { ok: true, value: parsed };
+          }
+          return { ok: false, error: "Details must be a JSON object or array." };
+        } catch (e) {
+          return { ok: false, error: "Details must be valid JSON." };
+        }
+      }
+      return { ok: false, error: "Details must be valid JSON." };
+    },
+    addItem() {
+      if (!this.formData || !this.newItemComponent) return;
+      this.newItemError = null;
+      const parsedDetails = this.parseDetailsInput(this.newItemDetails);
+      if (!parsedDetails.ok) {
+        this.newItemError = parsedDetails.error;
+        return;
+      }
+      const exists = (this.formData.items || []).some(
+        (item) => item.component === this.newItemComponent
+      );
+      if (exists) return;
+      if (!this.formData.items) this.formData.items = [];
+      this.formData.items.push({
+        component: this.newItemComponent,
+        status: "open",
+        comment: "",
+        details: parsedDetails.value,
+      });
+      this.newItemComponent = "";
+      this.newItemDetails = "";
+    },
     fetchData() {
       this.errorMsg = this.saveErrorMsg = this.successMsg = null;
       this.reviewCase = this.formData = null;
@@ -74,16 +169,27 @@ export default {
       this.saveErrorMsg = this.successMsg = null;
       this.isSaving = true;
       const caseId = this.$route.params.caseId;
+      const items = this.formData.items || [];
+      const parsedItems = [];
+      for (const item of items) {
+        const parsedDetails = this.parseDetailsInput(item.details);
+        if (!parsedDetails.ok) {
+          this.saveErrorMsg = `Invalid details for "${item.component}". ${parsedDetails.error}`;
+          this.isSaving = false;
+          return;
+        }
+        parsedItems.push({
+          component: item.component,
+          status: item.status,
+          comment: item.comment,
+          details: parsedDetails.value,
+        });
+      }
       const payload = {
         status: this.formData.status,
         assigned_to: this.formData.assigned_to || null,
         summary: this.formData.summary,
-        items: (this.formData.items || []).map((item) => ({
-          component: item.component,
-          status: item.status,
-          comment: item.comment,
-          details: item.details,
-        })),
+        items: parsedItems,
       };
       api
         .patch(REVIEW_QUEUE_DETAIL_URL.replace(":caseid", caseId), payload)
@@ -227,17 +333,33 @@ export default {
           >
             <thead>
               <tr>
-                <th>Data to update</th>
-                <th>Status</th>
-                <th>Comment</th>
+                <th class="component-col">Data to update</th>
+                <th class="details-col">Details</th>
+                <th class="status-col">Status</th>
+                <th class="comment-col">Comment</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in formData.items" :key="item.component">
-                <td>{{ item.component }}</td>
-                <td>
+                <td class="component-col">{{ item.component }}</td>
+                <td class="details-col">
+                  <div
+                    v-if="normalizeDetails(item.details).length > 0"
+                    class="d-flex flex-column gap-2"
+                  >
+                    <div
+                      v-for="detail in normalizeDetails(item.details)"
+                      :key="detail.key"
+                    >
+                      <div class="fw-bold">{{ detail.key }}</div>
+                      <div class="text-break">{{ detail.value }}</div>
+                    </div>
+                  </div>
+                  <span v-else class="text-muted">No details</span>
+                </td>
+                <td class="status-col">
                   <select
-                    class="form-select"
+                    class="form-select status-select"
                     v-model="item.status"
                     :disabled="isResolvedLocked"
                   >
@@ -250,7 +372,7 @@ export default {
                     </option>
                   </select>
                 </td>
-                <td>
+                <td class="comment-col">
                   <textarea
                     class="form-control"
                     rows="3"
@@ -262,6 +384,43 @@ export default {
             </tbody>
           </table>
           <p class="text-dark" v-else>No items available for this case.</p>
+          <div class="mt-3" v-if="!isResolvedLocked">
+            <label class="form-label fw-bold">Add item</label>
+            <div class="d-flex gap-2 flex-wrap">
+              <select
+                class="form-select"
+                v-model="newItemComponent"
+                style="max-width: 320px"
+              >
+                <option value="">Select a component</option>
+                <option
+                  v-for="option in availableComponentOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
+              <textarea
+                class="form-control"
+                rows="2"
+                v-model="newItemDetails"
+                placeholder="Details (JSON)"
+                style="max-width: 420px"
+              ></textarea>
+              <button
+                class="btn btn-outline-primary"
+                type="button"
+                :disabled="!newItemComponent"
+                @click="addItem"
+              >
+                Add item
+              </button>
+            </div>
+            <div class="text-danger mt-2" v-if="newItemError">
+              {{ newItemError }}
+            </div>
+          </div>
         </div>
         <div class="d-flex justify-content-end pt-3" v-if="!isResolvedLocked">
           <button
@@ -283,3 +442,25 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.component-col {
+  width: 15%;
+  max-width: 175px;
+}
+.details-col {
+  width: 26%;
+  max-width: 340px;
+  font-size: 0.95rem;
+}
+.status-col {
+  width: 12%;
+  max-width: 140px;
+}
+.status-select {
+  width: 100%;
+  padding-right: 1.5rem;
+}
+.comment-col {
+  width: 27%;
+}
+</style>

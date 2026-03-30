@@ -9,6 +9,7 @@ export default {
       isDataLoading: false,
       reviewQueue: null,
       errorMsg: null,
+      expandedSummaryIds: {},
     };
   },
   computed: {
@@ -44,6 +45,24 @@ export default {
     );
   },
   methods: {
+    isSummaryExpanded(id) {
+      return !!this.expandedSummaryIds[id];
+    },
+    toggleSummary(id) {
+      this.expandedSummaryIds = {
+        ...this.expandedSummaryIds,
+        [id]: !this.expandedSummaryIds[id],
+      };
+    },
+    isSummaryTruncated(summary) {
+      if (!summary) return false;
+      return String(summary).length > 50;
+    },
+    truncateSummary(summary) {
+      if (!summary) return "";
+      const text = String(summary);
+      return text.length > 50 ? `${text.slice(0, 50)}...` : text;
+    },
     fetchData() {
       this.errorMsg = this.reviewQueue = null;
       this.isDataLoading = true;
@@ -95,6 +114,7 @@ export default {
           <tr>
             <th>Case ID</th>
             <th>G2P ID</th>
+            <th>Summary</th>
             <th>Status</th>
             <th>Created by</th>
             <th>Date created</th>
@@ -121,6 +141,35 @@ export default {
                 {{ item.stable_id }}
               </a>
             </td>
+            <td>
+              <span v-if="!item.summary"></span>
+              <span v-else-if="isSummaryExpanded(item.id)">
+                {{ item.summary }}
+                <button
+                  v-if="isSummaryTruncated(item.summary)"
+                  type="button"
+                  class="btn btn-link p-0 align-baseline"
+                  style="text-decoration: none"
+                  @click="toggleSummary(item.id)"
+                >
+                  Show less
+                  <i class="bi bi-dash-circle"></i>
+                </button>
+              </span>
+              <span v-else>
+                {{ truncateSummary(item.summary) }}
+                <button
+                  v-if="isSummaryTruncated(item.summary)"
+                  type="button"
+                  class="btn btn-link p-0 align-baseline"
+                  style="text-decoration: none"
+                  @click="toggleSummary(item.id)"
+                >
+                  Show more
+                  <i class="bi bi-plus-circle"></i>
+                </button>
+              </span>
+            </td>
             <td>{{ item.status }}</td>
             <td>{{ item.created_by }}</td>
             <td>{{ item.date_created }}</td>
@@ -139,6 +188,7 @@ export default {
           <tr>
             <th>Case ID</th>
             <th>G2P ID</th>
+            <th>Summary</th>
             <th>Status</th>
             <th>Created by</th>
             <th>Date created</th>
@@ -165,6 +215,35 @@ export default {
                 {{ item.stable_id }}
               </a>
             </td>
+            <td>
+              <span v-if="!item.summary"></span>
+              <span v-else-if="isSummaryExpanded(item.id)">
+                {{ item.summary }}
+                <button
+                  v-if="isSummaryTruncated(item.summary)"
+                  type="button"
+                  class="btn btn-link p-0 align-baseline"
+                  style="text-decoration: none"
+                  @click="toggleSummary(item.id)"
+                >
+                  Show less
+                  <i class="bi bi-dash-circle"></i>
+                </button>
+              </span>
+              <span v-else>
+                {{ truncateSummary(item.summary) }}
+                <button
+                  v-if="isSummaryTruncated(item.summary)"
+                  type="button"
+                  class="btn btn-link p-0 align-baseline"
+                  style="text-decoration: none"
+                  @click="toggleSummary(item.id)"
+                >
+                  Show more
+                  <i class="bi bi-plus-circle"></i>
+                </button>
+              </span>
+            </td>
             <td>{{ item.status }}</td>
             <td>{{ item.created_by }}</td>
             <td>{{ item.date_created }}</td>
@@ -183,6 +262,7 @@ export default {
           <tr>
             <th>Case ID</th>
             <th>G2P ID</th>
+            <th>Summary</th>
             <th>Status</th>
             <th>Created by</th>
             <th>Date created</th>
@@ -210,6 +290,35 @@ export default {
               >
                 {{ item.stable_id }}
               </a>
+            </td>
+            <td class="text-muted">
+              <span v-if="!item.summary"></span>
+              <span v-else-if="isSummaryExpanded(item.id)">
+                {{ item.summary }}
+                <button
+                  v-if="isSummaryTruncated(item.summary)"
+                  type="button"
+                  class="btn btn-link p-0 align-baseline text-muted"
+                  style="text-decoration: none"
+                  @click="toggleSummary(item.id)"
+                >
+                  Show less
+                  <i class="bi bi-dash-circle"></i>
+                </button>
+              </span>
+              <span v-else>
+                {{ truncateSummary(item.summary) }}
+                <button
+                  v-if="isSummaryTruncated(item.summary)"
+                  type="button"
+                  class="btn btn-link p-0 align-baseline text-muted"
+                  style="text-decoration: none"
+                  @click="toggleSummary(item.id)"
+                >
+                  Show more
+                  <i class="bi bi-plus-circle"></i>
+                </button>
+              </span>
             </td>
             <td class="text-muted">{{ item.status }}</td>
             <td class="text-muted">{{ item.created_by }}</td>

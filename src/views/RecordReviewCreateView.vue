@@ -50,6 +50,7 @@ export default {
             component,
             status: "open",
             comment: "",
+            details: "",
           });
         }
       });
@@ -68,6 +69,7 @@ export default {
         component: item.component,
         status: item.status,
         comment: item.comment,
+        details: item.details,
       }));
 
       this.isSaving = true;
@@ -193,14 +195,18 @@ export default {
         <thead>
           <tr>
             <th>Data to update</th>
+            <th>Details</th>
             <th>Status</th>
             <th>Comment</th>
-            <!-- Details intentionally omitted -->
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in items" :key="item.component">
             <td>{{ item.component }}</td>
+            <td>
+              <textarea class="form-control" rows="2" v-model="item.details">
+              </textarea>
+            </td>
             <td>
               <select class="form-select" v-model="item.status">
                 <option
