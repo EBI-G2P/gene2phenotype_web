@@ -39,6 +39,28 @@ export default {
     },
   },
   methods: {
+    parseDetailsInput(rawDetails) {
+      if (rawDetails == null || rawDetails === "") {
+        return { ok: true, value: "" };
+      }
+      if (typeof rawDetails === "object") {
+        return { ok: true, value: rawDetails };
+      }
+      if (typeof rawDetails === "string") {
+        const trimmed = rawDetails.trim();
+        if (!trimmed) return { ok: true, value: "" };
+        try {
+          const parsed = JSON.parse(trimmed);
+          if (parsed && typeof parsed === "object") {
+            return { ok: true, value: parsed };
+          }
+          return { ok: false, error: "Details must be a JSON object or array." };
+        } catch (e) {
+          return { ok: false, error: "Details must be valid JSON." };
+        }
+      }
+      return { ok: false, error: "Details must be valid JSON." };
+    },
     syncItemsFromSelection() {
       const selected = new Set(this.selectedComponents);
       this.items = [
@@ -65,12 +87,20 @@ export default {
         this.errorMsg = "Please select at least one item.";
         return;
       }
-      const parsedItems = this.items.map((item) => ({
-        component: item.component,
-        status: item.status,
-        comment: item.comment,
-        details: item.details,
-      }));
+      const parsedItems = [];
+      for (const item of this.items) {
+        const parsedDetails = this.parseDetailsInput(item.details);
+        if (!parsedDetails.ok) {
+          this.errorMsg = `Invalid details for "${item.component}". ${parsedDetails.error}`;
+          return;
+        }
+        parsedItems.push({
+          component: item.component,
+          status: item.status,
+          comment: item.comment,
+          details: parsedDetails.value,
+        });
+      }
 
       this.isSaving = true;
       const payload = {
@@ -195,7 +225,7 @@ export default {
         <thead>
           <tr>
             <th>Data to update</th>
-            <th>Details</th>
+            <th>Details (JSON)</th>
             <th>Status</th>
             <th>Comment</th>
           </tr>

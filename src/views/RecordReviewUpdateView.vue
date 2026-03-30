@@ -334,7 +334,7 @@ export default {
             <thead>
               <tr>
                 <th class="component-col">Data to update</th>
-                <th class="details-col">Details</th>
+                <th class="details-col">Details (JSON)</th>
                 <th class="status-col">Status</th>
                 <th class="comment-col">Comment</th>
               </tr>
