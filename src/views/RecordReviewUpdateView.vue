@@ -19,9 +19,9 @@ export default {
   },
   computed: {
     isResolvedLocked() {
-      if (!this.formData) return false;
-      if (this.formData.status !== "resolved") return false;
-      return (this.formData.items || []).every(
+      if (!this.reviewCase) return false;
+      if (this.reviewCase.status !== "resolved") return false;
+      return (this.reviewCase.items || []).every(
         (item) => item.status === "resolved"
       );
     },
