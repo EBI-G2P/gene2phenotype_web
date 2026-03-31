@@ -333,7 +333,9 @@ export default {
             </thead>
             <tbody>
               <tr v-for="item in formData.items" :key="item.component">
-                <td class="component-col">{{ item.component }}</td>
+                <td class="component-col">
+                  <span class="badge bg-secondary">{{ item.component }}</span>
+                </td>
                 <td class="status-col">
                   <select
                     class="form-select status-select"
