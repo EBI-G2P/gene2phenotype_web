@@ -32,8 +32,7 @@ export default {
         { value: "other", label: "Other" },
       ],
       newItemComponent: "",
-      newItemDetails: "",
-      newItemError: null,
+      newItemComment: "",
     };
   },
   computed: {
@@ -111,12 +110,6 @@ export default {
     },
     addItem() {
       if (!this.formData || !this.newItemComponent) return;
-      this.newItemError = null;
-      const parsedDetails = this.parseDetailsInput(this.newItemDetails);
-      if (!parsedDetails.ok) {
-        this.newItemError = parsedDetails.error;
-        return;
-      }
       const exists = (this.formData.items || []).some(
         (item) => item.component === this.newItemComponent
       );
@@ -125,11 +118,11 @@ export default {
       this.formData.items.push({
         component: this.newItemComponent,
         status: "open",
-        comment: "",
-        details: parsedDetails.value,
+        comment: this.newItemComment ? this.newItemComment.trim() : "",
+        details: "",
       });
       this.newItemComponent = "";
-      this.newItemDetails = "";
+      this.newItemComment = "";
     },
     fetchData() {
       this.errorMsg = this.saveErrorMsg = this.successMsg = null;
@@ -334,7 +327,6 @@ export default {
             <thead>
               <tr>
                 <th class="component-col">Data to update</th>
-                <th class="details-col">Details (JSON)</th>
                 <th class="status-col">Status</th>
                 <th class="comment-col">Comment</th>
               </tr>
@@ -342,21 +334,6 @@ export default {
             <tbody>
               <tr v-for="item in formData.items" :key="item.component">
                 <td class="component-col">{{ item.component }}</td>
-                <td class="details-col">
-                  <div
-                    v-if="normalizeDetails(item.details).length > 0"
-                    class="d-flex flex-column gap-2"
-                  >
-                    <div
-                      v-for="detail in normalizeDetails(item.details)"
-                      :key="detail.key"
-                    >
-                      <div class="fw-bold">{{ detail.key }}</div>
-                      <div class="text-break">{{ detail.value }}</div>
-                    </div>
-                  </div>
-                  <span v-else class="text-muted">No details</span>
-                </td>
                 <td class="status-col">
                   <select
                     class="form-select status-select"
@@ -404,8 +381,8 @@ export default {
               <textarea
                 class="form-control"
                 rows="2"
-                v-model="newItemDetails"
-                placeholder="Details (JSON)"
+                v-model="newItemComment"
+                placeholder="Comment (optional)"
                 style="max-width: 420px"
               ></textarea>
               <button
@@ -416,9 +393,6 @@ export default {
               >
                 Add item
               </button>
-            </div>
-            <div class="text-danger mt-2" v-if="newItemError">
-              {{ newItemError }}
             </div>
           </div>
         </div>
@@ -446,11 +420,6 @@ export default {
 .component-col {
   width: 15%;
   max-width: 175px;
-}
-.details-col {
-  width: 26%;
-  max-width: 340px;
-  font-size: 0.95rem;
 }
 .status-col {
   width: 12%;

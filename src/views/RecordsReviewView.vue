@@ -63,6 +63,15 @@ export default {
       const text = String(summary);
       return text.length > 50 ? `${text.slice(0, 50)}...` : text;
     },
+    listComponents(items) {
+      if (!Array.isArray(items) || items.length === 0) return "";
+      const names = items
+        .filter((item) => item?.status !== "resolved")
+        .map((item) => item?.component)
+        .filter((component) => component);
+      if (names.length === 0) return "";
+      return Array.from(new Set(names));
+    },
     fetchData() {
       this.errorMsg = this.reviewQueue = null;
       this.isDataLoading = true;
@@ -115,6 +124,7 @@ export default {
             <th>Case ID</th>
             <th>G2P ID</th>
             <th>Summary</th>
+            <th>Data to update</th>
             <th>Status</th>
             <th>Created by</th>
             <th>Date created</th>
@@ -170,6 +180,21 @@ export default {
                 </button>
               </span>
             </td>
+            <td>
+              <div
+                v-if="listComponents(item.items).length > 0"
+                class="d-flex flex-wrap gap-1"
+              >
+                <span
+                  v-for="component in listComponents(item.items)"
+                  :key="component"
+                  class="badge bg-secondary"
+                >
+                  {{ component }}
+                </span>
+              </div>
+              <span v-else>-</span>
+            </td>
             <td>{{ item.status }}</td>
             <td>{{ item.created_by }}</td>
             <td>{{ item.date_created }}</td>
@@ -189,6 +214,7 @@ export default {
             <th>Case ID</th>
             <th>G2P ID</th>
             <th>Summary</th>
+            <th>Data to update</th>
             <th>Status</th>
             <th>Created by</th>
             <th>Date created</th>
@@ -244,6 +270,21 @@ export default {
                 </button>
               </span>
             </td>
+            <td>
+              <div
+                v-if="listComponents(item.items).length > 0"
+                class="d-flex flex-wrap gap-1"
+              >
+                <span
+                  v-for="component in listComponents(item.items)"
+                  :key="component"
+                  class="badge bg-secondary"
+                >
+                  {{ component }}
+                </span>
+              </div>
+              <span v-else>-</span>
+            </td>
             <td>{{ item.status }}</td>
             <td>{{ item.created_by }}</td>
             <td>{{ item.date_created }}</td>
@@ -263,6 +304,7 @@ export default {
             <th>Case ID</th>
             <th>G2P ID</th>
             <th>Summary</th>
+            <th>Data to update</th>
             <th>Status</th>
             <th>Created by</th>
             <th>Date created</th>
@@ -319,6 +361,21 @@ export default {
                   <i class="bi bi-plus-circle"></i>
                 </button>
               </span>
+            </td>
+            <td class="text-muted">
+              <div
+                v-if="listComponents(item.items).length > 0"
+                class="d-flex flex-wrap gap-1"
+              >
+                <span
+                  v-for="component in listComponents(item.items)"
+                  :key="component"
+                  class="badge bg-secondary"
+                >
+                  {{ component }}
+                </span>
+              </div>
+              <span v-else>-</span>
             </td>
             <td class="text-muted">{{ item.status }}</td>
             <td class="text-muted">{{ item.created_by }}</td>
