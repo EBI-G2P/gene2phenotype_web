@@ -9,7 +9,7 @@ import VariantDescription from "./VariantDescription.vue";
 import MechanismSynopsis from "./MechanismSynopsis.vue";
 import MechanismEvidence from "./MechanismEvidence.vue";
 import Phenotypes from "./Phenotypes.vue";
-import PhenotypicSummary from "./PhenotypicSummary.vue";
+import PhenotypeSummary from "./PhenotypeSummary.vue";
 import Publications from "./Publications.vue";
 import MinedPublications from "./MinedPublications.vue";
 import ExternalLinks from "./ExternalLinks.vue";
@@ -57,7 +57,7 @@ export default {
     MechanismSynopsis,
     MechanismEvidence,
     Phenotypes,
-    PhenotypicSummary,
+    PhenotypeSummary,
     Publications,
     MinedPublications,
     ExternalLinks,
@@ -347,7 +347,7 @@ export default {
               <h5>Phenotypic Summary</h5>
             </td>
             <td class="w-75">
-              <PhenotypicSummary
+              <PhenotypeSummary
                 :phenotype-summary="locusGeneDiseaseData.phenotype_summary"
               />
             </td>
