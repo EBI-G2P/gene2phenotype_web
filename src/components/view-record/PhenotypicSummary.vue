@@ -15,7 +15,7 @@ export default {
   <div
     v-if="phenotypeSummary?.length > 0"
     class="accordion accordion-flush"
-    id="accordionPhenotypicSummary"
+    id="accordionPhenotypeSummary"
   >
     <div class="accordion-item">
       <h2 class="accordion-header border">
@@ -23,17 +23,17 @@ export default {
           class="accordion-button collapsed"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#collapsiblePhenotypicSummaryTable"
+          data-bs-target="#collapsiblePhenotypeSummaryTable"
           aria-expanded="false"
-          aria-controls="collapsiblePhenotypicSummaryTable"
+          aria-controls="collapsiblePhenotypeSummaryTable"
         >
           Phenotypic Summary ({{ phenotypeSummary.length }})
         </button>
       </h2>
       <div
-        id="collapsiblePhenotypicSummaryTable"
+        id="collapsiblePhenotypeSummaryTable"
         class="accordion-collapse collapse"
-        data-bs-parent="#accordionPhenotypicSummary"
+        data-bs-parent="#accordionPhenotypeSummary"
       >
         <div class="accordion-body p-0">
           <table class="table table-bordered mb-0">
