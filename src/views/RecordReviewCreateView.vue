@@ -1,5 +1,6 @@
 <script>
 import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
+import { REVIEW_COMPONENT_OPTIONS } from "../utility/ReviewConstants.js";
 import { REVIEW_QUEUE_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
 
@@ -15,22 +16,7 @@ export default {
       selectedComponents: [],
       items: [],
       itemStatusOptions: ["open", "under_review", "resolved"],
-      componentOptions: [
-        { value: "disease", label: "Disease" },
-        { value: "disease_cross_reference", label: "Disease cross reference" },
-        { value: "mechanism", label: "Molecular mechanism" },
-        { value: "genotype", label: "Allelic requirement" },
-        { value: "confidence", label: "Confidence" },
-        { value: "publications", label: "Publications" },
-        { value: "mined_publications", label: "Mined publications" },
-        { value: "phenotypes", label: "Phenotypes" },
-        { value: "variant_type", label: "Variant type" },
-        { value: "variant_consequence", label: "Variant consequence" },
-        { value: "panel", label: "Panel" },
-        { value: "duplicate", label: "Duplicate" },
-        { value: "full_review", label: "Full review" },
-        { value: "other", label: "Other" },
-      ],
+      componentOptions: REVIEW_COMPONENT_OPTIONS,
     };
   },
   watch: {

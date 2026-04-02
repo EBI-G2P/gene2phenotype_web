@@ -65,6 +65,12 @@ export const MINED_PUBLICATION_STATUS = {
   REJECTED: "rejected",
 };
 
+export const REVIEW_STATUS = {
+  OPEN: "open",
+  UNDER_REVIEW: "under_review",
+  RESOLVED: "resolved",
+};
+
 export const SEARCH_FILTER = {
   SEARCH_TYPE: {
     ALL_TYPES: "all",

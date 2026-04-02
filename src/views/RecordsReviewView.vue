@@ -1,5 +1,6 @@
 <script>
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
+import { REVIEW_STATUS } from "../utility/Constants.js";
 import { REVIEW_QUEUE_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
 
@@ -21,17 +22,20 @@ export default {
         return (a.stable_id || "").localeCompare(b.stable_id || "");
       });
     },
-    activeResults() {
-      return this.sortedResults.filter((item) => item.status !== "resolved");
-    },
     underReviewResults() {
-      return this.sortedResults.filter((item) => item.status === "under_review");
+      return this.sortedResults.filter(
+        (item) => item.status === REVIEW_STATUS.UNDER_REVIEW
+      );
     },
     openResults() {
-      return this.sortedResults.filter((item) => item.status === "open");
+      return this.sortedResults.filter(
+        (item) => item.status === REVIEW_STATUS.OPEN
+      );
     },
     resolvedResults() {
-      return this.sortedResults.filter((item) => item.status === "resolved");
+      return this.sortedResults.filter(
+        (item) => item.status === REVIEW_STATUS.RESOLVED
+      );
     },
   },
   created() {
