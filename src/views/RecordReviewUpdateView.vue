@@ -233,7 +233,7 @@ export default {
             <label class="col-lg-2 col-form-label fw-bold text-nowrap">
               Status
             </label>
-            <div class="col-lg-10">
+            <div class="col-lg-5">
               <select
                 class="form-select"
                 v-model="formData.status"
