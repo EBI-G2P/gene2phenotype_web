@@ -27,7 +27,7 @@ export default {
   computed: {
     isResolvedLocked() {
       if (!this.reviewCase) return false;
-      if (this.reviewCase.status !== "resolved") return false;
+      if (this.reviewCase.status !== REVIEW_STATUS.RESOLVED) return false;
       return (this.reviewCase.items || []).every(
         (item) => item.status === "resolved"
       );
