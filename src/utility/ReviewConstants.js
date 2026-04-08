@@ -1,3 +1,9 @@
+export const REVIEW_STATUS = {
+  OPEN: "open",
+  UNDER_REVIEW: "under_review",
+  RESOLVED: "resolved",
+};
+
 export const REVIEW_COMPONENT_OPTIONS = [
   { value: "disease", label: "Disease" },
   { value: "disease_cross_reference", label: "Disease cross reference" },
