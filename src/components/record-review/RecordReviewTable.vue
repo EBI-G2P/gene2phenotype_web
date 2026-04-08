@@ -29,7 +29,7 @@ export default {
         [id]: !this.expandedSummaryIds[id],
       };
     },
-    isSummaryTruncated(summary) {
+    shouldTruncateSummary(summary) {
       if (!summary) return false;
       return String(summary).length > 50;
     },
