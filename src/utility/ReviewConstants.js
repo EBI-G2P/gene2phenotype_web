@@ -4,6 +4,12 @@ export const REVIEW_STATUS = {
   RESOLVED: "resolved",
 };
 
+export const REVIEW_STATUS_OPTIONS = [
+  REVIEW_STATUS.OPEN,
+  REVIEW_STATUS.UNDER_REVIEW,
+  REVIEW_STATUS.RESOLVED,
+];
+
 export const REVIEW_COMPONENT_OPTIONS = [
   { value: "disease", label: "Disease" },
   { value: "disease_cross_reference", label: "Disease cross reference" },

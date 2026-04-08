@@ -1,6 +1,10 @@
 <script>
 import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
-import { REVIEW_COMPONENT_OPTIONS } from "../utility/ReviewConstants.js";
+import {
+  REVIEW_COMPONENT_OPTIONS,
+  REVIEW_STATUS,
+  REVIEW_STATUS_OPTIONS,
+} from "../utility/ReviewConstants.js";
 import { REVIEW_QUEUE_DETAIL_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
 
@@ -14,8 +18,7 @@ export default {
       errorMsg: null,
       saveErrorMsg: null,
       successMsg: null,
-      statusOptions: ["open", "under_review", "resolved"],
-      itemStatusOptions: ["open", "under_review", "resolved"],
+      statusOptions: REVIEW_STATUS_OPTIONS,
       componentOptions: REVIEW_COMPONENT_OPTIONS,
       newItemComponent: "",
       newItemComment: "",
@@ -103,7 +106,7 @@ export default {
       if (!this.formData.items) this.formData.items = [];
       this.formData.items.push({
         component: this.newItemComponent,
-        status: "open",
+        status: REVIEW_STATUS.OPEN,
         comment: this.newItemComment ? this.newItemComment.trim() : "",
         details: "",
       });
@@ -121,7 +124,7 @@ export default {
           this.reviewCase = response.data;
           this.formData = {
             status: response.data.status,
-            assigned_to: response.data.assigned_to,
+            assigned_to: response.data.assigned_to_email,
             summary: response.data.summary,
             items: (response.data.items || []).map((item) => ({
               component: item.component,
@@ -176,7 +179,7 @@ export default {
           this.reviewCase = response.data;
           this.formData = {
             status: response.data.status,
-            assigned_to: response.data.assigned_to,
+            assigned_to: response.data.assigned_to_email,
             summary: response.data.summary,
             items: (response.data.items || []).map((item) => ({
               component: item.component,
@@ -329,7 +332,7 @@ export default {
                     :disabled="isResolvedLocked"
                   >
                     <option
-                      v-for="option in itemStatusOptions"
+                      v-for="option in statusOptions"
                       :key="option"
                       :value="option"
                     >

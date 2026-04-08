@@ -1,6 +1,10 @@
 <script>
 import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
-import { REVIEW_COMPONENT_OPTIONS } from "../utility/ReviewConstants.js";
+import {
+  REVIEW_COMPONENT_OPTIONS,
+  REVIEW_STATUS,
+  REVIEW_STATUS_OPTIONS,
+} from "../utility/ReviewConstants.js";
 import { REVIEW_QUEUE_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
 
@@ -15,7 +19,7 @@ export default {
       assignedTo: "",
       selectedComponents: [],
       items: [],
-      itemStatusOptions: ["open", "under_review", "resolved"],
+      itemStatusOptions: REVIEW_STATUS_OPTIONS,
       componentOptions: REVIEW_COMPONENT_OPTIONS,
     };
   },
@@ -56,7 +60,7 @@ export default {
         if (!this.items.find((item) => item.component === component)) {
           this.items.push({
             component,
-            status: "open",
+            status: REVIEW_STATUS.OPEN,
             comment: "",
             details: "",
           });
