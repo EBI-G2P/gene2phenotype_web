@@ -149,7 +149,6 @@ export default {
     saveChanges() {
       if (!this.formData) return;
       this.saveErrorMsg = this.successMsg = null;
-      this.isSaving = true;
       const caseId = this.$route.params.caseId;
       const items = this.formData.items || [];
       const parsedItems = [];
