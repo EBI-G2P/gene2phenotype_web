@@ -167,6 +167,7 @@ export default {
           details: parsedDetails.value,
         });
       }
+      this.isSaving = true;
       const payload = {
         status: this.formData.status,
         assigned_to: this.formData.assigned_to || null,
