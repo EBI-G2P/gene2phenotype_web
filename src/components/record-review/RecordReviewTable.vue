@@ -94,7 +94,7 @@ export default {
           <span v-else-if="isSummaryExpanded(item.id)">
             {{ item.summary }}
             <button
-              v-if="isSummaryTruncated(item.summary)"
+              v-if="shouldTruncateSummary(item.summary)"
               type="button"
               class="btn btn-link p-0 align-baseline"
               style="text-decoration: none"
