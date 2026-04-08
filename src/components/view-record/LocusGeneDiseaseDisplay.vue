@@ -2,19 +2,19 @@
 import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../../utility/Constants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 import { exportRecordPdf } from "../../utility/DownloadUtility.js";
-import {
-  DECIPHER_URL,
-  ENSEMBL_GENE_URL,
-  ENSEMBL_LOCATION_URL,
-  EUROPE_PMC_URL,
-  HGNC_URL,
-  HPO_URL,
-  MONDO_URL,
-  OMIM_URL,
-  SEQUENCE_ONTOLOGY_URL,
-} from "../../utility/UrlConstants.js";
-import MinedPublications from "./MinedPublications.vue";
+import { ENSEMBL_LOCATION_URL } from "../../utility/UrlConstants.js";
+import VariantTypes from "./VariantTypes.vue";
+import VariantConsequences from "./VariantConsequences.vue";
+import VariantDescription from "./VariantDescription.vue";
+import MechanismSynopsis from "./MechanismSynopsis.vue";
+import MechanismEvidence from "./MechanismEvidence.vue";
+import Phenotypes from "./Phenotypes.vue";
+import PhenotypeSummary from "./PhenotypeSummary.vue";
 import Publications from "./Publications.vue";
+import MinedPublications from "./MinedPublications.vue";
+import ExternalLinks from "./ExternalLinks.vue";
+import CrossReferences from "./CrossReferences.vue";
+import Comments from "./Comments.vue";
 export default {
   props: {
     isRecordPartOfUserPanels: Boolean,
@@ -30,15 +30,7 @@ export default {
       isDisplayComments: this.locusGeneDiseaseData?.comments?.length > 0,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
-      DECIPHER_URL,
-      ENSEMBL_GENE_URL,
       ENSEMBL_LOCATION_URL,
-      EUROPE_PMC_URL,
-      HGNC_URL,
-      HPO_URL,
-      MONDO_URL,
-      OMIM_URL,
-      SEQUENCE_ONTOLOGY_URL,
       exportRecordPdf,
     };
   },
@@ -59,8 +51,18 @@ export default {
   },
   components: {
     ToolTip,
-    MinedPublications,
+    VariantTypes,
+    VariantDescription,
+    VariantConsequences,
+    MechanismSynopsis,
+    MechanismEvidence,
+    Phenotypes,
+    PhenotypeSummary,
     Publications,
+    MinedPublications,
+    ExternalLinks,
+    CrossReferences,
+    Comments,
   },
   methods: {
     onElementObserved(entries) {
@@ -238,126 +240,10 @@ export default {
               </h6>
             </td>
             <td class="w-75">
-              <div
-                v-if="locusGeneDiseaseData.variant_type?.length > 0"
-                class="accordion accordion-flush"
-                id="accordionVariantTypes"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleVariantTypesTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleVariantTypesTable"
-                    >
-                      {{
-                        locusGeneDiseaseData.variant_type
-                          .map((x) => x.term)
-                          .join(", ")
-                      }}
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleVariantTypesTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionVariantTypes"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Type</th>
-                            <th>Inheritance</th>
-                            <th>Publications</th>
-                            <th v-if="isAuthenticated">Comments</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="item in locusGeneDiseaseData.variant_type">
-                            <td>
-                              <a
-                                v-if="item.accession"
-                                :href="SEQUENCE_ONTOLOGY_URL + item.accession"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ item.term }}
-                              </a>
-                              <span v-else>{{ item.term }}</span>
-                            </td>
-                            <td>
-                              <ul
-                                v-if="
-                                  item.de_novo ||
-                                  item.inherited ||
-                                  item.unknown_inheritance
-                                "
-                                class="mb-0 ps-3"
-                              >
-                                <li v-if="item.de_novo">De Novo</li>
-                                <li v-if="item.inherited">Inherited</li>
-                                <li v-if="item.unknown_inheritance">
-                                  Unknown Inheritance
-                                </li>
-                              </ul>
-                            </td>
-                            <td>
-                              <span v-if="item.publications?.length > 0">
-                                <span
-                                  v-for="(
-                                    publicationItem, index
-                                  ) in item.publications"
-                                >
-                                  <span
-                                    v-if="index < item.publications.length - 1"
-                                  >
-                                    <a
-                                      :href="EUROPE_PMC_URL + publicationItem"
-                                      style="text-decoration: none"
-                                      target="_blank"
-                                    >
-                                      {{ publicationItem }}
-                                    </a>
-                                    ,
-                                  </span>
-                                  <a
-                                    v-else
-                                    :href="EUROPE_PMC_URL + publicationItem"
-                                    style="text-decoration: none"
-                                    target="_blank"
-                                  >
-                                    {{ publicationItem }}
-                                  </a>
-                                </span>
-                              </span>
-                            </td>
-                            <td v-if="isAuthenticated">
-                              <ul
-                                v-if="item.comments?.length > 0"
-                                class="mb-0 ps-3"
-                              >
-                                <li
-                                  v-for="commentItem in item.comments"
-                                  :key="commentItem.text"
-                                  style="white-space: pre-wrap"
-                                >
-                                  {{ commentItem.text }} ({{
-                                    commentItem.date
-                                  }})
-                                </li>
-                              </ul>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">Not Available</p>
+              <VariantTypes
+                :variant-types="locusGeneDiseaseData.variant_type"
+                :is-authenticated="isAuthenticated"
+              />
             </td>
           </tr>
           <tr>
@@ -365,84 +251,9 @@ export default {
               <h6>Variant Description</h6>
             </td>
             <td class="w-75">
-              <div
-                v-if="locusGeneDiseaseData.variant_description?.length > 0"
-                class="accordion accordion-flush"
-                id="accordionVariantDescription"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleVariantDescriptionTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleVariantDescriptionTable"
-                    >
-                      Variant Description ({{
-                        locusGeneDiseaseData.variant_description.length
-                      }})
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleVariantDescriptionTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionVariantDescription"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Variant Description</th>
-                            <th>Publications</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="item in locusGeneDiseaseData.variant_description"
-                          >
-                            <td>
-                              {{ item.description }}
-                            </td>
-                            <td>
-                              <span v-if="item.publications?.length > 0">
-                                <span
-                                  v-for="(
-                                    publicationItem, index
-                                  ) in item.publications"
-                                >
-                                  <span
-                                    v-if="index < item.publications.length - 1"
-                                  >
-                                    <a
-                                      :href="EUROPE_PMC_URL + publicationItem"
-                                      style="text-decoration: none"
-                                      target="_blank"
-                                    >
-                                      {{ publicationItem }}
-                                    </a>
-                                    ,
-                                  </span>
-                                  <a
-                                    v-else
-                                    :href="EUROPE_PMC_URL + publicationItem"
-                                    style="text-decoration: none"
-                                    target="_blank"
-                                  >
-                                    {{ publicationItem }}
-                                  </a>
-                                </span>
-                              </span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">Not Available</p>
+              <VariantDescription
+                :variant-description="locusGeneDiseaseData.variant_description"
+              />
             </td>
           </tr>
           <tr>
@@ -453,71 +264,9 @@ export default {
               </h6>
             </td>
             <td class="w-75">
-              <div
-                v-if="locusGeneDiseaseData.variant_consequence?.length > 0"
-                class="accordion accordion-flush"
-                id="accordionVariantConsequences"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleVariantConsequencesTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleVariantConsequencesTable"
-                    >
-                      {{
-                        locusGeneDiseaseData.variant_consequence
-                          .map((x) => x.variant_consequence)
-                          .join(", ")
-                      }}
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleVariantConsequencesTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionVariantConsequences"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Variant Consequence</th>
-                            <th>Support</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="item in locusGeneDiseaseData.variant_consequence"
-                          >
-                            <td>
-                              <a
-                                v-if="item.accession"
-                                :href="SEQUENCE_ONTOLOGY_URL + item.accession"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ item.variant_consequence }}
-                              </a>
-                              <span v-else>{{ item.variant_consequence }}</span>
-                            </td>
-                            <td>
-                              <template
-                                v-if="item.variant_consequence !== 'uncertain'"
-                              >
-                                {{ item.support }}
-                              </template>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">Not Available</p>
+              <VariantConsequences
+                :variant-consequences="locusGeneDiseaseData.variant_consequence"
+              />
             </td>
           </tr>
           <tr id="molecular-mechanism-section" class="align-middle">
@@ -557,62 +306,11 @@ export default {
               </h6>
             </td>
             <td class="w-75">
-              <div
-                v-if="
-                  locusGeneDiseaseData.molecular_mechanism?.synopsis?.length > 0
+              <MechanismSynopsis
+                :mechanism-synopsis="
+                  locusGeneDiseaseData.molecular_mechanism?.synopsis
                 "
-                class="accordion accordion-flush"
-                id="accordionMechanismSynopsis"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleMechanismSynopsisTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleMechanismSynopsisTable"
-                    >
-                      {{
-                        locusGeneDiseaseData.molecular_mechanism.synopsis
-                          .map((x) => x.synopsis)
-                          .join(", ")
-                      }}
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleMechanismSynopsisTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionMechanismSynopsis"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Categorisation</th>
-                            <th>Support</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="item in locusGeneDiseaseData
-                              .molecular_mechanism.synopsis"
-                          >
-                            <td>
-                              {{ item.synopsis }}
-                            </td>
-                            <td>
-                              {{ item.support }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">Not Available</p>
+              />
             </td>
           </tr>
           <tr
@@ -626,98 +324,11 @@ export default {
               <h6>Evidence</h6>
             </td>
             <td class="w-75">
-              <div
-                class="accordion accordion-flush"
-                id="accordionMechanismEvidence"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleMechanismEvidenceTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleMechanismEvidenceTable"
-                    >
-                      Evidence ({{
-                        Object.keys(
-                          locusGeneDiseaseData.molecular_mechanism.evidence,
-                        ).length
-                      }})
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleMechanismEvidenceTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionMechanismEvidence"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Publication</th>
-                            <th>Functional Studies</th>
-                            <th>Descriptions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="(value, key) in locusGeneDiseaseData
-                              .molecular_mechanism.evidence"
-                          >
-                            <td>
-                              <a
-                                :href="EUROPE_PMC_URL + key"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ key }}
-                              </a>
-                            </td>
-                            <td>
-                              <ul
-                                v-if="
-                                  Object.keys(value?.functional_studies || {})
-                                    .length > 0
-                                "
-                                class="mb-0 ps-3"
-                              >
-                                <li
-                                  v-for="(
-                                    secondaryEvidenceTypeArray,
-                                    primaryEvidenceType
-                                  ) in value.functional_studies"
-                                >
-                                  {{ primaryEvidenceType }} :
-                                  {{
-                                    secondaryEvidenceTypeArray?.length > 0
-                                      ? secondaryEvidenceTypeArray.join(", ")
-                                      : null
-                                  }}
-                                </li>
-                              </ul>
-                            </td>
-                            <td>
-                              <ul
-                                v-if="value?.descriptions?.length > 0"
-                                class="mb-0 ps-3"
-                              >
-                                <li
-                                  v-for="item in value.descriptions"
-                                  style="white-space: pre-wrap"
-                                >
-                                  {{ item }}
-                                </li>
-                              </ul>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <MechanismEvidence
+                :mechanism-evidence="
+                  locusGeneDiseaseData.molecular_mechanism.evidence
+                "
+              />
             </td>
           </tr>
           <tr id="phenotype-feature-section">
@@ -728,96 +339,7 @@ export default {
               </h5>
             </td>
             <td class="w-75">
-              <div
-                v-if="locusGeneDiseaseData.phenotypes?.length > 0"
-                class="accordion accordion-flush"
-                id="accordionPhenotypicFeatures"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsiblePhenotypicFeaturesTable"
-                      aria-expanded="false"
-                      aria-controls="collapsiblePhenotypicFeaturesTable"
-                    >
-                      Phenotypic Features ({{
-                        locusGeneDiseaseData.phenotypes.length
-                      }})
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsiblePhenotypicFeaturesTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionPhenotypicFeatures"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th style="width: 10%">Accession</th>
-                            <th style="width: 60%">Term</th>
-                            <th style="width: 30%">Publications</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="item in locusGeneDiseaseData.phenotypes"
-                            :key="item.accession"
-                          >
-                            <td style="width: 10%">
-                              <a
-                                :href="HPO_URL + item.accession"
-                                style="text-decoration: none"
-                                v-if="item.accession"
-                                target="_blank"
-                              >
-                                {{ item.accession }}
-                              </a>
-                            </td>
-                            <td style="width: 60%">
-                              {{ item.term }}
-                            </td>
-                            <td style="width: 30%">
-                              <span v-if="item.publications?.length > 0">
-                                <span
-                                  v-for="(
-                                    publicationItem, index
-                                  ) in item.publications"
-                                >
-                                  <span
-                                    v-if="index < item.publications.length - 1"
-                                  >
-                                    <a
-                                      :href="EUROPE_PMC_URL + publicationItem"
-                                      style="text-decoration: none"
-                                      target="_blank"
-                                    >
-                                      {{ publicationItem }}
-                                    </a>
-                                    ,
-                                  </span>
-                                  <a
-                                    v-else
-                                    :href="EUROPE_PMC_URL + publicationItem"
-                                    style="text-decoration: none"
-                                    target="_blank"
-                                  >
-                                    {{ publicationItem }}
-                                  </a>
-                                </span>
-                              </span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">Not Available</p>
+              <Phenotypes :phenotypes="locusGeneDiseaseData.phenotypes" />
             </td>
           </tr>
           <tr id="phenotype-summary-section">
@@ -825,64 +347,9 @@ export default {
               <h5>Phenotypic Summary</h5>
             </td>
             <td class="w-75">
-              <div
-                v-if="locusGeneDiseaseData.phenotype_summary?.length > 0"
-                class="accordion accordion-flush"
-                id="accordionPhenotypicSummary"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsiblePhenotypicSummaryTable"
-                      aria-expanded="false"
-                      aria-controls="collapsiblePhenotypicSummaryTable"
-                    >
-                      Phenotypic Summary ({{
-                        locusGeneDiseaseData.phenotype_summary.length
-                      }})
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsiblePhenotypicSummaryTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionPhenotypicSummary"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Publication</th>
-                            <th>Phenotypic Summary</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="item in locusGeneDiseaseData.phenotype_summary"
-                          >
-                            <td>
-                              <a
-                                v-if="item.publication"
-                                :href="EUROPE_PMC_URL + item.publication"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ item.publication }}
-                              </a>
-                            </td>
-                            <td style="white-space: pre-wrap">
-                              {{ item.summary }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">Not Available</p>
+              <PhenotypeSummary
+                :phenotype-summary="locusGeneDiseaseData.phenotype_summary"
+              />
             </td>
           </tr>
           <tr id="evidence-section">
@@ -982,69 +449,12 @@ export default {
               </h6>
             </td>
             <td class="w-75">
-              <table class="table table-bordered mb-0">
-                <thead>
-                  <tr>
-                    <th>DECIPHER</th>
-                    <th>OMIM</th>
-                    <th>Ensembl ID</th>
-                    <th>HGNC ID</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a
-                        v-if="locusGeneDiseaseData.locus?.gene_symbol"
-                        :href="
-                          DECIPHER_URL + locusGeneDiseaseData.locus.gene_symbol
-                        "
-                        style="text-decoration: none"
-                        target="_blank"
-                      >
-                        {{ locusGeneDiseaseData.locus.gene_symbol }}
-                      </a>
-                      <p v-else class="text-muted">Not Available</p>
-                    </td>
-                    <td>
-                      <a
-                        v-if="locusGeneDiseaseData.locus?.ids?.OMIM"
-                        :href="OMIM_URL + locusGeneDiseaseData.locus.ids.OMIM"
-                        style="text-decoration: none"
-                        target="_blank"
-                      >
-                        {{ locusGeneDiseaseData.locus.ids.OMIM }}
-                      </a>
-                      <p v-else class="text-muted">Not Available</p>
-                    </td>
-                    <td>
-                      <a
-                        v-if="locusGeneDiseaseData.locus?.ids?.Ensembl"
-                        :href="
-                          ENSEMBL_GENE_URL +
-                          locusGeneDiseaseData.locus.ids.Ensembl
-                        "
-                        style="text-decoration: none"
-                        target="_blank"
-                      >
-                        {{ locusGeneDiseaseData.locus.ids.Ensembl }}
-                      </a>
-                      <p v-else class="text-muted">Not Available</p>
-                    </td>
-                    <td>
-                      <a
-                        v-if="locusGeneDiseaseData.locus?.ids?.HGNC"
-                        :href="HGNC_URL + locusGeneDiseaseData.locus.ids.HGNC"
-                        style="text-decoration: none"
-                        target="_blank"
-                      >
-                        {{ locusGeneDiseaseData.locus.ids.HGNC }}
-                      </a>
-                      <p v-else class="text-muted">Not Available</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <ExternalLinks
+                :gene-symbol="locusGeneDiseaseData.locus?.gene_symbol"
+                :omim-id="locusGeneDiseaseData.locus?.ids?.OMIM"
+                :ensembl-id="locusGeneDiseaseData.locus?.ids?.Ensembl"
+                :hgnc-id="locusGeneDiseaseData.locus?.ids?.HGNC"
+              />
             </td>
           </tr>
           <tr id="disease-information-section">
@@ -1076,74 +486,9 @@ export default {
               </h6>
             </td>
             <td class="w-75">
-              <div
-                v-if="locusGeneDiseaseData.disease?.ontology_terms?.length > 0"
-                class="accordion accordion-flush"
-                id="accordionCrossReferences"
-              >
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleCrossReferencesTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleCrossReferencesTable"
-                    >
-                      Cross References ({{
-                        locusGeneDiseaseData.disease.ontology_terms.length
-                      }})
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleCrossReferencesTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionCrossReferences"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Accession</th>
-                            <th>Term</th>
-                            <th>Source</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="ontologyTerm in locusGeneDiseaseData.disease
-                              .ontology_terms"
-                          >
-                            <td>
-                              <a
-                                v-if="ontologyTerm.source === 'OMIM'"
-                                :href="OMIM_URL + ontologyTerm.accession"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ ontologyTerm.accession }}
-                              </a>
-                              <a
-                                v-else-if="ontologyTerm.source === 'Mondo'"
-                                :href="MONDO_URL + ontologyTerm.accession"
-                                style="text-decoration: none"
-                                target="_blank"
-                              >
-                                {{ ontologyTerm.accession }}
-                              </a>
-                              <span v-else>{{ ontologyTerm.accession }}</span>
-                            </td>
-                            <td>{{ ontologyTerm.term }}</td>
-                            <td>{{ ontologyTerm.source }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p v-else class="text-muted">Not Available</p>
+              <CrossReferences
+                :ontology-terms="locusGeneDiseaseData.disease?.ontology_terms"
+              />
             </td>
           </tr>
           <tr class="align-middle">
@@ -1162,56 +507,7 @@ export default {
               <h5>Comments</h5>
             </td>
             <td class="w-75">
-              <div class="accordion accordion-flush" id="accordionComments">
-                <div class="accordion-item">
-                  <h2 class="accordion-header border">
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapsibleCommentsTable"
-                      aria-expanded="false"
-                      aria-controls="collapsibleCommentsTable"
-                    >
-                      Comments ({{ locusGeneDiseaseData.comments.length }})
-                    </button>
-                  </h2>
-                  <div
-                    id="collapsibleCommentsTable"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#accordionComments"
-                  >
-                    <div class="accordion-body p-0">
-                      <table class="table table-bordered mb-0">
-                        <thead>
-                          <tr>
-                            <th>Comment</th>
-                            <th>Type</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="commentObj in locusGeneDiseaseData.comments"
-                          >
-                            <td style="white-space: pre-wrap">
-                              {{ commentObj.text }}
-                            </td>
-                            <td>
-                              {{
-                                commentObj.is_public == 1
-                                  ? "Public"
-                                  : commentObj.is_public == 0
-                                    ? "Private"
-                                    : ""
-                              }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Comments :comments="locusGeneDiseaseData.comments" />
             </td>
           </tr>
           <tr id="curation-information-section">
