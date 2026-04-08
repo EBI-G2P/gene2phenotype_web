@@ -39,12 +39,12 @@ export default {
       return text.length > 50 ? `${text.slice(0, 50)}...` : text;
     },
     listComponents(items) {
-      if (!Array.isArray(items) || items.length === 0) return "";
+      if (!Array.isArray(items) || items.length === 0) return [];
       const names = items
         .filter((item) => item?.status !== "resolved")
         .map((item) => item?.component)
         .filter((component) => component);
-      if (names.length === 0) return "";
+      if (names.length === 0) return [];
       return Array.from(new Set(names));
     },
   },
