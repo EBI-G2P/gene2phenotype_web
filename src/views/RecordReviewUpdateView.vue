@@ -77,7 +77,7 @@ export default {
     },
     parseDetailsInput(rawDetails) {
       if (rawDetails == null || rawDetails === "") {
-        return { ok: true, value: "" };
+        return { valid: true, value: "" };
       }
       if (typeof rawDetails === "object") {
         return { ok: true, value: rawDetails };
