@@ -136,7 +136,7 @@ export default {
       <div><i class="bi bi-exclamation-circle-fill"></i> {{ errorMsg }}</div>
     </div>
 
-    <div class="mb-2">
+    <div class="mt-2 mb-2">
       <div class="row align-items-center w-75">
         <label class="col-lg-2 col-form-label fw-bold text-nowrap">
           G2P ID<span class="text-danger">*</span>
