@@ -29,7 +29,7 @@ export default {
       if (!this.reviewCase) return false;
       if (this.reviewCase.status !== REVIEW_STATUS.RESOLVED) return false;
       return (this.reviewCase.items || []).every(
-        (item) => item.status === "resolved"
+        (item) => item.status === REVIEW_STATUS.RESOLVED
       );
     },
     availableComponentOptions() {
