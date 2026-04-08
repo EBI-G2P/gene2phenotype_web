@@ -52,30 +52,6 @@ export default {
     );
   },
   methods: {
-    normalizeDetails(details) {
-      if (details == null || details === "") return [];
-      if (typeof details === "object") {
-        return Object.entries(details).map(([key, value]) => ({
-          key,
-          value,
-        }));
-      }
-      if (typeof details === "string") {
-        try {
-          const parsed = JSON.parse(details);
-          if (parsed && typeof parsed === "object") {
-            return Object.entries(parsed).map(([key, value]) => ({
-              key,
-              value,
-            }));
-          }
-        } catch (e) {
-          // fall through to raw string rendering
-        }
-        return [{ key: "details", value: details }];
-      }
-      return [{ key: "details", value: String(details) }];
-    },
     addItem() {
       if (!this.formData || !this.newItemComponent) return;
       const exists = (this.formData.items || []).some(
