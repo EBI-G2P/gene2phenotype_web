@@ -157,7 +157,6 @@ export default {
         const parsedDetails = this.parseDetailsInput(item.details);
         if (!parsedDetails.ok) {
           this.saveErrorMsg = `Invalid details for "${item.component}". ${parsedDetails.error}`;
-          this.isSaving = false;
           return;
         }
         parsedItems.push({
