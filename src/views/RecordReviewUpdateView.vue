@@ -209,7 +209,7 @@ export default {
             <label class="col-lg-2 col-form-label fw-bold text-nowrap">
               Status
             </label>
-            <div class="col-lg-10">
+            <div class="col-lg-5">
               <select
                 class="form-select"
                 v-model="formData.status"
@@ -307,7 +307,7 @@ export default {
           </table>
           <p class="text-dark" v-else>No items available for this case.</p>
           <div class="mt-3" v-if="!isResolvedLocked">
-            <label class="form-label fw-bold">Add item</label>
+            <h6 class="fw-bold">Add item</h6>
             <div class="d-flex gap-2 flex-wrap">
               <select
                 class="form-select"
