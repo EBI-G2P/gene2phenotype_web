@@ -52,7 +52,11 @@ export default {
 </script>
 
 <template>
-  <table class="table table-hover table-bordered" v-if="items.length > 0">
+  <table
+    class="table table-hover table-bordered"
+    :class="{ 'table-secondary': muted }"
+    v-if="items.length > 0"
+  >
     <thead>
       <tr>
         <th>Case ID</th>
@@ -71,7 +75,6 @@ export default {
           <router-link
             :to="`/record-review-update/${item.id}`"
             style="text-decoration: none"
-            :class="{ 'text-muted': muted }"
           >
             {{ item.id }}
           </router-link>
@@ -82,12 +85,11 @@ export default {
             style="text-decoration: none"
             target="_blank"
             rel="noopener noreferrer"
-            :class="{ 'text-muted': muted }"
           >
             {{ item.stable_id }}
           </a>
         </td>
-        <td :class="{ 'text-muted': muted }">
+        <td>
           <span v-if="!item.summary"></span>
           <span v-else-if="isSummaryExpanded(item.id)">
             {{ item.summary }}
@@ -95,7 +97,6 @@ export default {
               v-if="isSummaryTruncated(item.summary)"
               type="button"
               class="btn btn-link p-0 align-baseline"
-              :class="{ 'text-muted': muted }"
               style="text-decoration: none"
               @click="toggleSummary(item.id)"
             >
@@ -109,7 +110,6 @@ export default {
               v-if="isSummaryTruncated(item.summary)"
               type="button"
               class="btn btn-link p-0 align-baseline"
-              :class="{ 'text-muted': muted }"
               style="text-decoration: none"
               @click="toggleSummary(item.id)"
             >
@@ -118,7 +118,7 @@ export default {
             </button>
           </span>
         </td>
-        <td :class="{ 'text-muted': muted }">
+        <td>
           <div
             v-if="listComponents(item.items).length > 0"
             class="d-flex flex-wrap gap-1"
@@ -133,10 +133,10 @@ export default {
           </div>
           <span v-else>-</span>
         </td>
-        <td :class="{ 'text-muted': muted }">{{ item.status }}</td>
-        <td :class="{ 'text-muted': muted }">{{ item.created_by }}</td>
-        <td :class="{ 'text-muted': muted }">{{ item.date_created }}</td>
-        <td :class="{ 'text-muted': muted }">{{ item.date_last_update }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.created_by }}</td>
+        <td>{{ item.date_created }}</td>
+        <td>{{ item.date_last_update }}</td>
       </tr>
     </tbody>
   </table>
