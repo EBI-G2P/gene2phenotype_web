@@ -11,3 +11,26 @@ export const viewSelectedPublications = (selectedPublicationsList) => {
   // Open in new tab
   window.open(url, "_blank", "noopener,noreferrer");
 };
+
+export const parseDetailsInput = (rawDetails) => {
+  if (rawDetails == null || rawDetails === "") {
+    return { valid: true, value: "" };
+  }
+  if (typeof rawDetails === "object") {
+    return { valid: true, value: rawDetails };
+  }
+  if (typeof rawDetails === "string") {
+    const trimmed = rawDetails.trim();
+    if (!trimmed) return { valid: true, value: "" };
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (parsed && typeof parsed === "object") {
+        return { valid: true, value: parsed };
+      }
+      return { valid: false, error: "Details must be a JSON object or array." };
+    } catch (e) {
+      return { valid: false, error: "Details must be valid JSON." };
+    }
+  }
+  return { valid: false, error: "Details must be valid JSON." };
+};

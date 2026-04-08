@@ -1,5 +1,6 @@
 <script>
 import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
+import { parseDetailsInput } from "../utility/CommonUtility.js";
 import {
   REVIEW_COMPONENT_OPTIONS,
   REVIEW_STATUS,
@@ -29,28 +30,6 @@ export default {
     },
   },
   methods: {
-    parseDetailsInput(rawDetails) {
-      if (rawDetails == null || rawDetails === "") {
-        return { valid: true, value: "" };
-      }
-      if (typeof rawDetails === "object") {
-        return { ok: true, value: rawDetails };
-      }
-      if (typeof rawDetails === "string") {
-        const trimmed = rawDetails.trim();
-        if (!trimmed) return { ok: true, value: "" };
-        try {
-          const parsed = JSON.parse(trimmed);
-          if (parsed && typeof parsed === "object") {
-            return { ok: true, value: parsed };
-          }
-          return { ok: false, error: "Details must be a JSON object or array." };
-        } catch (e) {
-          return { ok: false, error: "Details must be valid JSON." };
-        }
-      }
-      return { ok: false, error: "Details must be valid JSON." };
-    },
     syncItemsFromSelection() {
       const selected = new Set(this.selectedComponents);
       this.items = [
@@ -79,8 +58,8 @@ export default {
       }
       const parsedItems = [];
       for (const item of this.items) {
-        const parsedDetails = this.parseDetailsInput(item.details);
-        if (!parsedDetails.ok) {
+        const parsedDetails = parseDetailsInput(item.details);
+        if (!parsedDetails.valid) {
           this.errorMsg = `Invalid details for "${item.component}". ${parsedDetails.error}`;
           return;
         }
