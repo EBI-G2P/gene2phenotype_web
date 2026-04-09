@@ -45,6 +45,8 @@ export const UPDATE_DISEASE_NAME_URL = `${G2P_API_BASE_URL}/update/diseases/`;
 export const UPDATE_REVIEW_STATUS_URL = `${G2P_API_BASE_URL}/lgd/:stableid/review/`;
 export const UPDATE_COMMENT_URL = `${G2P_API_BASE_URL}/lgd/:stableid/comment/`;
 export const UPDATE_MINED_PUBLICATION_URL = `${G2P_API_BASE_URL}/lgd/:stableid/mined_publication/`;
+export const REVIEW_QUEUE_URL = `${G2P_API_BASE_URL}/review_queue/`;
+export const REVIEW_QUEUE_DETAIL_URL = `${G2P_API_BASE_URL}/review_queue/:caseid/`;
 
 //External API URLS
 export const HPO_SEARCH_API_URL = "https://ontology.jax.org/api/hp/search";
