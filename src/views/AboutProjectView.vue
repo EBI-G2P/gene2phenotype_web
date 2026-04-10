@@ -19,9 +19,10 @@
       mechanism.
     </p>
     <p>
-      All data is made freely available. The initial paper is available
+      All data is made freely available. The latest publication describing the
+      database is available
       <a
-        href="https://doi.org/10.1038/s41467-019-10016-3"
+        href="https://doi.org/10.1016/j.jmb.2026.169768"
         target="_blank"
         style="text-decoration: none"
         >here</a

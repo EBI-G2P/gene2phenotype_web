@@ -10,20 +10,21 @@
       with date accessed and below article.
     </h6>
     <a
-      href="https://doi.org/10.1038/s41467-019-10016-3"
+      href="https://doi.org/10.1016/j.jmb.2026.169768"
       style="text-decoration: none"
       target="_blank"
     >
       <h6>
-        Flexible and scalable diagnostic filtering of genomic variants using G2P
-        with Ensembl VEP
+        Gene2Phenotype: A Database of Structured Human Monogenic Diseases and
+        Pathomechanisms
       </h6>
     </a>
     <div class="pb-2 citation-div">
       <p>
-        Thormann, A., Halachev, M., McLaren, W. et al. Flexible and scalable
-        diagnostic filtering of genomic variants using G2P with Ensembl VEP. Nat
-        Commun 10, 2373 (2019). https://doi.org/10.1038/s41467-019-10016-3
+        Hunt SE, Lemos D, Pericherla SR, Austine-Orimoloye O, Cibrian Uhalte E,
+        Yates TM, et al. Gene2Phenotype: A Database of Structured Human
+        Monogenic Diseases and Pathomechanisms. Journal of Molecular Biology.
+        2026 Mar;169768. doi:10.1016/j.jmb.2026.169768
       </p>
     </div>
     <h4 class="pb-2">Additional G2P Publications</h4>
@@ -81,6 +82,23 @@
         disease-relevant variant classes, and disease mechanism for inherited
         cardiac conditions. Genome Med 15, 86 (2023).
         https://doi.org/10.1186/s13073-023-01246-8
+      </p>
+    </div>
+    <a
+      href="https://doi.org/10.1038/s41467-019-10016-3"
+      style="text-decoration: none"
+      target="_blank"
+    >
+      <h6>
+        Flexible and scalable diagnostic filtering of genomic variants using G2P
+        with Ensembl VEP
+      </h6>
+    </a>
+    <div class="pb-2 citation-div">
+      <p>
+        Thormann, A., Halachev, M., McLaren, W. et al. Flexible and scalable
+        diagnostic filtering of genomic variants using G2P with Ensembl VEP. Nat
+        Commun 10, 2373 (2019). https://doi.org/10.1038/s41467-019-10016-3
       </p>
     </div>
     <a
