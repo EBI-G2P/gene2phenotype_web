@@ -45,7 +45,7 @@ export const HELP_TEXT = {
   GENE_LOCATION:
     "The location of the gene on the GRCh38 reference assembly. The format is chromosome:start:end:strand where '1' is forward strand and '-1' is reverse strand.",
   MINED_PUBLICATIONS:
-    "These publications have been mined from PubMed (See: 'Domain-wide Mapping of Peer-reviewed Literature for Genetic Developmental Disorders using Machine Learning and Gene2Phenotype', doi: 10.1101/2025.11.24.25340871 for method information) and have not yet been reviewed. All publications are available on the FTP site.",
+    "These publications have been mined from PubMed (See: 'Domain-wide Mapping of Peer-reviewed Literature for Genetic Developmental Disorders using Machine Learning and Gene2Phenotype', doi: 10.1101/2025.11.24.25340871 for method information) and have not yet been reviewed.",
 };
 
 export const MARSH_PROBABILITY_THRESHOLD = {
