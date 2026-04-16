@@ -12,6 +12,7 @@ export default {
   >
     <thead>
       <tr>
+        <th>Session Name</th>
         <th>G2P ID</th>
         <th>Gene</th>
         <th>Disease</th>
@@ -24,6 +25,9 @@ export default {
     </thead>
     <tbody>
       <tr v-for="item in userAutomaticDrafts.results" :key="item.stable_id">
+        <td>
+          {{ item.session_name }}
+        </td>
         <td>{{ item.stable_id }}</td>
         <td>{{ item.locus }}</td>
         <td>{{ item.disease }}</td>
