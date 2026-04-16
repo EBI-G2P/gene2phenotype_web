@@ -1,3 +1,4 @@
+<!-- Note: This file will be removed once RecordDraftsView.vue file changes are completed -->
 <script>
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
 import { ALL_SAVED_DRAFTS_URL } from "../utility/UrlConstants.js";
@@ -18,7 +19,7 @@ export default {
       () => {
         this.fetchData();
       },
-      { immediate: true }
+      { immediate: true },
     );
   },
   methods: {
@@ -33,7 +34,7 @@ export default {
         .catch((error) => {
           this.errorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to fetch saved curation entries. Please try again later."
+            "Unable to fetch saved curation entries. Please try again later.",
           );
         })
         .finally(() => {
