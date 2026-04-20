@@ -15,6 +15,8 @@ import ToolTip from "../tooltip/ToolTip.vue";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
 import api from "../../services/api.js";
 import { HELP_TEXT } from "../../utility/Constants.js";
+import { useAuthStore } from "../../store/auth.js";
+import { mapState } from "pinia";
 
 export default {
   props: {
@@ -32,7 +34,7 @@ export default {
       mechanismSynopsis: "",
       mechanismSynopsisSupport: "",
       mechanismEvidence: this.getInitialMechanismEvidence(
-        this.currentPublications
+        this.currentPublications,
       ),
       isUpdateApiCallLoading: false,
       updateMechanismErrorMsg: null,
@@ -55,7 +57,7 @@ export default {
       api
         .patch(
           UPDATE_MECHANISM_URL.replace(":stableid", this.stableId),
-          requestBody
+          requestBody,
         )
         .then((response) => {
           this.isUpdateMechanismSuccess = true;
@@ -66,7 +68,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to update mechanism. Please try again later.",
-            "Unable to update mechanism."
+            "Unable to update mechanism.",
           );
         })
         .finally(() => {
@@ -99,11 +101,11 @@ export default {
       // convert mechanismEvidence from object to array of objects and include evidence that have non empty evidence types
       let mechanismEvidenceArray = [];
       for (const [publicationPmid, valueObj] of Object.entries(
-        this.mechanismEvidence
+        this.mechanismEvidence,
       )) {
         let evidenceTypesArray = [];
         for (const [primaryType, secondaryTypesArray] of Object.entries(
-          valueObj.evidence_types
+          valueObj.evidence_types,
         )) {
           if (secondaryTypesArray.length > 0) {
             let evidenceTypeObj = {
@@ -170,10 +172,17 @@ export default {
     kebabCase,
   },
   computed: {
+    ...mapState(useAuthStore, ["isSuperUser"]),
     canUpdateMechanismInput() {
+      // Superusers can update mechanism regardless of currentMechanism.mechanism value
+      if (this.isSuperUser) return true;
+      // Non superusers can update mechanism only if currentMechanism.mechanism is "undetermined"
       return this.currentMechanism?.mechanism === "undetermined";
     },
     canUpdateMechanismSourceInput() {
+      // Superusers can update mechanism source regardless of currentMechanism.mechanism_support value
+      if (this.isSuperUser) return true;
+      // Non superusers can update mechanism source only if currentMechanism.mechanism_support is "inferred"
       return this.currentMechanism?.mechanism_support === "inferred";
     },
     isDisplayEvidenceForm() {
@@ -198,7 +207,7 @@ export default {
         this.mechanismSupport === "evidence" &&
         this.mechanism === "undetermined"
       ) {
-        return `Mechanism source can not be set to '${this.mechanismSupport}' for 'undetermined' Mechanism`;
+        return "Mechanism source can not be set to 'evidence' for 'undetermined' Mechanism";
       }
       return null;
     },
@@ -543,7 +552,7 @@ export default {
                                 class="form-check-input"
                                 type="checkbox"
                                 :id="`evidence-type-input-${pmid}-${kebabCase(
-                                  item.primaryType
+                                  item.primaryType,
                                 )}-${kebabCase(secondaryTypeItem)}`"
                                 v-model="
                                   mechanismEvidence[pmid].evidence_types[
@@ -555,7 +564,7 @@ export default {
                               <label
                                 class="form-check-label"
                                 :for="`evidence-type-input-${pmid}-${kebabCase(
-                                  item.primaryType
+                                  item.primaryType,
                                 )}-${kebabCase(secondaryTypeItem)}`"
                               >
                                 {{ secondaryTypeItem }}
@@ -569,7 +578,7 @@ export default {
                   <p
                     v-if="
                       Object.values(
-                        mechanismEvidence[pmid].evidence_types
+                        mechanismEvidence[pmid].evidence_types,
                       ).every((arr) => arr.length === 0) &&
                       mechanismEvidence[pmid].description.length === 0
                     "
@@ -581,7 +590,7 @@ export default {
                   <p
                     v-if="
                       Object.values(
-                        mechanismEvidence[pmid].evidence_types
+                        mechanismEvidence[pmid].evidence_types,
                       ).every((arr) => arr.length === 0) &&
                       mechanismEvidence[pmid].description.length > 0
                     "
@@ -607,7 +616,7 @@ export default {
                       v-model="mechanismEvidence[pmid].description"
                       :disabled="
                         Object.values(
-                          mechanismEvidence[pmid].evidence_types
+                          mechanismEvidence[pmid].evidence_types,
                         ).every((arr) => arr.length === 0)
                       "
                     >
