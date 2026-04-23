@@ -9,6 +9,8 @@ import {
 import kebabCase from "lodash/kebabCase";
 import { HELP_TEXT } from "../../utility/Constants.js";
 import { EUROPE_PMC_URL } from "../../utility/UrlConstants.js";
+import { useAuthStore } from "../../store/auth.js";
+import { mapState } from "pinia";
 export default {
   props: {
     currentMechanism: Object,
@@ -36,7 +38,7 @@ export default {
           updatedMechanismEvidence[pmid].evidence_types[key].indexOf(value);
         updatedMechanismEvidence[pmid].evidence_types[key].splice(
           indexToBeRemoved,
-          1
+          1,
         );
       }
       this.$emit("updateMechanismEvidence", updatedMechanismEvidence);
@@ -59,10 +61,17 @@ export default {
     };
   },
   computed: {
+    ...mapState(useAuthStore, ["isSuperUser"]),
     canUpdateMechanismInput() {
+      // Superusers can update mechanism regardless of currentMechanism.mechanism value
+      if (this.isSuperUser) return true;
+      // Non superusers can update mechanism only if currentMechanism.mechanism is "undetermined"
       return this.currentMechanism?.mechanism === "undetermined";
     },
     canUpdateMechanismSourceInput() {
+      // Superusers can update mechanism source regardless of currentMechanism.mechanism_support value
+      if (this.isSuperUser) return true;
+      // Non superusers can update mechanism source only if currentMechanism.mechanism_support is "inferred"
       return this.currentMechanism?.mechanism_support === "inferred";
     },
     isDisplayNewEvidenceForm() {
@@ -87,7 +96,7 @@ export default {
         this.molecularMechanismSupport === "evidence" &&
         this.molecularMechanism === "undetermined"
       ) {
-        return `Mechanism source can not be set to '${this.molecularMechanismSupport}' for 'undetermined' Mechanism`;
+        return "Mechanism source can not be set to 'evidence' for 'undetermined' Mechanism";
       }
       return null;
     },
@@ -174,7 +183,7 @@ export default {
                   @input="
                     $emit(
                       'update:molecularMechanismSupport',
-                      $event.target.value
+                      $event.target.value,
                     )
                   "
                   :disabled="!canUpdateMechanismSourceInput"
@@ -240,7 +249,7 @@ export default {
                   @input="
                     $emit(
                       'update:mechanismSynopsisSupport',
-                      $event.target.value
+                      $event.target.value,
                     )
                   "
                   aria-describedby="invalid-categorisation-input-source-feedback"
@@ -412,7 +421,7 @@ export default {
                                 class="form-check-input"
                                 type="checkbox"
                                 :id="`evidence-type-input-${pmid}-${kebabCase(
-                                  item.primaryType
+                                  item.primaryType,
                                 )}-${kebabCase(secondaryTypeItem)}`"
                                 :checked="
                                   mechanismEvidence[pmid].evidence_types[
@@ -424,14 +433,14 @@ export default {
                                     item.primaryType,
                                     pmid,
                                     $event.target.checked,
-                                    secondaryTypeItem
+                                    secondaryTypeItem,
                                   )
                                 "
                               />
                               <label
                                 class="form-check-label"
                                 :for="`evidence-type-input-${pmid}-${kebabCase(
-                                  item.primaryType
+                                  item.primaryType,
                                 )}-${kebabCase(secondaryTypeItem)}`"
                               >
                                 {{ secondaryTypeItem }}
@@ -445,7 +454,7 @@ export default {
                   <p
                     v-if="
                       Object.values(
-                        mechanismEvidence[pmid].evidence_types
+                        mechanismEvidence[pmid].evidence_types,
                       ).every((arr) => arr.length === 0) &&
                       mechanismEvidence[pmid].description.length === 0
                     "
@@ -457,7 +466,7 @@ export default {
                   <p
                     v-if="
                       Object.values(
-                        mechanismEvidence[pmid].evidence_types
+                        mechanismEvidence[pmid].evidence_types,
                       ).every((arr) => arr.length === 0) &&
                       mechanismEvidence[pmid].description.length > 0
                     "
@@ -486,7 +495,7 @@ export default {
                       "
                       :disabled="
                         Object.values(
-                          mechanismEvidence[pmid].evidence_types
+                          mechanismEvidence[pmid].evidence_types,
                         ).every((arr) => arr.length === 0)
                       "
                     >
