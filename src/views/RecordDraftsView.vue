@@ -2,7 +2,7 @@
 import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
 import { RECORD_DRAFTS_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
-import RecordDraftsDisplay from "@/components/record-drafts/RecordDraftsDisplay.vue";
+import RecordDraftsDisplay from "../components/record-drafts/RecordDraftsDisplay.vue";
 
 export default {
   data() {

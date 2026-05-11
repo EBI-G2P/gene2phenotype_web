@@ -49,8 +49,8 @@ export default {
         <td>{{ item.last_update }}</td>
         <td class="text-nowrap">
           <router-link
-            v-if="item.session_name"
-            :to="`/lgd/update-draft/${item.stable_id}`"
+            v-if="item.stable_id"
+            :to="`/lgd/review-draft/${item.stable_id}`"
             style="text-decoration: none"
           >
             Review <i class="bi bi-file-earmark-text"></i>

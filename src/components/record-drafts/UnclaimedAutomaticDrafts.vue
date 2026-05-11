@@ -51,12 +51,14 @@ export default {
         </td>
         <td>{{ item.last_update }}</td>
         <td class="text-nowrap">
-          <router-link
-            :to="`/lgd/update-draft/${item.stable_id}`"
+          <button
+            type="button"
+            class="btn btn-link p-0"
             style="text-decoration: none"
+            @click="claimDraft(item.stable_id)"
           >
             Claim <i class="bi bi-plus-circle"></i>
-          </router-link>
+          </button>
         </td>
       </tr>
     </tbody>
