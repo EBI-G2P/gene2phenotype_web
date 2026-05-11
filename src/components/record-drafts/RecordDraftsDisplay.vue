@@ -5,9 +5,9 @@ import UserManualDrafts from "./UserManualDrafts.vue";
 
 export default {
   props: {
-    userManualDrafts: Object,
-    userAutomaticDrafts: Object,
-    unclaimedAutomaticDrafts: Object,
+    userManualDrafts: Array,
+    userAutomaticDrafts: Array,
+    unclaimedAutomaticDrafts: Array,
   },
   data() {
     return {

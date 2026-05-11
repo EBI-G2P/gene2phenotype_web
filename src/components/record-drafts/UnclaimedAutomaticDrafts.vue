@@ -1,13 +1,13 @@
 <script>
 export default {
   props: {
-    unclaimedAutomaticDrafts: Object,
+    unclaimedAutomaticDrafts: Array,
   },
 };
 </script>
 <template>
   <table
-    v-if="unclaimedAutomaticDrafts?.count > 0"
+    v-if="unclaimedAutomaticDrafts?.length > 0"
     class="table table-hover table-bordered"
   >
     <thead>
@@ -24,10 +24,7 @@ export default {
       </tr>
     </thead>
     <tbody>
-      <tr
-        v-for="item in unclaimedAutomaticDrafts.results"
-        :key="item.stable_id"
-      >
+      <tr v-for="item in unclaimedAutomaticDrafts" :key="item.stable_id">
         <td>
           {{ item.session_name }}
         </td>

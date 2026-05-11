@@ -1,13 +1,13 @@
 <script>
 export default {
   props: {
-    userManualDrafts: Object,
+    userManualDrafts: Array,
   },
 };
 </script>
 <template>
   <table
-    v-if="userManualDrafts?.count > 0"
+    v-if="userManualDrafts?.length > 0"
     class="table table-hover table-bordered"
   >
     <thead>
@@ -25,7 +25,7 @@ export default {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="item in userManualDrafts.results" :key="item.stable_id">
+      <tr v-for="item in userManualDrafts" :key="item.stable_id">
         <td>
           {{ item.session_name }}
         </td>

@@ -44,9 +44,9 @@ export default {
         api.get(unclaimedAutomaticsDraftsURL),
       ])
         .then(([response1, response2, response3]) => {
-          this.userManualDrafts = response1.data;
-          this.userAutomaticDrafts = response2.data;
-          this.unclaimedAutomaticDrafts = response3.data;
+          this.userManualDrafts = response1.data?.results;
+          this.userAutomaticDrafts = response2.data?.results;
+          this.unclaimedAutomaticDrafts = response3.data?.results;
         })
         .catch((error) => {
           this.errorMsg = fetchAndLogApiResponseErrorMsg(
