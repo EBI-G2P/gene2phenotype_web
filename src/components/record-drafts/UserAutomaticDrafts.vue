@@ -59,7 +59,10 @@ export default {
       </tr>
     </tbody>
   </table>
-  <p class="text-dark" v-else>You currently have no saved drafts.</p>
+  <div v-else class="alert alert-secondary" role="status">
+    <i class="bi bi-info-circle-fill"></i>
+    You currently have no automatic drafts.
+  </div>
 </template>
 <style scoped>
 table th {

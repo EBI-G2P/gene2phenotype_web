@@ -2,7 +2,10 @@
 export default {
   props: {
     unclaimedAutomaticDrafts: Array,
+    isClaimDraftLoading: Boolean,
+    claimDraftStableId: String,
   },
+  emits: ["claimDraft"],
 };
 </script>
 <template>
@@ -47,24 +50,38 @@ export default {
           </span>
         </td>
         <td>{{ item.last_update }}</td>
-        <td class="text-nowrap">
+        <td class="text-nowrap text-center">
           <button
             type="button"
-            class="btn btn-link p-0"
+            class="btn btn-link p-0 d-inline-flex align-items-center justify-content-center claim-draft-button"
             style="text-decoration: none"
-            @click="claimDraft(item.stable_id)"
+            :disabled="isClaimDraftLoading"
+            @click="$emit('claimDraft', item.stable_id)"
           >
-            Claim <i class="bi bi-plus-circle"></i>
+            <span
+              v-if="claimDraftStableId === item.stable_id"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            <span v-else>Claim <i class="bi bi-plus-circle"></i></span>
           </button>
         </td>
       </tr>
     </tbody>
   </table>
-  <p class="text-dark" v-else>You currently have no saved drafts.</p>
+  <div v-else class="alert alert-secondary" role="status">
+    <i class="bi bi-info-circle-fill"></i>
+    There are currently no unclaimed automatic drafts.
+  </div>
 </template>
 <style scoped>
 table th {
   /* Keep header text on one line */
   white-space: nowrap;
+}
+
+.claim-draft-button {
+  min-width: 64px;
 }
 </style>

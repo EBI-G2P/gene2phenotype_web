@@ -8,7 +8,10 @@ export default {
     userManualDrafts: Array,
     userAutomaticDrafts: Array,
     unclaimedAutomaticDrafts: Array,
+    isClaimDraftLoading: Boolean,
+    claimDraftStableId: String,
   },
+  emits: ["claimDraft"],
   data() {
     return {
       activeTab: "user-manual-drafts",
@@ -40,6 +43,9 @@ export default {
         this.activeTab = tabName;
       }
     },
+    handleClaimDraft(stableId) {
+      this.$emit("claimDraft", stableId);
+    },
   },
 };
 </script>
@@ -70,6 +76,9 @@ export default {
     <UnclaimedAutomaticDrafts
       v-show="activeTab === 'unclaimed-automatic-drafts'"
       :unclaimed-automatic-drafts="unclaimedAutomaticDrafts"
+      :is-claim-draft-loading="isClaimDraftLoading"
+      :claim-draft-stable-id="claimDraftStableId"
+      @claimDraft="handleClaimDraft"
     />
   </div>
 </template>

@@ -27,6 +27,7 @@ export const SAVED_DRAFT_DATA_URL = `${G2P_API_BASE_URL}/curation/:stableid/`;
 export const UPDATE_SAVED_DRAFT_URL = `${G2P_API_BASE_URL}/curation/:stableid/update/`;
 export const RECORD_DRAFTS_URL = `${G2P_API_BASE_URL}/curations/`;
 export const PUBLISH_URL = `${G2P_API_BASE_URL}/curation/publish/:stableid/`;
+export const CLAIM_DRAFT_URL = `${G2P_API_BASE_URL}/curation/:stableid/claim/`;
 export const DISEASE_URL = `${G2P_API_BASE_URL}/disease/:diseasename/`;
 export const DISEASE_SUMMARY_URL = `${G2P_API_BASE_URL}/disease/:diseasename/summary/`;
 export const LGD_RECORD_URL = `${G2P_API_BASE_URL}/lgd/:stableid/`;
