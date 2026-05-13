@@ -15,9 +15,7 @@ export default {
         <th>Session Name</th>
         <th>G2P ID</th>
         <th>Gene</th>
-        <th>Disease</th>
         <th>Allelic Requirement</th>
-        <th>Mechanism</th>
         <th>Panels</th>
         <th>Last Updated</th>
         <th>Action</th>
@@ -30,9 +28,7 @@ export default {
         </td>
         <td>{{ item.stable_id }}</td>
         <td>{{ item.locus }}</td>
-        <td>{{ item.disease }}</td>
         <td>{{ item.allelic_requirement }}</td>
-        <td>{{ item.molecular_mechanism }}</td>
         <td>
           <span v-if="item.panels?.length > 0">
             <template v-for="(panel, index) in item.panels" :key="panel">

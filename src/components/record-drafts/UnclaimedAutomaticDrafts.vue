@@ -18,9 +18,7 @@ export default {
         <th>Session Name</th>
         <th>G2P ID</th>
         <th>Gene</th>
-        <th>Disease</th>
         <th>Allelic Requirement</th>
-        <th>Mechanism</th>
         <th>Panels</th>
         <th>Last Updated</th>
         <th>Action</th>
@@ -33,9 +31,7 @@ export default {
         </td>
         <td>{{ item.stable_id }}</td>
         <td>{{ item.locus }}</td>
-        <td>{{ item.disease }}</td>
         <td>{{ item.allelic_requirement }}</td>
-        <td>{{ item.molecular_mechanism }}</td>
         <td>
           <span v-if="item.panels?.length > 0">
             <template v-for="(panel, index) in item.panels" :key="panel">
@@ -53,7 +49,7 @@ export default {
         <td class="text-nowrap text-center">
           <button
             type="button"
-            class="btn btn-link p-0 d-inline-flex align-items-center justify-content-center claim-draft-button"
+            class="btn btn-link p-0 mb-1 d-inline-flex align-items-center justify-content-center claim-draft-button"
             style="text-decoration: none"
             :disabled="isClaimDraftLoading"
             @click="$emit('claimDraft', item.stable_id)"
@@ -66,6 +62,14 @@ export default {
             ></span>
             <span v-else>Claim <i class="bi bi-plus-circle"></i></span>
           </button>
+          <br />
+          <router-link
+            v-if="item.stable_id"
+            :to="`/lgd/review-draft/${item.stable_id}`"
+            style="text-decoration: none"
+          >
+            Review <i class="bi bi-file-earmark-text"></i>
+          </router-link>
         </td>
       </tr>
     </tbody>
