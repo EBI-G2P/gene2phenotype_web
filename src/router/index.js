@@ -7,7 +7,7 @@ import PanelView from "../views/PanelView.vue";
 import LocusGeneDiseaseView from "../views/LocusGeneDiseaseView.vue";
 import SearchPageView from "../views/SearchPageView.vue";
 import DiseaseView from "../views/DiseaseView.vue";
-import ListCurationView from "../views/ListCurationView.vue";
+import RecordDraftsView from "../views/RecordDraftsView.vue";
 import AddLocusGeneDiseaseView from "../views/AddLocusGeneDiseaseView.vue";
 import CuratorsView from "../views/CuratorsView.vue";
 import DisclaimerView from "../views/DisclaimerView.vue";
@@ -80,7 +80,7 @@ const router = createRouter({
     {
       path: "/curation/entries",
       name: "curation-entries",
-      component: ListCurationView,
+      component: RecordDraftsView,
       meta: { requiresLogIn: true },
     },
     {
