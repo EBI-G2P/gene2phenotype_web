@@ -611,6 +611,9 @@ export const prepareInputForUpdating = (previousInput) => {
     confidence: clonedpreviousInput.confidence,
     public_comment: clonedpreviousInput.public_comment,
     private_comment: clonedpreviousInput.private_comment,
+    ...(Object.hasOwn(clonedpreviousInput, "source_data") && {
+      source_data: clonedpreviousInput.source_data,
+    }), // Include source_data only when the key exists in clonedpreviousInput
   };
 };
 
