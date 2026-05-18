@@ -57,6 +57,7 @@ export default {
       isGeneDataLoading: false,
       isGeneDiseaseDataLoading: false,
       geneData: null,
+      geneDiseaseData: null,
       geneFunctionData: null,
       attributesData: null,
       geneErrorMsg: null,

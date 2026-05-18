@@ -8,7 +8,6 @@ import Mechanism from "../components/curation/Mechanism.vue";
 import Disease from "../components/curation/Disease.vue";
 import Panel from "../components/curation/Panel.vue";
 import Confidence from "../components/curation/Confidence.vue";
-import SaveDraftModal from "../components/modal/SaveDraftModal.vue";
 import PublishModal from "../components/modal/PublishModal.vue";
 import PublishSuccessAlert from "../components/alert/PublishSuccessAlert.vue";
 import SaveNotPublishSuccessAlert from "../components/alert/SaveNotPublishSuccessAlert.vue";
@@ -22,7 +21,6 @@ import {
   checkRecordWarnings,
 } from "../utility/CurationUtility.js";
 import SaveSuccessAlert from "../components/alert/SaveSuccessAlert.vue";
-import AlertModal from "../components/modal/AlertModal.vue";
 import RemovePublicationModal from "../components/modal/RemovePublicationModal.vue";
 import {
   ATTRIBS_URL,
@@ -66,6 +64,7 @@ export default {
       isGeneDataLoading: false,
       isGeneDiseaseDataLoading: false,
       geneData: null,
+      geneDiseaseData: null,
       geneFunctionData: null,
       attributesData: null,
       geneErrorMsg: null,
@@ -115,12 +114,10 @@ export default {
     Disease,
     Panel,
     Confidence,
-    SaveDraftModal,
     PublishModal,
     PublishSuccessAlert,
     SaveNotPublishSuccessAlert,
     SaveSuccessAlert,
-    AlertModal,
     RemovePublicationModal,
     Comment,
     RecordWarningModal,
@@ -544,7 +541,7 @@ export default {
     >
       <div>
         <i class="bi bi-exclamation-circle-fill"></i>
-        {{ errorMsg ? errorMsg : geneErrorMsg }}
+        {{ errorMsg || geneErrorMsg }}
       </div>
     </div>
     <div
