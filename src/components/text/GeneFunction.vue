@@ -12,6 +12,7 @@ export default {
       fullGeneFunctionText: "",
       truncatedGeneFunctionText: "",
       MAX_CHARACTERS,
+      EUROPE_PMC_URL,
       UNIPROT_URL,
     };
   },
@@ -29,40 +30,53 @@ export default {
         ? this.fullGeneFunctionText
         : this.truncatedGeneFunctionText;
     },
+    displayedParts() {
+      return this.parsePubMedReferences(this.displayedText);
+    },
   },
   methods: {
     processGeneFunctionText() {
-      // Replace PubMed text in geneFunctionText with link to EuropePMC
-      // Ex: If geneFunctionText contains the text PubMed:12345678
-      // then it will be replaced with
-      // <a href="https://europepmc.org/article/MED/12345678" target="_blank">PubMed:12345678</a>
-      const fullReplacedGeneFunctionText = this.geneFunctionText.replace(
-        /PubMed:(\d+)/g,
-        (match, num) =>
-          `<a href="${EUROPE_PMC_URL}${num}" target="_blank">PubMed:${num}</a>`
-      );
-      this.fullGeneFunctionText = fullReplacedGeneFunctionText;
+      const geneFunctionText = this.geneFunctionText || "";
 
-      if (this.geneFunctionText.length > MAX_CHARACTERS) {
-        let truncatedGeneFunctionText =
-          this.geneFunctionText.slice(0, MAX_CHARACTERS) + "&hellip;";
+      this.fullGeneFunctionText = geneFunctionText;
 
-        // Replace PubMed text in truncatedGeneFunctionText with link to EuropePMC
-        // Ex: If truncatedGeneFunctionText contains the text PubMed:12345678
-        // then it will be replaced with
-        // <a href="https://europepmc.org/article/MED/12345678" target="_blank">PubMed:12345678</a>
-        const truncatedReplacedGeneFunctionText =
-          truncatedGeneFunctionText.replace(
-            /PubMed:(\d+)/g,
-            (match, num) =>
-              `<a href="${EUROPE_PMC_URL}${num}" target="_blank">PubMed:${num}</a>`
-          );
-        this.truncatedGeneFunctionText = truncatedReplacedGeneFunctionText;
+      if (geneFunctionText.length > MAX_CHARACTERS) {
+        this.truncatedGeneFunctionText =
+          geneFunctionText.slice(0, MAX_CHARACTERS) + "...";
       } else {
-        // IF length of geneFunctionText <= MAX_CHARACTERS
-        // THEN truncatedGeneFunctionText is equal to fullGeneFunctionText
-        this.truncatedGeneFunctionText = fullReplacedGeneFunctionText;
+        this.truncatedGeneFunctionText = geneFunctionText;
       }
+    },
+    parsePubMedReferences(text) {
+      // Example: "Sample PubMed:123." becomes
+      // [{ type: "text", text: "Sample " }, { type: "pubmed", id: "123" }, ...]
+      const parts = [];
+      const regex = /PubMed:(\d+)/g;
+      let lastIndex = 0;
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        // Keep the plain text before this PubMed reference
+        if (match.index > lastIndex) {
+          parts.push({
+            type: "text",
+            text: text.slice(lastIndex, match.index),
+          });
+        }
+        // Store only the numeric ID so Vue can build the link safely
+        parts.push({
+          type: "pubmed",
+          id: match[1],
+        });
+        lastIndex = regex.lastIndex;
+      }
+      // Keep any text after the final PubMed reference
+      if (lastIndex < text.length) {
+        parts.push({
+          type: "text",
+          text: text.slice(lastIndex),
+        });
+      }
+      return parts;
     },
     toggleText() {
       this.isTextExpanded = !this.isTextExpanded;
@@ -72,9 +86,20 @@ export default {
 </script>
 <template>
   <div>
-    <p v-html="displayedText" class="mb-0"></p>
+    <p class="mb-0">
+      <template v-for="(part, index) in displayedParts" :key="index">
+        <a
+          v-if="part.type === 'pubmed'"
+          :href="EUROPE_PMC_URL + part.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          >PubMed:{{ part.id }}</a
+        >
+        <span v-else>{{ part.text }}</span>
+      </template>
+    </p>
     <button
-      v-if="geneFunctionText.length > MAX_CHARACTERS"
+      v-if="fullGeneFunctionText.length > MAX_CHARACTERS"
       @click="toggleText"
       class="btn btn-link p-0"
       style="text-decoration: none"
@@ -90,6 +115,7 @@ export default {
         :href="UNIPROT_URL + uniprotAccession"
         style="text-decoration: none"
         target="_blank"
+        rel="noopener noreferrer"
       >
         UniProt
         <i class="bi bi-box-arrow-up-right"></i>
