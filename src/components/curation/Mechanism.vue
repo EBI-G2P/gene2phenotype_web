@@ -18,6 +18,7 @@ export default {
     mechanismSynopsis: Object,
     mechanismEvidence: Object,
     mechanismGeneStats: Object,
+    sourceData: Object,
   },
   emits: [
     "update:molecularMechanism",
@@ -108,147 +109,220 @@ export default {
         <div class="accordion-body">
           <form>
             <div class="row g-3 px-3">
-              <p class="mb-0 fw-bold">
-                Badoyni et al probabilities
-                <ToolTip :toolTipText="HELP_TEXT.MARSH_PROBABILITY" />
-              </p>
-              <p class="mb-0 mt-1">
-                See
-                <a
-                  href="https://europepmc.org/article/MED/39172982"
-                  target="_blank"
-                  style="text-decoration: none"
-                >
-                  Badonyi and Marsh, 2024
-                  <i class="bi bi-box-arrow-up-right"></i>
-                </a>
-              </p>
-              <div class="col-xl-5 col-lg-6">
-                <table class="table table-bordered mb-0">
-                  <tbody>
-                    <tr>
-                      <td style="width: 60%">
-                        Gain of Function (pGOF)
-                        <ToolTip :toolTipText="HELP_TEXT.GAIN_OF_FUNCTION" />
-                      </td>
-                      <td style="width: 40%">
-                        <span
-                          v-if="
-                            mechanismGeneStats?.gain_of_function_mp >
-                            MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
-                          "
-                          class="badge red-text-box"
-                        >
-                          {{ mechanismGeneStats.gain_of_function_mp }}
-                        </span>
-                        <span
-                          v-else-if="
-                            mechanismGeneStats?.gain_of_function_mp <=
-                            MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
-                          "
-                          class="badge green-text-box"
-                        >
-                          {{ mechanismGeneStats.gain_of_function_mp }}
-                        </span>
-                        <span v-else class="text-muted">Not Available</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 60%">
-                        Loss of Function (pLOF)
-                        <ToolTip :toolTipText="HELP_TEXT.LOSS_OF_FUNCTION" />
-                      </td>
-                      <td style="width: 40%">
-                        <span
-                          v-if="
-                            mechanismGeneStats?.loss_of_function_mp >
-                            MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
-                          "
-                          class="badge red-text-box"
-                        >
-                          {{ mechanismGeneStats.loss_of_function_mp }}
-                        </span>
-                        <span
-                          v-else-if="
-                            mechanismGeneStats?.loss_of_function_mp <=
-                            MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
-                          "
-                          class="badge green-text-box"
-                        >
-                          {{ mechanismGeneStats.loss_of_function_mp }}
-                        </span>
-                        <span v-else class="text-muted">Not Available</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 60%">
-                        Dominant Negative (pDN)
-                        <ToolTip :toolTipText="HELP_TEXT.DOMINANT_NEGATIVE" />
-                      </td>
-                      <td style="width: 40%">
-                        <span
-                          v-if="
-                            mechanismGeneStats?.dominant_negative_mp >
-                            MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
-                          "
-                          class="badge red-text-box"
-                        >
-                          {{ mechanismGeneStats.dominant_negative_mp }}
-                        </span>
-                        <span
-                          v-else-if="
-                            mechanismGeneStats?.dominant_negative_mp <=
-                            MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
-                          "
-                          class="badge green-text-box"
-                        >
-                          {{ mechanismGeneStats.dominant_negative_mp }}
-                        </span>
-                        <span v-else class="text-muted">Not Available</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="col-lg-6">
+                <div class="row g-3">
+                  <h6 class="mb-0 fw-bold">
+                    Badoyni et al probabilities
+                    <ToolTip :toolTipText="HELP_TEXT.MARSH_PROBABILITY" />
+                  </h6>
+                  <p class="mb-0 mt-0 subtitle-text">
+                    See
+                    <a
+                      href="https://europepmc.org/article/MED/39172982"
+                      target="_blank"
+                      style="text-decoration: none"
+                    >
+                      Badonyi and Marsh, 2024
+                      <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </p>
+                  <div class="col-12 mt-3">
+                    <table class="table table-bordered mb-0">
+                      <tbody>
+                        <tr>
+                          <td style="width: 60%">
+                            Gain of Function (pGOF)
+                            <ToolTip
+                              :toolTipText="HELP_TEXT.GAIN_OF_FUNCTION"
+                            />
+                          </td>
+                          <td style="width: 40%">
+                            <span
+                              v-if="
+                                mechanismGeneStats?.gain_of_function_mp >
+                                MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
+                              "
+                              class="badge red-text-box"
+                            >
+                              {{ mechanismGeneStats.gain_of_function_mp }}
+                            </span>
+                            <span
+                              v-else-if="
+                                mechanismGeneStats?.gain_of_function_mp <=
+                                MARSH_PROBABILITY_THRESHOLD.GAIN_OF_FUNCTION
+                              "
+                              class="badge green-text-box"
+                            >
+                              {{ mechanismGeneStats.gain_of_function_mp }}
+                            </span>
+                            <span v-else class="text-muted">Not Available</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="width: 60%">
+                            Loss of Function (pLOF)
+                            <ToolTip
+                              :toolTipText="HELP_TEXT.LOSS_OF_FUNCTION"
+                            />
+                          </td>
+                          <td style="width: 40%">
+                            <span
+                              v-if="
+                                mechanismGeneStats?.loss_of_function_mp >
+                                MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
+                              "
+                              class="badge red-text-box"
+                            >
+                              {{ mechanismGeneStats.loss_of_function_mp }}
+                            </span>
+                            <span
+                              v-else-if="
+                                mechanismGeneStats?.loss_of_function_mp <=
+                                MARSH_PROBABILITY_THRESHOLD.LOSS_OF_FUNCTION
+                              "
+                              class="badge green-text-box"
+                            >
+                              {{ mechanismGeneStats.loss_of_function_mp }}
+                            </span>
+                            <span v-else class="text-muted">Not Available</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="width: 60%">
+                            Dominant Negative (pDN)
+                            <ToolTip
+                              :toolTipText="HELP_TEXT.DOMINANT_NEGATIVE"
+                            />
+                          </td>
+                          <td style="width: 40%">
+                            <span
+                              v-if="
+                                mechanismGeneStats?.dominant_negative_mp >
+                                MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
+                              "
+                              class="badge red-text-box"
+                            >
+                              {{ mechanismGeneStats.dominant_negative_mp }}
+                            </span>
+                            <span
+                              v-else-if="
+                                mechanismGeneStats?.dominant_negative_mp <=
+                                MARSH_PROBABILITY_THRESHOLD.DOMINANT_NEGATIVE
+                              "
+                              class="badge green-text-box"
+                            >
+                              {{ mechanismGeneStats.dominant_negative_mp }}
+                            </span>
+                            <span v-else class="text-muted">Not Available</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-              <p class="mb-0 fw-bold">gnomAD constraint metrics</p>
-              <div class="col-xl-5 col-lg-6">
-                <table class="table table-bordered">
-                  <tbody>
-                    <tr>
-                      <td style="width: 60%">
-                        pLI (probability of being loss-of-function intolerant)
-                      </td>
-                      <td style="width: 40%">
-                        <span
-                          v-if="
-                            mechanismGeneStats?.pli_gnomAD != null &&
-                            mechanismGeneStats?.pli_gnomAD !== ''
-                          "
-                        >
-                          {{ mechanismGeneStats.pli_gnomAD }}
-                        </span>
-                        <span v-else class="text-muted">Not Available</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 60%">
-                        LOEUF (loss-of-function observed/expected upper bound
-                        fraction)
-                      </td>
-                      <td style="width: 40%">
-                        <span
-                          v-if="
-                            mechanismGeneStats?.loeuf_gnomAD != null &&
-                            mechanismGeneStats?.loeuf_gnomAD !== ''
-                          "
-                        >
-                          {{ mechanismGeneStats.loeuf_gnomAD }}
-                        </span>
-                        <span v-else class="text-muted">Not Available</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="col-lg-6">
+                <div class="row g-3">
+                  <h6 class="fw-bold">gnomAD constraint metrics</h6>
+                  <div class="col-12 gnomAD-metrics-div">
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <td>
+                            pLI (probability of being loss-of-function
+                            intolerant)
+                          </td>
+                          <td>
+                            <span
+                              v-if="
+                                mechanismGeneStats?.pli_gnomAD != null &&
+                                mechanismGeneStats?.pli_gnomAD !== ''
+                              "
+                            >
+                              {{ mechanismGeneStats.pli_gnomAD }}
+                            </span>
+                            <span v-else class="text-muted">Not Available</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            LOEUF (loss-of-function observed/expected upper
+                            bound fraction)
+                          </td>
+                          <td>
+                            <span
+                              v-if="
+                                mechanismGeneStats?.loeuf_gnomAD != null &&
+                                mechanismGeneStats?.loeuf_gnomAD !== ''
+                              "
+                            >
+                              {{ mechanismGeneStats.loeuf_gnomAD }}
+                            </span>
+                            <span v-else class="text-muted">Not Available</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="
+                sourceData &&
+                (sourceData.mechanism || sourceData.mechanism_evidence)
+              "
+              class="px-3 pt-3"
+            >
+              <div class="card source-data-card">
+                <h5 class="card-header">Data from imported source</h5>
+                <div class="card-body">
+                  <h6 class="mb-0 fw-bold">
+                    Mechanism comment
+                    <span v-if="sourceData.name">
+                      from {{ sourceData.name }}</span
+                    >
+                  </h6>
+                  <p v-if="sourceData.url" class="mt-0 subtitle-text">
+                    See
+                    <a
+                      :href="sourceData.url"
+                      target="_blank"
+                      style="text-decoration: none"
+                    >
+                      here
+                      <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </p>
+                  <div class="col-12">
+                    <table class="table table-bordered table-warning mb-0">
+                      <tbody>
+                        <tr>
+                          <th style="width: 20%">Inferred mechanism</th>
+                          <td style="width: 80%">
+                            <span v-if="sourceData.mechanism">
+                              {{ sourceData.mechanism }}
+                            </span>
+                            <span v-else class="text-muted">
+                              Not Available
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th style="width: 20%">Evidence</th>
+                          <td style="width: 80%">
+                            <span v-if="sourceData.mechanism_evidence">
+                              {{ sourceData.mechanism_evidence }}
+                            </span>
+                            <span v-else class="text-muted">
+                              Not Available
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
             <hr />
@@ -416,5 +490,14 @@ export default {
 .green-text-box {
   color: black;
   background-color: rgb(0, 243, 148);
+}
+.source-data-card {
+  background-color: #fff3cd;
+}
+.subtitle-text {
+  font-size: small;
+}
+.gnomAD-metrics-div {
+  margin-top: 27px; /* Fix to align table with Badoyni probabilities table */
 }
 </style>

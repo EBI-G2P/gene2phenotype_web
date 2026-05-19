@@ -10,6 +10,7 @@ export const useAuthStore = defineStore("auth", {
     userEmail: null,
     userPanels: null,
     isSuperUser: null,
+    isJuniorCuratorUser: null,
     refreshTokenExpiry: null,
     expiryTimeOut: null,
   }),
@@ -20,6 +21,7 @@ export const useAuthStore = defineStore("auth", {
       this.userEmail = data.email;
       this.userPanels = data.panels;
       this.isSuperUser = data.is_superuser;
+      this.isJuniorCuratorUser = data.is_junior_curator;
       this.refreshTokenExpiry = new Date(data.refresh_token_time);
 
       // auto logout after refresh token is expired
@@ -35,6 +37,7 @@ export const useAuthStore = defineStore("auth", {
       this.userEmail = null;
       this.userPanels = null;
       this.isSuperUser = null;
+      this.isJuniorCuratorUser = null;
       this.refreshTokenExpiry = null;
       if (this.expiryTimeOut) clearTimeout(this.expiryTimeOut);
     },

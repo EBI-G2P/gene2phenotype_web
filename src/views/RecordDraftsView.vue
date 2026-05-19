@@ -3,6 +3,8 @@ import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
 import { CLAIM_DRAFT_URL, RECORD_DRAFTS_URL } from "../utility/UrlConstants.js";
 import api from "../services/api.js";
 import RecordDraftsDisplay from "../components/record-drafts/RecordDraftsDisplay.vue";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/auth.js";
 
 export default {
   data() {
@@ -11,6 +13,7 @@ export default {
       userManualDrafts: null,
       userAutomaticDrafts: null,
       unclaimedAutomaticDrafts: null,
+      juniorManualDrafts: null,
       errorMsg: null,
       claimDraftErrorMsg: null,
       claimDraftSuccessMsg: null,
@@ -30,6 +33,9 @@ export default {
   },
   components: {
     RecordDraftsDisplay,
+  },
+  computed: {
+    ...mapState(useAuthStore, ["isJuniorCuratorUser"]),
   },
   methods: {
     async claimDraft(stableId) {
@@ -99,6 +105,7 @@ export default {
         this.userManualDrafts =
         this.userAutomaticDrafts =
         this.unclaimedAutomaticDrafts =
+        this.juniorManualDrafts =
           null;
       this.isClaimDraftLoading = false;
       this.claimDraftStableId = null;
@@ -106,15 +113,24 @@ export default {
       const userManualDraftsURL = RECORD_DRAFTS_URL;
       const userAutomaticDraftsURL = `${RECORD_DRAFTS_URL}?type=automatic`;
       const unclaimedAutomaticsDraftsURL = `${RECORD_DRAFTS_URL}?type=automatic&scope=unclaimed`;
-      Promise.all([
+      const juniorManualDraftsURL = `${RECORD_DRAFTS_URL}?type=manual&scope=junior`;
+      const draftRequests = [
         api.get(userManualDraftsURL),
         api.get(userAutomaticDraftsURL),
         api.get(unclaimedAutomaticsDraftsURL),
-      ])
-        .then(([response1, response2, response3]) => {
+      ];
+      // Only fetch manual drafts (assigned to junior curators) for non-junior curators
+      if (this.isJuniorCuratorUser === false) {
+        draftRequests.push(api.get(juniorManualDraftsURL));
+      }
+      Promise.all(draftRequests)
+        .then(([response1, response2, response3, response4]) => {
           this.userManualDrafts = response1.data?.results;
           this.userAutomaticDrafts = response2.data?.results;
           this.unclaimedAutomaticDrafts = response3.data?.results;
+          if (response4) {
+            this.juniorManualDrafts = response4.data?.results;
+          }
         })
         .catch((error) => {
           this.errorMsg = fetchAndLogApiResponseErrorMsg(
@@ -163,6 +179,8 @@ export default {
         :userManualDrafts="userManualDrafts"
         :userAutomaticDrafts="userAutomaticDrafts"
         :unclaimedAutomaticDrafts="unclaimedAutomaticDrafts"
+        :juniorManualDrafts="juniorManualDrafts"
+        :is-junior-curator-user="isJuniorCuratorUser"
         :is-claim-draft-loading="isClaimDraftLoading"
         :claim-draft-stable-id="claimDraftStableId"
         @claimDraft="claimDraft"

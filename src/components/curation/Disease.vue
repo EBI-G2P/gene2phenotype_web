@@ -8,6 +8,7 @@ export default {
     geneDiseaseErrorMsg: String,
     diseaseName: String,
     diseaseCrossReferences: Array,
+    sourceData: Object,
   },
   emits: ["update:diseaseName", "update:diseaseCrossReferences"],
   data() {
@@ -65,6 +66,68 @@ export default {
       </h2>
       <div id="disease-section-body" class="accordion-collapse collapse">
         <div class="accordion-body">
+          <template
+            v-if="
+              sourceData &&
+              (sourceData.disease ||
+                sourceData.disease_cross_references?.length > 0)
+            "
+          >
+            <div class="card source-data-card">
+              <h5 class="card-header">Data from imported source</h5>
+              <div class="card-body">
+                <div v-if="sourceData.disease">
+                  <h6 class="mb-0 fw-bold">
+                    Disease name from {{ sourceData.name }}
+                  </h6>
+                  <p v-if="sourceData.url" class="mb-0 mt-0 subtitle-text">
+                    See
+                    <a
+                      :href="sourceData.url"
+                      target="_blank"
+                      style="text-decoration: none"
+                    >
+                      here
+                      <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </p>
+                  <p class="mt-2 fst-italic">{{ sourceData.disease }}</p>
+                </div>
+                <div v-if="sourceData.disease_cross_references?.length > 0">
+                  <h6 class="fw-bold">
+                    Ontology terms from {{ sourceData.name }}
+                  </h6>
+                  <ul>
+                    <li
+                      v-for="item in sourceData.disease_cross_references"
+                      :key="item.disease_name"
+                    >
+                      {{ item.disease_name }} (
+                      <a
+                        v-if="item.source === 'OMIM'"
+                        :href="OMIM_URL + item.identifier"
+                        style="text-decoration: none"
+                        target="_blank"
+                      >
+                        {{ item.identifier }}
+                      </a>
+                      <a
+                        v-else-if="item.source === 'Mondo'"
+                        :href="MONDO_URL + item.identifier"
+                        style="text-decoration: none"
+                        target="_blank"
+                      >
+                        {{ item.identifier }}
+                      </a>
+                      <span v-else>{{ item.identifier }}</span>
+                      )
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <hr />
+          </template>
           <div
             class="d-flex justify-content-center"
             v-if="isGeneDiseaseDataLoading"
@@ -196,3 +259,11 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.source-data-card {
+  background-color: #fff3cd;
+}
+.subtitle-text {
+  font-size: small;
+}
+</style>
