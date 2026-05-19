@@ -43,6 +43,8 @@ import api from "../services/api.js";
 import axios from "axios";
 import RecordWarningModal from "../components/modal/RecordWarningModal.vue";
 import CurationGuidelinesModals from "../components/modal/CurationGuidelinesModals.vue";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/auth.js";
 
 export default {
   created() {
@@ -122,6 +124,9 @@ export default {
     Comment,
     RecordWarningModal,
     CurationGuidelinesModals,
+  },
+  computed: {
+    ...mapState(useAuthStore, ["isJuniorCuratorUser"]),
   },
   methods: {
     fetchPreviousCurationInput() {
@@ -690,7 +695,11 @@ export default {
       <button type="button" class="btn btn-primary" @click="saveDraft">
         <i class="bi bi-floppy-fill"></i> Save Draft
       </button>
-      <button class="btn btn-primary" @click="saveAndPublishClickHandler">
+      <button
+        v-if="isJuniorCuratorUser !== true"
+        class="btn btn-primary"
+        @click="saveAndPublishClickHandler"
+      >
         <i class="bi bi-floppy-fill"></i> Save and Publish
       </button>
     </div>
