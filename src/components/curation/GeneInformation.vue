@@ -79,6 +79,25 @@ export default {
               <p v-else class="text-muted mb-0">Not Available</p>
             </div>
           </div>
+          <div
+            class="row"
+            v-if="geneFunctionData?.subunit_structure?.quaternary_structure"
+          >
+            <div style="width: 10%">
+              <p><strong>Subunit (Quaternary structure)</strong></p>
+            </div>
+            <div class="pb-3" style="width: 90%">
+              <GeneFunction
+                :geneFunctionText="
+                  geneFunctionData.subunit_structure.quaternary_structure
+                "
+                :uniprotAccession="
+                  geneFunctionData.subunit_structure.uniprot_accession
+                "
+                uniprotSection="interaction"
+              />
+            </div>
+          </div>
           <div class="row">
             <div style="width: 10%">
               <p><strong>OMIM</strong></p>
