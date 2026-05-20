@@ -386,7 +386,7 @@ export default {
       const recordWarningModalElement = document.getElementById(
         "record-warning-modal",
       );
-      let recordWarningModal = bootstrap.Modal.getInstance(
+      const recordWarningModal = bootstrap.Modal.getInstance(
         recordWarningModalElement,
       );
       if (!recordWarningModal) {
