@@ -9,6 +9,10 @@ export default {
       type: String,
       default: null,
     },
+    linkLabel: {
+      type: String,
+      default: "Source",
+    },
   },
   data() {
     return {
@@ -124,7 +128,7 @@ export default {
       ></i>
     </button>
     <p class="mb-0">
-      <b>Source:</b>
+      <b>{{ linkLabel }}:</b>
       <a
         :href="uniprotHref"
         style="text-decoration: none"

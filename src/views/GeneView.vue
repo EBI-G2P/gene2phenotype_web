@@ -122,20 +122,6 @@ export default {
         />
         <p v-else class="text-muted mb-0">Not Available</p>
       </div>
-      <template v-if="geneFunctionData?.subunit_structure?.quaternary_structure">
-        <h4 class="py-3">Subunit (Quaternary structure)</h4>
-        <div class="row">
-          <GeneFunction
-            :geneFunctionText="
-              geneFunctionData.subunit_structure.quaternary_structure
-            "
-            :uniprotAccession="
-              geneFunctionData.subunit_structure.uniprot_accession
-            "
-            uniprotSection="interaction"
-          />
-        </div>
-      </template>
       <h4 class="py-3">G2P records</h4>
       <div class="table-responsive-xl">
         <table

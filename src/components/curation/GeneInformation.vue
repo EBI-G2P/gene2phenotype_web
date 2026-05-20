@@ -84,7 +84,7 @@ export default {
             v-if="geneFunctionData?.subunit_structure?.quaternary_structure"
           >
             <div style="width: 10%">
-              <p><strong>Subunit (Quaternary structure)</strong></p>
+              <p><strong>Quaternary structure</strong></p>
             </div>
             <div class="pb-3" style="width: 90%">
               <GeneFunction
@@ -95,6 +95,7 @@ export default {
                   geneFunctionData.subunit_structure.uniprot_accession
                 "
                 uniprotSection="interaction"
+                linkLabel="More details"
               />
             </div>
           </div>
