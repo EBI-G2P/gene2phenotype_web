@@ -60,6 +60,7 @@ export default {
     return {
       isPreviousInputDataLoading: false,
       previousInput: null,
+      sessionName: null,
       errorMsg: null,
       userLocusMismatchMsg: null,
       hpoTermsInputHelper: {},
@@ -131,12 +132,13 @@ export default {
   methods: {
     fetchPreviousCurationInput() {
       this.isPreviousInputDataLoading = true;
-      this.previousInput = this.errorMsg = null;
+      this.previousInput = this.sessionName = this.errorMsg = null;
       this.stableID = this.$route.params.stableID;
       api
         .get(SAVED_DRAFT_DATA_URL.replace(":stableid", this.stableID))
         .then((response) => {
           this.previousInput = prepareInputForUpdating(response.data.data);
+          this.sessionName = response.data?.session_name;
           let pmidList = Object.keys(this.previousInput.publications);
           this.hpoTermsInputHelper =
             updateHpoTermsInputHelperWithNewPublicationsData(
@@ -558,6 +560,12 @@ export default {
         !isPublishSuccess
       "
     >
+      <dl v-if="sessionName" class="row pb-0 mb-0 mt-3">
+        <dt class="col-auto">Session name</dt>
+        <dd class="col mb-0">
+          {{ sessionName }}
+        </dd>
+      </dl>
       <div
         v-if="userLocusMismatchMsg"
         class="alert alert-warning mt-3"
