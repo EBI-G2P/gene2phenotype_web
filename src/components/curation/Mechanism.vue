@@ -277,25 +277,14 @@ export default {
               <div class="card source-data-card">
                 <h5 class="card-header">Data from imported source</h5>
                 <div class="card-body">
-                  <h6 class="mb-0 fw-bold">
+                  <h6 class="fw-bold">
                     Mechanism comment
                     <span v-if="sourceData.name">
                       from {{ sourceData.name }}</span
                     >
                   </h6>
-                  <p v-if="sourceData.url" class="mt-0 subtitle-text">
-                    See
-                    <a
-                      :href="sourceData.url"
-                      target="_blank"
-                      style="text-decoration: none"
-                    >
-                      here
-                      <i class="bi bi-box-arrow-up-right"></i>
-                    </a>
-                  </p>
-                  <div class="col-12">
-                    <table class="table table-bordered table-warning mb-0">
+                  <div class="mt-3 col-12">
+                    <table class="table table-bordered table-warning mb-1">
                       <tbody>
                         <tr>
                           <th style="width: 20%">Inferred mechanism</th>
@@ -322,6 +311,16 @@ export default {
                       </tbody>
                     </table>
                   </div>
+                  <a
+                    v-if="sourceData.url"
+                    :href="sourceData.url"
+                    target="_blank"
+                    style="text-decoration: none"
+                    class="mt-0 subtitle-text"
+                  >
+                    See details in source
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
                 </div>
               </div>
             </div>

@@ -76,54 +76,75 @@ export default {
             <div class="card source-data-card">
               <h5 class="card-header">Data from imported source</h5>
               <div class="card-body">
-                <div v-if="sourceData.disease">
-                  <h6 class="mb-0 fw-bold">
-                    Disease name from {{ sourceData.name }}
-                  </h6>
-                  <p v-if="sourceData.url" class="mb-0 mt-0 subtitle-text">
-                    See
-                    <a
-                      :href="sourceData.url"
-                      target="_blank"
-                      style="text-decoration: none"
-                    >
-                      here
-                      <i class="bi bi-box-arrow-up-right"></i>
-                    </a>
-                  </p>
-                  <p class="mt-2 fst-italic">{{ sourceData.disease }}</p>
-                </div>
-                <div v-if="sourceData.disease_cross_references?.length > 0">
-                  <h6 class="fw-bold">
-                    Ontology terms from {{ sourceData.name }}
-                  </h6>
-                  <ul>
-                    <li
-                      v-for="item in sourceData.disease_cross_references"
-                      :key="item.disease_name"
-                    >
-                      {{ item.disease_name }} (
+                <dl class="row mb-0">
+                  <template v-if="sourceData.disease">
+                    <dt class="col-xl-3 col-lg-4">
+                      Disease name
+                      <span v-if="sourceData.name">
+                        from {{ sourceData.name }}</span
+                      >
+                    </dt>
+                    <dd class="col-xl-9 col-lg-8">
+                      {{ sourceData.disease }}
+                    </dd>
+                  </template>
+                  <template
+                    v-if="sourceData.disease_cross_references?.length > 0"
+                  >
+                    <dt class="col-xl-3 col-lg-4">
+                      Ontology term
+                      <span v-if="sourceData.name">
+                        from {{ sourceData.name }}</span
+                      >
+                    </dt>
+                    <dd class="col-xl-9 col-lg-8">
+                      {{ sourceData.disease_cross_references[0].disease_name }}
+                      (
                       <a
-                        v-if="item.source === 'OMIM'"
-                        :href="OMIM_URL + item.identifier"
+                        v-if="
+                          sourceData.disease_cross_references[0].source ===
+                          'OMIM'
+                        "
+                        :href="
+                          OMIM_URL +
+                          sourceData.disease_cross_references[0].identifier
+                        "
                         style="text-decoration: none"
                         target="_blank"
                       >
-                        {{ item.identifier }}
+                        {{ sourceData.disease_cross_references[0].identifier }}
                       </a>
                       <a
-                        v-else-if="item.source === 'Mondo'"
-                        :href="MONDO_URL + item.identifier"
+                        v-else-if="
+                          sourceData.disease_cross_references[0].source ===
+                          'Mondo'
+                        "
+                        :href="
+                          MONDO_URL +
+                          sourceData.disease_cross_references[0].identifier
+                        "
                         style="text-decoration: none"
                         target="_blank"
                       >
-                        {{ item.identifier }}
+                        {{ sourceData.disease_cross_references[0].identifier }}
                       </a>
-                      <span v-else>{{ item.identifier }}</span>
+                      <span v-else>{{
+                        sourceData.disease_cross_references[0].identifier
+                      }}</span>
                       )
-                    </li>
-                  </ul>
-                </div>
+                    </dd>
+                  </template>
+                </dl>
+                <a
+                  v-if="sourceData.url"
+                  :href="sourceData.url"
+                  target="_blank"
+                  style="text-decoration: none"
+                  class="mb-0 mt-0 subtitle-text"
+                >
+                  See details in source
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
               </div>
             </div>
             <hr />
