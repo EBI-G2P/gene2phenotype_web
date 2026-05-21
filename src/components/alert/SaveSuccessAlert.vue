@@ -37,7 +37,7 @@ export default {
     <p>{{ successMsg }}</p>
     <hr />
     <div class="d-flex justify-content-between">
-      <router-link to="/curation/entries" class="btn btn-primary me-3">
+      <router-link to="/draft-records" class="btn btn-primary me-3">
         View All Saved Drafts
       </router-link>
       <button

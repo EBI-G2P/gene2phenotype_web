@@ -26,7 +26,7 @@ export default {
       },
       // fetch the data when the view is created and the data is
       // already being observed
-      { immediate: true }
+      { immediate: true },
     );
   },
   components: {
@@ -208,8 +208,8 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link to="/curation/entries" class="dropdown-item">
-                Saved drafts
+              <router-link to="/draft-records" class="dropdown-item">
+                Draft records
               </router-link>
             </li>
           </ul>

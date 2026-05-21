@@ -79,8 +79,8 @@ const router = createRouter({
       component: DiseaseView,
     },
     {
-      path: "/curation/entries",
-      name: "curation-entries",
+      path: "/draft-records",
+      name: "draft-records",
       component: RecordDraftsView,
       meta: { requiresLogIn: true },
     },

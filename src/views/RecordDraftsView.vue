@@ -149,7 +149,7 @@ export default {
 </script>
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
-    <h2>Record drafts</h2>
+    <h2>Draft records</h2>
     <div
       v-if="isDataLoading"
       class="d-flex justify-content-center"

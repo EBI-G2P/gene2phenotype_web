@@ -533,7 +533,7 @@ export default {
       v-if="geneData && !isSubmitDataLoading && !isSubmitSuccess"
       class="d-flex justify-content-between py-3"
     >
-      <router-link class="btn btn-outline-primary" to="/curation/entries">
+      <router-link class="btn btn-outline-primary" to="/draft-records">
         <i class="bi bi-arrow-left-circle"></i> Exit
       </router-link>
       <button
