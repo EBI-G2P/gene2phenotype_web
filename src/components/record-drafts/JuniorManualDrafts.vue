@@ -67,7 +67,7 @@ export default {
               :to="`/lgd/update-draft/${item.stable_id}`"
               style="text-decoration: none"
             >
-              Publish <i class="bi bi-send"></i>
+              Review and Publish <i class="bi bi-file-earmark-text"></i>
             </router-link>
           </td>
         </tr>
