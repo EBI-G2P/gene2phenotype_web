@@ -6,6 +6,10 @@ export default {
     isPanelDataLoading: Boolean,
     panelErrorMsg: String,
     panels: Array,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["update:panels"],
   methods: {
@@ -59,7 +63,7 @@ export default {
             </div>
           </div>
           <form v-if="panelData?.length > 0">
-            <fieldset class="row mb-3">
+            <fieldset class="row mb-3" :disabled="disabled">
               <legend class="col-form-label col-lg-1 pt-0">
                 Panel(s)<span class="text-danger">*</span>
               </legend>

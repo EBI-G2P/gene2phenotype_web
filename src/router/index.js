@@ -33,6 +33,7 @@ import ContributingView from "../views/ContributingView.vue";
 import RecordsReviewView from "../views/RecordsReviewView.vue";
 import RecordReviewUpdateView from "../views/RecordReviewUpdateView.vue";
 import RecordReviewCreateView from "../views/RecordReviewCreateView.vue";
+import ReviewRecordDraftView from "../views/ReviewRecordDraftView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,8 +79,8 @@ const router = createRouter({
       component: DiseaseView,
     },
     {
-      path: "/curation/entries",
-      name: "curation-entries",
+      path: "/draft-records",
+      name: "draft-records",
       component: RecordDraftsView,
       meta: { requiresLogIn: true },
     },
@@ -103,6 +104,12 @@ const router = createRouter({
       path: "/disclaimer",
       name: "disclaimer",
       component: DisclaimerView,
+    },
+    {
+      path: "/lgd/review-draft/:stableId",
+      name: "review-draft",
+      component: ReviewRecordDraftView,
+      meta: { requiresLogIn: true },
     },
     {
       path: "/lgd/update-draft/:stableID",

@@ -1,4 +1,5 @@
 <script>
+import JuniorManualDrafts from "./JuniorManualDrafts.vue";
 import UnclaimedAutomaticDrafts from "./UnclaimedAutomaticDrafts.vue";
 import UserAutomaticDrafts from "./UserAutomaticDrafts.vue";
 import UserManualDrafts from "./UserManualDrafts.vue";
@@ -8,14 +9,20 @@ export default {
     userManualDrafts: Array,
     userAutomaticDrafts: Array,
     unclaimedAutomaticDrafts: Array,
+    juniorManualDrafts: Array,
     isClaimDraftLoading: Boolean,
     claimDraftStableId: String,
+    isJuniorCuratorUser: Boolean,
   },
   emits: ["claimDraft"],
   data() {
     return {
       activeTab: "user-manual-drafts",
-      tabs: [
+    };
+  },
+  computed: {
+    tabs() {
+      const tabs = [
         {
           name: "user-manual-drafts",
           label: "My manual drafts",
@@ -28,13 +35,22 @@ export default {
           name: "unclaimed-automatic-drafts",
           label: "Unclaimed automatic drafts",
         },
-      ],
-    };
+      ];
+      // Only display 'Manual drafts pending expert review' tab for non-junior curators
+      if (this.isJuniorCuratorUser === false) {
+        tabs.push({
+          name: "junior-manual-drafts",
+          label: "Manual drafts pending expert review",
+        });
+      }
+      return tabs;
+    },
   },
   components: {
     UserManualDrafts,
     UserAutomaticDrafts,
     UnclaimedAutomaticDrafts,
+    JuniorManualDrafts,
   },
   methods: {
     setActiveTab(tabName) {
@@ -79,6 +95,10 @@ export default {
       :is-claim-draft-loading="isClaimDraftLoading"
       :claim-draft-stable-id="claimDraftStableId"
       @claimDraft="handleClaimDraft"
+    />
+    <JuniorManualDrafts
+      v-show="activeTab === 'junior-manual-drafts'"
+      :junior-manual-drafts="juniorManualDrafts"
     />
   </div>
 </template>

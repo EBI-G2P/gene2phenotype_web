@@ -2,6 +2,10 @@
 export default {
   props: {
     successMsg: String,
+    showAddButton: {
+      type: Boolean,
+      default: true,
+    },
   },
   methods: {
     redirectToAddG2pPage() {
@@ -33,10 +37,14 @@ export default {
     <p>{{ successMsg }}</p>
     <hr />
     <div class="d-flex justify-content-between">
-      <router-link to="/curation/entries" class="btn btn-primary me-3">
+      <router-link to="/draft-records" class="btn btn-primary me-3">
         View All Saved Drafts
       </router-link>
-      <button class="btn btn-primary" @click="redirectToAddG2pPage">
+      <button
+        v-if="showAddButton"
+        class="btn btn-primary"
+        @click="redirectToAddG2pPage"
+      >
         Add Another G2P Record
       </button>
     </div>

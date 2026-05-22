@@ -14,6 +14,10 @@ export default {
     inputPmids: String,
     isInputPmidsValid: Boolean,
     inputPmidsInvalidMsg: String,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["update:publications", "update:inputPmids"],
   data() {
@@ -63,6 +67,7 @@ export default {
                 "
                 id="publications-input"
                 :value="inputPmids"
+                :disabled="disabled"
                 @input="$emit('update:inputPmids', $event.target.value)"
                 rows="3"
                 aria-describedby="invalid-publications-input-feedback"
@@ -82,6 +87,7 @@ export default {
               <button
                 type="button"
                 class="btn btn-primary mb-3"
+                :disabled="disabled"
                 @click="fetchPublications"
               >
                 <i class="bi bi-plus-circle-fill"></i> Add
@@ -116,6 +122,7 @@ export default {
                 class="btn btn-outline-danger"
                 data-bs-toggle="modal"
                 data-bs-target="#remove-publication-modal"
+                :disabled="disabled"
               >
                 <i class="bi bi-trash-fill"></i> Remove Publication(s)
               </button>
@@ -240,6 +247,7 @@ export default {
                           :id="`publication-families-input-${pmid}`"
                           min="0"
                           :value="publications[pmid].families"
+                          :disabled="disabled"
                           @input="
                             inputHandler(
                               'families',
@@ -281,6 +289,7 @@ export default {
                           :id="`publication-affected-individuals-input-${pmid}`"
                           min="0"
                           :value="publications[pmid].affectedIndividuals"
+                          :disabled="disabled"
                           @input="
                             inputHandler(
                               'affectedIndividuals',
@@ -312,6 +321,7 @@ export default {
                           :id="`publication-consanguineous-input-${pmid}`"
                           class="form-select"
                           :value="publications[pmid].consanguineous"
+                          :disabled="disabled"
                           @input="
                             inputHandler(
                               'consanguineous',
@@ -337,6 +347,7 @@ export default {
                           class="form-control"
                           :id="`publication-ancestries-input-${pmid}`"
                           :value="publications[pmid].ancestries"
+                          :disabled="disabled"
                           @input="
                             inputHandler(
                               'ancestries',
@@ -361,6 +372,7 @@ export default {
                           :id="`publication-comment-input-${pmid}`"
                           rows="3"
                           :value="publications[pmid].comment"
+                          :disabled="disabled"
                           @input="
                             inputHandler('comment', pmid, $event.target.value)
                           "

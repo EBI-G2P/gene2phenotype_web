@@ -45,6 +45,8 @@ import {
 } from "../utility/ErrorUtility.js";
 import RecordWarningModal from "../components/modal/RecordWarningModal.vue";
 import CurationGuidelinesModals from "../components/modal/CurationGuidelinesModals.vue";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/auth.js";
 
 export default {
   data() {
@@ -57,6 +59,7 @@ export default {
       isGeneDataLoading: false,
       isGeneDiseaseDataLoading: false,
       geneData: null,
+      geneDiseaseData: null,
       geneFunctionData: null,
       attributesData: null,
       geneErrorMsg: null,
@@ -119,6 +122,9 @@ export default {
     Comment,
     RecordWarningModal,
     CurationGuidelinesModals,
+  },
+  computed: {
+    ...mapState(useAuthStore, ["isJuniorCuratorUser"]),
   },
   methods: {
     geneSearchBtnClickHandler() {
@@ -745,7 +751,11 @@ export default {
       >
         <i class="bi bi-floppy-fill"></i> Save Draft
       </button>
-      <button class="btn btn-primary" @click="saveAndPublishClickHandler">
+      <button
+        v-if="isJuniorCuratorUser !== true"
+        class="btn btn-primary"
+        @click="saveAndPublishClickHandler"
+      >
         <i class="bi bi-floppy-fill"></i> Save and Publish
       </button>
     </div>

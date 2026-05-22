@@ -4,6 +4,10 @@ import { VariantConsequencesAttribs } from "../../utility/CurationConstants.js";
 export default {
   props: {
     variantConsequences: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["updateVariantConsequences"],
   methods: {
@@ -70,10 +74,11 @@ export default {
                 :id="`variant-consequence-input-source-${item.inputKey}`"
                 class="form-select"
                 :value="variantConsequences[item.inputKey]"
+                :disabled="disabled"
                 @input="
                   variantConsequencesInputHandler(
                     item.inputKey,
-                    $event.target.value
+                    $event.target.value,
                   )
                 "
               >

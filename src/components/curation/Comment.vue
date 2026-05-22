@@ -4,6 +4,10 @@ export default {
   props: {
     privateComment: String,
     publicComment: String,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["update:privateComment", "update:publicComment"],
   components: { ToolTip },
@@ -23,6 +27,7 @@ export default {
       rows="3"
       type="text"
       :value="privateComment"
+      :disabled="disabled"
       @input="$emit('update:privateComment', $event.target.value)"
     >
     </textarea>
@@ -37,6 +42,7 @@ export default {
       rows="3"
       type="text"
       :value="publicComment"
+      :disabled="disabled"
       @input="$emit('update:publicComment', $event.target.value)"
     >
     </textarea>

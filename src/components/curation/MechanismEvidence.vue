@@ -6,6 +6,10 @@ export default {
   props: {
     molecularMechanismSupport: String,
     mechanismEvidence: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["updateMechanismEvidence"],
   components: { ToolTip },
@@ -100,6 +104,7 @@ export default {
                         item.primaryType
                       ].includes(secondaryTypeItem)
                     "
+                    :disabled="disabled"
                     @input="
                       mechanismEvidenceCheckboxHandler(
                         item.primaryType,
@@ -162,6 +167,7 @@ export default {
           :value="mechanismEvidence[pmid].description"
           @input="mechanismEvidenceInputHandler(pmid, $event.target.value)"
           :disabled="
+            disabled ||
             Object.values(mechanismEvidence[pmid].evidence_types).every(
               (arr) => arr.length === 0,
             )

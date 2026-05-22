@@ -7,6 +7,10 @@ export default {
     variantTypes: Object,
     variantDescriptions: Object,
     variantConsequences: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: [
     "updateVariantTypes",
@@ -44,6 +48,7 @@ export default {
             <VariantTypes
               :pmidList="pmidList"
               :variantTypes="variantTypes"
+              :disabled="disabled"
               @update-variant-types="
                 (updatedVariantTypes) =>
                   $emit('updateVariantTypes', updatedVariantTypes)
@@ -80,6 +85,7 @@ export default {
                     class="form-control"
                     :id="`variant-description-input-${pmid}`"
                     :value="variantDescriptions[pmid].description"
+                    :disabled="disabled"
                     @input="
                       variantDescriptionsInputHandler(pmid, $event.target.value)
                     "
@@ -109,6 +115,7 @@ export default {
             </div>
             <VariantConsequences
               :variantConsequences="variantConsequences"
+              :disabled="disabled"
               @update-variant-consequences="
                 (updatedVariantConsequences) =>
                   $emit('updateVariantConsequences', updatedVariantConsequences)
