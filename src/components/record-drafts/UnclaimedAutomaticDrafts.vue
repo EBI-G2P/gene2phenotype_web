@@ -33,12 +33,7 @@ export default {
           <td>
             <span v-if="item.panels?.length > 0">
               <template v-for="(panel, index) in item.panels" :key="panel">
-                <router-link
-                  :to="`/panel/${panel}`"
-                  style="text-decoration: none"
-                >
-                  {{ panel }}
-                </router-link>
+                {{ panel }}
                 <span v-if="index !== item.panels.length - 1">, </span>
               </template>
             </span>
