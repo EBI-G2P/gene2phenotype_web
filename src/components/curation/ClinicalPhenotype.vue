@@ -6,6 +6,10 @@ export default {
     clinicalPhenotype: Object,
     hpoTermsInputHelper: Object,
     fetchAndSearchHPO: Function,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -91,6 +95,7 @@ export default {
                     type="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
+                    :disabled="disabled"
                   >
                     Click to search HPO terms
                   </button>
@@ -108,6 +113,7 @@ export default {
                         :id="`search-phenotype-${pmid}`"
                         placeholder="E.g. Abnormality of the kidney"
                         :value="hpoTermsInputHelper[pmid].searchTerm"
+                        :disabled="disabled"
                         @input="fetchAndSearchHPO(pmid, $event.target.value)"
                         class="form-control"
                       />
@@ -159,8 +165,10 @@ export default {
                         v-for="term in hpoTermsInputHelper[pmid]
                           .HPOsearchResponseJson"
                         :key="term.id"
-                        @mousedown="selectTerm(pmid, term)"
+                        @mousedown="disabled ? null : selectTerm(pmid, term)"
                         class="dropdown-item text-wrap"
+                        :class="{ disabled: disabled }"
+                        :aria-disabled="disabled"
                       >
                         {{ term.name }}
                       </li>
@@ -180,6 +188,7 @@ export default {
                   :id="`phenotype-summary-input-${pmid}`"
                   rows="3"
                   :value="clinicalPhenotype[pmid].summary"
+                  :disabled="disabled"
                   @input="summaryInputHandler(pmid, $event.target.value)"
                 ></textarea>
               </div>
@@ -211,6 +220,7 @@ export default {
                             type="button"
                             class="btn btn-link p-0 text-danger"
                             style="text-decoration: none"
+                            :disabled="disabled"
                             @click="removeSelectedTerm(pmid, item.accession)"
                           >
                             <i class="bi bi-trash-fill"></i> Remove

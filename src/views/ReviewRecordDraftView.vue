@@ -8,61 +8,56 @@ import Mechanism from "../components/curation/Mechanism.vue";
 import Disease from "../components/curation/Disease.vue";
 import Panel from "../components/curation/Panel.vue";
 import Confidence from "../components/curation/Confidence.vue";
-import PublishModal from "../components/modal/PublishModal.vue";
-import PublishSuccessAlert from "../components/alert/PublishSuccessAlert.vue";
-import SaveNotPublishSuccessAlert from "../components/alert/SaveNotPublishSuccessAlert.vue";
-import {
-  updateInputWithNewPublicationsData,
-  prepareInputForDataSubmission,
-  prepareInputForUpdating,
-  updateHpoTermsInputHelperWithNewPublicationsData,
-  updateInputWithRemovedPublications,
-  updateHpoTermsInputHelperWithRemovedPublications,
-  checkRecordWarnings,
-} from "../utility/CurationUtility.js";
+import Comment from "../components/curation/Comment.vue";
 import SaveSuccessAlert from "../components/alert/SaveSuccessAlert.vue";
 import RemovePublicationModal from "../components/modal/RemovePublicationModal.vue";
+import CurationGuidelinesModals from "../components/modal/CurationGuidelinesModals.vue";
+import ConfirmSaveDraftModal from "../components/modal/ConfirmSaveDraftModal.vue";
 import {
   ATTRIBS_URL,
+  CLAIM_DRAFT_URL,
   GENE_DISEASE_URL,
   GENE_FUNCTION_URL,
   GENE_URL,
   HPO_SEARCH_API_URL,
   PUBLICATIONS_URL,
-  PUBLISH_URL,
   SAVED_DRAFT_DATA_URL,
   UPDATE_SAVED_DRAFT_URL,
   USER_PANELS_URL,
 } from "../utility/UrlConstants.js";
-import Comment from "../components/curation/Comment.vue";
 import {
   fetchAndLogApiResponseErrorMsg,
   fetchAndLogGeneralErrorMsg,
 } from "../utility/ErrorUtility.js";
+import {
+  prepareInputForUpdating,
+  prepareInputForDataSubmission,
+  updateInputWithNewPublicationsData,
+  updateInputWithRemovedPublications,
+  updateHpoTermsInputHelperWithNewPublicationsData,
+  updateHpoTermsInputHelperWithRemovedPublications,
+} from "../utility/CurationUtility.js";
 import api from "../services/api.js";
 import axios from "axios";
-import RecordWarningModal from "../components/modal/RecordWarningModal.vue";
-import CurationGuidelinesModals from "../components/modal/CurationGuidelinesModals.vue";
-import { mapState } from "pinia";
-import { useAuthStore } from "../store/auth.js";
 
 export default {
   created() {
     this.$watch(
       () => this.$route.params,
       () => {
-        this.fetchPreviousCurationInput();
+        this.fetchDraftData();
       },
       { immediate: true },
     );
   },
   data() {
     return {
-      isPreviousInputDataLoading: false,
-      previousInput: null,
-      sessionName: null,
+      stableId: null,
+      draftInput: null,
+      isUnclaimedDraft: false,
+      isDraftDataLoading: false,
       errorMsg: null,
-      userLocusMismatchMsg: null,
+      locusMismatchMsg: null,
       hpoTermsInputHelper: {},
       isGeneDataLoading: false,
       isGeneDiseaseDataLoading: false,
@@ -76,11 +71,6 @@ export default {
       submitErrorMsg: null,
       isSubmitSuccess: false,
       submitSuccessMsg: null,
-      isSaveBeforePublishSuccess: false,
-      saveBeforePublishErrorMsg: null,
-      isPublishSuccess: false,
-      publishSuccessMsg: null,
-      publishErrorMsg: null,
       publicationsErrorMsg: null,
       isPublicationsDataLoading: false,
       inputPmids: "",
@@ -89,18 +79,13 @@ export default {
       panelErrorMsg: null,
       isPanelDataLoading: false,
       panelData: null,
-      stableID: null,
-      recordWarnings: [],
+      claimDraftErrorMsg: null,
+      isClaimDraftLoading: false,
+      isClaimDraftSuccess: false,
     };
   },
   beforeRouteLeave(to, from) {
-    if (
-      this.geneData &&
-      !this.isSubmitSuccess &&
-      !this.isSaveBeforePublishSuccess &&
-      !this.isPublishSuccess &&
-      to?.path !== "/login"
-    ) {
+    if (this.geneData && !this.isSubmitSuccess && to?.path !== "/login") {
       const answer = window.confirm(
         "Are you sure you want to leave? You have unsaved changes which will be lost. Consider saving your changes before leaving.",
       );
@@ -117,35 +102,32 @@ export default {
     Disease,
     Panel,
     Confidence,
-    PublishModal,
-    PublishSuccessAlert,
-    SaveNotPublishSuccessAlert,
+    Comment,
     SaveSuccessAlert,
     RemovePublicationModal,
-    Comment,
-    RecordWarningModal,
     CurationGuidelinesModals,
-  },
-  computed: {
-    ...mapState(useAuthStore, ["isJuniorCuratorUser"]),
+    ConfirmSaveDraftModal,
   },
   methods: {
-    fetchPreviousCurationInput() {
-      this.isPreviousInputDataLoading = true;
-      this.previousInput = this.sessionName = this.errorMsg = null;
-      this.stableID = this.$route.params.stableID;
+    fetchDraftData() {
+      this.isDraftDataLoading = true;
+      this.draftInput = this.errorMsg = null;
+      this.isUnclaimedDraft = false;
+      this.isClaimDraftSuccess = false;
+      this.claimDraftErrorMsg = null;
+      this.stableId = this.$route.params.stableId;
       api
-        .get(SAVED_DRAFT_DATA_URL.replace(":stableid", this.stableID))
+        .get(SAVED_DRAFT_DATA_URL.replace(":stableid", this.stableId))
         .then((response) => {
-          this.previousInput = prepareInputForUpdating(response.data.data);
-          this.sessionName = response.data?.session_name;
-          let pmidList = Object.keys(this.previousInput.publications);
+          this.draftInput = prepareInputForUpdating(response.data?.data);
+          this.isUnclaimedDraft = response.data?.unclaimed_draft === true;
+          let pmidList = Object.keys(this.draftInput.publications);
           this.hpoTermsInputHelper =
             updateHpoTermsInputHelperWithNewPublicationsData(
               this.hpoTermsInputHelper,
               pmidList,
             );
-          const inputLocus = this.previousInput.locus;
+          const inputLocus = this.draftInput.locus;
           this.fetchGeneInformation(inputLocus);
           this.fetchGeneDiseaseInformation(inputLocus);
           this.fetchPanels();
@@ -154,12 +136,12 @@ export default {
           this.errorMsg = fetchAndLogApiResponseErrorMsg(
             error,
             error?.response?.data?.error,
-            "Unable to fetch curation data. Please try again later.",
-            "Unable to fetch curation data.",
+            "Unable to fetch draft data. Please try again later.",
+            "Unable to fetch draft data.",
           );
         })
         .finally(() => {
-          this.isPreviousInputDataLoading = false;
+          this.isDraftDataLoading = false;
         });
     },
     fetchGeneInformation(inputLocus) {
@@ -181,15 +163,15 @@ export default {
 
           const latestGeneSymbol = response2.data?.gene_symbol;
 
-          // Check if there is mismatch between previousInput gene symbol and latest gene symbol
+          // Check if there is mismatch between draftInput gene symbol and latest gene symbol
           if (
             latestGeneSymbol?.toUpperCase() !== inputLocus.trim().toUpperCase()
           ) {
             // If there is a mismatch
             // Then display mismatch msg
-            this.userLocusMismatchMsg = `Note: '${latestGeneSymbol}' is the latest gene symbol of '${inputLocus}'. The 'Gene Information' and 'Disease Name' sections have been updated to use '${latestGeneSymbol}'.`;
-            // And set previousInput.locus to the latest gene symbol fetched from the database
-            this.previousInput.locus = latestGeneSymbol;
+            this.locusMismatchMsg = `Note: '${latestGeneSymbol}' is the latest gene symbol of '${inputLocus}'. The 'Gene Information' and 'Disease Name' sections have been updated to use '${latestGeneSymbol}'.`;
+            // And set draftInput.locus to the latest gene symbol fetched from the database
+            this.draftInput.locus = latestGeneSymbol;
           }
         })
         .catch((error) => {
@@ -263,8 +245,8 @@ export default {
         .then((response) => {
           const publicationsData = response.data;
           if (publicationsData?.results) {
-            this.previousInput = updateInputWithNewPublicationsData(
-              this.previousInput,
+            this.draftInput = updateInputWithNewPublicationsData(
+              this.draftInput,
               publicationsData,
             );
             let pmidList = publicationsData.results.map((item) => item.pmid);
@@ -322,7 +304,7 @@ export default {
       }
 
       // check if any input publication has already been added
-      const addedPmidsList = Object.keys(this.previousInput.publications);
+      const addedPmidsList = Object.keys(this.draftInput.publications);
       const pmidsAlreadyAddedList = inputPmidsList.filter((item) =>
         addedPmidsList.includes(item),
       );
@@ -337,8 +319,8 @@ export default {
       return true;
     },
     removePublication(removedPmidList) {
-      this.previousInput = updateInputWithRemovedPublications(
-        this.previousInput,
+      this.draftInput = updateInputWithRemovedPublications(
+        this.draftInput,
         removedPmidList,
       );
       this.hpoTermsInputHelper =
@@ -381,74 +363,19 @@ export default {
           this.hpoTermsInputHelper[pmid].isLoadingValue = false;
         });
     },
-    saveAndPublishClickHandler() {
-      this.recordWarnings = checkRecordWarnings(
-        this.previousInput.confidence,
-        this.previousInput.publications,
-        this.previousInput.variant_consequences,
-        this.previousInput.variant_types,
-      );
-      const modalId = this.recordWarnings.length
-        ? "record-warning-modal"
-        : "publish-entry-modal";
-      const modalElement = document.getElementById(modalId);
-      let modal = bootstrap.Modal.getInstance(modalElement);
-      if (!modal) {
-        modal = new bootstrap.Modal(modalElement);
-      }
-      modal.show();
-    },
-    openPublishModal() {
-      // Hide record-warning-modal
-      const recordWarningModalElement = document.getElementById(
-        "record-warning-modal",
-      );
-      let recordWarningModal = bootstrap.Modal.getInstance(
-        recordWarningModalElement,
-      );
-      if (!recordWarningModal) {
-        recordWarningModal = new bootstrap.Modal(recordWarningModalElement);
-      }
-      recordWarningModal.hide();
-
-      // Wait for record-warning-modal to be hidden before showing publish-entry-modal
-      recordWarningModalElement.addEventListener(
-        "hidden.bs.modal",
-        () => {
-          const publishModalElement = document.getElementById(
-            "publish-entry-modal",
-          );
-          let publishModal = bootstrap.Modal.getInstance(publishModalElement);
-          if (!publishModal) {
-            publishModal = new bootstrap.Modal(publishModalElement);
-          }
-          publishModal.show();
-        },
-        { once: true }, // ensure it only fires once
-      );
-    },
     saveDraft() {
-      this.publishErrorMsg =
-        this.publishSucessMsg =
-        this.saveBeforePublishErrorMsg =
-          null;
-      this.isPublishSuccess = this.isSaveBeforePublishSuccess = false;
-
       this.submitErrorMsg = this.submitSuccessMsg = null;
       this.isSubmitSuccess = false;
-
       this.isSubmitDataLoading = true;
 
-      const preparedUpdatedInput = prepareInputForDataSubmission(
-        this.previousInput,
-      );
-
+      const preparedInput = prepareInputForDataSubmission(this.draftInput);
       const requestBody = {
-        json_data: preparedUpdatedInput,
+        json_data: preparedInput,
       };
+
       api
         .put(
-          UPDATE_SAVED_DRAFT_URL.replace(":stableid", this.stableID),
+          UPDATE_SAVED_DRAFT_URL.replace(":stableid", this.stableId),
           requestBody,
         )
         .then((response) => {
@@ -467,73 +394,37 @@ export default {
           this.isSubmitDataLoading = false;
         });
     },
-    async saveAndPublishEntry() {
-      this.submitErrorMsg = this.submitSuccessMsg = null;
-      this.isSubmitSuccess = false;
+    claimDraft() {
+      this.claimDraftErrorMsg = null;
+      this.isClaimDraftSuccess = false;
+      this.isClaimDraftLoading = true;
 
-      this.publishErrorMsg =
-        this.publishSucessMsg =
-        this.saveBeforePublishErrorMsg =
-          null;
-      this.isPublishSuccess = this.isSaveBeforePublishSuccess = false;
-
-      this.isSubmitDataLoading = true;
-
-      // Save and publish scenarios:
-      // 1. IF Save fails THEN saveBeforePublishErrorMsg=<error msg>, publishErrorMsg=publishSucessMsg=null, isSaveBeforePublishSuccess=isPublishSuccess=false
-      // 2. IF Save succeeds but Publish fails THEN publishErrorMsg=<error msg>, saveBeforePublishErrorMsg=publishSucessMsg=null, isSaveBeforePublishSuccess=true, isPublishSuccess=false
-      // 3. IF Save and Publish both succeed THEN publishSucessMsg=<success msg>, saveBeforePublishErrorMsg=publishErrorMsg=null, isSaveBeforePublishSuccess=isPublishSuccess=true
-
-      const preparedInput = prepareInputForDataSubmission(this.previousInput);
-      const requestBody = { json_data: preparedInput };
-
-      try {
-        // Call API to Save draft
-        await api.put(
-          UPDATE_SAVED_DRAFT_URL.replace(":stableid", this.stableID),
-          requestBody,
-        );
-
-        this.isSaveBeforePublishSuccess = true;
-
-        // Call API to Publish Data
-        const publishResponse = await api.post(
-          PUBLISH_URL.replace(":stableid", this.stableID),
-        );
-        const publishResponseJson = publishResponse.data;
-
-        this.isSubmitDataLoading = false;
-        this.isPublishSuccess = true;
-        this.publishSuccessMsg = publishResponseJson.message;
-      } catch (error) {
-        this.isSubmitDataLoading = false;
-        if (this.isSaveBeforePublishSuccess) {
-          this.publishErrorMsg = fetchAndLogApiResponseErrorMsg(
+      api
+        .patch(CLAIM_DRAFT_URL.replace(":stableid", this.stableId))
+        .then(() => {
+          this.isUnclaimedDraft = false;
+          this.isClaimDraftSuccess = true;
+        })
+        .catch((error) => {
+          this.claimDraftErrorMsg = fetchAndLogApiResponseErrorMsg(
             error,
             error?.response?.data?.error,
-            "Saved draft but unable to publish data. Please try again later.",
-            "Saved draft but unable to publish data.",
+            "Unable to claim draft. Please try again later.",
+            "Unable to claim draft.",
           );
-        } else {
-          this.saveBeforePublishErrorMsg = fetchAndLogApiResponseErrorMsg(
-            error,
-            error?.response?.data?.error,
-            "Unable to save and publish data. Please try again later.",
-            "Unable to save and publish data.",
-          );
-        }
-      }
+        })
+        .finally(() => {
+          this.isClaimDraftLoading = false;
+        });
     },
   },
 };
 </script>
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
-    <h2>Update G2P Record Draft</h2>
+    <h2>Review draft for record</h2>
     <div
-      v-if="
-        isPreviousInputDataLoading || isGeneDataLoading || isSubmitDataLoading
-      "
+      v-if="isDraftDataLoading || isGeneDataLoading || isSubmitDataLoading"
       class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
@@ -551,29 +442,70 @@ export default {
         {{ errorMsg || geneErrorMsg }}
       </div>
     </div>
-    <div
-      v-if="
-        geneData &&
-        !isSubmitDataLoading &&
-        !isSubmitSuccess &&
-        !isSaveBeforePublishSuccess &&
-        !isPublishSuccess
-      "
-    >
-      <dl v-if="sessionName" class="row pb-0 mb-0 mt-3">
-        <dt class="col-auto">Session name</dt>
+    <div v-if="geneData && !isSubmitDataLoading && !isSubmitSuccess">
+      <dl class="row pb-0 mb-0 mt-3">
+        <dt class="col-auto">Draft name</dt>
         <dd class="col mb-0">
-          {{ sessionName }}
+          {{ draftInput?.session_name }}
+        </dd>
+        <dd
+          v-if="isUnclaimedDraft || isClaimDraftSuccess"
+          class="col-auto mb-0"
+        >
+          <button
+            v-if="isUnclaimedDraft"
+            @click="claimDraft"
+            type="button"
+            class="btn btn-sm btn-primary flex-shrink-0"
+            :disabled="isClaimDraftLoading"
+          >
+            <span
+              v-if="isClaimDraftLoading"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Claim draft
+          </button>
+          <button
+            v-else-if="isClaimDraftSuccess"
+            type="button"
+            class="btn btn-sm btn-outline-success flex-shrink-0"
+            disabled
+          >
+            Claimed <i class="bi bi-check-circle-fill"></i>
+          </button>
         </dd>
       </dl>
       <div
-        v-if="userLocusMismatchMsg"
+        v-if="claimDraftErrorMsg"
         class="alert alert-warning mt-3"
         role="alert"
       >
         <div>
           <i class="bi bi-info-circle"></i>
-          {{ userLocusMismatchMsg }}
+          {{ claimDraftErrorMsg }}
+        </div>
+      </div>
+      <div
+        v-if="isUnclaimedDraft"
+        class="alert alert-warning mt-3"
+        role="alert"
+      >
+        <div>
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          This draft is currently unclaimed. Claim it before updating input or
+          saving changes.
+        </div>
+      </div>
+      <div
+        v-if="locusMismatchMsg"
+        class="alert alert-warning mt-3"
+        role="alert"
+      >
+        <div>
+          <i class="bi bi-info-circle"></i>
+          {{ locusMismatchMsg }}
         </div>
       </div>
       <div class="my-3">
@@ -593,79 +525,86 @@ export default {
         :fetchPublications="fetchPublications"
         :isPublicationsDataLoading="isPublicationsDataLoading"
         :publicationsErrorMsg="publicationsErrorMsg"
-        v-model:publications="previousInput.publications"
+        :disabled="isUnclaimedDraft"
+        v-model:publications="draftInput.publications"
         v-model:input-pmids="inputPmids"
         :isInputPmidsValid="isInputPmidsValid"
         :inputPmidsInvalidMsg="inputPmidsInvalidMsg"
       />
       <ClinicalPhenotype
-        v-model:clinical-phenotype="previousInput.phenotypes"
+        v-model:clinical-phenotype="draftInput.phenotypes"
         v-model:hpo-terms-input-helper="hpoTermsInputHelper"
         :fetchAndSearchHPO="fetchAndSearchHPO"
+        :disabled="isUnclaimedDraft"
       />
       <Genotype
         :attributesData="attributesData"
-        v-model:allelic-requirement="previousInput.allelic_requirement"
-        v-model:cross-cutting-modifiers="previousInput.cross_cutting_modifier"
+        v-model:allelic-requirement="draftInput.allelic_requirement"
+        v-model:cross-cutting-modifiers="draftInput.cross_cutting_modifier"
+        :disabled="isUnclaimedDraft"
       />
       <VariantInformation
-        :pmidList="Object.keys(previousInput.publications)"
-        :variantTypes="previousInput.variant_types"
+        :pmidList="Object.keys(draftInput.publications)"
+        :variantTypes="draftInput.variant_types"
+        :disabled="isUnclaimedDraft"
         @update-variant-types="
           (updatedVariantTypes) =>
-            (previousInput.variant_types = updatedVariantTypes)
+            (draftInput.variant_types = updatedVariantTypes)
         "
-        v-model:variant-descriptions="previousInput.variant_descriptions"
-        :variantConsequences="previousInput.variant_consequences"
+        v-model:variant-descriptions="draftInput.variant_descriptions"
+        :variantConsequences="draftInput.variant_consequences"
         @update-variant-consequences="
           (updatedVariantConsequences) =>
-            (previousInput.variant_consequences = updatedVariantConsequences)
+            (draftInput.variant_consequences = updatedVariantConsequences)
         "
       />
       <Mechanism
-        v-model:molecular-mechanism="previousInput.molecular_mechanism.name"
+        v-model:molecular-mechanism="draftInput.molecular_mechanism.name"
         v-model:molecular-mechanism-support="
-          previousInput.molecular_mechanism.support
+          draftInput.molecular_mechanism.support
         "
-        :mechanismSynopsis="previousInput.mechanism_synopsis"
+        :mechanismSynopsis="draftInput.mechanism_synopsis"
         @update-mechanism-synopsis="
           (updatedMechanismSynopsis) =>
-            (previousInput.mechanism_synopsis = updatedMechanismSynopsis)
+            (draftInput.mechanism_synopsis = updatedMechanismSynopsis)
         "
-        :mechanismEvidence="previousInput.mechanism_evidence"
+        :mechanismEvidence="draftInput.mechanism_evidence"
         @update-mechanism-evidence="
           (updatedMechanismEvidence) =>
-            (previousInput.mechanism_evidence = updatedMechanismEvidence)
+            (draftInput.mechanism_evidence = updatedMechanismEvidence)
         "
         :mechanismGeneStats="geneFunctionData.gene_stats"
-        :sourceData="previousInput.source_data"
+        :sourceData="draftInput.source_data"
+        :disabled="isUnclaimedDraft"
       />
       <Disease
-        :inputGeneSymbol="previousInput.locus"
+        :inputGeneSymbol="draftInput.locus"
         :geneDiseaseData="geneDiseaseData"
         :isGeneDiseaseDataLoading="isGeneDiseaseDataLoading"
         :geneDiseaseErrorMsg="geneDiseaseErrorMsg"
-        v-model:disease-name="previousInput.disease.disease_name"
-        v-model:disease-cross-references="
-          previousInput.disease.cross_references
-        "
-        :sourceData="previousInput.source_data"
+        v-model:disease-name="draftInput.disease.disease_name"
+        v-model:disease-cross-references="draftInput.disease.cross_references"
+        :sourceData="draftInput.source_data"
+        :disabled="isUnclaimedDraft"
       />
       <Panel
         :panelData="panelData"
         :isPanelDataLoading="isPanelDataLoading"
         :panelErrorMsg="panelErrorMsg"
-        v-model:panels="previousInput.panels"
+        v-model:panels="draftInput.panels"
+        :disabled="isUnclaimedDraft"
       />
       <Confidence
         :attributesData="attributesData"
-        :inputPublications="previousInput.publications"
-        v-model:confidence="previousInput.confidence"
+        :inputPublications="draftInput.publications"
+        v-model:confidence="draftInput.confidence"
         :geneData="geneData"
+        :disabled="isUnclaimedDraft"
       />
       <Comment
-        v-model:private-comment="previousInput.private_comment"
-        v-model:public-comment="previousInput.public_comment"
+        v-model:private-comment="draftInput.private_comment"
+        v-model:public-comment="draftInput.public_comment"
+        :disabled="isUnclaimedDraft"
       />
       <p class="pt-2">
         <span class="text-danger">*</span> mandatory fields to publish
@@ -681,67 +620,30 @@ export default {
       </div>
     </div>
     <div
-      v-if="!isSubmitDataLoading && saveBeforePublishErrorMsg"
-      class="alert alert-danger mt-3"
-      role="alert"
-    >
-      <div>
-        <i class="bi bi-exclamation-circle-fill"></i>
-        {{ saveBeforePublishErrorMsg }}
-      </div>
-    </div>
-    <div
-      v-if="
-        geneData &&
-        !isSubmitDataLoading &&
-        !isSubmitSuccess &&
-        !isSaveBeforePublishSuccess &&
-        !isPublishSuccess
-      "
+      v-if="geneData && !isSubmitDataLoading && !isSubmitSuccess"
       class="d-flex justify-content-between py-3"
     >
-      <button type="button" class="btn btn-primary" @click="saveDraft">
-        <i class="bi bi-floppy-fill"></i> Save Draft
-      </button>
+      <router-link class="btn btn-outline-primary" to="/draft-records">
+        <i class="bi bi-arrow-left-circle"></i> Exit
+      </router-link>
       <button
-        v-if="isJuniorCuratorUser !== true"
-        class="btn btn-primary"
-        @click="saveAndPublishClickHandler"
+        :class="isUnclaimedDraft ? 'btn btn-secondary' : 'btn btn-primary'"
+        data-bs-toggle="modal"
+        data-bs-target="#confirm-save-draft-modal"
+        :disabled="isUnclaimedDraft"
       >
-        <i class="bi bi-floppy-fill"></i> Save and Publish
+        <i class="bi bi-floppy-fill"></i> Save Draft
       </button>
     </div>
     <SaveSuccessAlert
       v-if="!isSubmitDataLoading && isSubmitSuccess"
       :successMsg="submitSuccessMsg"
+      :show-add-button="false"
     />
-    <SaveNotPublishSuccessAlert
-      v-if="
-        !isSubmitDataLoading && isSaveBeforePublishSuccess && !isPublishSuccess
-      "
-      :errorMsg="publishErrorMsg"
-      :stableId="stableID"
-    />
-    <PublishSuccessAlert
-      v-if="
-        !isSubmitDataLoading && isSaveBeforePublishSuccess && isPublishSuccess
-      "
-      :successMsg="publishSuccessMsg"
-      :stableId="stableID"
-    />
-    <PublishModal
-      :gene="previousInput?.locus"
-      :mechanism="previousInput?.molecular_mechanism?.name"
-      :allelic-requirement="previousInput?.allelic_requirement"
-      @publish="saveAndPublishEntry"
-    />
+    <ConfirmSaveDraftModal @savedraft="saveDraft" />
     <RemovePublicationModal
-      :pmidList="Object.keys(previousInput?.publications || {})"
+      :pmidList="Object.keys(draftInput?.publications || {})"
       @removePublication="(pmid) => removePublication(pmid)"
-    />
-    <RecordWarningModal
-      :recordWarnings="recordWarnings"
-      @confirm-click-handler="openPublishModal"
     />
     <CurationGuidelinesModals />
   </div>

@@ -8,6 +8,11 @@ export default {
     geneDiseaseErrorMsg: String,
     diseaseName: String,
     diseaseCrossReferences: Array,
+    sourceData: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["update:diseaseName", "update:diseaseCrossReferences"],
   data() {
@@ -65,6 +70,89 @@ export default {
       </h2>
       <div id="disease-section-body" class="accordion-collapse collapse">
         <div class="accordion-body">
+          <template
+            v-if="
+              sourceData &&
+              (sourceData.disease ||
+                sourceData.disease_cross_references?.length > 0)
+            "
+          >
+            <div class="card source-data-card">
+              <h5 class="card-header">Data from imported source</h5>
+              <div class="card-body">
+                <dl class="row mb-0">
+                  <template v-if="sourceData.disease">
+                    <dt class="col-xl-3 col-lg-4">
+                      Disease name
+                      <span v-if="sourceData.name">
+                        from {{ sourceData.name }}</span
+                      >
+                    </dt>
+                    <dd class="col-xl-9 col-lg-8">
+                      {{ sourceData.disease }}
+                    </dd>
+                  </template>
+                  <template
+                    v-if="sourceData.disease_cross_references?.length > 0"
+                  >
+                    <dt class="col-xl-3 col-lg-4">
+                      Ontology term
+                      <span v-if="sourceData.name">
+                        from {{ sourceData.name }}</span
+                      >
+                    </dt>
+                    <dd class="col-xl-9 col-lg-8">
+                      {{ sourceData.disease_cross_references[0].disease_name }}
+                      (
+                      <a
+                        v-if="
+                          sourceData.disease_cross_references[0].source ===
+                          'OMIM'
+                        "
+                        :href="
+                          OMIM_URL +
+                          sourceData.disease_cross_references[0].identifier
+                        "
+                        style="text-decoration: none"
+                        target="_blank"
+                      >
+                        {{ sourceData.disease_cross_references[0].identifier }}
+                      </a>
+                      <a
+                        v-else-if="
+                          sourceData.disease_cross_references[0].source ===
+                          'Mondo'
+                        "
+                        :href="
+                          MONDO_URL +
+                          sourceData.disease_cross_references[0].identifier
+                        "
+                        style="text-decoration: none"
+                        target="_blank"
+                      >
+                        {{ sourceData.disease_cross_references[0].identifier }}
+                      </a>
+                      <span v-else>{{
+                        sourceData.disease_cross_references[0].identifier
+                      }}</span>
+                      )
+                    </dd>
+                  </template>
+                </dl>
+                <a
+                  v-if="sourceData.url"
+                  :href="sourceData.url"
+                  target="_blank"
+                  style="text-decoration: none"
+                  class="mb-0 mt-0 subtitle-text"
+                >
+                  See details in source
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+              </div>
+            </div>
+            <hr />
+          </template>
           <div
             class="d-flex justify-content-center"
             v-if="isGeneDiseaseDataLoading"
@@ -90,6 +178,7 @@ export default {
                   id="disease-name-input"
                   type="text"
                   :value="diseaseName"
+                  :disabled="disabled"
                   @input="$emit('update:diseaseName', $event.target.value)"
                 />
               </div>
@@ -135,6 +224,7 @@ export default {
                       <input
                         type="checkbox"
                         :id="`disease-name-link-input-${index}`"
+                        :disabled="disabled"
                         :checked="
                           diseaseCrossReferences.findIndex(
                             (diseaseCrossReference) =>
@@ -154,6 +244,7 @@ export default {
                           <button
                             :id="`disease-name-use-btn-${index}`"
                             class="btn btn-outline-primary py-0 px-1"
+                            :disabled="disabled"
                             @click="useDiseaseName(item)"
                             type="button"
                           >
@@ -196,3 +287,11 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.source-data-card {
+  background-color: #fff3cd;
+}
+.subtitle-text {
+  font-size: small;
+}
+</style>

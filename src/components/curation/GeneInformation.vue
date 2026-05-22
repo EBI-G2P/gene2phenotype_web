@@ -39,11 +39,9 @@ export default {
       </h2>
       <div id="gene-info-section-body" class="accordion-collapse collapse show">
         <div class="accordion-body">
-          <div class="row">
-            <div style="width: 10%">
-              <p><strong>Symbol</strong></p>
-            </div>
-            <div style="width: 90%">
+          <dl class="row mb-0">
+            <dt class="gene-info-label">Symbol</dt>
+            <dd class="gene-info-value">
               <a
                 v-if="geneData.gene_symbol"
                 :href="`/gene2phenotype/gene/${geneData.gene_symbol}`"
@@ -52,42 +50,28 @@ export default {
               >
                 {{ geneData.gene_symbol }}
               </a>
-              <p v-else class="text-muted">Not Available</p>
-            </div>
-          </div>
-          <div class="row">
-            <div style="width: 10%">
-              <p><strong>Synonyms</strong></p>
-            </div>
-            <div style="width: 90%">
-              <p v-if="geneData.synonyms?.length > 0">
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
+            <dt class="gene-info-label">Synonyms</dt>
+            <dd class="gene-info-value">
+              <span v-if="geneData.synonyms?.length > 0">
                 {{ geneData.synonyms.join(", ") }}
-              </p>
-              <p v-else class="text-muted">Not Available</p>
-            </div>
-          </div>
-          <div class="row">
-            <div style="width: 10%">
-              <p><strong>Function</strong></p>
-            </div>
-            <div class="pb-3" style="width: 90%">
+              </span>
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
+            <dt class="gene-info-label">Function</dt>
+            <dd class="gene-info-value">
               <GeneFunction
                 v-if="geneFunctionData?.function?.protein_function"
                 :geneFunctionText="geneFunctionData.function.protein_function"
                 :uniprotAccession="geneFunctionData.function.uniprot_accession"
               />
-              <p v-else class="text-muted mb-0">Not Available</p>
-            </div>
-          </div>
-          <div
-            class="row"
-            v-if="geneFunctionData?.subunit_structure?.quaternary_structure"
-          >
-            <div style="width: 10%">
-              <p><strong>Quaternary structure</strong></p>
-            </div>
-            <div class="pb-3" style="width: 90%">
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
+            <dt class="gene-info-label">Quaternary structure</dt>
+            <dd class="gene-info-value">
               <GeneFunction
+                v-if="geneFunctionData?.subunit_structure?.quaternary_structure"
                 :geneFunctionText="
                   geneFunctionData.subunit_structure.quaternary_structure
                 "
@@ -97,13 +81,10 @@ export default {
                 uniprotSection="interaction"
                 linkLabel="More details"
               />
-            </div>
-          </div>
-          <div class="row">
-            <div style="width: 10%">
-              <p><strong>OMIM</strong></p>
-            </div>
-            <div style="width: 90%">
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
+            <dt class="gene-info-label">OMIM</dt>
+            <dd class="gene-info-value">
               <a
                 v-if="geneData.ids?.OMIM"
                 :href="OMIM_URL + geneData.ids.OMIM"
@@ -112,14 +93,10 @@ export default {
               >
                 {{ geneData.ids.OMIM }}
               </a>
-              <p v-else class="text-muted">Not Available</p>
-            </div>
-          </div>
-          <div class="row">
-            <div style="width: 10%">
-              <p><strong>HGNC ID</strong></p>
-            </div>
-            <div style="width: 90%">
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
+            <dt class="gene-info-label">HGNC ID</dt>
+            <dd class="gene-info-value">
               <a
                 v-if="geneData.ids?.HGNC"
                 :href="HGNC_URL + geneData.ids.HGNC"
@@ -128,14 +105,10 @@ export default {
               >
                 {{ geneData.ids.HGNC }}
               </a>
-              <p v-else class="text-muted">Not Available</p>
-            </div>
-          </div>
-          <div class="row">
-            <div style="width: 10%">
-              <p><strong>Ensembl ID</strong></p>
-            </div>
-            <div style="width: 90%">
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
+            <dt class="gene-info-label">Ensembl ID</dt>
+            <dd class="gene-info-value">
               <a
                 v-if="geneData.ids?.Ensembl"
                 :href="ENSEMBL_GENE_URL + geneData.ids.Ensembl"
@@ -144,9 +117,9 @@ export default {
               >
                 {{ geneData.ids.Ensembl }}
               </a>
-              <p v-else class="text-muted">Not Available</p>
-            </div>
-          </div>
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
+          </dl>
           <div class="row">
             <a
               :href="DECIPHER_URL + geneData.gene_symbol"
@@ -162,3 +135,38 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.gene-info-label,
+.gene-info-value {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.gene-info-label {
+  margin-bottom: 0.25rem;
+}
+
+.gene-info-value {
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .gene-info-label {
+    width: 20%;
+  }
+
+  .gene-info-value {
+    width: 80%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .gene-info-label {
+    width: 10%;
+  }
+
+  .gene-info-value {
+    width: 90%;
+  }
+}
+</style>
