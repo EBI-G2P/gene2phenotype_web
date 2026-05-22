@@ -5,6 +5,14 @@ export default {
   props: {
     geneFunctionText: String,
     uniprotAccession: String,
+    uniprotSection: {
+      type: String,
+      default: null,
+    },
+    linkLabel: {
+      type: String,
+      default: "Source",
+    },
   },
   data() {
     return {
@@ -32,6 +40,16 @@ export default {
     },
     displayedParts() {
       return this.parsePubMedReferences(this.displayedText);
+    },
+    uniprotHref() {
+      if (!this.uniprotAccession) {
+        return null;
+      }
+
+      const baseHref = `${UNIPROT_URL}${this.uniprotAccession}/entry`;
+      return this.uniprotSection
+        ? `${baseHref}#${this.uniprotSection}`
+        : baseHref;
     },
   },
   methods: {
@@ -110,9 +128,9 @@ export default {
       ></i>
     </button>
     <p class="mb-0">
-      <b>Source:</b>
+      <b>{{ linkLabel }}:</b>
       <a
-        :href="UNIPROT_URL + uniprotAccession"
+        :href="uniprotHref"
         style="text-decoration: none"
         target="_blank"
         rel="noopener noreferrer"

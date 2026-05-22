@@ -68,6 +68,21 @@ export default {
               />
               <span v-else class="text-muted">Not Available</span>
             </dd>
+            <dt class="gene-info-label">Quaternary structure</dt>
+            <dd class="gene-info-value">
+              <GeneFunction
+                v-if="geneFunctionData?.subunit_structure?.quaternary_structure"
+                :geneFunctionText="
+                  geneFunctionData.subunit_structure.quaternary_structure
+                "
+                :uniprotAccession="
+                  geneFunctionData.subunit_structure.uniprot_accession
+                "
+                uniprotSection="interaction"
+                linkLabel="More details"
+              />
+              <span v-else class="text-muted">Not Available</span>
+            </dd>
             <dt class="gene-info-label">OMIM</dt>
             <dd class="gene-info-value">
               <a
