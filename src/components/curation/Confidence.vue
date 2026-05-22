@@ -7,6 +7,10 @@ export default {
     inputPublications: Object,
     confidence: String,
     geneData: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -126,6 +130,7 @@ export default {
                 id="confidence-level-input"
                 class="form-select"
                 :value="confidence"
+                :disabled="disabled"
                 @input="$emit('update:confidence', $event.target.value)"
               >
                 <option value="">Select</option>

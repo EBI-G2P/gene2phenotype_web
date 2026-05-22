@@ -15,6 +15,7 @@ import CurationGuidelinesModals from "../components/modal/CurationGuidelinesModa
 import ConfirmSaveDraftModal from "../components/modal/ConfirmSaveDraftModal.vue";
 import {
   ATTRIBS_URL,
+  CLAIM_DRAFT_URL,
   GENE_DISEASE_URL,
   GENE_FUNCTION_URL,
   GENE_URL,
@@ -53,6 +54,7 @@ export default {
     return {
       stableId: null,
       draftInput: null,
+      isUnclaimedDraft: false,
       isDraftDataLoading: false,
       errorMsg: null,
       locusMismatchMsg: null,
@@ -77,6 +79,9 @@ export default {
       panelErrorMsg: null,
       isPanelDataLoading: false,
       panelData: null,
+      claimDraftErrorMsg: null,
+      isClaimDraftLoading: false,
+      isClaimDraftSuccess: false,
     };
   },
   beforeRouteLeave(to, from) {
@@ -107,11 +112,15 @@ export default {
     fetchDraftData() {
       this.isDraftDataLoading = true;
       this.draftInput = this.errorMsg = null;
+      this.isUnclaimedDraft = false;
+      this.isClaimDraftSuccess = false;
+      this.claimDraftErrorMsg = null;
       this.stableId = this.$route.params.stableId;
       api
         .get(SAVED_DRAFT_DATA_URL.replace(":stableid", this.stableId))
         .then((response) => {
           this.draftInput = prepareInputForUpdating(response.data?.data);
+          this.isUnclaimedDraft = response.data?.unclaimed_draft === true;
           let pmidList = Object.keys(this.draftInput.publications);
           this.hpoTermsInputHelper =
             updateHpoTermsInputHelperWithNewPublicationsData(
@@ -385,6 +394,29 @@ export default {
           this.isSubmitDataLoading = false;
         });
     },
+    claimDraft() {
+      this.claimDraftErrorMsg = null;
+      this.isClaimDraftSuccess = false;
+      this.isClaimDraftLoading = true;
+
+      api
+        .patch(CLAIM_DRAFT_URL.replace(":stableid", this.stableId))
+        .then(() => {
+          this.isUnclaimedDraft = false;
+          this.isClaimDraftSuccess = true;
+        })
+        .catch((error) => {
+          this.claimDraftErrorMsg = fetchAndLogApiResponseErrorMsg(
+            error,
+            error?.response?.data?.error,
+            "Unable to claim draft. Please try again later.",
+            "Unable to claim draft.",
+          );
+        })
+        .finally(() => {
+          this.isClaimDraftLoading = false;
+        });
+    },
   },
 };
 </script>
@@ -416,7 +448,56 @@ export default {
         <dd class="col mb-0">
           {{ draftInput?.session_name }}
         </dd>
+        <dd
+          v-if="isUnclaimedDraft || isClaimDraftSuccess"
+          class="col-auto mb-0"
+        >
+          <button
+            v-if="isUnclaimedDraft"
+            @click="claimDraft"
+            type="button"
+            class="btn btn-sm btn-primary flex-shrink-0"
+            :disabled="isClaimDraftLoading"
+          >
+            <span
+              v-if="isClaimDraftLoading"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Claim draft
+          </button>
+          <button
+            v-else-if="isClaimDraftSuccess"
+            type="button"
+            class="btn btn-sm btn-outline-success flex-shrink-0"
+            disabled
+          >
+            Claimed <i class="bi bi-check-circle-fill"></i>
+          </button>
+        </dd>
       </dl>
+      <div
+        v-if="claimDraftErrorMsg"
+        class="alert alert-warning mt-3"
+        role="alert"
+      >
+        <div>
+          <i class="bi bi-info-circle"></i>
+          {{ claimDraftErrorMsg }}
+        </div>
+      </div>
+      <div
+        v-if="isUnclaimedDraft"
+        class="alert alert-warning mt-3"
+        role="alert"
+      >
+        <div>
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          This draft is currently unclaimed. Claim it before updating input or
+          saving changes.
+        </div>
+      </div>
       <div
         v-if="locusMismatchMsg"
         class="alert alert-warning mt-3"
@@ -444,6 +525,7 @@ export default {
         :fetchPublications="fetchPublications"
         :isPublicationsDataLoading="isPublicationsDataLoading"
         :publicationsErrorMsg="publicationsErrorMsg"
+        :disabled="isUnclaimedDraft"
         v-model:publications="draftInput.publications"
         v-model:input-pmids="inputPmids"
         :isInputPmidsValid="isInputPmidsValid"
@@ -453,15 +535,18 @@ export default {
         v-model:clinical-phenotype="draftInput.phenotypes"
         v-model:hpo-terms-input-helper="hpoTermsInputHelper"
         :fetchAndSearchHPO="fetchAndSearchHPO"
+        :disabled="isUnclaimedDraft"
       />
       <Genotype
         :attributesData="attributesData"
         v-model:allelic-requirement="draftInput.allelic_requirement"
         v-model:cross-cutting-modifiers="draftInput.cross_cutting_modifier"
+        :disabled="isUnclaimedDraft"
       />
       <VariantInformation
         :pmidList="Object.keys(draftInput.publications)"
         :variantTypes="draftInput.variant_types"
+        :disabled="isUnclaimedDraft"
         @update-variant-types="
           (updatedVariantTypes) =>
             (draftInput.variant_types = updatedVariantTypes)
@@ -490,6 +575,7 @@ export default {
         "
         :mechanismGeneStats="geneFunctionData.gene_stats"
         :sourceData="draftInput.source_data"
+        :disabled="isUnclaimedDraft"
       />
       <Disease
         :inputGeneSymbol="draftInput.locus"
@@ -499,22 +585,26 @@ export default {
         v-model:disease-name="draftInput.disease.disease_name"
         v-model:disease-cross-references="draftInput.disease.cross_references"
         :sourceData="draftInput.source_data"
+        :disabled="isUnclaimedDraft"
       />
       <Panel
         :panelData="panelData"
         :isPanelDataLoading="isPanelDataLoading"
         :panelErrorMsg="panelErrorMsg"
         v-model:panels="draftInput.panels"
+        :disabled="isUnclaimedDraft"
       />
       <Confidence
         :attributesData="attributesData"
         :inputPublications="draftInput.publications"
         v-model:confidence="draftInput.confidence"
         :geneData="geneData"
+        :disabled="isUnclaimedDraft"
       />
       <Comment
         v-model:private-comment="draftInput.private_comment"
         v-model:public-comment="draftInput.public_comment"
+        :disabled="isUnclaimedDraft"
       />
       <p class="pt-2">
         <span class="text-danger">*</span> mandatory fields to publish
@@ -537,9 +627,10 @@ export default {
         <i class="bi bi-arrow-left-circle"></i> Exit
       </router-link>
       <button
-        class="btn btn-primary"
+        :class="isUnclaimedDraft ? 'btn btn-secondary' : 'btn btn-primary'"
         data-bs-toggle="modal"
         data-bs-target="#confirm-save-draft-modal"
+        :disabled="isUnclaimedDraft"
       >
         <i class="bi bi-floppy-fill"></i> Save Draft
       </button>

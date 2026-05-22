@@ -19,6 +19,10 @@ export default {
     mechanismEvidence: Object,
     mechanismGeneStats: Object,
     sourceData: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: [
     "update:molecularMechanism",
@@ -340,6 +344,7 @@ export default {
                       : 'form-select'
                   "
                   :value="molecularMechanism"
+                  :disabled="disabled"
                   @input="
                     $emit('update:molecularMechanism', $event.target.value)
                   "
@@ -366,6 +371,7 @@ export default {
                       : 'form-select'
                   "
                   :value="molecularMechanismSupport"
+                  :disabled="disabled"
                   @input="
                     $emit(
                       'update:molecularMechanismSupport',
@@ -437,6 +443,7 @@ export default {
                               : 'form-select'
                           "
                           :value="mechanismSynopsis[item]"
+                          :disabled="disabled"
                           @input="
                             mechanismSynopsisInputHandler(
                               item,
@@ -470,6 +477,7 @@ export default {
             <MechanismEvidence
               :molecularMechanismSupport="molecularMechanismSupport"
               :mechanismEvidence="mechanismEvidence"
+              :disabled="disabled"
               @update-mechanism-evidence="
                 (updatedMechanismEvidence) =>
                   $emit('updateMechanismEvidence', updatedMechanismEvidence)

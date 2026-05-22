@@ -28,8 +28,7 @@ export default {
           <div class="row g-3 py-3">
             <p>
               You are about to save this draft. It will be converted to a manual
-              draft and assigned to you if currently unclaimed. Have you
-              reviewed everything and do you want to proceed?
+              draft. Have you reviewed everything and do you want to proceed?
             </p>
           </div>
         </div>

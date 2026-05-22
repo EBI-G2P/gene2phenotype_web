@@ -5,6 +5,10 @@ export default {
     attributesData: Object,
     allelicRequirement: String,
     crossCuttingModifiers: Array,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["update:allelicRequirement", "update:crossCuttingModifiers"],
   methods: {
@@ -53,6 +57,7 @@ export default {
                   id="allelic-requirement-input"
                   class="form-select"
                   :value="allelicRequirement"
+                  :disabled="disabled"
                   @input="
                     $emit('update:allelicRequirement', $event.target.value)
                   "
@@ -78,7 +83,7 @@ export default {
                 </button>
               </div>
             </div>
-            <fieldset class="row g-3 mt-0">
+            <fieldset class="row g-3 mt-0" :disabled="disabled">
               <legend class="col-form-label col-auto">
                 Cross Cutting Modifier(s)
               </legend>

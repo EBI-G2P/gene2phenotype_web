@@ -9,6 +9,10 @@ export default {
     diseaseName: String,
     diseaseCrossReferences: Array,
     sourceData: Object,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["update:diseaseName", "update:diseaseCrossReferences"],
   data() {
@@ -174,6 +178,7 @@ export default {
                   id="disease-name-input"
                   type="text"
                   :value="diseaseName"
+                  :disabled="disabled"
                   @input="$emit('update:diseaseName', $event.target.value)"
                 />
               </div>
@@ -219,6 +224,7 @@ export default {
                       <input
                         type="checkbox"
                         :id="`disease-name-link-input-${index}`"
+                        :disabled="disabled"
                         :checked="
                           diseaseCrossReferences.findIndex(
                             (diseaseCrossReference) =>
@@ -238,6 +244,7 @@ export default {
                           <button
                             :id="`disease-name-use-btn-${index}`"
                             class="btn btn-outline-primary py-0 px-1"
+                            :disabled="disabled"
                             @click="useDiseaseName(item)"
                             type="button"
                           >
