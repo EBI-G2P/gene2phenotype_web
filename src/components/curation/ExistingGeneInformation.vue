@@ -1,7 +1,7 @@
 <script>
 import api from "../../services/api.js";
 import { CONFIDENCE_COLOR_MAP, HELP_TEXT } from "../../utility/Constants.js";
-import { SEARCH_URL } from "../../utility/UrlConstants.js";
+import { CLAIM_DRAFT_URL, SEARCH_URL } from "../../utility/UrlConstants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
 import { useAuthStore } from "../../store/auth.js";
 import { fetchAndLogApiResponseErrorMsg } from "../../utility/ErrorUtility.js";
@@ -37,6 +37,10 @@ export default {
       geneExistingRecords: null,
       geneExistingDraftsErrorMsg: null,
       geneExistingRecordsErrorMsg: null,
+      claimDraftErrorMsg: null,
+      claimDraftSuccessMsg: null,
+      isClaimDraftLoading: false,
+      claimDraftStableId: null,
       CONFIDENCE_COLOR_MAP,
       HELP_TEXT,
     };
@@ -52,7 +56,7 @@ export default {
       } else {
         url = `${SEARCH_URL}?query=${this.gene}&type=draft`;
       }
-      api
+      return api
         .get(url)
         .then((response) => {
           this.geneExistingDrafts = response.data;
@@ -70,6 +74,48 @@ export default {
         .finally(() => {
           this.isGeneExistingDraftsDataLoading = false;
         });
+    },
+    async claimDraft(stableId) {
+      if (!stableId) {
+        return;
+      }
+
+      this.claimDraftErrorMsg = this.claimDraftSuccessMsg = null;
+      this.isClaimDraftLoading = true;
+      this.claimDraftStableId = stableId;
+
+      let claimDraftResponse = null;
+      try {
+        claimDraftResponse = await api.patch(
+          CLAIM_DRAFT_URL.replace(":stableid", stableId),
+        );
+      } catch (error) {
+        this.claimDraftErrorMsg = fetchAndLogApiResponseErrorMsg(
+          error,
+          error?.response?.data?.error,
+          "Unable to claim draft. Please try again later.",
+          "Unable to claim draft.",
+        );
+        this.isClaimDraftLoading = false;
+        this.claimDraftStableId = null;
+        return;
+      }
+
+      try {
+        await this.fetchExistingGeneDrafts();
+        this.claimDraftSuccessMsg =
+          claimDraftResponse?.data?.message || "Draft claimed successfully.";
+      } catch (error) {
+        this.claimDraftErrorMsg = fetchAndLogApiResponseErrorMsg(
+          error,
+          error?.response?.data?.error,
+          "Draft claimed, but unable to refresh drafts. Please reload the page.",
+          "Draft claimed, but unable to refresh drafts.",
+        );
+      } finally {
+        this.isClaimDraftLoading = false;
+        this.claimDraftStableId = null;
+      }
     },
     fetchExistingGeneDraftsNextPage() {
       this.fetchExistingGeneDrafts(this.geneExistingDrafts.next);
@@ -154,6 +200,18 @@ export default {
         </button>
       </div>
       <div v-else>
+        <div v-if="claimDraftErrorMsg" class="alert alert-danger mt-3" role="alert">
+          <div>
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ claimDraftErrorMsg }}
+          </div>
+        </div>
+        <div v-if="claimDraftSuccessMsg" class="alert alert-success mt-3" role="alert">
+          <div>
+            <i class="bi bi-check-circle-fill"></i>
+            {{ claimDraftSuccessMsg }}
+          </div>
+        </div>
         <div v-if="geneExistingRecords?.results?.length > 0">
           <h3 class="pt-3">Existing records available to add to your panel</h3>
           <p class="text-muted mb-0">
@@ -349,11 +407,36 @@ export default {
                     >
                       Update draft
                     </router-link>
+                    <template v-else-if="item.status === 'automatic'">
+                      <button
+                        type="button"
+                        class="btn btn-link p-0 claim-draft-button"
+                        style="text-decoration: none"
+                        :disabled="isClaimDraftLoading"
+                        @click="claimDraft(item.stable_id)"
+                      >
+                        <span
+                          v-if="claimDraftStableId === item.stable_id"
+                          class="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        <span v-else>Claim <i class="bi bi-plus-circle"></i></span>
+                      </button>
+                      <br />
+                      <router-link
+                        v-if="item.stable_id"
+                        :to="`/lgd/review-draft/${item.stable_id}`"
+                        style="text-decoration: none"
+                      >
+                        Review <i class="bi bi-file-earmark-text"></i>
+                      </router-link>
+                    </template>
                     <a
+                      v-else
                       :href="`mailto:${item.curator_email}`"
                       style="text-decoration: none"
                       target="_blank"
-                      v-else
                     >
                       Mail curator
                     </a>
@@ -418,6 +501,10 @@ export default {
   </div>
 </template>
 <style scoped>
+.claim-draft-button {
+  min-width: 48px;
+}
+
 th {
   white-space: nowrap;
 }
