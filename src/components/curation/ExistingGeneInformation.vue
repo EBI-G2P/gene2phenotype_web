@@ -394,10 +394,12 @@ export default {
                     </span>
                   </td>
                   <td>
-                    Name:
-                    {{ item.curator_first + " " + item.curator_last_name }}
-                    <br />
-                    Email: {{ item.curator_email }}
+                    <template v-if="item.status !== 'automatic'">
+                      Name:
+                      {{ item.curator_first + " " + item.curator_last_name }}
+                      <br />
+                      Email: {{ item.curator_email }}
+                    </template>
                   </td>
                   <td class="text-nowrap">
                     <router-link
