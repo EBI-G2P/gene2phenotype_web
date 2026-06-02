@@ -44,16 +44,9 @@ export default {
             </span>
           </td>
           <td>
-            <div v-if="getCuratorName(item)">
+            <span v-if="getCuratorName(item)">
               {{ getCuratorName(item) }}
-            </div>
-            <a
-              v-if="item.curator_email"
-              :href="`mailto:${item.curator_email}`"
-              style="text-decoration: none"
-            >
-              {{ item.curator_email }}
-            </a>
+            </span>
           </td>
           <td>{{ item.last_update }}</td>
           <td class="text-nowrap">
