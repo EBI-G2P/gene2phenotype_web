@@ -22,6 +22,7 @@ export default {
         // THEN reset newNotifyExistingGeneInformation and fetch existing data for gene
         if (newNotifyExistingGeneInformation === true) {
           this.$emit("setNotifyExistingGeneInformation", false);
+          this.resetClaimDraftState();
           this.fetchExistingGeneDrafts();
           this.fetchExistingGeneRecords();
         }
@@ -47,6 +48,11 @@ export default {
   },
   components: { ToolTip },
   methods: {
+    resetClaimDraftState() {
+      this.claimDraftErrorMsg = this.claimDraftSuccessMsg = null;
+      this.isClaimDraftLoading = false;
+      this.claimDraftStableId = null;
+    },
     fetchExistingGeneDrafts(dataUrl) {
       this.geneExistingDraftsErrorMsg = this.geneExistingDrafts = null;
       this.isGeneExistingDraftsDataLoading = true;
@@ -56,7 +62,7 @@ export default {
       } else {
         url = `${SEARCH_URL}?query=${this.gene}&type=draft`;
       }
-      return api
+      api
         .get(url)
         .then((response) => {
           this.geneExistingDrafts = response.data;
@@ -85,6 +91,7 @@ export default {
       this.claimDraftStableId = stableId;
 
       let claimDraftResponse = null;
+      // Claim the draft first; Only continue to refresh existing gene drafts after a successful claim
       try {
         claimDraftResponse = await api.patch(
           CLAIM_DRAFT_URL.replace(":stableid", stableId),
@@ -101,8 +108,9 @@ export default {
         return;
       }
 
+      // Refresh existing gene drafts so the UI reflects server state
       try {
-        await this.fetchExistingGeneDrafts();
+        await this.refreshExistingGeneDrafts();
         this.claimDraftSuccessMsg =
           claimDraftResponse?.data?.message || "Draft claimed successfully.";
       } catch (error) {
@@ -115,6 +123,24 @@ export default {
       } finally {
         this.isClaimDraftLoading = false;
         this.claimDraftStableId = null;
+      }
+    },
+    async refreshExistingGeneDrafts() {
+      // Refetch existing gene drafts
+      // Loading and error states are handled by the 'claimDraft' method
+
+      const url = `${SEARCH_URL}?query=${this.gene}&type=draft`;
+
+      try {
+        const response = await api.get(url);
+        this.geneExistingDrafts = response.data;
+      } catch (error) {
+        if (error.response?.status === 404) {
+          this.geneExistingDrafts = null;
+          return;
+        }
+
+        throw error;
       }
     },
     fetchExistingGeneDraftsNextPage() {
@@ -161,14 +187,19 @@ export default {
       const authStore = useAuthStore();
       return authStore.userEmail === email;
     },
+    getCuratorName(item) {
+      return [item.curator_first, item.curator_last_name]
+        .filter(Boolean)
+        .join(" ");
+    },
   },
 };
 </script>
 <template>
   <div>
     <div
-      class="d-flex justify-content-center"
       v-if="isGeneExistingDraftsDataLoading || isGeneExistingRecordsDataLoading"
+      class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
@@ -186,6 +217,26 @@ export default {
       </div>
     </div>
     <div v-else>
+      <div
+        v-if="claimDraftErrorMsg"
+        class="alert alert-danger mt-3"
+        role="alert"
+      >
+        <div>
+          <i class="bi bi-exclamation-circle-fill"></i>
+          {{ claimDraftErrorMsg }}
+        </div>
+      </div>
+      <div
+        v-if="claimDraftSuccessMsg"
+        class="alert alert-success mt-3"
+        role="alert"
+      >
+        <div>
+          <i class="bi bi-check-circle-fill"></i>
+          {{ claimDraftSuccessMsg }}
+        </div>
+      </div>
       <div v-if="!geneExistingDrafts && !geneExistingRecords">
         <div class="alert alert-primary mt-3" role="alert">
           <i class="bi bi-info-circle"></i> There are no saved drafts or
@@ -200,18 +251,6 @@ export default {
         </button>
       </div>
       <div v-else>
-        <div v-if="claimDraftErrorMsg" class="alert alert-danger mt-3" role="alert">
-          <div>
-            <i class="bi bi-exclamation-circle-fill"></i>
-            {{ claimDraftErrorMsg }}
-          </div>
-        </div>
-        <div v-if="claimDraftSuccessMsg" class="alert alert-success mt-3" role="alert">
-          <div>
-            <i class="bi bi-check-circle-fill"></i>
-            {{ claimDraftSuccessMsg }}
-          </div>
-        </div>
         <div v-if="geneExistingRecords?.results?.length > 0">
           <h3 class="pt-3">Existing records available to add to your panel</h3>
           <p class="text-muted mb-0">
@@ -279,9 +318,9 @@ export default {
                           >,
                         </span>
                         <router-link
+                          v-else
                           :to="`/panel/${panelName}`"
                           style="text-decoration: none"
-                          v-else
                         >
                           {{ panelName }}
                         </router-link>
@@ -302,10 +341,10 @@ export default {
                   </td>
                   <td class="text-nowrap">
                     <router-link
+                      v-if="item.stable_id"
                       :to="`/lgd/${item.stable_id}`"
                       style="text-decoration: none"
                       target="_blank"
-                      v-if="item.stable_id"
                     >
                       View <i class="bi bi-box-arrow-up-right"></i>
                     </router-link>
@@ -317,22 +356,22 @@ export default {
           <div class="row mx-1 justify-content-between">
             <div class="col-2 px-0">
               <button
+                v-if="geneExistingRecords.previous"
+                @click="fetchExistingGeneRecordsPreviousPage"
                 type="button"
                 class="btn btn-primary"
                 style="float: left"
-                @click="fetchExistingGeneRecordsPreviousPage"
-                v-if="geneExistingRecords.previous"
               >
                 <i class="bi bi-arrow-left"></i> Previous Page
               </button>
             </div>
             <div class="col-2 px-0">
               <button
+                v-if="geneExistingRecords.next"
+                @click="fetchExistingGeneRecordsNextPage"
                 type="button"
                 class="btn btn-primary"
                 style="float: right"
-                @click="fetchExistingGeneRecordsNextPage"
-                v-if="geneExistingRecords.next"
               >
                 Next Page
                 <i class="bi bi-arrow-right"></i>
@@ -395,24 +434,23 @@ export default {
                   </td>
                   <td>
                     <template v-if="item.status !== 'automatic'">
-                      Name:
-                      {{ item.curator_first + " " + item.curator_last_name }}
-                      <br />
-                      Email: {{ item.curator_email }}
+                      <span v-if="getCuratorName(item)">
+                        {{ getCuratorName(item) }}
+                      </span>
                     </template>
                   </td>
                   <td class="text-nowrap">
                     <router-link
+                      v-if="isUserCreatorOfDraft(item.curator_email)"
                       :to="`/lgd/update-draft/${item.stable_id}`"
                       style="text-decoration: none"
-                      v-if="isUserCreatorOfDraft(item.curator_email)"
                     >
-                      Update draft
+                      Update <i class="bi bi-pencil-square"></i>
                     </router-link>
                     <template v-else-if="item.status === 'automatic'">
                       <button
                         type="button"
-                        class="btn btn-link p-0 claim-draft-button"
+                        class="btn btn-link p-0 mb-1 claim-draft-button"
                         style="text-decoration: none"
                         :disabled="isClaimDraftLoading"
                         @click="claimDraft(item.stable_id)"
@@ -423,7 +461,9 @@ export default {
                           role="status"
                           aria-hidden="true"
                         ></span>
-                        <span v-else>Claim <i class="bi bi-plus-circle"></i></span>
+                        <span v-else
+                          >Claim <i class="bi bi-plus-circle"></i
+                        ></span>
                       </button>
                       <br />
                       <router-link
@@ -450,22 +490,22 @@ export default {
           <div class="row mx-1 justify-content-between">
             <div class="col-2 px-0">
               <button
+                v-if="geneExistingDrafts.previous"
+                @click="fetchExistingGeneDraftsPreviousPage"
                 type="button"
                 class="btn btn-primary"
                 style="float: left"
-                @click="fetchExistingGeneDraftsPreviousPage"
-                v-if="geneExistingDrafts.previous"
               >
                 <i class="bi bi-arrow-left"></i> Previous Page
               </button>
             </div>
             <div class="col-2 px-0">
               <button
+                v-if="geneExistingDrafts.next"
+                @click="fetchExistingGeneDraftsNextPage"
                 type="button"
                 class="btn btn-primary"
                 style="float: right"
-                @click="fetchExistingGeneDraftsNextPage"
-                v-if="geneExistingDrafts.next"
               >
                 Next Page
                 <i class="bi bi-arrow-right"></i>
