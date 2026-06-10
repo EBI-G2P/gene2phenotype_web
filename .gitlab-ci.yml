@@ -1,6 +1,6 @@
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH == "test-web-pipeline"'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == "test-web-pipeline"'
       when: always
 
 stages:
