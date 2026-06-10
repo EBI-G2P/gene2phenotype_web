@@ -44,4 +44,3 @@ trigger_k8s_deploy_test:
     DEPLOY_ENV: test
     KUBE_CONTEXT: "$TEST_AGENT"
     KUBE_NAMESPACE: "$TEST_NS"
-  manual_confirmation: "Deploy this image to test environment?"
