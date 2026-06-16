@@ -5,6 +5,7 @@ coverage
 
 .git
 .github
+.gitlab-ci.yml
 .DS_Store
 
 logs

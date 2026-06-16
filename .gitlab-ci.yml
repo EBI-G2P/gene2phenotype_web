@@ -4,18 +4,24 @@ workflow:
       when: always
 
 stages:
-  - test
+  - validate
   - build
   - deploy
 
 variables:
   DOCKER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
 
-test:
-  stage: test
+validate:
+  stage: validate
   image: node:20-alpine
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
   script:
-    - npm ci
+    - npm ci --cache .npm
     - npm run build
 
 build:
@@ -34,6 +40,8 @@ build:
 trigger_k8s_deploy_test:
   stage: deploy
   when: manual
+  environment:
+    name: test
   trigger:
     project: "$K8S_MANIFESTS_PROJECT"
     branch: "$K8S_MANIFESTS_BRANCH"
