@@ -39,6 +39,14 @@
             </li>
             <li class="nav-item mb-2">
               <router-link
+                to="/use-of-ai-in-g2p"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Use of AI in G2P
+              </router-link>
+            </li>
+            <li class="nav-item mb-2">
+              <router-link
                 to="/using-this-site"
                 class="nav-link p-0 text-body-secondary"
               >
