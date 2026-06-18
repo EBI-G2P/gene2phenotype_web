@@ -17,7 +17,7 @@
         href="https://doi.org/10.1101/2025.11.24.25340871"
         target="_blank"
         style="text-decoration: none"
-        >Yates et al 2025</a
+        >Yates et al. 2025</a
       >.
     </p>
     <p>
@@ -30,7 +30,7 @@
       Non-reviewed publications identified by the ML pipeline are displayed in a
       separate table from those which have been reviewed. This provides rapid,
       easy access to relevant literature when you are seeking information about
-      monogenic disease with links to EuropePMC supporting quick assessment
+      monogenic disease with links to EuropePMC supporting quick assessment of
       publications. If you see any results which should be removed, do
       <a
         href="/gene2phenotype/contact"
