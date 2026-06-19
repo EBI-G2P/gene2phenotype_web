@@ -158,6 +158,11 @@ export default {
               </router-link>
             </li>
             <li>
+              <router-link to="/use-of-ai-in-g2p" class="dropdown-item">
+                Use of AI in G2P
+              </router-link>
+            </li>
+            <li>
               <router-link to="/using-this-site" class="dropdown-item">
                 Using this site
               </router-link>

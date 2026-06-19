@@ -34,6 +34,7 @@ import RecordsReviewView from "../views/RecordsReviewView.vue";
 import RecordReviewUpdateView from "../views/RecordReviewUpdateView.vue";
 import RecordReviewCreateView from "../views/RecordReviewCreateView.vue";
 import ReviewRecordDraftView from "../views/ReviewRecordDraftView.vue";
+import AIUsageView from "../views/AIUsageView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -197,6 +198,11 @@ const router = createRouter({
       path: "/using-this-site",
       name: "using-this-site",
       component: HelpView,
+    },
+    {
+      path: "/use-of-ai-in-g2p",
+      name: "use-of-ai-in-g2p",
+      component: AIUsageView,
     },
     {
       path: "/records-review",
