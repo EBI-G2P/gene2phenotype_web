@@ -227,7 +227,7 @@
             Set value to 1 to include allele frequencies from VCF files.
             Specifiy the list of populations to include with option
             <code>af_from_vcf_keys</code>.<br />
-            Important note: filtering using additional VCF files takes more
+            <b>Note</b>: filtering using additional VCF files takes more
             time than using data in the Ensembl VEP cache only.<br />
             <b>Default</b>: not used
           </td>
