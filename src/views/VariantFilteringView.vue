@@ -152,6 +152,7 @@
       downloaded
       <a
         href="/gene2phenotype/download"
+        target="_blank"
         style="text-decoration: none"
         >here</a
       >
