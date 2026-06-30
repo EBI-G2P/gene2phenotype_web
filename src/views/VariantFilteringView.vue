@@ -11,7 +11,12 @@
         >Ensembl VEP</a
       >) predicts the molecular consequence of a variant and reports relevant
       pathogenicity predictions and information from reference databases. The
-      Ensembl VEP G2P plugin (VEP-G2P) filters variant genotypes from
+      Ensembl VEP G2P plugin (<a
+        href="https://github.com/Ensembl/VEP_plugins/blob/main/G2P.pm"
+        target="_blank"
+        style="text-decoration: none"
+        >VEP-G2P</a
+      >) filters variant genotypes from
       exome/genome wide sequencing using knowledge encoded in the G2P database
       to identify likely disease-causing genes.
     </p>
@@ -30,7 +35,7 @@
         href="https://www.ensembl.org/info/docs/tools/vep/script/vep_options.html#opt_individual"
         target="_blank"
         style="text-decoration: none"
-        >individual information</a
+        >individual/zygosity information</a
       >,
       <a
         href="https://www.ensembl.org/info/docs/tools/vep/script/vep_options.html#opt_symbol"
@@ -42,7 +47,13 @@
         href="https://www.ensembl.org/info/docs/tools/vep/script/vep_options.html#opt_af"
         target="_blank"
         style="text-decoration: none"
-        >global allele frequency from 1000 Genomes Phase 3</a
+        >global and population-specific 1000 Genomes allele frequencies</a
+      >,
+      <a
+        href="https://www.ensembl.org/info/docs/tools/vep/script/vep_options.html#opt_af_gnomade"
+        target="_blank"
+        style="text-decoration: none"
+        >gnomAD allele frequencies</a
       >,
       <a
         href="https://www.ensembl.org/info/docs/tools/vep/script/vep_options.html#opt_sift"
@@ -74,7 +85,7 @@
       </li>
       <li>
         The allele is not observed above a set threshold in any reference
-        populations. The default frequency cutoffs for an allele in a biallelic
+        populations. The default frequency cutoff for an allele in a biallelic
         gene is 0.005 and for an allele in a monoallelic gene is 0.0001. The
         default allele frequency data in the Ensembl VEP cache is the 1000
         Genomes Project continental populations and gnomAD exome/genome
@@ -138,7 +149,21 @@
       >
       are present in the Docker image or installed in the interactive
       installation process. The G2P datafile for your panel of choice can be
-      downloaded here or PanelApp downloads can also be used.
+      downloaded
+      <a
+        href="/gene2phenotype/download"
+        target="_blank"
+        style="text-decoration: none"
+        >here</a
+      >
+      or
+      <a
+        href="https://panelapp.genomicsengland.co.uk/panels/"
+        target="_blank"
+        style="text-decoration: none"
+        >PanelApp downloads</a
+      >
+      can also be used.
     </p>
     <div class="citation-div">
       <p>
@@ -199,13 +224,11 @@
         <tr>
           <th>af_from_vcf</th>
           <td>
-            Set value to 1 to include allele frequencies from VCF files. The
-            location of the VCF file is configured in
-            ensembl-variation/modules/Bio/EnsEMBL/Variation/DBSQL/vcf_config.json
-            or ensembl-vep/Bio/EnsEMBL/Variation/DBSQL/vcf_config.json depending
-            on how the ensembl-variation API was installed Filtering using
-            additional VCF files takes more time than using data in the Ensembl
-            VEP cache only.<br />
+            Set value to 1 to include allele frequencies from VCF files.
+            Specifiy the list of populations to include with option
+            <code>af_from_vcf_keys</code>.<br />
+            <b>Note</b>: filtering using additional VCF files takes more
+            time than using data in the Ensembl VEP cache only.<br />
             <b>Default</b>: not used
           </td>
         </tr>
@@ -213,8 +236,10 @@
           <th>af_from_vcf_keys</th>
           <td>
             Select additional studies for AF filtering. Separate multiple values
-            with '&'. Can only be used with af_from_vcf. Currently supported
-            studies are 'uk10k' and 'topmed' (for both GRCh37 and GRCh38).<br />
+            with '&'. Can only be used with option <code>af_from_vcf</code>.
+            Currently supported studies are uk10k, topmed, gnomADe,
+            gnomADe_r2.1.1, gnomADg, gnomADg_v3.1.2, gnomADe_v4.1, and
+            gnomADg_v4.1.<br />
             <b>Default</b>: not used
           </td>
         </tr>
@@ -241,13 +266,14 @@
         <tr>
           <th>types</th>
           <td>
-            SO predicted molecular consequence types to include. Separate
-            multiple values with '&'.<br />
-            <b>Default set</b>: splice_donor_variant, splice_acceptor_variant,
-            stop_gained, frameshift_variant, stop_lost, initiator_codon_variant,
-            inframe_insertion, inframe_deletion, missense_variant,
-            coding_sequence_variant, start_lost, transcript_ablation,
-            transcript_amplification, protein_altering_variant
+            Sequence Ontology predicted molecular consequence types to include.
+            Separate multiple values with '&'.<br />
+            <b>Default set</b>: splice_donor_variant,
+            splice_acceptor_variant, stop_gained, frameshift_variant,
+            stop_lost, initiator_codon_variant, inframe_insertion,
+            inframe_deletion, missense_variant, coding_sequence_variant,
+            start_lost, transcript_ablation, transcript_amplification,
+            protein_altering_variant
           </td>
         </tr>
         <tr>
@@ -278,17 +304,60 @@
         <tr>
           <th>filter_by_gene_symbol</th>
           <td>
-            Set this option to 1 to filter by gene symbol (Required for PanelApp
-            data).<br /><b>Default</b>: genes are filtered by HGNC ID
+            Set this option to 1 to filter by gene symbol. This is
+            automatically enabled for PanelApp files.<br /><b>Default</b>:
+            non-PanelApp files are filtered by HGNC ID.
+          </td>
+        </tr>
+        <tr>
+          <th>filter_consequence_match</th>
+          <td>
+            Set to <code>strict</code> or <code>broad</code> to only report
+            variants where the VEP-predicted consequence matches the G2P
+            variant consequence (GenCC term).<br />
+            The value <code>broad</code> includes 'almost always', 'probable' and
+            'possible' matches; the value <code>strict</code> includes 'almost always' and 'probable'
+            matches. More details in Figure 2 of
+            <a
+              href="https://europepmc.org/article/MED/37982373"
+              target="_blank"
+              style="text-decoration: none"
+              >this publication</a
+            >.
+            <br /><b>Default</b>: not used
+          </td>
+        </tr>
+        <tr>
+          <th>flag_consequence_match</th>
+          <td>
+            Set to <code>strict</code> or <code>broad</code> to only report
+            variants where the VEP-predicted consequence matches the G2P
+            variant consequence (GenCC term).<br />
+            The value <code>broad</code> includes 'almost always', 'probable' and
+            'possible' matches; the value <code>strict</code> includes 'almost always' and 'probable'
+            matches. More details in Figure 2 of
+            <a
+              href="https://europepmc.org/article/MED/37982373"
+              target="_blank"
+              style="text-decoration: none"
+              >this publication</a
+            >.
+            <br /><b>Default</b>: not used
+          </td>
+        </tr>
+        <tr>
+          <th>include_disease</th>
+          <td>
+            Set to 1 to include the G2P disease name in the VEP output for
+            reported G2P variants.<br /><b>Default</b>: 0
           </td>
         </tr>
         <tr>
           <th>only_mane</th>
           <td>
-            By default, every transcript is used in the filtering process. When
-            this option is set to 1, variants are only analysed against MANE
-            transcripts, which simplifies the output. <br /><b>Note</b>:
-            Information may be lost using this option.
+            Set to 1 to analyse variants against MANE transcripts only. This
+            simplifies the output but may omit relevant transcript-specific
+            findings.<br /><b>Default</b>: all transcripts are used.
           </td>
         </tr>
       </tbody>
