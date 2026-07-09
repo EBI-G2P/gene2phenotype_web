@@ -11,16 +11,16 @@
         >Ensembl VEP</a
       >) predicts the molecular consequence of a variant and reports relevant
       pathogenicity predictions and information from reference databases. The
-      Ensembl VEP G2P plugin (<a
+      Ensembl VEP-G2P plugin (<a
         href="https://github.com/Ensembl/VEP_plugins/blob/main/G2P.pm"
         target="_blank"
         style="text-decoration: none"
         >VEP-G2P</a
-      >) filters variant genotypes from
-      exome/genome wide sequencing using knowledge encoded in the G2P database
-      to identify likely disease-causing genes.
+      >) filters variant genotypes from exome/genome wide sequencing using
+      knowledge encoded in the G2P database to identify likely disease-causing
+      genes.
     </p>
-    <h6 class="pb-2">How the Ensembl VEP G2P plugin works:</h6>
+    <h6 class="pb-2">How the Ensembl VEP-G2P plugin works:</h6>
     <p>
       VEP-G2P applies a set of customisable filters to identify potential causal
       variants. Any gene with a sufficient number of potential causal variants
@@ -227,8 +227,8 @@
             Set value to 1 to include allele frequencies from VCF files.
             Specifiy the list of populations to include with option
             <code>af_from_vcf_keys</code>.<br />
-            <b>Note</b>: filtering using additional VCF files takes more
-            time than using data in the Ensembl VEP cache only.<br />
+            <b>Note</b>: filtering using additional VCF files takes more time
+            than using data in the Ensembl VEP cache only.<br />
             <b>Default</b>: not used
           </td>
         </tr>
@@ -268,12 +268,11 @@
           <td>
             Sequence Ontology predicted molecular consequence types to include.
             Separate multiple values with '&'.<br />
-            <b>Default set</b>: splice_donor_variant,
-            splice_acceptor_variant, stop_gained, frameshift_variant,
-            stop_lost, initiator_codon_variant, inframe_insertion,
-            inframe_deletion, missense_variant, coding_sequence_variant,
-            start_lost, transcript_ablation, transcript_amplification,
-            protein_altering_variant
+            <b>Default set</b>: splice_donor_variant, splice_acceptor_variant,
+            stop_gained, frameshift_variant, stop_lost, initiator_codon_variant,
+            inframe_insertion, inframe_deletion, missense_variant,
+            coding_sequence_variant, start_lost, transcript_ablation,
+            transcript_amplification, protein_altering_variant
           </td>
         </tr>
         <tr>
@@ -304,45 +303,43 @@
         <tr>
           <th>filter_by_gene_symbol</th>
           <td>
-            Set this option to 1 to filter by gene symbol. This is
-            automatically enabled for PanelApp files.<br /><b>Default</b>:
-            non-PanelApp files are filtered by HGNC ID.
+            Set this option to 1 to filter by gene symbol. This is automatically
+            enabled for PanelApp files.<br /><b>Default</b>: non-PanelApp files
+            are filtered by HGNC ID.
           </td>
         </tr>
         <tr>
           <th>filter_consequence_match</th>
           <td>
             Set to <code>strict</code> or <code>broad</code> to only report
-            variants where the VEP-predicted consequence matches the G2P
-            variant consequence (GenCC term).<br />
-            The value <code>broad</code> includes 'almost always', 'probable' and
-            'possible' matches; the value <code>strict</code> includes 'almost always' and 'probable'
-            matches. More details in Figure 2 of
+            variants where the VEP-predicted consequence matches the G2P variant
+            consequence (GenCC term).<br />
+            The value <code>broad</code> includes 'almost always', 'probable'
+            and 'possible' matches; the value <code>strict</code> includes
+            'almost always' and 'probable' matches. More details in Figure 2 of
             <a
               href="https://europepmc.org/article/MED/37982373"
               target="_blank"
               style="text-decoration: none"
               >this publication</a
-            >.
-            <br /><b>Default</b>: not used
+            >. <br /><b>Default</b>: not used
           </td>
         </tr>
         <tr>
           <th>flag_consequence_match</th>
           <td>
             Set to <code>strict</code> or <code>broad</code> to only report
-            variants where the VEP-predicted consequence matches the G2P
-            variant consequence (GenCC term).<br />
-            The value <code>broad</code> includes 'almost always', 'probable' and
-            'possible' matches; the value <code>strict</code> includes 'almost always' and 'probable'
-            matches. More details in Figure 2 of
+            variants where the VEP-predicted consequence matches the G2P variant
+            consequence (GenCC term).<br />
+            The value <code>broad</code> includes 'almost always', 'probable'
+            and 'possible' matches; the value <code>strict</code> includes
+            'almost always' and 'probable' matches. More details in Figure 2 of
             <a
               href="https://europepmc.org/article/MED/37982373"
               target="_blank"
               style="text-decoration: none"
               >this publication</a
-            >.
-            <br /><b>Default</b>: not used
+            >. <br /><b>Default</b>: not used
           </td>
         </tr>
         <tr>
