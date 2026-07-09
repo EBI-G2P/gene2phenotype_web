@@ -36,7 +36,7 @@ export default {
         },
         {
           title: "Variant prioritisation",
-          text: "Use the Ensembl VEP G2P extension to filter variants and identify likely causative genes.",
+          text: "Use the Ensembl VEP-G2P extension to filter variants and identify likely causative genes.",
           route: "/variant-filtering",
           buttonText: "Plugin documentation",
           icon: "bi-funnel-fill",
