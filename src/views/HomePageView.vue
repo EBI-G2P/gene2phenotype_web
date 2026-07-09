@@ -19,6 +19,36 @@ export default {
       selectedSearchType: SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES,
       selectedSearchPanel: SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS,
       isMaintenance: false,
+      homeCards: [
+        {
+          title: "G2P API",
+          text: "Programmatically access G2P data using the REST API.",
+          route: "/g2p-api-info",
+          buttonText: "G2P API documentation",
+          icon: "bi-laptop-fill",
+        },
+        {
+          title: "Download data",
+          text: "Download G2P data in bulk.",
+          route: "/download",
+          buttonText: "Download CSV files",
+          icon: "bi-cloud-arrow-down-fill",
+        },
+        {
+          title: "Variant prioritisation",
+          text: "Use the Ensembl VEP-G2P extension to filter variants and identify likely causative genes.",
+          route: "/variant-filtering",
+          buttonText: "Plugin documentation",
+          icon: "bi-funnel-fill",
+        },
+        {
+          title: "Citing G2P",
+          text: "If you use G2P data in your work, please cite us.",
+          route: "/publications",
+          buttonText: "Citing G2P",
+          icon: "bi-book-fill",
+        },
+      ],
       HELP_TEXT,
       SEARCH_FILTER,
     };
@@ -32,7 +62,7 @@ export default {
       },
       // fetch the data when the view is created and the data is
       // already being observed
-      { immediate: true }
+      { immediate: true },
     );
   },
   components: {
@@ -53,7 +83,7 @@ export default {
           }
           this.errorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to fetch panel data. Please try again later."
+            "Unable to fetch panel data. Please try again later.",
           );
         })
         .finally(() => {
@@ -91,11 +121,11 @@ export default {
         })
         .then((response) => {
           const responseContentDisposition = response.headers.get(
-            "Content-Disposition"
+            "Content-Disposition",
           );
           // get csv file name from response Content-Disposition header
           const regexMatch = responseContentDisposition.match(
-            /attachment; filename="([^"]+)"/
+            /attachment; filename="([^"]+)"/,
           ); // Eg responseContentDisposition value: attachment; filename="some_file_name.csv"
           let csvFileName = "data.csv"; // default csv file name
           if (regexMatch?.length > 0 && regexMatch[1]) {
@@ -114,7 +144,7 @@ export default {
         .catch((error) => {
           this.dataDownloadErrorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to download data. Please try again later."
+            "Unable to download data. Please try again later.",
           );
         })
         .finally(() => {
@@ -274,7 +304,7 @@ export default {
                         class="form-check-label"
                         :for="`filter-input-panel-${item.name}`"
                       >
-                        {{ item.description ? item.description : item.name }}
+                        {{ item.description || item.name }}
                       </label>
                     </div>
                   </div>
@@ -333,21 +363,12 @@ export default {
         </div>
       </div>
     </div>
-    <div
-      class="d-flex justify-content-center"
-      v-if="isDataLoading"
-      style="margin-top: 150px; margin-bottom: 150px"
-    >
-      <div class="spinner-border text-secondary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-    <div v-else class="container p-4">
+    <div class="container p-4">
       <h1 class="pb-3 text-center">Browse panels</h1>
       <div
+        v-if="errorMsg || dataDownloadErrorMsg"
         class="alert alert-danger mx-auto col-lg-6"
         role="alert"
-        v-if="errorMsg || dataDownloadErrorMsg"
       >
         <div>
           <i class="bi bi-exclamation-circle-fill"></i>
@@ -355,20 +376,79 @@ export default {
         </div>
       </div>
       <div
-        v-if="panelData?.results?.length > 0"
+        v-if="isDataLoading"
+        class="col-xl-8 mx-auto table-responsive-sm"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <table
+          class="table table-bordered shadow-sm panels-loading-table"
+          aria-hidden="true"
+        >
+          <thead>
+            <tr>
+              <th scope="col">Disorder Panel</th>
+              <th scope="col">
+                Total LGMDE Records
+                <ToolTip :toolTipText="HELP_TEXT.LGMDE_RECORD" />
+              </th>
+              <th scope="col">Total Genes</th>
+              <th scope="col">Last Updated</th>
+              <th scope="col">Download</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in 6" :key="row" class="placeholder-glow">
+              <td>
+                <span
+                  class="placeholder rounded panel-placeholder"
+                  style="width: 75%"
+                ></span>
+              </td>
+              <td>
+                <span
+                  class="placeholder rounded panel-placeholder"
+                  style="width: 4.5rem"
+                ></span>
+              </td>
+              <td>
+                <span
+                  class="placeholder rounded panel-placeholder"
+                  style="width: 4.5rem"
+                ></span>
+              </td>
+              <td>
+                <span
+                  class="placeholder rounded panel-placeholder"
+                  style="width: 6rem"
+                ></span>
+              </td>
+              <td>
+                <span
+                  class="placeholder rounded panel-placeholder"
+                  style="width: 3rem"
+                ></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="visually-hidden" role="status">Loading panel data</div>
+      </div>
+      <div
+        v-else-if="panelData?.results?.length > 0"
         class="col-xl-8 mx-auto table-responsive-sm"
       >
         <table class="table table-hover table-bordered shadow-sm">
           <thead>
             <tr>
-              <th>Disorder Panel</th>
-              <th>
+              <th scope="col">Disorder Panel</th>
+              <th scope="col">
                 Total LGMDE Records
                 <ToolTip :toolTipText="HELP_TEXT.LGMDE_RECORD" />
               </th>
-              <th>Total Genes</th>
-              <th>Last Updated</th>
-              <th>Download</th>
+              <th scope="col">Total Genes</th>
+              <th scope="col">Last Updated</th>
+              <th scope="col">Download</th>
             </tr>
           </thead>
           <tbody>
@@ -379,7 +459,7 @@ export default {
                   v-if="item.name"
                   style="text-decoration: none"
                 >
-                  {{ item.description ? item.description : item.name }}
+                  {{ item.description || item.name }}
                 </router-link>
               </td>
               <td>{{ item.stats?.total_records.toLocaleString() }}</td>
@@ -395,6 +475,7 @@ export default {
                     disabled
                     class="btn btn-link p-0 mt-2"
                     type="button"
+                    :aria-label="`Downloading ${item.description || item.name}`"
                   >
                     <span
                       class="spinner-border spinner-border-sm"
@@ -407,6 +488,7 @@ export default {
                     type="button"
                     class="btn btn-link p-0"
                     @click="downloadPanelData(item.name)"
+                    :aria-label="`Download ${item.description || item.name}`"
                     :disabled="
                       activeDownloadPanelName &&
                       activeDownloadPanelName !== item.name
@@ -421,12 +503,83 @@ export default {
         </table>
       </div>
     </div>
+    <div class="container p-4">
+      <div
+        class="row g-3 px-0 px-md-5 pb-4 row-cols-1 row-cols-md-2 row-cols-xl-4"
+      >
+        <div v-for="card in homeCards" :key="card.route" class="col">
+          <div class="home-card d-flex flex-column h-100">
+            <div class="home-card-header d-flex align-items-center">
+              <div
+                class="icon-square d-inline-flex align-items-center justify-content-center flex-shrink-0 me-2"
+                aria-hidden="true"
+              >
+                <i :class="['bi', card.icon]"></i>
+              </div>
+              <h3 class="home-card-title text-body-emphasis">
+                {{ card.title }}
+              </h3>
+            </div>
+            <p class="home-card-text">
+              {{ card.text }}
+            </p>
+            <router-link
+              :to="card.route"
+              class="btn btn-primary mt-auto align-self-start"
+            >
+              {{ card.buttonText }}
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <style scoped>
 .g2p-logo-img {
   width: 240px;
   height: auto;
+}
+
+.panels-loading-table th,
+.panels-loading-table td {
+  vertical-align: middle;
+}
+
+.panel-placeholder {
+  display: inline-block;
+  height: 1rem;
+}
+
+.home-card {
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.7rem;
+  background-color: #fff;
+}
+
+.home-card-header {
+  margin-bottom: 0.9rem;
+}
+
+.home-card-title {
+  margin-bottom: 0;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.home-card-text {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.icon-square {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.55rem;
+  background-color: rgba(var(--bs-primary-rgb), 0.12);
+  color: var(--bs-primary);
+  font-size: 0.95rem;
 }
 
 @media (max-width: 992px) {
