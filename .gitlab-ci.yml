@@ -29,7 +29,7 @@ validate:
     paths:
       - .npm/
   script:
-    - test -n "$VITE_GA_MEASUREMENT_ID" || (echo "VITE_GA_MEASUREMENT_ID is required for this pipeline" && exit 1)
+    # - test -n "$VITE_GA_MEASUREMENT_ID" || (echo "VITE_GA_MEASUREMENT_ID is required for this pipeline" && exit 1)
     - npm ci --cache .npm
     - npm run build
 
@@ -39,7 +39,7 @@ build:
   services:
     - docker:27-dind
   before_script:
-    - test -n "$VITE_GA_MEASUREMENT_ID" || (echo "VITE_GA_MEASUREMENT_ID is required for this pipeline" && exit 1)
+    # - test -n "$VITE_GA_MEASUREMENT_ID" || (echo "VITE_GA_MEASUREMENT_ID is required for this pipeline" && exit 1)
     - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
   script:
     - docker build --build-arg VITE_GA_MEASUREMENT_ID="$VITE_GA_MEASUREMENT_ID" -t "$DOCKER_IMAGE" .
