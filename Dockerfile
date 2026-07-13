@@ -1,6 +1,8 @@
 # Build stage
 FROM node:20-alpine AS build
 WORKDIR /app
+ARG VITE_GA_MEASUREMENT_ID
+ENV VITE_GA_MEASUREMENT_ID=$VITE_GA_MEASUREMENT_ID
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
