@@ -1,3 +1,12 @@
+<script>
+export default {
+  data() {
+    return {
+      appVersion: import.meta.env.VITE_APP_VERSION,
+    };
+  },
+};
+</script>
 <template>
   <footer class="footer mt-auto py-3 footer-bg-color">
     <div class="container">
@@ -197,9 +206,12 @@
         </div>
       </div>
       <div
-        class="d-flex flex-column flex-sm-row pt-3 pb-2 mt-3 mb-2 border-top"
+        class="d-flex flex-column flex-sm-row justify-content-between pt-3 pb-2 mt-3 mb-2 border-top"
       >
-        <p>&copy; EMBL-EBI 2026</p>
+        <p class="mb-0">&copy; EMBL-EBI 2026</p>
+        <p v-if="appVersion" class="mb-0 text-body-secondary">
+          Gene2Phenotype {{ appVersion }}
+        </p>
       </div>
     </div>
   </footer>
