@@ -77,11 +77,15 @@
       <li>
         The predicted molecular consequence is considered severe. The default
         list of severe consequences contains the following terms:
-        splice_donor_variant, splice_acceptor_variant, stop_gained,
-        frameshift_variant, stop_lost, initiator_codon_variant,
-        inframe_insertion, inframe_deletion, missense_variant,
-        coding_sequence_variant, start_lost, transcript_ablation,
-        transcript_amplification, protein_altering_variant
+        <div class="d-block mt-2 p-2 bg-light text-break rounded">
+          splice_donor_variant, splice_acceptor_variant,
+          splice_donor_region_variant, splice_donor_5th_base_variant,
+          splice_region_variant, splice_polypyrimidine_tract_variant,
+          stop_gained, frameshift_variant, stop_lost, initiator_codon_variant,
+          inframe_insertion, inframe_deletion, missense_variant,
+          coding_sequence_variant, start_lost, transcript_ablation,
+          transcript_amplification, protein_altering_variant
+        </div>
       </li>
       <li>
         The allele is not observed above a set threshold in any reference
@@ -113,9 +117,9 @@
         </tr>
         <tr>
           <td>
-            monoallelic_autosomal <br />monoallelic_PAR <br />monoallelic_X_hem
+            monoallelic_autosomal <br />monoallelic_PAR <br />monoallelic_X <br />monoallelic_X_hemizygous
             <br />
-            monoallelic_X_het <br />monoallelic_Y_hem <br />mitochondrial
+            monoallelic_X_heterozygous <br />monoallelic_Y_hemizygous <br />mitochondrial
           </td>
           <td>
             At least 1 heterozygous variant or 1 homozygous variant which passes
@@ -268,11 +272,22 @@
           <td>
             Sequence Ontology predicted molecular consequence types to include.
             Separate multiple values with '&'.<br />
+            This option replaces the default list.<br />
             <b>Default set</b>: splice_donor_variant, splice_acceptor_variant,
+            splice_donor_region_variant, splice_donor_5th_base_variant,
+            splice_region_variant, splice_polypyrimidine_tract_variant,
             stop_gained, frameshift_variant, stop_lost, initiator_codon_variant,
             inframe_insertion, inframe_deletion, missense_variant,
             coding_sequence_variant, start_lost, transcript_ablation,
             transcript_amplification, protein_altering_variant
+          </td>
+        </tr>
+        <tr>
+          <th>add_types</th>
+          <td>
+            Sequence Ontology predicted molecular consequence types to append to the default list.
+            Separate multiple values with '&'.<br />
+            <b>Default</b>: not used
           </td>
         </tr>
         <tr>
