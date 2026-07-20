@@ -1,6 +1,10 @@
 <script>
 import { fetchAndLogApiResponseErrorMsg } from "../utility/ErrorUtility.js";
-import { CLAIM_DRAFT_URL, RECORD_DRAFTS_URL } from "../utility/UrlConstants.js";
+import {
+  CLAIM_DRAFT_URL,
+  DELETE_DRAFT_URL,
+  RECORD_DRAFTS_URL,
+} from "../utility/UrlConstants.js";
 import api from "../services/api.js";
 import RecordDraftsDisplay from "../components/record-drafts/RecordDraftsDisplay.vue";
 import { mapState } from "pinia";
@@ -19,6 +23,10 @@ export default {
       claimDraftSuccessMsg: null,
       isClaimDraftLoading: false,
       claimDraftStableId: null,
+      deleteDraftErrorMsg: null,
+      deleteDraftSuccessMsg: null,
+      isDeleteDraftLoading: false,
+      deleteDraftStableId: null,
     };
   },
   created() {
@@ -98,10 +106,44 @@ export default {
       this.userAutomaticDrafts = response1.data?.results;
       this.unclaimedAutomaticDrafts = response2.data?.results;
     },
+    deleteDraft(stableId) {
+      if (!stableId) {
+        return;
+      }
+
+      this.deleteDraftErrorMsg = this.deleteDraftSuccessMsg = null;
+      this.isDeleteDraftLoading = true;
+      this.deleteDraftStableId = stableId;
+
+      api
+        .delete(DELETE_DRAFT_URL.replace(":stableid", stableId))
+        .then((response) => {
+          this.deleteDraftSuccessMsg =
+            response?.data?.message || "Draft deleted successfully.";
+          // Remove the deleted draft from userManualDrafts list
+          this.userManualDrafts = (this.userManualDrafts || []).filter(
+            (item) => item.stable_id !== stableId,
+          );
+        })
+        .catch((error) => {
+          this.deleteDraftErrorMsg = fetchAndLogApiResponseErrorMsg(
+            error,
+            error?.response?.data?.error,
+            "Unable to delete draft. Please try again later.",
+            "Unable to delete draft.",
+          );
+        })
+        .finally(() => {
+          this.isDeleteDraftLoading = false;
+          this.deleteDraftStableId = null;
+        });
+    },
     fetchData() {
       this.errorMsg =
         this.claimDraftErrorMsg =
         this.claimDraftSuccessMsg =
+        this.deleteDraftErrorMsg =
+        this.deleteDraftSuccessMsg =
         this.userManualDrafts =
         this.userAutomaticDrafts =
         this.unclaimedAutomaticDrafts =
@@ -109,6 +151,8 @@ export default {
           null;
       this.isClaimDraftLoading = false;
       this.claimDraftStableId = null;
+      this.isDeleteDraftLoading = false;
+      this.deleteDraftStableId = null;
       this.isDataLoading = true;
       const userManualDraftsURL = RECORD_DRAFTS_URL;
       const userAutomaticDraftsURL = `${RECORD_DRAFTS_URL}?type=automatic`;
@@ -163,16 +207,24 @@ export default {
       <div><i class="bi bi-exclamation-circle-fill"></i> {{ errorMsg }}</div>
     </div>
     <div v-else class="py-3">
-      <div v-if="claimDraftErrorMsg" class="alert alert-danger" role="alert">
+      <div
+        v-if="claimDraftErrorMsg || deleteDraftErrorMsg"
+        class="alert alert-danger"
+        role="alert"
+      >
         <div>
           <i class="bi bi-exclamation-circle-fill"></i>
-          {{ claimDraftErrorMsg }}
+          {{ claimDraftErrorMsg || deleteDraftErrorMsg }}
         </div>
       </div>
-      <div v-if="claimDraftSuccessMsg" class="alert alert-success" role="alert">
+      <div
+        v-if="claimDraftSuccessMsg || deleteDraftSuccessMsg"
+        class="alert alert-success"
+        role="alert"
+      >
         <div>
           <i class="bi bi-check-circle-fill"></i>
-          {{ claimDraftSuccessMsg }}
+          {{ claimDraftSuccessMsg || deleteDraftSuccessMsg }}
         </div>
       </div>
       <RecordDraftsDisplay
@@ -184,6 +236,9 @@ export default {
         :is-claim-draft-loading="isClaimDraftLoading"
         :claim-draft-stable-id="claimDraftStableId"
         @claimDraft="claimDraft"
+        :is-delete-draft-loading="isDeleteDraftLoading"
+        :delete-draft-stable-id="deleteDraftStableId"
+        @deleteDraft="deleteDraft"
       />
     </div>
   </div>

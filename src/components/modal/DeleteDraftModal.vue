@@ -1,0 +1,61 @@
+<script>
+export default {
+  props: {
+    stableId: String,
+  },
+  emits: ["delete", "cancel"],
+};
+</script>
+<template>
+  <div
+    class="modal fade"
+    id="delete-draft-modal"
+    tabindex="-1"
+    aria-labelledby="delete-draft-modal-label"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            class="modal-title"
+            id="delete-draft-modal-label"
+            style="color: #dc3545"
+          >
+            <i class="bi bi-exclamation-triangle"></i> Caution
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            @click="$emit('cancel')"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3 py-3">
+            <p>Are you sure you want to delete the draft '{{ stableId }}'?</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-dismiss="modal"
+            @click="$emit('cancel')"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            @click="$emit('delete')"
+            data-bs-dismiss="modal"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
