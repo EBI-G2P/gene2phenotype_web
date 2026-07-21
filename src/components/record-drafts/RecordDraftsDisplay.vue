@@ -12,9 +12,11 @@ export default {
     juniorManualDrafts: Array,
     isClaimDraftLoading: Boolean,
     claimDraftStableId: String,
+    isDeleteDraftLoading: Boolean,
+    deleteDraftStableId: String,
     isJuniorCuratorUser: Boolean,
   },
-  emits: ["claimDraft"],
+  emits: ["claimDraft", "deleteDraft"],
   data() {
     return {
       activeTab: "user-manual-drafts",
@@ -62,6 +64,9 @@ export default {
     handleClaimDraft(stableId) {
       this.$emit("claimDraft", stableId);
     },
+    handleDeleteDraft(stableId) {
+      this.$emit("deleteDraft", stableId);
+    },
   },
 };
 </script>
@@ -84,6 +89,9 @@ export default {
     <UserManualDrafts
       v-show="activeTab === 'user-manual-drafts'"
       :user-manual-drafts="userManualDrafts"
+      :is-delete-draft-loading="isDeleteDraftLoading"
+      :delete-draft-stable-id="deleteDraftStableId"
+      @deleteDraft="handleDeleteDraft"
     />
     <UserAutomaticDrafts
       v-show="activeTab === 'user-automatic-drafts'"

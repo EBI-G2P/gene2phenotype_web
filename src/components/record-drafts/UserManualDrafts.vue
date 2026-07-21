@@ -1,7 +1,35 @@
 <script>
+import DeleteDraftModal from "../modal/DeleteDraftModal.vue";
 export default {
   props: {
     userManualDrafts: Array,
+    isDeleteDraftLoading: Boolean,
+    deleteDraftStableId: String,
+  },
+  emits: ["deleteDraft"],
+  components: {
+    DeleteDraftModal,
+  },
+  data() {
+    return {
+      selectedDraftStableIdToDelete: null,
+    };
+  },
+  methods: {
+    setSelectedDraftStableIdToDelete(stableId) {
+      this.selectedDraftStableIdToDelete = stableId;
+    },
+    clearSelectedDraftStableIdToDelete() {
+      this.selectedDraftStableIdToDelete = null;
+    },
+    deleteSelectedDraft() {
+      if (!this.selectedDraftStableIdToDelete) {
+        return;
+      }
+
+      this.$emit("deleteDraft", this.selectedDraftStableIdToDelete);
+      this.clearSelectedDraftStableIdToDelete();
+    },
   },
 };
 </script>
@@ -40,7 +68,7 @@ export default {
             </span>
           </td>
           <td>{{ item.last_update }}</td>
-          <td class="text-nowrap">
+          <td class="text-nowrap text-center">
             <router-link
               v-if="item.stable_id"
               :to="`/lgd/update-draft/${item.stable_id}`"
@@ -48,10 +76,33 @@ export default {
             >
               Update <i class="bi bi-pencil-square"></i>
             </router-link>
+            <br />
+            <button
+              type="button"
+              class="btn btn-link p-0 mb-1 d-inline-flex align-items-center justify-content-center delete-draft-button"
+              style="text-decoration: none"
+              :disabled="isDeleteDraftLoading"
+              data-bs-toggle="modal"
+              data-bs-target="#delete-draft-modal"
+              @click="setSelectedDraftStableIdToDelete(item.stable_id)"
+            >
+              <span
+                v-if="deleteDraftStableId === item.stable_id"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span v-else>Delete <i class="bi bi-trash"></i></span>
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
+    <DeleteDraftModal
+      :stable-id="selectedDraftStableIdToDelete"
+      @delete="deleteSelectedDraft"
+      @cancel="clearSelectedDraftStableIdToDelete"
+    />
   </div>
   <div v-else class="alert alert-secondary" role="status">
     <i class="bi bi-info-circle-fill"></i>
@@ -62,5 +113,9 @@ export default {
 table th {
   /* Keep header text on one line */
   white-space: nowrap;
+}
+
+.delete-draft-button {
+  min-width: 64px;
 }
 </style>
