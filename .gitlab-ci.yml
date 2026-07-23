@@ -1,9 +1,98 @@
-# This is a placeholder GitLab CI configuration.
-
 workflow:
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_TAG'
+      variables:
+        IMAGE_TAG: "$CI_COMMIT_TAG"
+        DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
+        VITE_GA_MEASUREMENT_ID: "$PROD_GA_MEASUREMENT_ID"
+        VITE_APP_VERSION: "$CI_COMMIT_TAG"
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH'
+      variables:
+        IMAGE_TAG: "$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+        DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+        VITE_GA_MEASUREMENT_ID: "$DEV_GA_MEASUREMENT_ID"
+        VITE_APP_VERSION: "v1.0.0"
+      when: always
     - when: never
 
-hello-world:
+stages:
+  - validate
+  - build
+  - deploy
+
+validate:
+  stage: validate
+  image: node:20-alpine
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
   script:
-    - echo "Hello, world!"
+    - test -n "$VITE_GA_MEASUREMENT_ID" || (echo "VITE_GA_MEASUREMENT_ID is required for this pipeline" && exit 1)
+    - npm ci --cache .npm
+    - npm run build
+
+build:
+  stage: build
+  image: docker:27
+  services:
+    - docker:27-dind
+  before_script:
+    - test -n "$VITE_GA_MEASUREMENT_ID" || (echo "VITE_GA_MEASUREMENT_ID is required for this pipeline" && exit 1)
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+  script:
+    - docker build --build-arg VITE_GA_MEASUREMENT_ID="$VITE_GA_MEASUREMENT_ID" --build-arg VITE_APP_VERSION="$VITE_APP_VERSION" -t "$DOCKER_IMAGE" .
+    - docker tag "$DOCKER_IMAGE" "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker push "$DOCKER_IMAGE"
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker rmi "$DOCKER_IMAGE" "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker logout "$CI_REGISTRY"
+
+trigger_k8s_deploy_dev:
+  stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH'
+      when: manual
+    - when: never
+  environment:
+    name: development
+  trigger:
+    project: "$K8S_MANIFESTS_PROJECT"
+    branch: "$K8S_MANIFESTS_BRANCH"
+    strategy: mirror
+  variables:
+    APP_NAME: g2p-web
+    IMAGE_TAG: "$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+    DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+    DEPLOY_COMMIT_SHA: "$CI_COMMIT_SHA"
+    DEPLOY_REF: "$CI_COMMIT_REF_NAME"
+    DEPLOY_PIPELINE_URL: "$CI_PIPELINE_URL"
+    DEPLOY_ENV: development
+    KUBE_CONTEXT: "$DEV_AGENT"
+    KUBE_NAMESPACE: "$DEV_NS"
+
+trigger_k8s_deploy_prod:
+  stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_TAG'
+      when: manual
+    - when: never
+  environment:
+    name: production
+  trigger:
+    project: "$K8S_MANIFESTS_PROJECT"
+    branch: "$K8S_MANIFESTS_BRANCH"
+    strategy: mirror
+  variables:
+    APP_NAME: g2p-web
+    IMAGE_TAG: "$CI_COMMIT_TAG"
+    DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
+    DEPLOY_COMMIT_SHA: "$CI_COMMIT_SHA"
+    DEPLOY_REF: "$CI_COMMIT_TAG"
+    DEPLOY_PIPELINE_URL: "$CI_PIPELINE_URL"
+    DEPLOY_ENV: production
+    KUBE_CONTEXT: "$PROD_AGENT"
+    KUBE_NAMESPACE: "$PROD_NS"
