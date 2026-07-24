@@ -303,7 +303,7 @@ export default {
                         </tr>
                         <tr>
                           <th style="width: 20%">Evidence</th>
-                          <td style="width: 80%">
+                          <td style="width: 80%; white-space: pre-wrap">
                             <span v-if="sourceData.mechanism_evidence">
                               {{ sourceData.mechanism_evidence }}
                             </span>
