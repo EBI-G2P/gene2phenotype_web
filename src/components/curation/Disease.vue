@@ -88,7 +88,7 @@ export default {
                         from {{ sourceData.name }}</span
                       >
                     </dt>
-                    <dd class="col-xl-9 col-lg-8">
+                    <dd class="col-xl-9 col-lg-8" style="white-space: pre-wrap">
                       {{ sourceData.disease }}
                     </dd>
                   </template>
@@ -101,7 +101,7 @@ export default {
                         from {{ sourceData.name }}</span
                       >
                     </dt>
-                    <dd class="col-xl-9 col-lg-8">
+                    <dd class="col-xl-9 col-lg-8" style="white-space: pre-wrap">
                       {{ sourceData.disease_cross_references[0].disease_name }}
                       (
                       <a
