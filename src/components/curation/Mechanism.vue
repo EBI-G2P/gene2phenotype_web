@@ -292,7 +292,7 @@ export default {
                       <tbody>
                         <tr>
                           <th style="width: 20%">Inferred mechanism</th>
-                          <td style="width: 80%">
+                          <td style="width: 80%; white-space: pre-wrap">
                             <span v-if="sourceData.mechanism">
                               {{ sourceData.mechanism }}
                             </span>
