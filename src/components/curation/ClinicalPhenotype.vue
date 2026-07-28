@@ -6,6 +6,7 @@ export default {
     clinicalPhenotype: Object,
     hpoTermsInputHelper: Object,
     fetchAndSearchHPO: Function,
+    sourceData: Object,
     disabled: {
       type: Boolean,
       default: false,
@@ -76,6 +77,38 @@ export default {
         class="accordion-collapse collapse"
       >
         <div class="accordion-body">
+          <template v-if="sourceData?.phenotypes?.length > 0">
+            <div class="card source-data-card">
+              <h5 class="card-header">Data from imported source</h5>
+              <div class="card-body">
+                <h6 class="fw-bold">
+                  Phenotypes
+                  <span v-if="sourceData.name">
+                    from {{ sourceData.name }}</span
+                  >
+                </h6>
+                <ul>
+                  <li
+                    v-for="(phenotype, index) in sourceData.phenotypes"
+                    :key="`${phenotype}-${index}`"
+                  >
+                    {{ phenotype }}
+                  </li>
+                </ul>
+                <a
+                  v-if="sourceData.url"
+                  :href="sourceData.url"
+                  target="_blank"
+                  style="text-decoration: none"
+                  class="mb-0 mt-0 subtitle-text"
+                >
+                  See details in source
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+              </div>
+            </div>
+            <hr />
+          </template>
           <div
             v-if="
               clinicalPhenotype && Object.keys(clinicalPhenotype).length > 0
@@ -247,3 +280,11 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.source-data-card {
+  background-color: #fff3cd;
+}
+.subtitle-text {
+  font-size: small;
+}
+</style>
