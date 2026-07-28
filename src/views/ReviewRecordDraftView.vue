@@ -535,6 +535,7 @@ export default {
         v-model:clinical-phenotype="draftInput.phenotypes"
         v-model:hpo-terms-input-helper="hpoTermsInputHelper"
         :fetchAndSearchHPO="fetchAndSearchHPO"
+        :sourceData="draftInput.source_data"
         :disabled="isUnclaimedDraft"
       />
       <Genotype

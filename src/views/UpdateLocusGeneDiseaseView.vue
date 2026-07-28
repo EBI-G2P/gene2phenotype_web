@@ -602,6 +602,7 @@ export default {
         v-model:clinical-phenotype="previousInput.phenotypes"
         v-model:hpo-terms-input-helper="hpoTermsInputHelper"
         :fetchAndSearchHPO="fetchAndSearchHPO"
+        :sourceData="previousInput.source_data"
       />
       <Genotype
         :attributesData="attributesData"
