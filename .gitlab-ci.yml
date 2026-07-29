@@ -23,7 +23,7 @@ stages:
 
 validate:
   stage: validate
-  image: node:20-alpine
+  image: node:24-bookworm-slim
   cache:
     key:
       files:
