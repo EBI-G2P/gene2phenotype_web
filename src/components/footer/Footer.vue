@@ -131,6 +131,14 @@ export default {
                 Citing G2P
               </router-link>
             </li>
+            <li class="nav-item mb-2">
+              <router-link
+                to="/responsible-handover"
+                class="nav-link p-0 text-body-secondary"
+              >
+                Responsible Handover
+              </router-link>
+            </li>
           </ul>
         </div>
         <div class="col-sm-3 col-md-3 col-lg mb-3">
