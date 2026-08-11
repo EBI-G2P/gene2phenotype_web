@@ -51,7 +51,7 @@ export default {
       },
       // fetch the data when the view is created and the data is
       // already being observed
-      { immediate: true }
+      { immediate: true },
     );
   },
   components: { ToolTip, GeneFunction },
@@ -79,7 +79,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to fetch gene data. Please try again later.",
-            "Unable to fetch gene data."
+            "Unable to fetch gene data.",
           );
         })
         .finally(() => {
@@ -119,6 +119,20 @@ export default {
           v-if="geneFunctionData?.function?.protein_function"
           :geneFunctionText="geneFunctionData.function.protein_function"
           :uniprotAccession="geneFunctionData.function.uniprot_accession"
+        />
+        <p v-else class="text-muted mb-0">Not Available</p>
+      </div>
+      <h4 class="py-3">Quaternary structure</h4>
+      <div class="row">
+        <GeneFunction
+          v-if="geneFunctionData?.subunit_structure?.quaternary_structure"
+          :geneFunctionText="
+            geneFunctionData.subunit_structure.quaternary_structure
+          "
+          :uniprotAccession="
+            geneFunctionData.subunit_structure.uniprot_accession
+          "
+          uniprotSection="interaction"
         />
         <p v-else class="text-muted mb-0">Not Available</p>
       </div>
