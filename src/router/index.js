@@ -35,6 +35,7 @@ import RecordReviewUpdateView from "../views/RecordReviewUpdateView.vue";
 import RecordReviewCreateView from "../views/RecordReviewCreateView.vue";
 import ReviewRecordDraftView from "../views/ReviewRecordDraftView.vue";
 import AIUsageView from "../views/AIUsageView.vue";
+import ResponsibleHandoverView from "../views/ResponsibleHandoverView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -221,6 +222,11 @@ const router = createRouter({
       name: "record-review-create",
       component: RecordReviewCreateView,
       meta: { requiresLogIn: true, requiresSuperUser: true },
+    },
+    {
+      path: "/responsible-handover",
+      name: "responsible-handover",
+      component: ResponsibleHandoverView,
     },
     // 404 page route, should always be at end of routes list
     {

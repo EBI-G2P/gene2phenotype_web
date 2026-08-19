@@ -22,7 +22,7 @@ export default {
       },
       // fetch the data when the view is created and the data is
       // already being observed
-      { immediate: true }
+      { immediate: true },
     );
   },
   methods: {
@@ -40,7 +40,7 @@ export default {
         .catch((error) => {
           this.panelErrorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to fetch panels data. Please try again later."
+            "Unable to fetch panels data. Please try again later.",
           );
         })
         .finally(() => {
@@ -60,11 +60,11 @@ export default {
         })
         .then((response) => {
           const responseContentDisposition = response.headers.get(
-            "Content-Disposition"
+            "Content-Disposition",
           );
           // get csv file name from response Content-Disposition header
           const regexMatch = responseContentDisposition.match(
-            /attachment; filename="([^"]+)"/
+            /attachment; filename="([^"]+)"/,
           ); // Eg responseContentDisposition value: attachment; filename="some_file_name.csv"
           let csvFileName = "data.csv"; // default csv file name
           if (regexMatch?.length > 0 && regexMatch[1]) {
@@ -83,7 +83,7 @@ export default {
         .catch((error) => {
           this.dataDownloadErrorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to download data. Please try again later."
+            "Unable to download data. Please try again later.",
           );
         })
         .finally(() => {
@@ -217,8 +217,13 @@ export default {
       <p>
         G2P is produced and curated by UK disease domain experts and consultant
         clinical geneticists. It is regularly updated. Caution should therefore
-        be exercised in its application. The data from G2P is freely available
-        and interested parties can get in touch via
+        be exercised in its application (<a
+          href="/gene2phenotype/responsible-handover"
+          target="_blank"
+          style="text-decoration: none"
+          >see Responsible Handover information</a
+        >). The data from G2P is freely available and interested parties can get
+        in touch via
         <a href="mailto:g2p-help@ebi.ac.uk" style="text-decoration: none"
           >g2p-help@ebi.ac.uk</a
         >
