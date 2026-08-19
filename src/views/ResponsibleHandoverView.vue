@@ -243,8 +243,8 @@
     </p>
     <h4 class="pb-2">Responsible use</h4>
     <p>
-      G2P is intended to support—not replace—expert interpretation of genomic
-      data.
+      G2P is intended to support and <strong>not replace</strong> expert
+      interpretation of genomic data.
     </p>
     <p>Users should ensure that:</p>
     <ul>
