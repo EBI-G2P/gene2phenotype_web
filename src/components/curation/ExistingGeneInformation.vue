@@ -183,9 +183,16 @@ export default {
     fetchExistingGeneRecordsPreviousPage() {
       this.fetchExistingGeneRecords(this.geneExistingRecords.previous);
     },
-    isUserCreatorOfDraft(email) {
+    isUserManualDraft(status, email) {
       const authStore = useAuthStore();
-      return authStore.userEmail === email;
+      return status === "manual" && authStore.userEmail === email;
+    },
+    isUserAutomaticDraft(status, email) {
+      const authStore = useAuthStore();
+      return status === "automatic" && authStore.userEmail === email;
+    },
+    isUnclaimedAutomaticDraft(status, email) {
+      return status === "automatic" && email === "g2p-admin@ebi.ac.uk";
     },
     getCuratorName(item) {
       return [item.curator_first, item.curator_last_name]
@@ -433,21 +440,46 @@ export default {
                     </span>
                   </td>
                   <td>
-                    <template v-if="item.status !== 'automatic'">
-                      <span v-if="getCuratorName(item)">
-                        {{ getCuratorName(item) }}
-                      </span>
+                    <template
+                      v-if="
+                        !isUnclaimedAutomaticDraft(
+                          item.status,
+                          item.curator_email,
+                        ) && getCuratorName(item)
+                      "
+                    >
+                      {{ getCuratorName(item) }}
                     </template>
                   </td>
                   <td class="text-nowrap">
                     <router-link
-                      v-if="isUserCreatorOfDraft(item.curator_email)"
+                      v-if="
+                        isUserManualDraft(item.status, item.curator_email) &&
+                        item.stable_id
+                      "
                       :to="`/lgd/update-draft/${item.stable_id}`"
                       style="text-decoration: none"
                     >
                       Update <i class="bi bi-pencil-square"></i>
                     </router-link>
-                    <template v-else-if="item.status === 'automatic'">
+                    <router-link
+                      v-else-if="
+                        isUserAutomaticDraft(item.status, item.curator_email) &&
+                        item.stable_id
+                      "
+                      :to="`/lgd/review-draft/${item.stable_id}`"
+                      style="text-decoration: none"
+                    >
+                      Review <i class="bi bi-file-earmark-text"></i>
+                    </router-link>
+                    <template
+                      v-else-if="
+                        isUnclaimedAutomaticDraft(
+                          item.status,
+                          item.curator_email,
+                        ) && item.stable_id
+                      "
+                    >
                       <button
                         type="button"
                         class="btn btn-link p-0 mb-1 claim-draft-button"
@@ -467,7 +499,6 @@ export default {
                       </button>
                       <br />
                       <router-link
-                        v-if="item.stable_id"
                         :to="`/lgd/review-draft/${item.stable_id}`"
                         style="text-decoration: none"
                       >
@@ -475,12 +506,12 @@ export default {
                       </router-link>
                     </template>
                     <a
-                      v-else
+                      v-else-if="item.curator_email"
                       :href="`mailto:${item.curator_email}`"
                       style="text-decoration: none"
                       target="_blank"
                     >
-                      Mail curator
+                      Mail curator <i class="bi bi-box-arrow-up-right"></i>
                     </a>
                   </td>
                 </tr>
