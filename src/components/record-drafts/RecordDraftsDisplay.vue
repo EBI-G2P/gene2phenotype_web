@@ -28,14 +28,17 @@ export default {
         {
           name: "user-manual-drafts",
           label: "My manual drafts",
+          count: this.userManualDrafts?.length ?? 0,
         },
         {
           name: "user-automatic-drafts",
           label: "My automatic drafts",
+          count: this.userAutomaticDrafts?.length ?? 0,
         },
         {
           name: "unclaimed-automatic-drafts",
           label: "Unclaimed automatic drafts",
+          count: this.unclaimedAutomaticDrafts?.length ?? 0,
         },
       ];
       // Only display 'Manual drafts pending expert review' tab for non-junior curators
@@ -43,6 +46,7 @@ export default {
         tabs.push({
           name: "junior-manual-drafts",
           label: "Manual drafts pending expert review",
+          count: this.juniorManualDrafts?.length ?? 0,
         });
       }
       return tabs;
@@ -81,7 +85,7 @@ export default {
         type="button"
         @click="setActiveTab(tab.name)"
       >
-        {{ tab.label }}
+        {{ tab.label }} ({{ tab.count }})
       </button>
     </div>
   </nav>
