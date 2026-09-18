@@ -260,9 +260,9 @@ export default {
       <div v-else>
         <div v-if="geneExistingRecords?.results?.length > 0">
           <h3 class="pt-3">Existing records available to add to your panel</h3>
-          <p class="text-muted mb-0">
-            View existing records and select 'Update record' to add to your
-            panel
+          <p class="text-muted mb-0 small">
+            <i class="bi bi-info-circle"></i> View existing records and select
+            'Update record' to add to your panel
           </p>
           <div class="mx-1 pt-3 table-responsive-xl">
             <table class="table table-hover table-bordered">
@@ -387,7 +387,11 @@ export default {
           </div>
         </div>
         <div v-if="geneExistingDrafts?.results?.length > 0">
-          <h3 class="pt-3">Saved drafts for Gene</h3>
+          <h3 class="pt-3">Draft records for this gene</h3>
+          <p class="text-muted mb-0 small">
+            <i class="bi bi-info-circle"></i> If no curator is assigned, it's an
+            automated draft. Please claim it and curate the record.
+          </p>
           <div class="mx-1 pt-3 table-responsive-xl">
             <table class="table table-hover table-bordered">
               <thead>
