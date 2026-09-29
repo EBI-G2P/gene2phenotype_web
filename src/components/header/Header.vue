@@ -5,6 +5,7 @@ import { useAuthStore } from "../../store/auth.js";
 import { mapState } from "pinia";
 import { logGeneralErrorMsg } from "../../utility/ErrorUtility.js";
 import MaintenanceAlert from "../../components/alert/MaintenanceAlert.vue";
+import SessionExpiryToast from "./SessionExpiryToast.vue";
 import { SEARCH_FILTER } from "../../utility/Constants.js";
 
 export default {
@@ -44,6 +45,7 @@ export default {
   },
   components: {
     MaintenanceAlert,
+    SessionExpiryToast,
   },
   methods: {
     closeMobileNavigation() {
@@ -499,6 +501,7 @@ export default {
     </div>
   </nav>
   <MaintenanceAlert v-if="isMaintenance" />
+  <SessionExpiryToast v-if="isAuthenticated" />
 </template>
 <style scoped>
 .top-header {
