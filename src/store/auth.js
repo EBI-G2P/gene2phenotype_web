@@ -53,7 +53,7 @@ export const useAuthStore = defineStore("auth", {
     },
     validateUser() {
       return api
-        .get(PROFILE_URL, {}, { _skipAuthRedirect: true })
+        .get(PROFILE_URL, { _skipAuthRedirect: true })
         .then((response) => {
           this.login(response.data);
         })

@@ -1,7 +1,7 @@
 import axios from "axios";
 import router from "../router";
 import { useAuthStore } from "../store/auth.js";
-import { REFRESH_TOKEN_URL } from "../utility/UrlConstants.js";
+import { LOGIN_URL, REFRESH_TOKEN_URL } from "../utility/UrlConstants.js";
 
 // Create axios instance with default configuration
 const api = axios.create({
@@ -13,6 +13,7 @@ const api = axios.create({
 
 let apiRequestQueue = []; // Queue to hold pending API requests when token refresh is in progress
 let isRefreshInProgress = false; // Flag to indicate if a token refresh is in progress
+let hasRefreshFailed = false; // Prevent repeated refresh attempts after refresh token has failed
 
 // Method to process all pending API requests
 const processApiRequestQueue = (error) => {
@@ -28,13 +29,26 @@ const processApiRequestQueue = (error) => {
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => response, // Pass successful responses through
+  (response) => {
+    if ([LOGIN_URL, REFRESH_TOKEN_URL].includes(response.config?.url)) {
+      hasRefreshFailed = false;
+    }
+
+    return response;
+  }, // Pass successful responses through
   async (error) => {
     const originalRequest = error.config;
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    const isRefreshTokenRequest = originalRequest.url === REFRESH_TOKEN_URL;
 
     // Check if error is due to an expired access token
     if (
       error.response?.status === 401 &&
+      !hasRefreshFailed &&
+      !isRefreshTokenRequest &&
       !originalRequest._retry &&
       !originalRequest._skipAuthRefresh
     ) {
@@ -56,13 +70,14 @@ api.interceptors.response.use(
       const authStore = useAuthStore();
 
       try {
-        const response = await api.post(REFRESH_TOKEN_URL); // Call refresh token API
-        isRefreshInProgress = false;
+        const response = await api.post(REFRESH_TOKEN_URL, null, {
+          _skipAuthRefresh: true,
+        }); // Call refresh token API
         processApiRequestQueue(null); // Process all pending API requests
         authStore.setRefreshTokenExpiry(response.data.refresh_token_time);
         return api(originalRequest); // Retry original request
       } catch (refreshError) {
-        isRefreshInProgress = false;
+        hasRefreshFailed = true;
         processApiRequestQueue(refreshError); // Reject all pending API requests
         authStore.logout();
         if (!originalRequest._skipAuthRedirect) {
@@ -72,12 +87,14 @@ api.interceptors.response.use(
           });
         }
         return Promise.reject(refreshError); // Reject original request
+      } finally {
+        isRefreshInProgress = false;
       }
     }
 
     // For other errors, reject Promise normally
     return Promise.reject(error);
-  }
+  },
 );
 
 // Default headers for different types of API requests

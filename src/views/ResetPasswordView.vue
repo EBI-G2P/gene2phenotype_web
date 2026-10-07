@@ -1,5 +1,6 @@
 <script>
 import api from "../services/api.js";
+import { useAuthStore } from "../store/auth.js";
 import { RESET_PASSWORD_URL } from "../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorListMsg } from "../utility/ErrorUtility.js";
 
@@ -27,11 +28,14 @@ export default {
         .post(
           RESET_PASSWORD_URL.replace(":uid", this.$route.params.uid).replace(
             ":token",
-            this.$route.params.token
+            this.$route.params.token,
           ),
-          requestBody
+          requestBody,
+          { _skipAuthRefresh: true },
         )
         .then(() => {
+          const authStore = useAuthStore();
+          authStore.logout();
           this.isResetSuccess = true;
         })
         .catch((error) => {
@@ -39,7 +43,7 @@ export default {
           this.errorMsg = fetchAndLogApiResponseErrorListMsg(
             error,
             Array.isArray(apiError) ? apiError : [apiError],
-            "Unable to reset password. Please check your credentials or try again later."
+            "Unable to reset password. Please check your credentials or try again later.",
           );
         })
         .finally(() => {
