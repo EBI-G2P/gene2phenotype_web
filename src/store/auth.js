@@ -93,13 +93,20 @@ export const useAuthStore = defineStore("auth", {
       this.sessionEndReason = reason;
     },
     async logoutUser() {
-      // Keep the local session active unless the server confirms that its
-      // authentication cookies/session were cleared successfully.
-      await api.post(LOGOUT_URL, null, {
-        _skipAuthRefresh: true,
-        _skipAuthRedirect: true,
-        timeout: LOGOUT_REQUEST_TIMEOUT_IN_MS,
-      });
+      try {
+        // Allow an expired access token to be refreshed before retrying logout.
+        await api.post(LOGOUT_URL, null, {
+          _skipAuthRedirect: true,
+          timeout: LOGOUT_REQUEST_TIMEOUT_IN_MS,
+        });
+      } catch (error) {
+        // A definitive refresh failure has already ended the local session.
+        if (this.sessionEndReason === SESSION_END_REASON.EXPIRED) {
+          return;
+        }
+        throw error;
+      }
+
       this.logout(SESSION_END_REASON.USER_LOGOUT);
     },
     setRefreshTokenExpiry(value) {
