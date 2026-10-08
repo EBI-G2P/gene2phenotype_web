@@ -54,7 +54,7 @@ const refreshSession = () => {
       })
       .catch((error) => {
         if (isEndedSessionError(error)) {
-          authStore.logout();
+          authStore.logout(SESSION_END_REASON.EXPIRED);
         }
         return Promise.reject(error);
       })
@@ -67,7 +67,7 @@ const refreshSession = () => {
   return refreshPromise;
 };
 
-const redirectToLogin = (originalRequest) => {
+const redirectToLogin = (originalRequest, reason = null) => {
   // Startup profile validation clears invalid auth without navigating.
   if (
     originalRequest._skipAuthRedirect ||
@@ -81,7 +81,10 @@ const redirectToLogin = (originalRequest) => {
     loginRedirectPromise = router
       .replace({
         path: "/login",
-        query: { redirect, reason: SESSION_END_REASON.EXPIRED },
+        query: {
+          redirect,
+          ...(reason ? { reason } : {}),
+        },
       })
       .finally(() => {
         loginRedirectPromise = null;
@@ -111,6 +114,15 @@ api.interceptors.response.use(
       (authStore.isAuthenticated || canRestoreStartupSession);
 
     if (!shouldRefresh) {
+      // Public routes may still request protected resources. Redirect an
+      // unrefreshable 401 response to login.
+      if (error.response?.status === 401) {
+        const reason =
+          authStore.sessionEndReason === SESSION_END_REASON.EXPIRED
+            ? SESSION_END_REASON.EXPIRED
+            : null;
+        await redirectToLogin(originalRequest, reason);
+      }
       return Promise.reject(error);
     }
 
@@ -122,7 +134,7 @@ api.interceptors.response.use(
       return api(originalRequest);
     } catch (refreshError) {
       if (isEndedSessionError(refreshError)) {
-        await redirectToLogin(originalRequest);
+        await redirectToLogin(originalRequest, SESSION_END_REASON.EXPIRED);
       }
       return Promise.reject(refreshError);
     }

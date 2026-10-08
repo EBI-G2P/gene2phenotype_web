@@ -31,7 +31,10 @@ export default {
             this.$route.params.token,
           ),
           requestBody,
-          { _skipAuthRefresh: true },
+          {
+            _skipAuthRefresh: true,
+            _skipAuthRedirect: true,
+          },
         )
         .then(() => {
           const authStore = useAuthStore();

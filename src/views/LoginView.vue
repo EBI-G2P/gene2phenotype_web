@@ -29,7 +29,10 @@ export default {
         password: this.password,
       };
       api
-        .post(LOGIN_URL, requestBody, { _skipAuthRefresh: true })
+        .post(LOGIN_URL, requestBody, {
+          _skipAuthRefresh: true,
+          _skipAuthRedirect: true,
+        })
         .then((response) => {
           const authStore = useAuthStore();
           authStore.login(response.data);
@@ -40,7 +43,7 @@ export default {
           this.errorMsg = fetchAndLogApiResponseErrorListMsg(
             error,
             Array.isArray(apiError) ? apiError : [apiError],
-            "Unable to login. Please check your credentials or try again later."
+            "Unable to login. Please check your credentials or try again later.",
           );
         })
         .finally(() => {

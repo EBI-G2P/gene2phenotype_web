@@ -22,7 +22,10 @@ export default {
         email: this.email,
       };
       api
-        .post(VERIFY_EMAIL_URL, requestBody, { _skipAuthRefresh: true })
+        .post(VERIFY_EMAIL_URL, requestBody, {
+          _skipAuthRefresh: true,
+          _skipAuthRedirect: true,
+        })
         .then((response) => {
           this.isVerifySuccess = true;
           this.verifySuccessMsg =
