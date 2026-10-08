@@ -27,11 +27,13 @@
       decision making, additional publications are unlikely to be assessed.
     </p>
     <p>
-      Non-reviewed publications identified by the ML pipeline are displayed in a
-      separate table from those which have been reviewed. This provides rapid,
-      easy access to relevant literature when you are seeking information about
-      monogenic disease with links to EuropePMC supporting quick assessment of
-      publications. If you see any results which should be removed, do
+      Publications identified by the ML pipeline that have not yet been reviewed
+      are displayed in a separate table from reviewed publications. Before import,
+      publications identified by the ML pipeline are assessed for relevance using
+      Google Gemini and publications with low relevance are not included. This provides
+      rapid, easy access to relevant literature on monogenic disease with links to
+      EuropePMC supporting quick assessment of publications.
+      If you see any results which should be removed, do
       <a
         href="/gene2phenotype/contact"
         target="_blank"
