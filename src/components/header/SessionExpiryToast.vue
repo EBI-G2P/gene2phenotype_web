@@ -5,6 +5,7 @@ import { useAuthStore } from "../../store/auth.js";
 const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 const CHECK_INTERVAL_IN_MS = 60 * 1000;
 const MAX_TIMEOUT_DELAY = 2147483647;
+const WARNING_STORAGE_KEY = "session-expiry-warning";
 
 export default {
   data() {
@@ -24,9 +25,6 @@ export default {
       const expiry = new Date(this.refreshTokenExpiry).getTime();
       return Number.isNaN(expiry) ? null : expiry;
     },
-    warningStorageKey() {
-      return this.expiryTime ? `session-expiry-warning-${this.expiryTime}` : null;
-    },
   },
   watch: {
     expiryTime() {
@@ -43,6 +41,7 @@ export default {
     this.clearWarningTimer();
     if (this.checkTimer) {
       clearInterval(this.checkTimer);
+      this.checkTimer = null;
     }
     document.removeEventListener("visibilitychange", this.checkWarning);
   },
@@ -54,13 +53,14 @@ export default {
       }
     },
     hasShownWarning() {
-      return this.warningStorageKey
-        ? sessionStorage.getItem(this.warningStorageKey) === "true"
-        : false;
+      return (
+        !!this.expiryTime &&
+        sessionStorage.getItem(WARNING_STORAGE_KEY) === String(this.expiryTime)
+      );
     },
     markWarningShown() {
-      if (this.warningStorageKey) {
-        sessionStorage.setItem(this.warningStorageKey, "true");
+      if (this.expiryTime) {
+        sessionStorage.setItem(WARNING_STORAGE_KEY, String(this.expiryTime));
       }
     },
     scheduleWarning() {
@@ -79,7 +79,17 @@ export default {
       }
 
       this.warningTimer = setTimeout(
-        this.checkWarning,
+        () => {
+          this.warningTimer = null;
+          this.checkWarning();
+
+          if (
+            !this.hasShownWarning() &&
+            this.expiryTime - Date.now() > ONE_HOUR_IN_MS
+          ) {
+            this.scheduleWarning();
+          }
+        },
         Math.min(delay, MAX_TIMEOUT_DELAY),
       );
     },
@@ -89,7 +99,10 @@ export default {
       }
 
       const remainingMilliseconds = this.expiryTime - Date.now();
-      if (remainingMilliseconds <= 0 || remainingMilliseconds > ONE_HOUR_IN_MS) {
+      if (
+        remainingMilliseconds <= 0 ||
+        remainingMilliseconds > ONE_HOUR_IN_MS
+      ) {
         return;
       }
 
@@ -140,8 +153,8 @@ export default {
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="toast"
           aria-label="Close"
+          @click="hideToast"
         ></button>
       </div>
       <div class="toast-body">

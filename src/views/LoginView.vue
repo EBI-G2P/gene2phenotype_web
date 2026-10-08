@@ -1,7 +1,7 @@
 <script>
 import api from "../services/api.js";
 import { LOGIN_URL } from "../utility/UrlConstants.js";
-import { useAuthStore } from "../store/auth.js";
+import { SESSION_END_REASON, useAuthStore } from "../store/auth.js";
 import { fetchAndLogApiResponseErrorListMsg } from "../utility/ErrorUtility.js";
 
 export default {
@@ -13,6 +13,11 @@ export default {
       password: "",
       isPasswordVisible: false,
     };
+  },
+  computed: {
+    isSessionExpired() {
+      return this.$route.query.reason === SESSION_END_REASON.EXPIRED;
+    },
   },
   methods: {
     login() {
@@ -68,6 +73,9 @@ export default {
           width="50%"
           height="auto"
         />
+        <div v-if="isSessionExpired" class="alert alert-warning" role="alert">
+          Your session has expired. Please log in again.
+        </div>
         <div class="form-floating">
           <input
             type="email"

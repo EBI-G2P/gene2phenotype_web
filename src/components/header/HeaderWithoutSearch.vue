@@ -1,5 +1,5 @@
 <script>
-import { ALL_PANELS_URL, LOGOUT_URL } from "../../utility/UrlConstants.js";
+import { ALL_PANELS_URL } from "../../utility/UrlConstants.js";
 import api from "../../services/api.js";
 import { useAuthStore } from "../../store/auth.js";
 import { mapState } from "pinia";
@@ -12,6 +12,7 @@ export default {
     return {
       panelData: null,
       isLogoutInProgress: false,
+      logoutErrorMsg: null,
       isMaintenance: false,
     };
   },
@@ -71,25 +72,31 @@ export default {
           this.isDataLoading = false;
         });
     },
-    logoutBtnClickHandler() {
+    async logoutBtnClickHandler() {
       this.isLogoutInProgress = true;
-      api
-        .post(LOGOUT_URL)
-        .then(() => {
-          const authStore = useAuthStore();
-          authStore.logout();
-          if (this.$router.currentRoute.value.fullPath === "/") {
-            this.$router.go(); // refresh current page
-          } else {
-            this.$router.push("/"); // navigate to Home page
-          }
-        })
-        .catch((error) => {
-          logGeneralErrorMsg(error);
-        })
-        .finally(() => {
-          this.isLogoutInProgress = false;
-        });
+      this.logoutErrorMsg = null;
+      const authStore = useAuthStore();
+      const wasOnProtectedRoute = Boolean(
+        this.$router.currentRoute.value.meta.requiresLogIn,
+      );
+
+      try {
+        await authStore.logoutUser();
+
+        // Leave protected pages after authentication has been cleared.
+        if (wasOnProtectedRoute) {
+          await this.$router.replace("/");
+        } else {
+          // Keep the same public URL while refreshing authentication-dependent data.
+          this.$router.go(0);
+        }
+      } catch (error) {
+        logGeneralErrorMsg(error);
+        this.logoutErrorMsg =
+          "Logout failed. You are still signed in. Please try again before leaving this device.";
+      } finally {
+        this.isLogoutInProgress = false;
+      }
     },
     loginBtnClickHandler() {
       this.$router.push({
@@ -314,6 +321,13 @@ export default {
       </div>
     </div>
   </nav>
+  <div
+    v-if="logoutErrorMsg"
+    class="alert alert-danger mb-0 text-center"
+    role="alert"
+  >
+    {{ logoutErrorMsg }}
+  </div>
   <MaintenanceAlert v-if="isMaintenance" />
   <SessionExpiryToast v-if="isAuthenticated" />
 </template>
