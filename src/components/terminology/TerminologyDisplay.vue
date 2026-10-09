@@ -6,51 +6,80 @@ import {
 } from "../../utility/CurationConstants.js";
 export default {
   props: {
-    terminologyDescriptionData: Object,
-    molecularDescriptionData: Object,
-    variantDescriptionData: Object,
+    terminologyDescriptionData: {
+      type: Object,
+      required: true,
+    },
+    molecularDescriptionData: {
+      type: Object,
+      required: true,
+    },
+    variantDescriptionData: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       observer: null,
-      sortedConfidenceCategoryList:
-        this.terminologyDescriptionData?.confidence_category?.sort(
-          (a, b) =>
-            ConfidenceAttribsOrder.indexOf(Object.keys(a)[0]) -
-            ConfidenceAttribsOrder.indexOf(Object.keys(b)[0])
-        ) || [],
       CONFIDENCE_COLOR_MAP,
       VariantConsequencesAttribs,
+      navigationItems: [
+        {
+          id: "g2p-confidence-section",
+          label: "G2P Confidence Category",
+        },
+        { id: "allelic-requirement-section", label: "Allelic Requirement" },
+        {
+          id: "cross-cutting-modifier-section",
+          label: "Cross Cutting Modifier",
+        },
+        { id: "molecular-mechanism-section", label: "Molecular Mechanism" },
+        {
+          id: "mechanism-synopsis-section",
+          label: "Molecular Mechanism Synopsis",
+        },
+        {
+          id: "mechanism-evidence-section",
+          label: "Molecular Mechanism Evidence Types",
+        },
+        { id: "variant-consequence-section", label: "Variant Consequence" },
+        { id: "variant-types-section", label: "Variant Types" },
+      ],
     };
   },
-  created() {
+  computed: {
+    sortedConfidenceCategoryList() {
+      return [
+        ...(this.terminologyDescriptionData?.confidence_category || []),
+      ].sort(
+        (a, b) =>
+          ConfidenceAttribsOrder.indexOf(Object.keys(a)[0]) -
+          ConfidenceAttribsOrder.indexOf(Object.keys(b)[0]),
+      );
+    },
+  },
+  mounted() {
     this.observer = new IntersectionObserver(this.onElementObserved, {
-      root: document.querySelector("#terminology-main"),
+      root: null,
       rootMargin: "-50% 0% -50% 0%",
       threshold: 0,
     });
-  },
-  mounted() {
-    document.querySelectorAll("section[id]").forEach((section) => {
+
+    this.$el.querySelectorAll("section[id]").forEach((section) => {
       this.observer.observe(section);
     });
   },
-  beforeDestroy() {
-    this.observer.disconnect();
+  beforeUnmount() {
+    this.observer?.disconnect();
   },
   methods: {
     onElementObserved(entries) {
       entries.forEach(({ target, isIntersecting }) => {
         const id = target.getAttribute("id");
-        if (isIntersecting) {
-          document
-            .querySelector(`nav a[href="#${id}"]`)
-            .classList.add("active");
-        } else {
-          document
-            .querySelector(`nav a[href="#${id}"]`)
-            .classList.remove("active");
-        }
+        this.$el
+          .querySelectorAll(`nav a[href="#${id}"]`)
+          .forEach((link) => link.classList.toggle("active", isIntersecting));
       });
     },
   },
@@ -59,20 +88,44 @@ export default {
 <template>
   <main id="terminology-main">
     <div id="terminology-content-div">
+      <div class="dropdown mobile-navigation mb-4">
+        <button
+          id="terminology-mobile-navigation-button"
+          class="btn btn-outline-primary dropdown-toggle w-100"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          On this page
+        </button>
+        <nav
+          class="dropdown-menu w-100"
+          aria-labelledby="terminology-mobile-navigation-button"
+        >
+          <a
+            v-for="item in navigationItems"
+            :key="item.id"
+            class="dropdown-item"
+            :href="`#${item.id}`"
+          >
+            {{ item.label }}
+          </a>
+        </nav>
+      </div>
       <h2 class="pb-3">Terminology</h2>
-      <h6>
+      <p class="terminology-description">
         Terminologies used in G2P are described here. Where possible, community
         standards are used.
-      </h6>
+      </p>
       <section id="g2p-confidence-section">
-        <h4>G2P Confidence Category</h4>
-        <h6>GenCC confidence terms are used</h6>
-        <div class="pt-1 table-responsive-xl">
+        <h3>G2P Confidence Category</h3>
+        <p class="terminology-description">GenCC confidence terms are used</p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Category</th>
-                <th>Description</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -108,26 +161,27 @@ export default {
         </div>
         <p class="mb-0">
           <i class="bi bi-info-circle"></i> Operationally several groups use
-          <b>definitive</b>, <b>strong</b> and <b>moderate</b> for clinical
-          reporting.
+          <strong>definitive</strong>, <strong>strong</strong> and
+          <strong>moderate</strong> for clinical reporting.
         </p>
         <p>
-          <i class="bi bi-info-circle"></i> <b>Limited</b>, <b>disputed</b> and
-          <b>refuted</b> are not used for clinical reporting.
+          <i class="bi bi-info-circle"></i> <strong>Limited</strong>,
+          <strong>disputed</strong> and <strong>refuted</strong> are not used
+          for clinical reporting.
         </p>
       </section>
       <section id="allelic-requirement-section" class="pt-3">
-        <h4>Allelic Requirement</h4>
-        <h6>
+        <h3>Allelic Requirement</h3>
+        <p class="terminology-description">
           HPO Mode of inheritance (MOI) terminology is used. G2P uses synonyms
           of the MOI terms as many of the disorders described are de novo.
-        </h6>
-        <div class="pt-1 table-responsive-xl">
+        </p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Genotype</th>
-                <th>Description</th>
+                <th scope="col">Genotype</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -150,14 +204,16 @@ export default {
         </div>
       </section>
       <section id="cross-cutting-modifier-section" class="pt-3">
-        <h4>Cross Cutting Modifier</h4>
-        <h6>HPO inheritance qualifier terms are used where available</h6>
-        <div class="pt-1 table-responsive-xl">
+        <h3>Cross Cutting Modifier</h3>
+        <p class="terminology-description">
+          HPO inheritance qualifier terms are used where available
+        </p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Modifier</th>
-                <th>Description</th>
+                <th scope="col">Modifier</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -182,24 +238,25 @@ export default {
         </div>
       </section>
       <section id="molecular-mechanism-section" class="pt-3">
-        <h4>Molecular Mechanism</h4>
-        <h6>
+        <h3>Molecular Mechanism</h3>
+        <p class="terminology-description">
           The mechanism of disease derived from the available evidence,
           following the definitions of Backwell and Marsh. More information can
           be found
           <a
             href="https://europepmc.org/article/MED/35395171"
-            style="text-decoration: none"
+            class="text-decoration-none"
             target="_blank"
+            rel="noopener noreferrer"
             >here</a
           >.
-        </h6>
-        <div class="pt-1 table-responsive-xl">
+        </p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Molecular Mechanism</th>
-                <th>Description</th>
+                <th scope="col">Molecular Mechanism</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -222,23 +279,24 @@ export default {
         </div>
       </section>
       <section id="mechanism-synopsis-section" class="pt-3">
-        <h4>Molecular Mechanism Synopsis</h4>
-        <h6>
+        <h3>Molecular Mechanism Synopsis</h3>
+        <p class="terminology-description">
           A more detailed description of the molecular mechanism, following the
           definitions of Backwell and Marsh. More information can be found
           <a
             href="https://europepmc.org/article/MED/35395171"
-            style="text-decoration: none"
+            class="text-decoration-none"
             target="_blank"
+            rel="noopener noreferrer"
             >here</a
           >.
-        </h6>
-        <div class="pt-1 table-responsive-xl">
+        </p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Molecular Mechanism Synopsis</th>
-                <th>Description</th>
+                <th scope="col">Molecular Mechanism Synopsis</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -263,31 +321,32 @@ export default {
         </div>
       </section>
       <section id="mechanism-evidence-section" class="pt-3">
-        <h4>Molecular Mechanism Evidence Types</h4>
-        <h6>
+        <h3>Molecular Mechanism Evidence Types</h3>
+        <p class="terminology-description">
           G2P evidence classifications reuse terms from the ClinGen gene-disease
           validity SOP Experimental Evidence Summary Matrix. More information
           can be found
           <a
             href="https://clinicalgenome.org/docs/gene-disease-validity-standard-operating-procedures-version-10/"
-            style="text-decoration: none"
+            class="text-decoration-none"
             target="_blank"
+            rel="noopener noreferrer"
             >here</a
           >.
-        </h6>
-        <div class="pt-1 table-responsive-xl">
+        </p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Class</th>
-                <th>Evidence Type</th>
-                <th>Description</th>
+                <th scope="col">Class</th>
+                <th scope="col">Evidence Type</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody>
               <template
                 v-for="primaryEvidenceType in Object.keys(
-                  molecularDescriptionData.evidence
+                  molecularDescriptionData.evidence,
                 )"
                 :key="primaryEvidenceType"
               >
@@ -313,24 +372,25 @@ export default {
         </div>
       </section>
       <section id="variant-consequence-section" class="pt-3">
-        <h4>Variant Consequence</h4>
-        <h6>
+        <h3>Variant Consequence</h3>
+        <p class="terminology-description">
           The consequence of the reported variants at the protein (for
           protein-coding genes) or the RNA (for non-protein coding genes), per
           allele. More information can be found
           <a
             href="https://europepmc.org/article/MED/37982373"
-            style="text-decoration: none"
+            class="text-decoration-none"
             target="_blank"
+            rel="noopener noreferrer"
             >here</a
           >.
-        </h6>
-        <div class="pt-1 table-responsive-xl">
+        </p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Consequence</th>
-                <th>Description in SO</th>
+                <th scope="col">Consequence</th>
+                <th scope="col">Description in SO</th>
               </tr>
             </thead>
             <tbody>
@@ -341,7 +401,7 @@ export default {
                 <td
                   v-if="
                     VariantConsequencesAttribs.some(
-                      (attr) => attr.inputKey === term.term.replace(/ /g, '_')
+                      (attr) => attr.inputKey === term.term.replace(/ /g, '_'),
                     )
                   "
                 >
@@ -350,14 +410,15 @@ export default {
                 <td
                   v-if="
                     VariantConsequencesAttribs.some(
-                      (attr) => attr.inputKey === term.term.replace(/ /g, '_')
+                      (attr) => attr.inputKey === term.term.replace(/ /g, '_'),
                     )
                   "
                 >
                   <a
                     :href="`http://www.sequenceontology.org/browser/current_release/term/${term.accession}`"
-                    style="text-decoration: none"
+                    class="text-decoration-none"
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {{ term.accession }}
                   </a>
@@ -368,24 +429,24 @@ export default {
         </div>
       </section>
       <section id="variant-types-section" class="pt-3">
-        <h4>Variant Types</h4>
-        <h6>
+        <h3>Variant Types</h3>
+        <p class="terminology-description">
           The types of variants associated with the curated gene-disease pair
           reported in the publication
-        </h6>
-        <div class="pt-1 table-responsive-xl">
+        </p>
+        <div class="pt-1 table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Primary Type</th>
-                <th>Variant Type</th>
-                <th>Description in SO</th>
+                <th scope="col">Primary Type</th>
+                <th scope="col">Variant Type</th>
+                <th scope="col">Description in SO</th>
               </tr>
             </thead>
             <tbody>
               <template
                 v-for="(consequences, index) in Object.keys(
-                  variantDescriptionData
+                  variantDescriptionData,
                 )"
                 :key="index"
               >
@@ -404,7 +465,8 @@ export default {
                   <td
                     v-if="
                       !VariantConsequencesAttribs.some(
-                        (attr) => attr.inputKey === term.term.replace(/ /g, '_')
+                        (attr) =>
+                          attr.inputKey === term.term.replace(/ /g, '_'),
                       )
                     "
                   >
@@ -413,14 +475,16 @@ export default {
                   <td
                     v-if="
                       !VariantConsequencesAttribs.some(
-                        (attr) => attr.inputKey === term.term.replace(/ /g, '_')
+                        (attr) =>
+                          attr.inputKey === term.term.replace(/ /g, '_'),
                       )
                     "
                   >
                     <a
                       :href="`http://www.sequenceontology.org/browser/current_release/term/${term.accession}`"
-                      style="text-decoration: none"
+                      class="text-decoration-none"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       {{ term.accession }}
                     </a>
@@ -438,28 +502,14 @@ export default {
       </strong>
       <hr class="d-none d-md-block my-2 ms-3" />
       <nav class="nav nav-pills flex-column">
-        <a class="nav-link" href="#g2p-confidence-section">
-          G2P Confidence Category
+        <a
+          v-for="item in navigationItems"
+          :key="item.id"
+          class="nav-link"
+          :href="`#${item.id}`"
+        >
+          {{ item.label }}
         </a>
-        <a class="nav-link" href="#allelic-requirement-section">
-          Allelic Requirement
-        </a>
-        <a class="nav-link" href="#cross-cutting-modifier-section">
-          Cross Cutting Modifier
-        </a>
-        <a class="nav-link" href="#molecular-mechanism-section">
-          Molecular Mechanism
-        </a>
-        <a class="nav-link" href="#mechanism-synopsis-section">
-          Molecular Mechanism Synopsis
-        </a>
-        <a class="nav-link" href="#mechanism-evidence-section">
-          Molecular Mechanism Evidence Types
-        </a>
-        <a class="nav-link" href="#variant-consequence-section">
-          Variant Consequence
-        </a>
-        <a class="nav-link" href="#variant-types-section"> Variant Types </a>
       </nav>
     </nav>
   </main>
@@ -489,7 +539,26 @@ th {
   white-space: nowrap;
 }
 
-h6 {
-  padding-bottom: 12px;
+.terminology-description {
+  padding-bottom: 8px;
+}
+
+.mobile-navigation {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  #terminology-content-div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #side-navbar {
+    display: none;
+  }
+
+  .mobile-navigation {
+    display: block;
+  }
 }
 </style>

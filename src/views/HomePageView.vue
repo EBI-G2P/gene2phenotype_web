@@ -1,10 +1,10 @@
 <script>
-import router from "@/router";
 import { ALL_PANELS_URL, DOWNLOAD_PANEL_URL } from "../utility/UrlConstants.js";
+import HomeSearch from "../components/search/HomeSearch.vue";
 import ToolTip from "../components/tooltip/ToolTip.vue";
 import api from "../services/api.js";
 import { fetchAndLogGeneralErrorMsg } from "../utility/ErrorUtility.js";
-import { HELP_TEXT, SEARCH_FILTER } from "../utility/Constants.js";
+import { HELP_TEXT } from "../utility/Constants.js";
 import { trackPanelDownload } from "../utility/AnalyticsUtility.js";
 
 export default {
@@ -15,9 +15,6 @@ export default {
       activeDownloadPanelName: null,
       errorMsg: null,
       dataDownloadErrorMsg: null,
-      searchInput: "",
-      selectedSearchType: SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES,
-      selectedSearchPanel: SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS,
       isMaintenance: false,
       homeCards: [
         {
@@ -50,22 +47,13 @@ export default {
         },
       ],
       HELP_TEXT,
-      SEARCH_FILTER,
     };
   },
   created() {
-    // watch the params of the route to fetch the data again
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.fetchPanelData();
-      },
-      // fetch the data when the view is created and the data is
-      // already being observed
-      { immediate: true },
-    );
+    this.fetchPanelData();
   },
   components: {
+    HomeSearch,
     ToolTip,
   },
   methods: {
@@ -89,22 +77,6 @@ export default {
         .finally(() => {
           this.isDataLoading = false;
         });
-    },
-    searchClickHandler() {
-      if (this.searchInput) {
-        let routeQuery = {
-          query: this.searchInput,
-          type:
-            this.selectedSearchType === SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES
-              ? undefined
-              : this.selectedSearchType,
-          panel:
-            this.selectedSearchPanel === SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS
-              ? undefined
-              : this.selectedSearchPanel,
-        };
-        router.push({ path: "/search", query: routeQuery });
-      }
     },
     downloadPanelData(panelName) {
       trackPanelDownload(panelName);
@@ -180,185 +152,10 @@ export default {
               with information on allelic requirement, observed variant classes
               and disease mechanism.
             </p>
-            <div class="mt-3" v-if="!isMaintenance">
-              <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  aria-label="Search text input"
-                  placeholder="Search for a Gene, Disease, Phenotype or G2P ID"
-                  v-model="searchInput"
-                  id="search-input"
-                  @keyup.enter="searchClickHandler"
-                />
-                <button
-                  class="btn btn-primary dropdown-toggle"
-                  style="border-right: solid"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Filter
-                </button>
-                <div class="dropdown-menu dropdown-menu-end p-3">
-                  <p class="fw-bold mb-1">Filter by type</p>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      :value="SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES"
-                      v-model="selectedSearchType"
-                      id="filter-input-type-all"
-                    />
-                    <label class="form-check-label" for="filter-input-type-all">
-                      All
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      :value="SEARCH_FILTER.SEARCH_TYPE.GENE"
-                      v-model="selectedSearchType"
-                      id="filter-input-type-gene"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="filter-input-type-gene"
-                    >
-                      Gene
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      :value="SEARCH_FILTER.SEARCH_TYPE.DISEASE"
-                      v-model="selectedSearchType"
-                      id="filter-input-type-disease"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="filter-input-type-disease"
-                    >
-                      Disease
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      :value="SEARCH_FILTER.SEARCH_TYPE.PHENOTYPE"
-                      v-model="selectedSearchType"
-                      id="filter-input-type-phenotype"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="filter-input-type-phenotype"
-                    >
-                      Phenotype
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      :value="SEARCH_FILTER.SEARCH_TYPE.G2P_ID"
-                      v-model="selectedSearchType"
-                      id="filter-input-type-g2p-id"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="filter-input-type-g2p-id"
-                    >
-                      G2P ID
-                    </label>
-                  </div>
-                  <div v-if="panelData?.results?.length > 0">
-                    <hr class="dropdown-divider" />
-                    <p class="fw-bold mb-1">Filter by panel</p>
-                    <div class="form-check">
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        :value="SEARCH_FILTER.SEARCH_PANEL.ALL_PANELS"
-                        v-model="selectedSearchPanel"
-                        id="filter-input-panel-all"
-                      />
-                      <label
-                        class="form-check-label"
-                        for="filter-input-panel-all"
-                      >
-                        All
-                      </label>
-                    </div>
-                    <div class="form-check" v-for="item in panelData.results">
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        :value="item.name.toLowerCase()"
-                        v-model="selectedSearchPanel"
-                        :id="`filter-input-panel-${item.name}`"
-                      />
-                      <label
-                        class="form-check-label"
-                        :for="`filter-input-panel-${item.name}`"
-                      >
-                        {{ item.description || item.name }}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  @click="searchClickHandler"
-                >
-                  <i class="bi bi-search"></i>
-                </button>
-              </div>
-              <div class="form-text text-start">
-                Example searches:
-                <router-link
-                  :to="{
-                    path: '/search',
-                    query: {
-                      query: 'FBN1',
-                      type: SEARCH_FILTER.SEARCH_TYPE.GENE,
-                    },
-                  }"
-                  style="text-decoration: none"
-                >
-                  FBN1
-                </router-link>
-                |
-                <router-link
-                  :to="{
-                    path: '/search',
-                    query: {
-                      query: 'Weill-Marchesani syndrome',
-                      type: SEARCH_FILTER.SEARCH_TYPE.DISEASE,
-                    },
-                  }"
-                  style="text-decoration: none"
-                >
-                  Weill-Marchesani syndrome
-                </router-link>
-                |
-                <router-link
-                  :to="{
-                    path: '/search',
-                    query: {
-                      query: 'Tuberous sclerosis',
-                      type: SEARCH_FILTER.SEARCH_TYPE.DISEASE,
-                    },
-                  }"
-                  style="text-decoration: none"
-                >
-                  Tuberous sclerosis
-                </router-link>
-              </div>
-            </div>
+            <HomeSearch
+              v-if="!isMaintenance"
+              :panels="panelData?.results || []"
+            />
           </div>
         </div>
       </div>
@@ -455,15 +252,15 @@ export default {
             <tr v-for="item in panelData.results" :key="item.name">
               <td>
                 <router-link
-                  :to="`/panel/${item.name}`"
                   v-if="item.name"
-                  style="text-decoration: none"
+                  :to="`/panel/${item.name}`"
+                  class="text-decoration-none"
                 >
                   {{ item.description || item.name }}
                 </router-link>
               </td>
-              <td>{{ item.stats?.total_records.toLocaleString() }}</td>
-              <td>{{ item.stats?.total_genes.toLocaleString() }}</td>
+              <td>{{ item.stats?.total_records?.toLocaleString() }}</td>
+              <td>{{ item.stats?.total_genes?.toLocaleString() }}</td>
               <td>{{ item.last_updated }}</td>
               <td class="p-0">
                 <div class="d-flex justify-content-center">
@@ -588,26 +385,9 @@ export default {
   }
 }
 
-#search-input::placeholder {
-  font-size: 16px;
-}
-
 @media (max-width: 576px) {
-  #search-input::placeholder {
-    font-size: 14px;
-  }
   .g2p-description-text {
     font-size: 16px;
-  }
-}
-
-@media (max-width: 530px) {
-  #search-input::placeholder {
-    font-size: 14px;
-    width: 100%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
   }
 }
 </style>
