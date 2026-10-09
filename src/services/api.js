@@ -1,86 +1,146 @@
 import axios from "axios";
 import router from "../router";
-import { useAuthStore } from "../store/auth.js";
-import { REFRESH_TOKEN_URL } from "../utility/UrlConstants.js";
+import {
+  InvalidRefreshTokenExpiryError,
+  SESSION_END_REASON,
+  useAuthStore,
+} from "../store/auth.js";
+import { PROFILE_URL, REFRESH_TOKEN_URL } from "../utility/UrlConstants.js";
 
-// Create axios instance with default configuration
-const api = axios.create({
-  withCredentials: true, // Required setting to ensure cookies are sent with API requests
+const REFRESH_REQUEST_TIMEOUT_IN_MS = 10 * 1000;
+const ENDED_SESSION_STATUS_CODES = [400, 401, 403];
+
+const apiConfig = {
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-  }, // Default header for all API requests
-});
-
-let apiRequestQueue = []; // Queue to hold pending API requests when token refresh is in progress
-let isRefreshInProgress = false; // Flag to indicate if a token refresh is in progress
-
-// Method to process all pending API requests
-const processApiRequestQueue = (error) => {
-  apiRequestQueue.forEach((promise) => {
-    if (error) {
-      promise.reject(error); // Reject API request if token refresh failed
-    } else {
-      promise.resolve(); // Resolve API request if token refresh succeeded
-    }
-  });
-  apiRequestQueue = []; // Clear queue
+  },
 };
 
-// Response interceptor
+// Main API client. Authenticated requests made through this client can trigger
+// the response interceptor below.
+const api = axios.create(apiConfig);
+
+// Refreshes must bypass the main response interceptor to avoid recursive
+// refresh attempts when the refresh cookie is missing or invalid.
+const refreshApi = axios.create({
+  ...apiConfig,
+  timeout: REFRESH_REQUEST_TIMEOUT_IN_MS,
+});
+
+// All requests that fail together wait for the same refresh request.
+let refreshPromise = null;
+
+// Prevent concurrent failed requests from triggering duplicate redirects.
+let loginRedirectPromise = null;
+
+// These responses mean the session cannot be restored. Other refresh errors,
+// such as network failures or 5xx responses, are treated as temporary.
+const isEndedSessionError = (error) =>
+  error instanceof InvalidRefreshTokenExpiryError ||
+  ENDED_SESSION_STATUS_CODES.includes(error.response?.status);
+
+const refreshSession = () => {
+  if (!refreshPromise) {
+    const authStore = useAuthStore();
+
+    // Store the promise immediately so later requests reuse this refresh call.
+    refreshPromise = refreshApi
+      .post(REFRESH_TOKEN_URL)
+      .then((response) => {
+        // Validate and reschedule the session expiry before retrying requests.
+        authStore.setRefreshTokenExpiry(response.data?.refresh_token_time);
+        return response;
+      })
+      .catch((error) => {
+        if (isEndedSessionError(error)) {
+          authStore.logout(SESSION_END_REASON.EXPIRED);
+        }
+        return Promise.reject(error);
+      })
+      .finally(() => {
+        // A later 401 may start a new refresh attempt.
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+};
+
+const redirectToLogin = (originalRequest, reason = null) => {
+  // Startup profile validation clears invalid auth without navigating.
+  if (
+    originalRequest._skipAuthRedirect ||
+    router.currentRoute.value.path === "/login"
+  ) {
+    return Promise.resolve();
+  }
+
+  if (!loginRedirectPromise) {
+    const redirect = router.currentRoute.value.fullPath;
+    loginRedirectPromise = router
+      .replace({
+        path: "/login",
+        query: {
+          redirect,
+          ...(reason ? { reason } : {}),
+        },
+      })
+      .finally(() => {
+        loginRedirectPromise = null;
+      });
+  }
+
+  return loginRedirectPromise;
+};
+
 api.interceptors.response.use(
-  (response) => response, // Pass successful responses through
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    // Check if error is due to an expired access token
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest._skipAuthRefresh
-    ) {
-      originalRequest._retry = true; // Mark the request to avoid infinite loops
-
-      // If token refresh is in progress, queue current request
-      if (isRefreshInProgress) {
-        // Queue request
-        return new Promise((resolve, reject) => {
-          apiRequestQueue.push({ resolve, reject });
-        }).then(() => {
-          // Retry original request after the queue resolves
-          return api(originalRequest);
-        });
-      }
-
-      // Start token refresh process
-      isRefreshInProgress = true;
-      const authStore = useAuthStore();
-
-      try {
-        const response = await api.post(REFRESH_TOKEN_URL); // Call refresh token API
-        isRefreshInProgress = false;
-        processApiRequestQueue(null); // Process all pending API requests
-        authStore.setRefreshTokenExpiry(response.data.refresh_token_time);
-        return api(originalRequest); // Retry original request
-      } catch (refreshError) {
-        isRefreshInProgress = false;
-        processApiRequestQueue(refreshError); // Reject all pending API requests
-        authStore.logout();
-        if (!originalRequest._skipAuthRedirect) {
-          router.push({
-            path: "/login",
-            query: { redirect: router.currentRoute.value.fullPath },
-          });
-        }
-        return Promise.reject(refreshError); // Reject original request
-      }
+    if (!originalRequest) {
+      return Promise.reject(error);
     }
 
-    // For other errors, reject Promise normally
-    return Promise.reject(error);
-  }
+    const authStore = useAuthStore();
+    const canRestoreStartupSession = originalRequest.url === PROFILE_URL;
+
+    // Refresh only authenticated requests and the initial profile check.
+    // Public auth endpoints opt out with _skipAuthRefresh.
+    const shouldRefresh =
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest._skipAuthRefresh &&
+      (authStore.isAuthenticated || canRestoreStartupSession);
+
+    if (!shouldRefresh) {
+      // Public routes may still request protected resources. Redirect an
+      // unrefreshable 401 response to login.
+      if (error.response?.status === 401) {
+        const reason =
+          authStore.sessionEndReason === SESSION_END_REASON.EXPIRED
+            ? SESSION_END_REASON.EXPIRED
+            : null;
+        await redirectToLogin(originalRequest, reason);
+      }
+      return Promise.reject(error);
+    }
+
+    // Retry each original request at most once.
+    originalRequest._retry = true;
+
+    try {
+      await refreshSession();
+      return api(originalRequest);
+    } catch (refreshError) {
+      if (isEndedSessionError(refreshError)) {
+        await redirectToLogin(originalRequest, SESSION_END_REASON.EXPIRED);
+      }
+      return Promise.reject(refreshError);
+    }
+  },
 );
 
-// Default headers for different types of API requests
 api.defaults.headers.get["Cache-Control"] = "no-cache";
 api.defaults.headers.post["Accept"] = "application/json";
 api.defaults.headers.put["Accept"] = "application/json";

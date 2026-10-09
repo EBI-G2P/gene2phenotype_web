@@ -1,5 +1,6 @@
 <script>
 import api from "../services/api.js";
+import { SESSION_END_REASON, useAuthStore } from "../store/auth.js";
 import { CHANGE_PASSWORD_URL } from "../utility/UrlConstants.js";
 import { fetchAndLogApiResponseErrorListMsg } from "../utility/ErrorUtility.js";
 
@@ -12,33 +13,38 @@ export default {
       newPassword: "",
       newPasswordRepeat: "",
       isPasswordVisible: false,
-      isChangeSuccess: false,
     };
   },
   methods: {
     changePassword() {
       this.errorMsg = null;
       this.isDataLoading = true;
-      this.isChangeSuccess = false;
       const requestBody = {
         old_password: this.oldPassword,
         password: this.newPassword,
         password2: this.newPasswordRepeat,
       };
+
       api
         .post(CHANGE_PASSWORD_URL, requestBody)
         .then(() => {
-          this.isChangeSuccess = true;
           this.oldPassword = "";
           this.newPassword = "";
           this.newPasswordRepeat = "";
+
+          // A successful password change clears both authentication cookies on
+          // the server, so only local session cleanup is needed here.
+          const authStore = useAuthStore();
+          authStore.logout(SESSION_END_REASON.USER_LOGOUT);
+
+          return this.$router.replace("/login");
         })
         .catch((error) => {
           const apiError = error.response?.data?.error;
           this.errorMsg = fetchAndLogApiResponseErrorListMsg(
             error,
             Array.isArray(apiError) ? apiError : [apiError],
-            "Unable to change password. Please check your credentials or try again later."
+            "Unable to change password. Please check your credentials or try again later.",
           );
         })
         .finally(() => {
@@ -64,14 +70,12 @@ export default {
       </div>
     </div>
     <div class="form-signin w-100 m-auto" v-else>
-      <div class="alert alert-success mt-3" role="alert" v-if="isChangeSuccess">
-        <div>
-          <i class="bi bi-check-circle-fill"></i>
-          Password changed successfully.
-        </div>
-      </div>
       <form @submit.prevent="changePassword">
         <h1 class="h3 mb-3 fw-normal">Change password</h1>
+        <div class="alert alert-info" role="note">
+          You will be logged out after changing your password and will need to
+          log in again.
+        </div>
         <div class="form-floating">
           <input
             :type="isPasswordVisible ? 'text' : 'password'"

@@ -1,10 +1,11 @@
 <script>
-import { ALL_PANELS_URL, LOGOUT_URL } from "../../utility/UrlConstants.js";
+import { ALL_PANELS_URL } from "../../utility/UrlConstants.js";
 import api from "../../services/api.js";
 import { useAuthStore } from "../../store/auth.js";
 import { mapState } from "pinia";
 import { logGeneralErrorMsg } from "../../utility/ErrorUtility.js";
 import MaintenanceAlert from "../../components/alert/MaintenanceAlert.vue";
+import SessionExpiryToast from "./SessionExpiryToast.vue";
 import { SEARCH_FILTER } from "../../utility/Constants.js";
 
 export default {
@@ -12,6 +13,7 @@ export default {
     return {
       isDataLoading: false,
       isLogoutInProgress: false,
+      logoutErrorMsg: null,
       panelData: null,
       searchInput: "",
       selectedSearchType: SEARCH_FILTER.SEARCH_TYPE.ALL_TYPES,
@@ -44,6 +46,7 @@ export default {
   },
   components: {
     MaintenanceAlert,
+    SessionExpiryToast,
   },
   methods: {
     closeMobileNavigation() {
@@ -95,25 +98,31 @@ export default {
         this.$router.push({ path: "/search", query: routeQuery });
       }
     },
-    logoutBtnClickHandler() {
+    async logoutBtnClickHandler() {
       this.isLogoutInProgress = true;
-      api
-        .post(LOGOUT_URL)
-        .then(() => {
-          const authStore = useAuthStore();
-          authStore.logout();
-          if (this.$router.currentRoute.value.fullPath === "/") {
-            this.$router.go(); // refresh current page
-          } else {
-            this.$router.push("/"); // navigate to Home page
-          }
-        })
-        .catch((error) => {
-          logGeneralErrorMsg(error);
-        })
-        .finally(() => {
-          this.isLogoutInProgress = false;
-        });
+      this.logoutErrorMsg = null;
+      const authStore = useAuthStore();
+      const wasOnProtectedRoute = Boolean(
+        this.$router.currentRoute.value.meta.requiresLogIn,
+      );
+
+      try {
+        await authStore.logoutUser();
+
+        // Leave protected pages after authentication has been cleared.
+        if (wasOnProtectedRoute) {
+          await this.$router.replace("/");
+        } else {
+          // Keep the same public URL while refreshing authentication-dependent data.
+          this.$router.go(0);
+        }
+      } catch (error) {
+        logGeneralErrorMsg(error);
+        this.logoutErrorMsg =
+          "Logout failed. You are still signed in. Please try again before leaving this device.";
+      } finally {
+        this.isLogoutInProgress = false;
+      }
     },
     loginBtnClickHandler() {
       this.$router.push({
@@ -498,7 +507,15 @@ export default {
       </div>
     </div>
   </nav>
+  <div
+    v-if="logoutErrorMsg"
+    class="alert alert-danger mb-0 text-center"
+    role="alert"
+  >
+    {{ logoutErrorMsg }}
+  </div>
   <MaintenanceAlert v-if="isMaintenance" />
+  <SessionExpiryToast v-if="isAuthenticated" />
 </template>
 <style scoped>
 .top-header {

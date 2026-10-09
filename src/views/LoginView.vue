@@ -1,7 +1,7 @@
 <script>
 import api from "../services/api.js";
 import { LOGIN_URL } from "../utility/UrlConstants.js";
-import { useAuthStore } from "../store/auth.js";
+import { SESSION_END_REASON, useAuthStore } from "../store/auth.js";
 import { fetchAndLogApiResponseErrorListMsg } from "../utility/ErrorUtility.js";
 
 export default {
@@ -14,6 +14,11 @@ export default {
       isPasswordVisible: false,
     };
   },
+  computed: {
+    isSessionExpired() {
+      return this.$route.query.reason === SESSION_END_REASON.EXPIRED;
+    },
+  },
   methods: {
     login() {
       const redirectRoute = this.$route.query.redirect || "/";
@@ -24,7 +29,10 @@ export default {
         password: this.password,
       };
       api
-        .post(LOGIN_URL, requestBody, { _skipAuthRefresh: true })
+        .post(LOGIN_URL, requestBody, {
+          _skipAuthRefresh: true,
+          _skipAuthRedirect: true,
+        })
         .then((response) => {
           const authStore = useAuthStore();
           authStore.login(response.data);
@@ -35,7 +43,7 @@ export default {
           this.errorMsg = fetchAndLogApiResponseErrorListMsg(
             error,
             Array.isArray(apiError) ? apiError : [apiError],
-            "Unable to login. Please check your credentials or try again later."
+            "Unable to login. Please check your credentials or try again later.",
           );
         })
         .finally(() => {
@@ -68,6 +76,9 @@ export default {
           width="50%"
           height="auto"
         />
+        <div v-if="isSessionExpired" class="alert alert-warning" role="alert">
+          Your session has expired. Please log in again.
+        </div>
         <div class="form-floating">
           <input
             type="email"

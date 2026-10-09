@@ -1,7 +1,30 @@
 import api from "../services/api.js";
 import { logGeneralErrorMsg } from "../utility/ErrorUtility.js";
-import { PROFILE_URL } from "../utility/UrlConstants.js";
+import { LOGOUT_URL, PROFILE_URL } from "../utility/UrlConstants.js";
 import { defineStore } from "pinia";
+
+const MAX_TIMEOUT_DELAY_IN_MS = 2147483647;
+const LOGOUT_REQUEST_TIMEOUT_IN_MS = 10 * 1000;
+
+export const SESSION_END_REASON = Object.freeze({
+  EXPIRED: "session-expired",
+  USER_LOGOUT: "user-logout",
+});
+
+export class InvalidRefreshTokenExpiryError extends Error {
+  constructor() {
+    super("The refresh token expiry is missing, invalid, or expired.");
+    this.name = "InvalidRefreshTokenExpiryError";
+  }
+}
+
+const parseRefreshTokenExpiry = (value) => {
+  const expiry = new Date(value);
+  if (!Number.isFinite(expiry.getTime()) || expiry.getTime() <= Date.now()) {
+    throw new InvalidRefreshTokenExpiryError();
+  }
+  return expiry;
+};
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -13,25 +36,53 @@ export const useAuthStore = defineStore("auth", {
     isJuniorCuratorUser: null,
     refreshTokenExpiry: null,
     expiryTimeOut: null,
+    sessionEndReason: null,
   }),
   actions: {
+    clearExpiryTimeOut() {
+      if (this.expiryTimeOut !== null) {
+        clearTimeout(this.expiryTimeOut);
+        this.expiryTimeOut = null;
+      }
+    },
+    scheduleExpiryTimeOut() {
+      this.clearExpiryTimeOut();
+
+      const timeUntilExpiry = this.refreshTokenExpiry?.getTime() - Date.now();
+      if (!Number.isFinite(timeUntilExpiry) || timeUntilExpiry <= 0) {
+        this.logout(SESSION_END_REASON.EXPIRED);
+        return;
+      }
+
+      this.expiryTimeOut = setTimeout(
+        () => {
+          this.expiryTimeOut = null;
+          this.scheduleExpiryTimeOut();
+        },
+        Math.min(timeUntilExpiry, MAX_TIMEOUT_DELAY_IN_MS),
+      );
+    },
     login(data) {
+      let refreshTokenExpiry;
+      try {
+        refreshTokenExpiry = parseRefreshTokenExpiry(data.refresh_token_time);
+      } catch (error) {
+        this.logout();
+        throw error;
+      }
+
       this.isAuthenticated = true;
       this.userName = data.full_name;
       this.userEmail = data.email;
       this.userPanels = data.panels;
       this.isSuperUser = data.is_superuser;
       this.isJuniorCuratorUser = data.is_junior_curator;
-      this.refreshTokenExpiry = new Date(data.refresh_token_time);
-
-      // auto logout after refresh token is expired
-      if (this.expiryTimeOut) clearTimeout(this.expiryTimeOut);
-      const timeUntilExpiry = this.refreshTokenExpiry.getTime() - Date.now();
-      this.expiryTimeOut = setTimeout(() => {
-        this.logout();
-      }, timeUntilExpiry);
+      this.refreshTokenExpiry = refreshTokenExpiry;
+      this.sessionEndReason = null;
+      this.scheduleExpiryTimeOut();
     },
-    logout() {
+    logout(reason = null) {
+      this.clearExpiryTimeOut();
       this.isAuthenticated = false;
       this.userName = null;
       this.userEmail = null;
@@ -39,21 +90,37 @@ export const useAuthStore = defineStore("auth", {
       this.isSuperUser = null;
       this.isJuniorCuratorUser = null;
       this.refreshTokenExpiry = null;
-      if (this.expiryTimeOut) clearTimeout(this.expiryTimeOut);
+      this.sessionEndReason = reason;
+    },
+    async logoutUser() {
+      try {
+        // Allow an expired access token to be refreshed before retrying logout.
+        await api.post(LOGOUT_URL, null, {
+          _skipAuthRedirect: true,
+          timeout: LOGOUT_REQUEST_TIMEOUT_IN_MS,
+        });
+      } catch (error) {
+        // A definitive refresh failure has already ended the local session.
+        if (this.sessionEndReason === SESSION_END_REASON.EXPIRED) {
+          return;
+        }
+        throw error;
+      }
+
+      this.logout(SESSION_END_REASON.USER_LOGOUT);
     },
     setRefreshTokenExpiry(value) {
-      this.refreshTokenExpiry = new Date(value);
-
-      // auto logout after refresh token is expired
-      if (this.expiryTimeOut) clearTimeout(this.expiryTimeOut);
-      const timeUntilExpiry = this.refreshTokenExpiry.getTime() - Date.now();
-      this.expiryTimeOut = setTimeout(() => {
+      try {
+        this.refreshTokenExpiry = parseRefreshTokenExpiry(value);
+        this.scheduleExpiryTimeOut();
+      } catch (error) {
         this.logout();
-      }, timeUntilExpiry);
+        throw error;
+      }
     },
     validateUser() {
       return api
-        .get(PROFILE_URL, {}, { _skipAuthRedirect: true })
+        .get(PROFILE_URL, { _skipAuthRedirect: true })
         .then((response) => {
           this.login(response.data);
         })
