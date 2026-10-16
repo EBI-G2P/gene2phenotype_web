@@ -133,7 +133,7 @@ export default {
           {{ isSubmitting ? "Logging in…" : "Log in" }}
         </button>
       </form>
-      <router-link to="/verify-email" style="text-decoration: None">
+      <router-link to="/verify-email" class="text-decoration-none">
         Forgot password?
       </router-link>
       <div v-if="errorMsg" class="alert alert-danger mt-3" role="alert">

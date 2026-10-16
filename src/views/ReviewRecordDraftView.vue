@@ -349,7 +349,6 @@ export default {
           } else {
             const errorMsg = "No results found. Try another term.";
             this.hpoTermsInputHelper[pmid].HPOAPIerrormsg = errorMsg;
-            console.log(errorMsg);
           }
         })
         .catch((error) => {
@@ -511,8 +510,9 @@ export default {
       <div class="my-3">
         <a
           href="https://ftp.ebi.ac.uk/pub/databases/gene2phenotype/curation_documentation/"
-          style="text-decoration: none"
+          class="text-decoration-none"
           target="_blank"
+          rel="noopener noreferrer"
         >
           Full curation guidelines <i class="bi bi-box-arrow-up-right"></i>
         </a>

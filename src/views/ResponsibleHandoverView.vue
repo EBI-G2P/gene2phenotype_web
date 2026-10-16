@@ -9,7 +9,8 @@
       <a
         href="https://senseaboutscience.org/responsible-handover-of-ai/"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >implementation guide</a
       >.
     </p>
@@ -131,7 +132,8 @@
       <a
         href="/gene2phenotype/disclaimer"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >G2P Disclaimer</a
       >.
     </p>
@@ -214,7 +216,8 @@
       <a
         href="/gene2phenotype/disclaimer"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >G2P Disclaimer</a
       >.
     </p>

@@ -201,7 +201,7 @@ export default {
           <p>
             If you experience problems with the G2P website or need further
             assistance
-            <router-link to="/contact" style="text-decoration: none"
+            <router-link to="/contact" class="text-decoration-none"
               >contact us</router-link
             >.
           </p>

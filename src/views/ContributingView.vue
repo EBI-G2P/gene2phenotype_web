@@ -50,8 +50,9 @@
     <p>
       Contact us if you are interested in contributing (<a
         href="mailto:g2p-help@ebi.ac.uk"
-        style="text-decoration: none"
+        class="text-decoration-none"
         target="_blank"
+        rel="noopener noreferrer"
         >g2p-help@ebi.ac.uk</a
       >).
     </p>

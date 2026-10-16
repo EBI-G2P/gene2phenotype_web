@@ -24,7 +24,8 @@
       <a
         href="https://doi.org/10.1016/j.jmb.2026.169768"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >here</a
       >.
     </p>
@@ -55,7 +56,8 @@
       <a
         href="https://genomemedicine.biomedcentral.com/articles/10.1186/s13073-024-01398-1"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >here</a
       >.
     </p>
@@ -64,7 +66,7 @@
       genotypes to allelic requirements and genes reported in the literature to
       identify likely causative genes and variants. Full information is
       available
-      <router-link to="/variant-filtering" style="text-decoration: none"
+      <router-link to="/variant-filtering" class="text-decoration-none"
         >here</router-link
       >.
     </p>
@@ -72,7 +74,8 @@
       G2P is a member of the Gene Curation Coalition (<a
         href="https://thegencc.org/"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >GenCC</a
       >) which seeks to standardise the curation and description of gene disease
       information.

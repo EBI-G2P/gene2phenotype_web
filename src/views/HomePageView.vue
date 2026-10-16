@@ -92,9 +92,8 @@ export default {
           responseType: "text",
         })
         .then((response) => {
-          const responseContentDisposition = response.headers.get(
-            "Content-Disposition",
-          );
+          const responseContentDisposition =
+            response.headers.get("Content-Disposition") ?? "";
           // get csv file name from response Content-Disposition header
           const regexMatch = responseContentDisposition.match(
             /attachment; filename="([^"]+)"/,
@@ -109,6 +108,7 @@ export default {
           anchor.href =
             "data:text/csv;charset=utf-8," + encodeURIComponent(csvDataText);
           anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer";
           anchor.download = csvFileName;
           anchor.click();
           anchor.remove();

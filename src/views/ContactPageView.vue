@@ -7,8 +7,9 @@
       condition which would improve our records, via
       <a
         href="mailto:g2p-help@ebi.ac.uk"
-        style="text-decoration: none"
+        class="text-decoration-none"
         target="_blank"
+        rel="noopener noreferrer"
         >g2p-help@ebi.ac.uk</a
       >
     </p>

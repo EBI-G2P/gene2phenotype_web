@@ -30,15 +30,15 @@ export default {
       if (!this.reviewCase) return false;
       if (this.reviewCase.status !== REVIEW_STATUS.RESOLVED) return false;
       return (this.reviewCase.items || []).every(
-        (item) => item.status === REVIEW_STATUS.RESOLVED
+        (item) => item.status === REVIEW_STATUS.RESOLVED,
       );
     },
     availableComponentOptions() {
       const existing = new Set(
-        (this.formData?.items || []).map((item) => item.component)
+        (this.formData?.items || []).map((item) => item.component),
       );
       return this.componentOptions.filter(
-        (option) => !existing.has(option.value)
+        (option) => !existing.has(option.value),
       );
     },
   },
@@ -48,14 +48,14 @@ export default {
       () => {
         this.fetchData();
       },
-      { immediate: true }
+      { immediate: true },
     );
   },
   methods: {
     addItem() {
       if (!this.formData || !this.newItemComponent) return;
       const exists = (this.formData.items || []).some(
-        (item) => item.component === this.newItemComponent
+        (item) => item.component === this.newItemComponent,
       );
       if (exists) return;
       if (!this.formData.items) this.formData.items = [];
@@ -94,7 +94,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to fetch review case. Please try again later.",
-            "Unable to fetch review case."
+            "Unable to fetch review case.",
           );
         })
         .finally(() => {
@@ -149,7 +149,7 @@ export default {
             error,
             error?.response?.data?.error,
             "Unable to update review case. Please try again later.",
-            "Unable to update review case."
+            "Unable to update review case.",
           );
         })
         .finally(() => {
@@ -185,7 +185,9 @@ export default {
           <div><i class="bi bi-check-circle-fill"></i> {{ successMsg }}</div>
         </div>
         <div class="alert alert-danger mt-2" role="alert" v-if="saveErrorMsg">
-          <div><i class="bi bi-exclamation-circle-fill"></i> {{ saveErrorMsg }}</div>
+          <div>
+            <i class="bi bi-exclamation-circle-fill"></i> {{ saveErrorMsg }}
+          </div>
         </div>
         <div class="mb-2">
           <div class="row align-items-center w-75">
@@ -195,7 +197,7 @@ export default {
             <div class="col-lg-10">
               <a
                 :href="`/gene2phenotype/lgd/${reviewCase.stable_id}`"
-                style="text-decoration: none"
+                class="text-decoration-none"
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -14,8 +14,9 @@
       records, via
       <a
         href="mailto:g2p-help@ebi.ac.uk"
-        style="text-decoration: none"
+        class="text-decoration-none"
         target="_blank"
+        rel="noopener noreferrer"
         >g2p-help@ebi.ac.uk</a
       >.
     </p>
@@ -37,18 +38,20 @@
       parties can get in touch via
       <a
         href="mailto:g2p-help@ebi.ac.uk"
-        style="text-decoration: none"
+        class="text-decoration-none"
         target="_blank"
+        rel="noopener noreferrer"
         >g2p-help@ebi.ac.uk</a
       >
       for further information. Please acknowledge gene2phenotype (<a
         href="https://www.ebi.ac.uk/gene2phenotype/"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >https://www.ebi.ac.uk/gene2phenotype/</a
       >) if you use these data in your analyses or publications. For more
       information on G2P see our
-      <router-link to="/publications" style="text-decoration: none"
+      <router-link to="/publications" class="text-decoration-none"
         >publications page</router-link
       >.
     </p>

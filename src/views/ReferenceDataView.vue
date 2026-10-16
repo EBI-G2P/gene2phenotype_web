@@ -18,12 +18,12 @@ export default {
       () => {
         this.fetchData();
       },
-      { immediate: true }
+      { immediate: true },
     );
   },
   methods: {
     fetchData() {
-      this.errorMsg = this.curationEntries = null;
+      this.errorMsg = this.referenceData = null;
       this.isDataLoading = true;
       api
         .get(REFERENCE_DATA_URL)
@@ -33,7 +33,7 @@ export default {
         .catch((error) => {
           this.errorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to fetch reference data. Please try again later."
+            "Unable to fetch reference data. Please try again later.",
           );
         })
         .finally(() => {
@@ -44,31 +44,31 @@ export default {
       let referenceData = {};
 
       const geneReferenceData = response.find(
-        (item) => item.key === "locus_gene_update"
+        (item) => item.key === "locus_gene_update",
       );
       if (geneReferenceData) {
         referenceData["geneData"] = geneReferenceData;
       }
       const geneSymbolReferenceData = response.find(
-        (item) => item.key === "locus_gene_symbol_update"
+        (item) => item.key === "locus_gene_symbol_update",
       );
       if (geneSymbolReferenceData) {
         referenceData["geneSymbolData"] = geneSymbolReferenceData;
       }
       const geneFunctionReferenceData = response.find(
-        (item) => item.key === "import_uniprot"
+        (item) => item.key === "import_uniprot",
       );
       if (geneFunctionReferenceData) {
         referenceData["geneFunctionData"] = geneFunctionReferenceData;
       }
       const omimReferenceData = response.find(
-        (item) => item.key === "import_gene_disease_omim"
+        (item) => item.key === "import_gene_disease_omim",
       );
       if (omimReferenceData) {
         referenceData["omimData"] = omimReferenceData;
       }
       const mondoReferenceData = response.find(
-        (item) => item.key === "import_gene_disease_mondo"
+        (item) => item.key === "import_gene_disease_mondo",
       );
       if (mondoReferenceData) {
         referenceData["mondoData"] = mondoReferenceData;
@@ -95,7 +95,8 @@ export default {
       <a
         href="https://doi.org/10.1101/2025.11.24.25340871"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >Yates et al</a
       >
     </p>

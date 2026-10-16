@@ -25,9 +25,9 @@ export default {
     };
   },
   created() {
-    // watch the params of the route to fetch the data again
+    // Watch the route query to fetch data again when the search changes.
     this.$watch(
-      () => this.$route.params,
+      () => this.$route.query,
       () => {
         this.fetchData();
       },
@@ -54,21 +54,32 @@ export default {
       this.isDataLoading = true;
       let url = "";
       if (dataUrl) {
-        url = dataUrl.replace(/^.*\/\/[^\/]+/, ""); // remove domain from url
+        try {
+          const paginationUrl = new URL(dataUrl, window.location.origin);
+          if (paginationUrl.pathname !== SEARCH_URL) {
+            throw new Error("Unexpected search pagination URL");
+          }
+          url = `${paginationUrl.pathname}${paginationUrl.search}`;
+        } catch (error) {
+          logGeneralErrorMsg(error);
+          this.errorMsg =
+            "Unable to load this page of search results. Please try again.";
+          this.isDataLoading = false;
+          return;
+        }
       } else {
-        url = `${SEARCH_URL}?`;
         const { query, type, panel } = this.$route.query;
-        let queryParamsArr = [];
+        const queryParams = new URLSearchParams();
         if (query) {
-          queryParamsArr.push(`query=${query}`);
+          queryParams.set("query", query);
         }
         if (type) {
-          queryParamsArr.push(`type=${type}`);
+          queryParams.set("type", type);
         }
         if (panel) {
-          queryParamsArr.push(`panel=${panel}`);
+          queryParams.set("panel", panel);
         }
-        url += queryParamsArr.join("&");
+        url = `${SEARCH_URL}?${queryParams.toString()}`;
       }
       api
         .get(url)
@@ -210,16 +221,20 @@ export default {
         >
           <thead>
             <tr>
-              <th>G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" /></th>
-              <th>Gene</th>
-              <th>Disease</th>
-              <th>
+              <th scope="col">
+                G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" />
+              </th>
+              <th scope="col">Gene</th>
+              <th scope="col">Disease</th>
+              <th scope="col">
                 Allelic Requirement
                 <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" />
               </th>
-              <th>Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" /></th>
-              <th>Panels</th>
-              <th>
+              <th scope="col">
+                Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" />
+              </th>
+              <th scope="col">Panels</th>
+              <th scope="col">
                 Confidence <ToolTip :toolTipText="HELP_TEXT.CONFIDENCE" />
               </th>
             </tr>
@@ -230,7 +245,7 @@ export default {
                 <router-link
                   :to="`/lgd/${item.stable_id}`"
                   v-if="item.stable_id"
-                  style="text-decoration: none"
+                  class="text-decoration-none"
                 >
                   {{ item.stable_id }}
                 </router-link>
@@ -239,7 +254,7 @@ export default {
                 <router-link
                   v-if="item.gene"
                   :to="`/gene/${item.gene}`"
-                  style="text-decoration: none"
+                  class="text-decoration-none"
                 >
                   {{ item.gene }}
                 </router-link>
@@ -248,7 +263,7 @@ export default {
                 <router-link
                   v-if="item.disease"
                   :to="`/disease/${item.disease}`"
-                  style="text-decoration: none"
+                  class="text-decoration-none"
                 >
                   {{ item.disease }}
                 </router-link>
@@ -264,32 +279,26 @@ export default {
             </tr>
           </tbody>
         </table>
-        <p v-else style="color: grey">Not Available</p>
+        <p v-else class="text-muted">Not Available</p>
       </div>
-      <div class="row mx-1 justify-content-between mb-3">
-        <div class="col-2 px-0">
-          <button
-            type="button"
-            class="btn btn-primary"
-            style="float: left"
-            @click="previousPageClickHandler"
-            v-if="searchData.previous"
-          >
-            <i class="bi bi-arrow-left"></i> Previous Page
-          </button>
-        </div>
-        <div class="col-2 px-0">
-          <button
-            type="button"
-            class="btn btn-primary"
-            style="float: right"
-            @click="nextPageClickHandler"
-            v-if="searchData.next"
-          >
-            Next Page
-            <i class="bi bi-arrow-right"></i>
-          </button>
-        </div>
+      <div class="d-flex my-3">
+        <button
+          v-if="searchData.previous"
+          type="button"
+          class="btn btn-primary me-auto"
+          @click="previousPageClickHandler"
+        >
+          <i class="bi bi-arrow-left"></i> Previous Page
+        </button>
+        <button
+          v-if="searchData.next"
+          type="button"
+          class="btn btn-primary ms-auto"
+          @click="nextPageClickHandler"
+        >
+          Next Page
+          <i class="bi bi-arrow-right"></i>
+        </button>
       </div>
       <p>
         <i class="bi bi-info-circle"></i> G2P records are curated by experts on

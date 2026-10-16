@@ -66,15 +66,15 @@ export default {
 <template>
   <div class="container px-5 py-3" style="min-height: 60vh">
     <div
-      class="d-flex justify-content-center"
       v-if="isDataLoading"
+      class="d-flex justify-content-center"
       style="margin-top: 250px; margin-bottom: 250px"
     >
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div class="alert alert-danger mt-3" role="alert" v-if="errorMsg">
+    <div v-if="errorMsg" class="alert alert-danger mt-3" role="alert">
       <div><i class="bi bi-exclamation-circle-fill"></i> {{ errorMsg }}</div>
     </div>
     <div v-if="diseaseData && diseaseSummaryData">
@@ -83,36 +83,45 @@ export default {
       <h4 class="py-3">Previous G2P names</h4>
       <div>
         <ul v-if="diseaseData.synonyms?.length > 0">
-          <li v-for="item in diseaseData.synonyms" :key="item">{{ item }}</li>
+          <li
+            v-for="(item, index) in diseaseData.synonyms"
+            :key="`${item}-${index}`"
+          >
+            {{ item }}
+          </li>
         </ul>
         <p v-else class="text-muted">Not Available</p>
       </div>
       <h4 class="py-3">G2P records</h4>
       <div class="table-responsive-xl">
         <table
-          class="table table-hover table-bordered shadow-sm"
           v-if="diseaseSummaryData.records_summary?.length > 0"
+          class="table table-hover table-bordered shadow-sm"
         >
           <thead>
             <tr>
-              <th>G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" /></th>
-              <th>Gene</th>
-              <th>
+              <th scope="col">
+                G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" />
+              </th>
+              <th scope="col">Gene</th>
+              <th scope="col">
                 Allelic Requirement
                 <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" />
               </th>
-              <th>
+              <th scope="col">
                 Variant Consequence
                 <ToolTip :toolTipText="HELP_TEXT.VARIANT_CONSEQUENCE" />
               </th>
-              <th>
+              <th scope="col">
                 Variant Type <ToolTip :toolTipText="HELP_TEXT.VARIANT_TYPE" />
               </th>
-              <th>Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" /></th>
-              <th>
+              <th scope="col">
+                Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" />
+              </th>
+              <th scope="col">
                 Confidence <ToolTip :toolTipText="HELP_TEXT.CONFIDENCE" />
               </th>
-              <th>Panels</th>
+              <th scope="col">Panels</th>
             </tr>
           </thead>
           <tbody>
@@ -122,18 +131,18 @@ export default {
             >
               <td>
                 <router-link
-                  :to="`/lgd/${item.stable_id}`"
-                  style="text-decoration: none"
                   v-if="item.stable_id"
+                  :to="`/lgd/${item.stable_id}`"
+                  class="text-decoration-none"
                 >
                   {{ item.stable_id }}
                 </router-link>
               </td>
               <td>
                 <router-link
-                  :to="`/gene/${item.locus}`"
-                  style="text-decoration: none"
                   v-if="item.locus"
+                  :to="`/gene/${item.locus}`"
+                  class="text-decoration-none"
                 >
                   {{ item.locus }}
                 </router-link>
@@ -172,47 +181,54 @@ export default {
       <h4 v-if="diseaseData.ontology_terms?.length > 0" class="py-3">
         Cross references <ToolTip :toolTipText="HELP_TEXT.CROSS_REFERENCES" />
       </h4>
-      <table
-        class="table table-bordered table-hover w-50 shadow-sm"
-        v-if="diseaseData.ontology_terms?.length > 0"
-        width="50%"
-      >
-        <thead>
-          <tr>
-            <th>Accession</th>
-            <th>Term</th>
-            <th>Source</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in diseaseData.ontology_terms" :key="item.accession">
-            <td>
-              <a
-                :href="OMIM_URL + item.accession"
-                v-if="item.source === 'OMIM'"
-                target="_blank"
-                style="text-decoration: none"
-              >
-                {{ item.accession }}
-              </a>
-              <a
-                :href="MONDO_URL + item.accession"
-                v-else-if="item.source === 'Mondo'"
-                target="_blank"
-                style="text-decoration: none"
-              >
-                {{ item.accession }}
-              </a>
-              <span v-else>{{ item.accession }}</span>
-            </td>
-            <td>{{ item.term }}</td>
-            <td>{{ item.source }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-if="diseaseData.ontology_terms?.length > 0" class="row">
+        <div class="col-12 col-md-6">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover shadow-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Accession</th>
+                  <th scope="col">Term</th>
+                  <th scope="col">Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in diseaseData.ontology_terms"
+                  :key="`${item.source}-${item.accession}-${index}`"
+                >
+                  <td>
+                    <a
+                      v-if="item.source === 'OMIM'"
+                      :href="OMIM_URL + item.accession"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-decoration-none"
+                    >
+                      {{ item.accession }}
+                    </a>
+                    <a
+                      v-else-if="item.source === 'Mondo'"
+                      :href="MONDO_URL + item.accession"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-decoration-none"
+                    >
+                      {{ item.accession }}
+                    </a>
+                    <span v-else>{{ item.accession }}</span>
+                  </td>
+                  <td>{{ item.term }}</td>
+                  <td>{{ item.source }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       <p>
         <strong>Last Updated: </strong>
-        <span v-if="diseaseData.last_updated && diseaseData.last_updated != ''">
+        <span v-if="diseaseData.last_updated">
           {{ diseaseData.last_updated }}
         </span>
         <span v-else class="text-muted">Not Available</span>

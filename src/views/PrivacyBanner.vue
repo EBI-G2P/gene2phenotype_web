@@ -18,7 +18,7 @@ export default {
     dismissBanner() {
       localStorage.setItem(
         PRIVACY_POLICY_CONFIG.STORAGE_KEY_NAME,
-        PRIVACY_POLICY_CONFIG.VERSION
+        PRIVACY_POLICY_CONFIG.VERSION,
       );
       this.isDisplayBanner = false;
     },
@@ -31,11 +31,17 @@ export default {
       This website requires cookies, and the limited processing of your personal
       data in order to function. By using the site you are agreeing to this as
       outlined in our
-      <a :href="PRIVACY_POLICY_CONFIG.PRIVACY_POLICY_URL" target="_blank"
+      <a
+        :href="PRIVACY_POLICY_CONFIG.PRIVACY_POLICY_URL"
+        target="_blank"
+        rel="noopener noreferrer"
         >Privacy Notice</a
       >
       and
-      <a :href="PRIVACY_POLICY_CONFIG.TERMS_OF_USE_URL" target="_blank"
+      <a
+        :href="PRIVACY_POLICY_CONFIG.TERMS_OF_USE_URL"
+        target="_blank"
+        rel="noopener noreferrer"
         >Terms of Use</a
       >.
     </p>

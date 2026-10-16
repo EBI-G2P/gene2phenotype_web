@@ -240,7 +240,7 @@ const router = createRouter({
     if (to.hash) {
       return {
         el: to.hash,
-        bahaviour: "smooth",
+        behavior: "smooth",
       };
     } else if (savedPosition) {
       return savedPosition;

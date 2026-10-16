@@ -14,7 +14,8 @@ export default {
       <a
         href="https://www.ebi.ac.uk/gene2phenotype/api/"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >https://www.ebi.ac.uk/gene2phenotype/api/</a
       >
       enables access to gene disease models held in the G2P database.
@@ -41,7 +42,8 @@ export default {
       <a
         href="/gene2phenotype/about/terminology"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
         >the terminology documentation</a
       >
       for descriptions of terminology used.
@@ -57,7 +59,8 @@ export default {
       <a
         href="https://www.ebi.ac.uk/gene2phenotype/api/"
         target="_blank"
-        style="text-decoration: none"
+        rel="noopener noreferrer"
+        class="text-decoration-none"
       >
         https://www.ebi.ac.uk/gene2phenotype/api/
       </a>
