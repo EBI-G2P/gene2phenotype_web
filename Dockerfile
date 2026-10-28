@@ -12,7 +12,8 @@ COPY . .
 RUN npm run build
 
 # Serve stage
-FROM nginx/nginx-unprivileged:1.30.6-alpine3.24
+# Use Debian-based image for compatibility
+FROM nginx/nginx-unprivileged:1.30.6-bookworm
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
