@@ -1,29 +1,43 @@
+include:
+  # Static Application Security Testing
+  - template: Jobs/SAST.gitlab-ci.yml
+  # Dependency Scanning
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+  # Secret Detection
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  # Container Scanning
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+variables:
+  AST_ENABLE_MR_PIPELINES: "false"
+
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_TAG'
       variables:
-        IMAGE_TAG: "$CI_COMMIT_TAG"
-        DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
+        IMAGE_TAG: "prod-$CI_COMMIT_TAG"
+        DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:prod-$CI_COMMIT_TAG"
         VITE_GA_MEASUREMENT_ID: "$PROD_GA_MEASUREMENT_ID"
         VITE_APP_VERSION: "$CI_COMMIT_TAG"
       when: always
     - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH'
       variables:
-        IMAGE_TAG: "$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
-        DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+        IMAGE_TAG: "dev-$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+        DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:dev-$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
         VITE_GA_MEASUREMENT_ID: "$DEV_GA_MEASUREMENT_ID"
-        VITE_APP_VERSION: "v1.0.0"
+        VITE_APP_VERSION: "v1.0.0-test.$CI_PIPELINE_IID"
       when: always
     - when: never
 
 stages:
   - validate
   - build
+  - test
   - deploy
 
 validate:
   stage: validate
-  image: node:24-bookworm-slim
+  image: node:24.22.1-bookworm-slim
   cache:
     key:
       files:
@@ -37,19 +51,29 @@ validate:
 
 build:
   stage: build
-  image: docker:27
+  image: docker:29.9.2-cli
   services:
-    - docker:27-dind
+    - name: docker:29.9.2-dind
   before_script:
     - test -n "$VITE_GA_MEASUREMENT_ID" || (echo "VITE_GA_MEASUREMENT_ID is required for this pipeline" && exit 1)
     - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
   script:
     - docker build --build-arg VITE_GA_MEASUREMENT_ID="$VITE_GA_MEASUREMENT_ID" --build-arg VITE_APP_VERSION="$VITE_APP_VERSION" -t "$DOCKER_IMAGE" .
-    - docker tag "$DOCKER_IMAGE" "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
     - docker push "$DOCKER_IMAGE"
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-    - docker rmi "$DOCKER_IMAGE" "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker rmi "$DOCKER_IMAGE"
+  after_script:
     - docker logout "$CI_REGISTRY"
+
+container_scanning:
+  stage: test
+  needs: ["build"]
+  variables:
+    CS_IMAGE: "$DOCKER_IMAGE"
+  allow_failure: false
+  rules:
+    - if: '$CONTAINER_SCANNING_DISABLED == "true" || $CONTAINER_SCANNING_DISABLED == "1"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH || $CI_COMMIT_TAG'
 
 trigger_k8s_deploy_dev:
   stage: deploy
@@ -65,8 +89,8 @@ trigger_k8s_deploy_dev:
     strategy: mirror
   variables:
     APP_NAME: g2p-web
-    IMAGE_TAG: "$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
-    DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+    IMAGE_TAG: "dev-$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
+    DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:dev-$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA"
     DEPLOY_COMMIT_SHA: "$CI_COMMIT_SHA"
     DEPLOY_REF: "$CI_COMMIT_REF_NAME"
     DEPLOY_PIPELINE_URL: "$CI_PIPELINE_URL"
@@ -88,8 +112,8 @@ trigger_k8s_deploy_prod:
     strategy: mirror
   variables:
     APP_NAME: g2p-web
-    IMAGE_TAG: "$CI_COMMIT_TAG"
-    DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
+    IMAGE_TAG: "prod-$CI_COMMIT_TAG"
+    DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:prod-$CI_COMMIT_TAG"
     DEPLOY_COMMIT_SHA: "$CI_COMMIT_SHA"
     DEPLOY_REF: "$CI_COMMIT_TAG"
     DEPLOY_PIPELINE_URL: "$CI_PIPELINE_URL"
