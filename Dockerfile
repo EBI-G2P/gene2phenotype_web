@@ -17,8 +17,8 @@ FROM nginx/nginx-unprivileged:1.30.6-alpine3.24
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Validate nginx config
-RUN nginx -t
+# Validate nginx config without retaining the root-owned PID file
+RUN nginx -t && rm -f /tmp/nginx.pid
 
 # Copy built files
 COPY --from=build /app/dist/ /usr/share/nginx/html/gene2phenotype/
