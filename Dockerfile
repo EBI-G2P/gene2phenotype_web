@@ -1,5 +1,6 @@
 # Build stage
-FROM node:24-bookworm-slim AS build
+FROM node:24.22.1-bookworm-slim AS build
+
 WORKDIR /app
 ARG VITE_GA_MEASUREMENT_ID
 ARG VITE_APP_VERSION
@@ -11,10 +12,13 @@ COPY . .
 RUN npm run build
 
 # Serve stage
-FROM nginxinc/nginx-unprivileged:stable-alpine
+FROM nginx/nginx-unprivileged:1.30.6-alpine3.24
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Validate nginx config
+RUN nginx -t
 
 # Copy built files
 COPY --from=build /app/dist/ /usr/share/nginx/html/gene2phenotype/
