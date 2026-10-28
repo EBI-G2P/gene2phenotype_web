@@ -13,7 +13,7 @@ RUN npm run build
 
 # Serve stage
 # Use Debian-based image for compatibility
-FROM nginx/nginx-unprivileged:1.30.6-bookworm
+FROM nginx/nginx-unprivileged:1.30.6-trixie
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
