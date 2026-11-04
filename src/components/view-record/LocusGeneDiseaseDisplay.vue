@@ -23,8 +23,14 @@ const RESIZE_DEBOUNCE_DELAY = 150;
 export default {
   props: {
     isRecordPartOfUserPanels: Boolean,
-    locusGeneDiseaseData: Object,
-    userPanels: Array,
+    locusGeneDiseaseData: {
+      type: Object,
+      required: true,
+    },
+    userPanels: {
+      type: Array,
+      default: () => [],
+    },
     isPanelDataLoading: Boolean,
     isAuthenticated: Boolean,
   },
@@ -173,16 +179,18 @@ export default {
 <template>
   <main id="record-main" ref="recordMain">
     <div id="record-content-div">
-      <div class="d-flex justify-content-between">
-        <div class="flex-grow-1 me-1">
-          <h2 v-if="locusGeneDiseaseData.disease?.name">
-            {{ locusGeneDiseaseData.disease.name }}
-            <ConfidenceBadge
-              :confidence="locusGeneDiseaseData.confidence"
-              class="fs-6"
-            />
-          </h2>
-          <h2 v-else class="text-muted">Disease Name Not Available</h2>
+      <h2 v-if="locusGeneDiseaseData.disease?.name">
+        {{ locusGeneDiseaseData.disease.name }}
+      </h2>
+      <h2 v-else class="text-muted">Disease Name Not Available</h2>
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-start gap-2"
+      >
+        <div class="d-flex flex-wrap align-items-center gap-1">
+          <ConfidenceBadge
+            :confidence="locusGeneDiseaseData.confidence"
+            class="fs-6"
+          />
           <span
             v-if="locusGeneDiseaseData.under_review"
             class="badge text-white fs-6 text-bg-warning"
@@ -190,59 +198,53 @@ export default {
             Under review
           </span>
         </div>
-        <div class="flex-shrink-0">
-          <div class="d-flex align-items-start flex-column">
-            <div>
-              <button
-                v-if="canAddToPanel"
-                class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#add-panel-modal"
-              >
-                <i class="bi bi-plus-circle-fill"></i> Add to another panel
-              </button>
-              <button
-                v-if="canUpdateRecord"
-                class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#update-record-modal"
-              >
-                <i class="bi bi-pencil-square"></i> Update record
-              </button>
-              <div
-                v-if="isPanelDataLoading && isAuthenticated"
-                class="my-auto"
-                role="status"
-              >
-                <span
-                  class="spinner-border spinner-border-sm text-primary"
-                  aria-hidden="true"
-                ></span>
-                <span class="visually-hidden">Loading panel data...</span>
-              </div>
-            </div>
-            <div class="mt-1">
-              <button
-                class="btn btn-outline-primary"
-                type="button"
-                :disabled="isPdfDownloading"
-                :aria-busy="isPdfDownloading"
-                @click="exportRecordPdf(locusGeneDiseaseData, isAuthenticated)"
-              >
-                <span
-                  v-if="isPdfDownloading"
-                  class="spinner-border spinner-border-sm me-1"
-                  aria-hidden="true"
-                ></span>
-                <i
-                  v-else
-                  class="bi bi-file-earmark-arrow-down me-1"
-                  aria-hidden="true"
-                ></i>
-                {{ isPdfDownloading ? "Downloading" : "Download PDF" }}
-              </button>
-            </div>
+        <div class="d-flex flex-wrap justify-content-end gap-1 ms-auto">
+          <button
+            v-if="canAddToPanel"
+            class="btn btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#add-panel-modal"
+          >
+            <i class="bi bi-plus-circle-fill"></i> Add to another panel
+          </button>
+          <button
+            v-if="canUpdateRecord"
+            class="btn btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#update-record-modal"
+          >
+            <i class="bi bi-pencil-square"></i> Update record
+          </button>
+          <div
+            v-if="isPanelDataLoading && isAuthenticated"
+            class="my-auto"
+            role="status"
+          >
+            <span
+              class="spinner-border spinner-border-sm text-primary"
+              aria-hidden="true"
+            ></span>
+            <span class="visually-hidden">Loading panel data...</span>
           </div>
+          <button
+            class="btn btn-outline-primary"
+            type="button"
+            :disabled="isPdfDownloading"
+            :aria-busy="isPdfDownloading"
+            @click="exportRecordPdf(locusGeneDiseaseData, isAuthenticated)"
+          >
+            <span
+              v-if="isPdfDownloading"
+              class="spinner-border spinner-border-sm me-1"
+              aria-hidden="true"
+            ></span>
+            <i
+              v-else
+              class="bi bi-file-earmark-arrow-down me-1"
+              aria-hidden="true"
+            ></i>
+            {{ isPdfDownloading ? "Downloading" : "Download PDF" }}
+          </button>
         </div>
       </div>
       <div v-if="locusGeneDiseaseData.summary" class="record-summary-div my-3">
