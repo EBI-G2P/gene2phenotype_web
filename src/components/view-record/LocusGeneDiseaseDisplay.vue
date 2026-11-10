@@ -1,7 +1,6 @@
 <script>
 import { HELP_TEXT } from "../../utility/Constants.js";
 import ToolTip from "../tooltip/ToolTip.vue";
-import ConfidenceBadge from "../confidence/ConfidenceBadge.vue";
 import PanelLinks from "../panel/PanelLinks.vue";
 import { ENSEMBL_LOCATION_URL } from "../../utility/UrlConstants.js";
 import VariantTypes from "./VariantTypes.vue";
@@ -16,9 +15,28 @@ import MinedPublications from "./MinedPublications.vue";
 import ExternalLinks from "./ExternalLinks.vue";
 import CrossReferences from "./CrossReferences.vue";
 import Comments from "./Comments.vue";
+import RecordHeaderControls from "./RecordHeaderControls.vue";
 
 const SECTION_ACTIVATION_LINE_PX = 2;
 const RESIZE_DEBOUNCE_DELAY = 150;
+const NAVIGATION_ITEMS = Object.freeze([
+  { id: "allelic-requirement-section", label: "Allelic Requirement" },
+  {
+    id: "cross-cutting-modifier-section",
+    label: "Cross Cutting Modifiers",
+  },
+  { id: "panel-section", label: "Panels" },
+  { id: "variant-information-section", label: "Variant Information" },
+  { id: "molecular-mechanism-section", label: "Molecular Mechanism" },
+  { id: "phenotype-feature-section", label: "Phenotypic Features" },
+  { id: "phenotype-summary-section", label: "Phenotypic Summary" },
+  { id: "evidence-section", label: "Evidence" },
+  { id: "gene-information-section", label: "Gene Information" },
+  { id: "disease-information-section", label: "Disease Information" },
+  { id: "g2p-id-section", label: "G2P ID" },
+  { id: "comments-section", label: "Comments", requiresComments: true },
+  { id: "curation-information-section", label: "Curation Information" },
+]);
 
 export default {
   props: {
@@ -38,33 +56,23 @@ export default {
     return {
       observer: null,
       resizeTimer: null,
-      isPdfDownloading: false,
+      activeSectionId: null,
       HELP_TEXT,
       ENSEMBL_LOCATION_URL,
     };
   },
   computed: {
-    canAddToPanel() {
-      return (
-        !this.isPanelDataLoading &&
-        this.userPanels?.length > 0 &&
-        this.isAuthenticated &&
-        !this.isRecordPartOfUserPanels
-      );
-    },
-    canUpdateRecord() {
-      return (
-        !this.isPanelDataLoading &&
-        this.isAuthenticated &&
-        this.isRecordPartOfUserPanels
-      );
-    },
     hasComments() {
       return this.locusGeneDiseaseData?.comments?.length > 0;
     },
     hasMechanismEvidence() {
       const evidence = this.locusGeneDiseaseData.molecular_mechanism?.evidence;
       return Object.keys(evidence ?? {}).length > 0;
+    },
+    navigationItems() {
+      return NAVIGATION_ITEMS.filter(
+        (item) => !item.requiresComments || this.hasComments,
+      );
     },
   },
   mounted() {
@@ -78,7 +86,6 @@ export default {
   },
   components: {
     ToolTip,
-    ConfidenceBadge,
     PanelLinks,
     VariantTypes,
     VariantDescription,
@@ -92,27 +99,13 @@ export default {
     ExternalLinks,
     CrossReferences,
     Comments,
+    RecordHeaderControls,
   },
   methods: {
-    async exportRecordPdf(locusGeneDiseaseData, isAuthenticated) {
-      if (this.isPdfDownloading) {
-        return;
-      }
-
-      this.isPdfDownloading = true;
-
-      try {
-        const { exportRecordPdf } =
-          await import("../../utility/DownloadUtility.js");
-        exportRecordPdf(locusGeneDiseaseData, isAuthenticated);
-      } finally {
-        this.isPdfDownloading = false;
-      }
-    },
     createSectionObserver() {
       this.observer?.disconnect();
 
-      const headings = this.getSectionHeadings();
+      const sections = this.getRecordSections();
       // Reduce the observer root to a narrow activation line at the viewport top.
       const bottomMargin = Math.max(
         window.innerHeight - SECTION_ACTIVATION_LINE_PX,
@@ -125,16 +118,20 @@ export default {
         threshold: 0,
       });
 
-      headings.forEach((heading) => this.observer.observe(heading));
+      sections.forEach((section) => this.observer.observe(section));
       // Set the initial active section before the observer callback runs.
-      this.updateActiveSection(headings, SECTION_ACTIVATION_LINE_PX);
+      this.updateActiveSection(sections, SECTION_ACTIVATION_LINE_PX);
     },
-    getSectionHeadings() {
-      return Array.from(this.$refs.recordMain.querySelectorAll("tr[id]"));
+    getRecordSections() {
+      return Array.from(
+        this.$refs.recordMain.querySelectorAll(
+          "section[data-navigation-section][id]",
+        ),
+      );
     },
     onElementObserved() {
       this.updateActiveSection(
-        this.getSectionHeadings(),
+        this.getRecordSections(),
         SECTION_ACTIVATION_LINE_PX,
       );
     },
@@ -146,8 +143,8 @@ export default {
         this.resizeTimer = null;
       }, RESIZE_DEBOUNCE_DELAY);
     },
-    updateActiveSection(headings, activationOffset) {
-      if (headings.length === 0) {
+    updateActiveSection(sections, activationOffset) {
+      if (sections.length === 0) {
         return;
       }
 
@@ -155,23 +152,16 @@ export default {
       // Keep the final section active when its heading cannot reach the activation line.
       const isAtPageBottom =
         Math.ceil(pageBottom) >= document.documentElement.scrollHeight;
-      const activeHeading = isAtPageBottom
-        ? headings[headings.length - 1]
-        : headings.reduce((current, heading) => {
-            // Use the last heading that has crossed the activation line.
-            return heading.getBoundingClientRect().top <= activationOffset
-              ? heading
+      const activeSection = isAtPageBottom
+        ? sections[sections.length - 1]
+        : sections.reduce((current, section) => {
+            // Use the last section that has crossed the activation line.
+            return section.getBoundingClientRect().top <= activationOffset
+              ? section
               : current;
-          }, headings[0]);
+          }, sections[0]);
 
-      this.setActiveSection(activeHeading.id);
-    },
-    setActiveSection(id) {
-      this.$refs.sideNav
-        ?.querySelectorAll("a.nav-link")
-        .forEach((link) =>
-          link.classList.toggle("active", link.hash === `#${id}`),
-        );
+      this.activeSectionId = activeSection.id;
     },
   },
 };
@@ -183,99 +173,77 @@ export default {
         {{ locusGeneDiseaseData.disease.name }}
       </h2>
       <h2 v-else class="text-muted">Disease Name Not Available</h2>
-      <div
-        class="d-flex flex-wrap justify-content-between align-items-start gap-2"
-      >
-        <div class="d-flex flex-wrap align-items-center gap-1">
-          <ConfidenceBadge
-            :confidence="locusGeneDiseaseData.confidence"
-            class="fs-6"
-          />
-          <span
-            v-if="locusGeneDiseaseData.under_review"
-            class="badge text-white fs-6 text-bg-warning"
-          >
-            Under review
-          </span>
-        </div>
-        <div class="d-flex flex-wrap justify-content-end gap-1 ms-auto">
-          <button
-            v-if="canAddToPanel"
-            class="btn btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#add-panel-modal"
-          >
-            <i class="bi bi-plus-circle-fill"></i> Add to another panel
-          </button>
-          <button
-            v-if="canUpdateRecord"
-            class="btn btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#update-record-modal"
-          >
-            <i class="bi bi-pencil-square"></i> Update record
-          </button>
-          <div
-            v-if="isPanelDataLoading && isAuthenticated"
-            class="my-auto"
-            role="status"
-          >
-            <span
-              class="spinner-border spinner-border-sm text-primary"
-              aria-hidden="true"
-            ></span>
-            <span class="visually-hidden">Loading panel data...</span>
-          </div>
-          <button
-            class="btn btn-outline-primary"
-            type="button"
-            :disabled="isPdfDownloading"
-            :aria-busy="isPdfDownloading"
-            @click="exportRecordPdf(locusGeneDiseaseData, isAuthenticated)"
-          >
-            <span
-              v-if="isPdfDownloading"
-              class="spinner-border spinner-border-sm me-1"
-              aria-hidden="true"
-            ></span>
-            <i
-              v-else
-              class="bi bi-file-earmark-arrow-down me-1"
-              aria-hidden="true"
-            ></i>
-            {{ isPdfDownloading ? "Downloading" : "Download PDF" }}
-          </button>
-        </div>
-      </div>
+      <RecordHeaderControls
+        :locus-gene-disease-data="locusGeneDiseaseData"
+        :user-panels="userPanels"
+        :is-panel-data-loading="isPanelDataLoading"
+        :is-authenticated="isAuthenticated"
+        :is-record-part-of-user-panels="isRecordPartOfUserPanels"
+      />
       <div v-if="locusGeneDiseaseData.summary" class="record-summary-div my-3">
         <p>
           {{ locusGeneDiseaseData.summary }}
         </p>
       </div>
-      <table class="table table-borderless my-3">
-        <tbody>
-          <tr id="allelic-requirement-section" class="align-middle">
-            <td class="w-25 text-end">
-              <h5>
-                Allelic Requirement
-                <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" />
-              </h5>
-            </td>
-            <td class="w-75">
+      <div class="dropdown mobile-navigation mb-4">
+        <button
+          id="record-mobile-navigation-button"
+          class="btn btn-outline-primary dropdown-toggle w-100"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          On this page
+        </button>
+        <nav class="dropdown-menu w-100" aria-label="On this page">
+          <a
+            v-for="item in navigationItems"
+            :key="item.id"
+            class="dropdown-item"
+            :class="{ active: activeSectionId === item.id }"
+            :aria-current="activeSectionId === item.id ? 'location' : undefined"
+            :href="`#${item.id}`"
+          >
+            {{ item.label }}
+          </a>
+        </nav>
+      </div>
+      <div class="record-details">
+        <section
+          id="allelic-requirement-section"
+          data-navigation-section
+          aria-labelledby="allelic-requirement-heading"
+        >
+          <div class="record-field record-field--align-center">
+            <h3
+              id="allelic-requirement-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              Allelic Requirement
+              <ToolTip :toolTipText="HELP_TEXT.ALLELIC_REQUIREMENT" />
+            </h3>
+            <div class="record-field__value">
               <p v-if="locusGeneDiseaseData.genotype">
                 {{ locusGeneDiseaseData.genotype }}
               </p>
               <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr id="cross-cutting-modifier-section">
-            <td class="w-25 text-end">
-              <h5>
-                Cross Cutting Modifiers
-                <ToolTip :toolTipText="HELP_TEXT.CROSS_CUTTING_MODIFIER" />
-              </h5>
-            </td>
-            <td class="w-75">
+            </div>
+          </div>
+        </section>
+        <section
+          id="cross-cutting-modifier-section"
+          data-navigation-section
+          aria-labelledby="cross-cutting-modifier-heading"
+        >
+          <div class="record-field record-field--align-center">
+            <h3
+              id="cross-cutting-modifier-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              Cross Cutting Modifiers
+              <ToolTip :toolTipText="HELP_TEXT.CROSS_CUTTING_MODIFIER" />
+            </h3>
+            <div class="record-field__value">
               <p v-if="locusGeneDiseaseData.cross_cutting_modifier?.length > 0">
                 {{
                   locusGeneDiseaseData.cross_cutting_modifier
@@ -284,144 +252,183 @@ export default {
                 }}
               </p>
               <p v-else class="text-muted">Not Assigned</p>
-            </td>
-          </tr>
-          <tr id="panel-section" class="align-middle">
-            <td class="w-25 text-end">
-              <h5>Panels</h5>
-            </td>
-            <td class="w-75">
+            </div>
+          </div>
+        </section>
+        <section
+          id="panel-section"
+          data-navigation-section
+          aria-labelledby="panel-heading"
+        >
+          <div class="record-field record-field--align-center">
+            <h3
+              id="panel-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              Panels
+            </h3>
+            <div class="record-field__value">
               <PanelLinks
                 :panels="locusGeneDiseaseData.panels"
                 empty-text="Not Available"
               />
-            </td>
-          </tr>
-          <tr id="variant-information-section" class="align-middle">
-            <td class="w-25 text-end">
-              <h5>Variant Information</h5>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="w-25 text-end">
-              <h6>
+            </div>
+          </div>
+        </section>
+        <section
+          id="variant-information-section"
+          data-navigation-section
+          aria-labelledby="variant-information-heading"
+        >
+          <h3 id="variant-information-heading" class="record-section__heading">
+            Variant Information
+          </h3>
+          <dl class="mb-0">
+            <div class="record-field">
+              <dt class="record-field__label">
                 Variant Types
                 <ToolTip :toolTipText="HELP_TEXT.VARIANT_TYPE" />
-              </h6>
-            </td>
-            <td class="w-75">
-              <VariantTypes
-                :variant-types="locusGeneDiseaseData.variant_type"
-                :is-authenticated="isAuthenticated"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td class="w-25 text-end">
-              <h6>Variant Description</h6>
-            </td>
-            <td class="w-75">
-              <VariantDescription
-                :variant-description="locusGeneDiseaseData.variant_description"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td class="w-25 text-end">
-              <h6>
+              </dt>
+              <dd class="record-field__value">
+                <VariantTypes
+                  :variant-types="locusGeneDiseaseData.variant_type"
+                  :is-authenticated="isAuthenticated"
+                />
+              </dd>
+            </div>
+            <div class="record-field">
+              <dt class="record-field__label">Variant Description</dt>
+              <dd class="record-field__value">
+                <VariantDescription
+                  :variant-description="
+                    locusGeneDiseaseData.variant_description
+                  "
+                />
+              </dd>
+            </div>
+            <div class="record-field">
+              <dt class="record-field__label">
                 Variant Consequences
                 <ToolTip :toolTipText="HELP_TEXT.VARIANT_CONSEQUENCE" />
-              </h6>
-            </td>
-            <td class="w-75">
-              <VariantConsequences
-                :variant-consequences="locusGeneDiseaseData.variant_consequence"
-              />
-            </td>
-          </tr>
-          <tr id="molecular-mechanism-section" class="align-middle">
-            <td class="w-25 text-end">
-              <h5>Molecular Mechanism</h5>
-            </td>
-            <td></td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h6>Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" /></h6>
-            </td>
-            <td class="w-75">
-              <p v-if="locusGeneDiseaseData.molecular_mechanism?.mechanism">
-                {{ locusGeneDiseaseData.molecular_mechanism.mechanism }}
-                <span
-                  v-if="
-                    locusGeneDiseaseData.molecular_mechanism
-                      ?.mechanism_support === 'inferred' &&
-                    locusGeneDiseaseData.molecular_mechanism.mechanism !==
-                      'undetermined'
+              </dt>
+              <dd class="record-field__value">
+                <VariantConsequences
+                  :variant-consequences="
+                    locusGeneDiseaseData.variant_consequence
                   "
-                >
-                  ({{
-                    locusGeneDiseaseData.molecular_mechanism.mechanism_support
-                  }})
-                </span>
-              </p>
-              <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr>
-            <td class="w-25 text-end">
-              <h6>
+                />
+              </dd>
+            </div>
+          </dl>
+        </section>
+        <section
+          id="molecular-mechanism-section"
+          data-navigation-section
+          aria-labelledby="molecular-mechanism-heading"
+        >
+          <h3 id="molecular-mechanism-heading" class="record-section__heading">
+            Molecular Mechanism
+          </h3>
+          <dl class="mb-0">
+            <div class="record-field record-field--align-center">
+              <dt class="record-field__label">
+                Mechanism <ToolTip :toolTipText="HELP_TEXT.MECHANISM" />
+              </dt>
+              <dd class="record-field__value">
+                <p v-if="locusGeneDiseaseData.molecular_mechanism?.mechanism">
+                  {{ locusGeneDiseaseData.molecular_mechanism.mechanism }}
+                  <span
+                    v-if="
+                      locusGeneDiseaseData.molecular_mechanism
+                        ?.mechanism_support === 'inferred' &&
+                      locusGeneDiseaseData.molecular_mechanism.mechanism !==
+                        'undetermined'
+                    "
+                  >
+                    ({{
+                      locusGeneDiseaseData.molecular_mechanism
+                        .mechanism_support
+                    }})
+                  </span>
+                </p>
+                <p v-else class="text-muted">Not Available</p>
+              </dd>
+            </div>
+            <div class="record-field">
+              <dt class="record-field__label">
                 Categorisation
                 <ToolTip :toolTipText="HELP_TEXT.CATEGORISATION" />
-              </h6>
-            </td>
-            <td class="w-75">
-              <MechanismSynopsis
-                :mechanism-synopsis="
-                  locusGeneDiseaseData.molecular_mechanism?.synopsis
-                "
-              />
-            </td>
-          </tr>
-          <tr v-if="hasMechanismEvidence">
-            <td class="w-25 text-end">
-              <h6>Evidence</h6>
-            </td>
-            <td class="w-75">
-              <MechanismEvidence
-                :mechanism-evidence="
-                  locusGeneDiseaseData.molecular_mechanism.evidence
-                "
-              />
-            </td>
-          </tr>
-          <tr id="phenotype-feature-section">
-            <td class="w-25 text-end">
-              <h5>
-                Phenotypic Features
-                <ToolTip :toolTipText="HELP_TEXT.PHENOTYPIC_FEATURE" />
-              </h5>
-            </td>
-            <td class="w-75">
+              </dt>
+              <dd class="record-field__value">
+                <MechanismSynopsis
+                  :mechanism-synopsis="
+                    locusGeneDiseaseData.molecular_mechanism?.synopsis
+                  "
+                />
+              </dd>
+            </div>
+            <div v-if="hasMechanismEvidence" class="record-field">
+              <dt class="record-field__label">Evidence</dt>
+              <dd class="record-field__value">
+                <MechanismEvidence
+                  :mechanism-evidence="
+                    locusGeneDiseaseData.molecular_mechanism.evidence
+                  "
+                />
+              </dd>
+            </div>
+          </dl>
+        </section>
+        <section
+          id="phenotype-feature-section"
+          data-navigation-section
+          aria-labelledby="phenotype-feature-heading"
+        >
+          <div class="record-field">
+            <h3
+              id="phenotype-feature-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              Phenotypic Features
+              <ToolTip :toolTipText="HELP_TEXT.PHENOTYPIC_FEATURE" />
+            </h3>
+            <div class="record-field__value">
               <Phenotypes :phenotypes="locusGeneDiseaseData.phenotypes" />
-            </td>
-          </tr>
-          <tr id="phenotype-summary-section">
-            <td class="w-25 text-end">
-              <h5>Phenotypic Summary</h5>
-            </td>
-            <td class="w-75">
+            </div>
+          </div>
+        </section>
+        <section
+          id="phenotype-summary-section"
+          data-navigation-section
+          aria-labelledby="phenotype-summary-heading"
+        >
+          <div class="record-field">
+            <h3
+              id="phenotype-summary-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              Phenotypic Summary
+            </h3>
+            <div class="record-field__value">
               <PhenotypeSummary
                 :phenotype-summary="locusGeneDiseaseData.phenotype_summary"
               />
-            </td>
-          </tr>
-          <tr id="evidence-section">
-            <td class="w-25 text-end">
-              <h5>Evidence</h5>
-            </td>
-            <td class="w-75">
+            </div>
+          </div>
+        </section>
+        <section
+          id="evidence-section"
+          data-navigation-section
+          aria-labelledby="evidence-heading"
+        >
+          <div class="record-field">
+            <h3
+              id="evidence-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              Evidence
+            </h3>
+            <div class="record-field__value">
               <Publications
                 :publications="locusGeneDiseaseData.publications"
                 :is-authenticated="isAuthenticated"
@@ -433,183 +440,200 @@ export default {
                 :is-authenticated="isAuthenticated"
                 :is-record-part-of-user-panels="isRecordPartOfUserPanels"
               />
-            </td>
-          </tr>
-          <tr id="gene-information-section" class="align-middle">
-            <td class="w-25 text-end">
-              <h5>Gene Information</h5>
-            </td>
-            <td></td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h6>Gene Symbol</h6>
-            </td>
-            <td>
-              <router-link
-                v-if="locusGeneDiseaseData.locus?.gene_symbol"
-                :to="`/gene/${locusGeneDiseaseData.locus?.gene_symbol}`"
-                class="text-decoration-none"
-              >
-                {{ locusGeneDiseaseData.locus.gene_symbol }}
-              </router-link>
-              <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h6>Synonyms</h6>
-            </td>
-            <td>
-              <p v-if="locusGeneDiseaseData.locus?.synonyms?.length > 0">
-                {{ locusGeneDiseaseData.locus.synonyms.join(", ") }}
-              </p>
-              <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h6>
+            </div>
+          </div>
+        </section>
+        <section
+          id="gene-information-section"
+          data-navigation-section
+          aria-labelledby="gene-information-heading"
+        >
+          <h3 id="gene-information-heading" class="record-section__heading">
+            Gene Information
+          </h3>
+          <dl class="mb-0">
+            <div class="record-field record-field--align-center">
+              <dt class="record-field__label">Gene Symbol</dt>
+              <dd class="record-field__value">
+                <router-link
+                  v-if="locusGeneDiseaseData.locus?.gene_symbol"
+                  :to="`/gene/${locusGeneDiseaseData.locus?.gene_symbol}`"
+                  class="text-decoration-none"
+                >
+                  {{ locusGeneDiseaseData.locus.gene_symbol }}
+                </router-link>
+                <p v-else class="text-muted">Not Available</p>
+              </dd>
+            </div>
+            <div class="record-field record-field--align-center">
+              <dt class="record-field__label">Synonyms</dt>
+              <dd class="record-field__value">
+                <p v-if="locusGeneDiseaseData.locus?.synonyms?.length > 0">
+                  {{ locusGeneDiseaseData.locus.synonyms.join(", ") }}
+                </p>
+                <p v-else class="text-muted">Not Available</p>
+              </dd>
+            </div>
+            <div class="record-field record-field--align-center">
+              <dt class="record-field__label">
                 Location <ToolTip :toolTipText="HELP_TEXT.GENE_LOCATION" />
-              </h6>
-            </td>
-            <td>
-              <a
-                v-if="
-                  locusGeneDiseaseData.locus?.sequence &&
-                  locusGeneDiseaseData.locus?.start &&
-                  locusGeneDiseaseData.locus?.end
-                "
-                :href="`${ENSEMBL_LOCATION_URL}${locusGeneDiseaseData.locus.sequence}:${locusGeneDiseaseData.locus.start}-${locusGeneDiseaseData.locus.end}`"
-                class="text-decoration-none"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ locusGeneDiseaseData.locus.sequence }}:{{
-                  locusGeneDiseaseData.locus.start
-                }}-{{ locusGeneDiseaseData.locus.end }}:{{
-                  locusGeneDiseaseData.locus.strand
-                }}
-              </a>
-              <p
-                v-else-if="
-                  locusGeneDiseaseData.locus?.sequence ||
-                  locusGeneDiseaseData.locus?.start ||
-                  locusGeneDiseaseData.locus?.end
-                "
-              >
-                {{ locusGeneDiseaseData.locus.sequence }}:{{
-                  locusGeneDiseaseData.locus.start
-                }}-{{ locusGeneDiseaseData.locus.end }}:{{
-                  locusGeneDiseaseData.locus.strand
-                }}
-              </p>
-              <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr>
-            <td class="w-25 text-end">
-              <h6>
+              </dt>
+              <dd class="record-field__value">
+                <a
+                  v-if="
+                    locusGeneDiseaseData.locus?.sequence &&
+                    locusGeneDiseaseData.locus?.start &&
+                    locusGeneDiseaseData.locus?.end
+                  "
+                  :href="`${ENSEMBL_LOCATION_URL}${locusGeneDiseaseData.locus.sequence}:${locusGeneDiseaseData.locus.start}-${locusGeneDiseaseData.locus.end}`"
+                  class="text-decoration-none"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ locusGeneDiseaseData.locus.sequence }}:{{
+                    locusGeneDiseaseData.locus.start
+                  }}-{{ locusGeneDiseaseData.locus.end }}:{{
+                    locusGeneDiseaseData.locus.strand
+                  }}
+                </a>
+                <p
+                  v-else-if="
+                    locusGeneDiseaseData.locus?.sequence ||
+                    locusGeneDiseaseData.locus?.start ||
+                    locusGeneDiseaseData.locus?.end
+                  "
+                >
+                  {{ locusGeneDiseaseData.locus.sequence }}:{{
+                    locusGeneDiseaseData.locus.start
+                  }}-{{ locusGeneDiseaseData.locus.end }}:{{
+                    locusGeneDiseaseData.locus.strand
+                  }}
+                </p>
+                <p v-else class="text-muted">Not Available</p>
+              </dd>
+            </div>
+            <div class="record-field">
+              <dt class="record-field__label">
                 External Links
                 <ToolTip :toolTipText="HELP_TEXT.EXTERNAL_LINKS" />
-              </h6>
-            </td>
-            <td class="w-75">
-              <ExternalLinks
-                :gene-symbol="locusGeneDiseaseData.locus?.gene_symbol"
-                :omim-id="locusGeneDiseaseData.locus?.ids?.OMIM"
-                :ensembl-id="locusGeneDiseaseData.locus?.ids?.Ensembl"
-                :hgnc-id="locusGeneDiseaseData.locus?.ids?.HGNC"
-              />
-            </td>
-          </tr>
-          <tr id="disease-information-section">
-            <td class="w-25 text-end">
-              <h5>Disease Information</h5>
-            </td>
-            <td></td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h6>Disease Name</h6>
-            </td>
-            <td>
-              <router-link
-                v-if="locusGeneDiseaseData.disease?.name"
-                :to="`/disease/${locusGeneDiseaseData.disease?.name}`"
-                class="text-decoration-none"
-              >
-                {{ locusGeneDiseaseData.disease?.name }}
-              </router-link>
-              <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr>
-            <td class="w-25 text-end">
-              <h6>
+              </dt>
+              <dd class="record-field__value">
+                <ExternalLinks
+                  :gene-symbol="locusGeneDiseaseData.locus?.gene_symbol"
+                  :omim-id="locusGeneDiseaseData.locus?.ids?.OMIM"
+                  :ensembl-id="locusGeneDiseaseData.locus?.ids?.Ensembl"
+                  :hgnc-id="locusGeneDiseaseData.locus?.ids?.HGNC"
+                />
+              </dd>
+            </div>
+          </dl>
+        </section>
+        <section
+          id="disease-information-section"
+          data-navigation-section
+          aria-labelledby="disease-information-heading"
+        >
+          <h3 id="disease-information-heading" class="record-section__heading">
+            Disease Information
+          </h3>
+          <dl class="mb-0">
+            <div class="record-field record-field--align-center">
+              <dt class="record-field__label">Disease Name</dt>
+              <dd class="record-field__value">
+                <router-link
+                  v-if="locusGeneDiseaseData.disease?.name"
+                  :to="`/disease/${locusGeneDiseaseData.disease?.name}`"
+                  class="text-decoration-none"
+                >
+                  {{ locusGeneDiseaseData.disease?.name }}
+                </router-link>
+                <p v-else class="text-muted">Not Available</p>
+              </dd>
+            </div>
+            <div class="record-field">
+              <dt class="record-field__label">
                 Cross References
                 <ToolTip :toolTipText="HELP_TEXT.CROSS_REFERENCES" />
-              </h6>
-            </td>
-            <td class="w-75">
-              <CrossReferences
-                :ontology-terms="locusGeneDiseaseData.disease?.ontology_terms"
-              />
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h5>G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" /></h5>
-            </td>
-            <td class="w-75">
+              </dt>
+              <dd class="record-field__value">
+                <CrossReferences
+                  :ontology-terms="locusGeneDiseaseData.disease?.ontology_terms"
+                />
+              </dd>
+            </div>
+          </dl>
+        </section>
+        <section
+          id="g2p-id-section"
+          data-navigation-section
+          aria-labelledby="g2p-id-heading"
+        >
+          <div class="record-field record-field--align-center">
+            <h3
+              id="g2p-id-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              G2P ID <ToolTip :toolTipText="HELP_TEXT.G2P_ID" />
+            </h3>
+            <div class="record-field__value">
               <p v-if="locusGeneDiseaseData.stable_id">
                 {{ locusGeneDiseaseData.stable_id }}
               </p>
               <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr v-if="hasComments" id="comments-section">
-            <td class="w-25 text-end">
-              <h5>Comments</h5>
-            </td>
-            <td class="w-75">
+            </div>
+          </div>
+        </section>
+        <section
+          v-if="hasComments"
+          id="comments-section"
+          data-navigation-section
+          aria-labelledby="comments-heading"
+        >
+          <div class="record-field">
+            <h3
+              id="comments-heading"
+              class="record-field__label record-field__label--section-heading"
+            >
+              Comments
+            </h3>
+            <div class="record-field__value">
               <Comments :comments="locusGeneDiseaseData.comments" />
-            </td>
-          </tr>
-          <tr id="curation-information-section">
-            <td class="w-25 text-end">
-              <h5>Curation Information</h5>
-            </td>
-            <td></td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h6>Created On</h6>
-            </td>
-            <td class="w-75">
-              <p v-if="locusGeneDiseaseData.date_created">
-                {{ locusGeneDiseaseData.date_created }}
-              </p>
-              <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-          <tr class="align-middle">
-            <td class="w-25 text-end">
-              <h6>Last Updated On</h6>
-            </td>
-            <td class="w-75">
-              <p v-if="locusGeneDiseaseData.last_updated">
-                {{ locusGeneDiseaseData.last_updated }}
-              </p>
-              <p v-else class="text-muted">Not Available</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </div>
+        </section>
+        <section
+          id="curation-information-section"
+          data-navigation-section
+          aria-labelledby="curation-information-heading"
+        >
+          <h3 id="curation-information-heading" class="record-section__heading">
+            Curation Information
+          </h3>
+          <dl class="mb-0">
+            <div class="record-field record-field--align-center">
+              <dt class="record-field__label">Created On</dt>
+              <dd class="record-field__value">
+                <p v-if="locusGeneDiseaseData.date_created">
+                  {{ locusGeneDiseaseData.date_created }}
+                </p>
+                <p v-else class="text-muted">Not Available</p>
+              </dd>
+            </div>
+            <div class="record-field record-field--align-center">
+              <dt class="record-field__label">Last Updated On</dt>
+              <dd class="record-field__value">
+                <p v-if="locusGeneDiseaseData.last_updated">
+                  {{ locusGeneDiseaseData.last_updated }}
+                </p>
+                <p v-else class="text-muted">Not Available</p>
+              </dd>
+            </div>
+          </dl>
+        </section>
+      </div>
     </div>
     <nav
       id="record-side-navbar"
-      ref="sideNav"
       class="h-100 flex-column align-items-stretch ps-3"
       aria-label="On this page"
     >
@@ -617,40 +641,18 @@ export default {
         >On this page</strong
       >
       <hr class="d-none d-md-block my-2 ms-3" />
-      <nav class="nav nav-pills flex-column">
-        <a class="nav-link" href="#allelic-requirement-section"
-          >Allelic Requirement</a
+      <div class="nav nav-pills flex-column">
+        <a
+          v-for="item in navigationItems"
+          :key="item.id"
+          class="nav-link"
+          :class="{ active: activeSectionId === item.id }"
+          :aria-current="activeSectionId === item.id ? 'location' : undefined"
+          :href="`#${item.id}`"
         >
-        <a class="nav-link" href="#cross-cutting-modifier-section"
-          >Cross Cutting Modifiers</a
-        >
-        <a class="nav-link" href="#panel-section">Panels</a>
-        <a class="nav-link" href="#variant-information-section"
-          >Variant Information</a
-        >
-        <a class="nav-link" href="#molecular-mechanism-section"
-          >Molecular Mechanism</a
-        >
-        <a class="nav-link" href="#phenotype-feature-section"
-          >Phenotypic Features</a
-        >
-        <a class="nav-link" href="#phenotype-summary-section"
-          >Phenotypic Summary</a
-        >
-        <a class="nav-link" href="#evidence-section">Evidence</a>
-        <a class="nav-link" href="#gene-information-section"
-          >Gene Information</a
-        >
-        <a class="nav-link" href="#disease-information-section"
-          >Disease Information</a
-        >
-        <a v-if="hasComments" class="nav-link" href="#comments-section"
-          >Comments</a
-        >
-        <a class="nav-link" href="#curation-information-section"
-          >Curation Information</a
-        >
-      </nav>
+          {{ item.label }}
+        </a>
+      </div>
     </nav>
   </main>
 </template>
@@ -669,10 +671,61 @@ main > nav {
 
 #record-side-navbar {
   width: 18%;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
 }
 
 #record-content-div {
   width: 82%;
+}
+
+.mobile-navigation {
+  display: none;
+}
+
+.record-details {
+  margin: 1rem 0;
+}
+
+.record-section__heading {
+  width: 25%;
+  margin: 0;
+  padding: 0.5rem;
+  text-align: right;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.record-field {
+  display: grid;
+  grid-template-columns: 25% 75%;
+  align-items: start;
+}
+
+.record-field--align-center {
+  align-items: center;
+}
+
+.record-field__label,
+.record-field__value {
+  margin: 0;
+  padding: 0.5rem;
+}
+
+.record-field__value {
+  min-width: 0;
+}
+
+.record-field__label {
+  text-align: right;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.record-field__label--section-heading {
+  font-size: 1.25rem;
 }
 
 .record-summary-div {
@@ -685,9 +738,40 @@ main > nav {
   line-height: 1.4;
 }
 
-h5,
-h6,
 p {
   margin-bottom: 0;
+}
+
+@media (max-width: 767.98px) {
+  #record-content-div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #record-side-navbar {
+    display: none;
+  }
+
+  .mobile-navigation {
+    display: block;
+  }
+
+  .record-section__heading {
+    width: 100%;
+    text-align: left;
+  }
+
+  .record-field {
+    grid-template-columns: 1fr;
+  }
+
+  .record-field__label {
+    padding-bottom: 0.25rem;
+    text-align: left;
+  }
+
+  .record-field__value {
+    padding-top: 0.25rem;
+  }
 }
 </style>
