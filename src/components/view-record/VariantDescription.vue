@@ -36,47 +36,51 @@ export default {
         data-bs-parent="#accordionVariantDescription"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Variant Description</th>
-                <th>Publications</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in variantDescription">
-                <td>
-                  {{ item.description }}
-                </td>
-                <td>
-                  <span v-if="item.publications?.length > 0">
-                    <span v-for="(publicationItem, index) in item.publications">
-                      <span v-if="index < item.publications.length - 1">
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Variant Description</th>
+                  <th>Publications</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in variantDescription">
+                  <td>
+                    {{ item.description }}
+                  </td>
+                  <td>
+                    <span v-if="item.publications?.length > 0">
+                      <span
+                        v-for="(publicationItem, index) in item.publications"
+                      >
+                        <span v-if="index < item.publications.length - 1">
+                          <a
+                            class="text-decoration-none"
+                            :href="EUROPE_PMC_URL + publicationItem"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {{ publicationItem }}
+                          </a>
+                          ,
+                        </span>
                         <a
                           class="text-decoration-none"
+                          v-else
                           :href="EUROPE_PMC_URL + publicationItem"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           {{ publicationItem }}
                         </a>
-                        ,
                       </span>
-                      <a
-                        class="text-decoration-none"
-                        v-else
-                        :href="EUROPE_PMC_URL + publicationItem"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {{ publicationItem }}
-                      </a>
                     </span>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

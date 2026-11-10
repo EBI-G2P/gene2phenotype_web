@@ -37,59 +37,63 @@ export default {
         data-bs-parent="#accordionPhenotypicFeatures"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th style="width: 10%">Accession</th>
-                <th style="width: 60%">Term</th>
-                <th style="width: 30%">Publications</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in phenotypes" :key="item.accession">
-                <td style="width: 10%">
-                  <a
-                    class="text-decoration-none"
-                    :href="HPO_URL + item.accession"
-                    v-if="item.accession"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {{ item.accession }}
-                  </a>
-                </td>
-                <td style="width: 60%">
-                  {{ item.term }}
-                </td>
-                <td style="width: 30%">
-                  <span v-if="item.publications?.length > 0">
-                    <span v-for="(publicationItem, index) in item.publications">
-                      <span v-if="index < item.publications.length - 1">
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th style="width: 10%">Accession</th>
+                  <th style="width: 60%">Term</th>
+                  <th style="width: 30%">Publications</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in phenotypes" :key="item.accession">
+                  <td style="width: 10%">
+                    <a
+                      class="text-decoration-none"
+                      :href="HPO_URL + item.accession"
+                      v-if="item.accession"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ item.accession }}
+                    </a>
+                  </td>
+                  <td style="width: 60%">
+                    {{ item.term }}
+                  </td>
+                  <td style="width: 30%">
+                    <span v-if="item.publications?.length > 0">
+                      <span
+                        v-for="(publicationItem, index) in item.publications"
+                      >
+                        <span v-if="index < item.publications.length - 1">
+                          <a
+                            class="text-decoration-none"
+                            :href="EUROPE_PMC_URL + publicationItem"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {{ publicationItem }}
+                          </a>
+                          ,
+                        </span>
                         <a
                           class="text-decoration-none"
+                          v-else
                           :href="EUROPE_PMC_URL + publicationItem"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           {{ publicationItem }}
                         </a>
-                        ,
                       </span>
-                      <a
-                        class="text-decoration-none"
-                        v-else
-                        :href="EUROPE_PMC_URL + publicationItem"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {{ publicationItem }}
-                      </a>
                     </span>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

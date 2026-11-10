@@ -26,34 +26,36 @@ export default {
         data-bs-parent="#accordionComments"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Comment</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="commentObj in comments"
-                :key="`${commentObj.text}-${commentObj.date}-${commentObj.is_public}`"
-              >
-                <td style="white-space: pre-wrap">
-                  {{ commentObj.text }}
-                  <span v-if="commentObj.date">({{ commentObj.date }})</span>
-                </td>
-                <td>
-                  {{
-                    commentObj.is_public == 1
-                      ? "Public"
-                      : commentObj.is_public == 0
-                        ? "Private"
-                        : ""
-                  }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Comment</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="commentObj in comments"
+                  :key="`${commentObj.text}-${commentObj.date}-${commentObj.is_public}`"
+                >
+                  <td style="white-space: pre-wrap">
+                    {{ commentObj.text }}
+                    <span v-if="commentObj.date">({{ commentObj.date }})</span>
+                  </td>
+                  <td>
+                    {{
+                      commentObj.is_public == 1
+                        ? "Public"
+                        : commentObj.is_public == 0
+                          ? "Private"
+                          : ""
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

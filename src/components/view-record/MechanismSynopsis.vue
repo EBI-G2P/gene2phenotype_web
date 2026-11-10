@@ -30,24 +30,26 @@ export default {
         data-bs-parent="#accordionMechanismSynopsis"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Categorisation</th>
-                <th>Support</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in mechanismSynopsis">
-                <td>
-                  {{ item.synopsis }}
-                </td>
-                <td>
-                  {{ item.support }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Categorisation</th>
+                  <th>Support</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in mechanismSynopsis">
+                  <td>
+                    {{ item.synopsis }}
+                  </td>
+                  <td>
+                    {{ item.support }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

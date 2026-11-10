@@ -37,45 +37,47 @@ export default {
         data-bs-parent="#accordionCrossReferences"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Accession</th>
-                <th>Term</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="ontologyTerm in ontologyTerms"
-                :key="`${ontologyTerm.source}-${ontologyTerm.accession}`"
-              >
-                <td>
-                  <a
-                    class="text-decoration-none"
-                    v-if="ontologyTerm.source === 'OMIM'"
-                    :href="OMIM_URL + ontologyTerm.accession"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {{ ontologyTerm.accession }}
-                  </a>
-                  <a
-                    class="text-decoration-none"
-                    v-else-if="ontologyTerm.source === 'Mondo'"
-                    :href="MONDO_URL + ontologyTerm.accession"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {{ ontologyTerm.accession }}
-                  </a>
-                  <span v-else>{{ ontologyTerm.accession }}</span>
-                </td>
-                <td>{{ ontologyTerm.term }}</td>
-                <td>{{ ontologyTerm.source }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Accession</th>
+                  <th>Term</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="ontologyTerm in ontologyTerms"
+                  :key="`${ontologyTerm.source}-${ontologyTerm.accession}`"
+                >
+                  <td>
+                    <a
+                      v-if="ontologyTerm.source === 'OMIM'"
+                      class="text-decoration-none"
+                      :href="OMIM_URL + ontologyTerm.accession"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ ontologyTerm.accession }}
+                    </a>
+                    <a
+                      v-else-if="ontologyTerm.source === 'Mondo'"
+                      class="text-decoration-none"
+                      :href="MONDO_URL + ontologyTerm.accession"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ ontologyTerm.accession }}
+                    </a>
+                    <span v-else>{{ ontologyTerm.accession }}</span>
+                  </td>
+                  <td>{{ ontologyTerm.term }}</td>
+                  <td>{{ ontologyTerm.source }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
