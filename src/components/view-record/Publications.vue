@@ -286,7 +286,7 @@ export default {
           </div>
           <div
             v-if="filteredAndSortedCuratedPublications.length > 0"
-            class="d-flex justify-content-between"
+            class="d-flex flex-column flex-md-row align-items-start justify-content-md-between gap-2"
           >
             <div class="pt-1 px-0 pb-0">
               <button

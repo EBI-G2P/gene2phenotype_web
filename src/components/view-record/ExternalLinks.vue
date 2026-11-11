@@ -23,66 +23,68 @@ export default {
 };
 </script>
 <template>
-  <table class="table table-bordered mb-0">
-    <thead>
-      <tr>
-        <th>DECIPHER</th>
-        <th>OMIM</th>
-        <th>Ensembl ID</th>
-        <th>HGNC ID</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <a
-            class="text-decoration-none"
-            v-if="geneSymbol"
-            :href="DECIPHER_URL + geneSymbol"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ geneSymbol }}
-          </a>
-          <p v-else class="text-muted">Not Available</p>
-        </td>
-        <td>
-          <a
-            class="text-decoration-none"
-            v-if="omimId"
-            :href="OMIM_URL + omimId"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ omimId }}
-          </a>
-          <p v-else class="text-muted">Not Available</p>
-        </td>
-        <td>
-          <a
-            class="text-decoration-none"
-            v-if="ensemblId"
-            :href="ENSEMBL_GENE_URL + ensemblId"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ ensemblId }}
-          </a>
-          <p v-else class="text-muted">Not Available</p>
-        </td>
-        <td>
-          <a
-            class="text-decoration-none"
-            v-if="hgncId"
-            :href="HGNC_URL + hgncId"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ hgncId }}
-          </a>
-          <p v-else class="text-muted">Not Available</p>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-bordered mb-0">
+      <thead>
+        <tr>
+          <th>DECIPHER</th>
+          <th>OMIM</th>
+          <th>Ensembl ID</th>
+          <th>HGNC ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <a
+              v-if="geneSymbol"
+              class="text-decoration-none"
+              :href="DECIPHER_URL + geneSymbol"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ geneSymbol }}
+            </a>
+            <p v-else class="text-muted">Not Available</p>
+          </td>
+          <td>
+            <a
+              v-if="omimId"
+              class="text-decoration-none"
+              :href="OMIM_URL + omimId"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ omimId }}
+            </a>
+            <p v-else class="text-muted">Not Available</p>
+          </td>
+          <td>
+            <a
+              v-if="ensemblId"
+              class="text-decoration-none"
+              :href="ENSEMBL_GENE_URL + ensemblId"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ ensemblId }}
+            </a>
+            <p v-else class="text-muted">Not Available</p>
+          </td>
+          <td>
+            <a
+              v-if="hgncId"
+              class="text-decoration-none"
+              :href="HGNC_URL + hgncId"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ hgncId }}
+            </a>
+            <p v-else class="text-muted">Not Available</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>

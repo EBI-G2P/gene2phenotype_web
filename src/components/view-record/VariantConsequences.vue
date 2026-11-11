@@ -36,35 +36,37 @@ export default {
         data-bs-parent="#accordionVariantConsequences"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Variant Consequence</th>
-                <th>Support</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in variantConsequences">
-                <td>
-                  <a
-                    class="text-decoration-none"
-                    v-if="item.accession"
-                    :href="SEQUENCE_ONTOLOGY_URL + item.accession"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {{ item.variant_consequence }}
-                  </a>
-                  <span v-else>{{ item.variant_consequence }}</span>
-                </td>
-                <td>
-                  <template v-if="item.variant_consequence !== 'uncertain'">
-                    {{ item.support }}
-                  </template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Variant Consequence</th>
+                  <th>Support</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in variantConsequences">
+                  <td>
+                    <a
+                      class="text-decoration-none"
+                      v-if="item.accession"
+                      :href="SEQUENCE_ONTOLOGY_URL + item.accession"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ item.variant_consequence }}
+                    </a>
+                    <span v-else>{{ item.variant_consequence }}</span>
+                  </td>
+                  <td>
+                    <template v-if="item.variant_consequence !== 'uncertain'">
+                      {{ item.support }}
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
