@@ -109,10 +109,10 @@ const prepareVariantTypesObj = (locusGeneDiseaseData, isAuthenticated) => {
         item.de_novo || item.inherited || item.unknown_inheritance
           ? {
               ul: [
-                item.de_novo ? "De Novo" : "",
-                item.inherited ? "Inherited" : "",
-                item.unknown_inheritance ? "Unknown Inheritance" : "",
-              ],
+                item.de_novo ? "De Novo" : null,
+                item.inherited ? "Inherited" : null,
+                item.unknown_inheritance ? "Unknown Inheritance" : null,
+              ].filter(Boolean),
             }
           : "",
         item.publications?.length > 0
@@ -370,15 +370,15 @@ const prepareCuratedPublicationsObj = (
               ul: [
                 item.number_of_families
                   ? `Number of Families: ${item.number_of_families}`
-                  : "",
+                  : null,
                 item.affected_individuals
                   ? `Affected Individuals: ${item.affected_individuals}`
-                  : "",
-                item.ancestry ? `Ancestry: ${item.ancestry}` : "",
+                  : null,
+                item.ancestry ? `Ancestry: ${item.ancestry}` : null,
                 item.consanguinity && item.consanguinity !== "unknown"
                   ? `Consanguinity: ${item.consanguinity}`
-                  : "",
-              ],
+                  : null,
+              ].filter(Boolean),
             }
           : "",
       ];
@@ -556,11 +556,13 @@ const createDocumentDefinition = (
   const confidence = locusGeneDiseaseData.confidence
     ? locusGeneDiseaseData.confidence
     : "";
-  const confidenceObj = {
-    text: confidence,
-    color: "white",
-    background: CONFIDENCE_COLOR_MAP[confidence.toLowerCase()],
-  };
+  const confidenceObj = confidence
+    ? {
+        text: confidence,
+        color: "white",
+        background: CONFIDENCE_COLOR_MAP[confidence.toLowerCase()],
+      }
+    : null;
   // Review status section
   const reviewStatus = locusGeneDiseaseData.under_review ? "Under review" : "";
   const reviewStatusObj = reviewStatus
@@ -568,14 +570,14 @@ const createDocumentDefinition = (
         text: reviewStatus,
         style: "reviewStatusText",
       }
-    : reviewStatus;
+    : null;
   // Record summary section (intro paragraph, no header)
   const recordSummaryObj = locusGeneDiseaseData.summary
     ? {
         text: locusGeneDiseaseData.summary,
         style: "recordSummaryText",
       }
-    : "";
+    : null;
   // Allelic requirement section
   const allelicRequirementHeaderObj = createSubHeader("Allelic Requirement");
   const allelicRequirementObj = locusGeneDiseaseData.genotype
@@ -745,9 +747,9 @@ const createDocumentDefinition = (
       downloadedDateObj,
       "\n",
       diseaseNameObj,
-      confidenceObj,
-      reviewStatusObj,
-      recordSummaryObj,
+      ...(confidenceObj ? [confidenceObj] : []),
+      ...(reviewStatusObj ? [reviewStatusObj] : []),
+      ...(recordSummaryObj ? [recordSummaryObj] : []),
       "\n",
       allelicRequirementHeaderObj,
       allelicRequirementObj,
@@ -777,9 +779,9 @@ const createDocumentDefinition = (
       mechanismCategorisationHeaderObj,
       mechanismCategorisationObj,
       "\n",
-      isDisplayMechanismEvidenceSection ? mechanismEvidenceHeaderObj : "",
-      isDisplayMechanismEvidenceSection ? mechanismEvidenceObj : "",
-      isDisplayMechanismEvidenceSection ? "\n" : "",
+      ...(isDisplayMechanismEvidenceSection
+        ? [mechanismEvidenceHeaderObj, mechanismEvidenceObj, "\n"]
+        : []),
       phenotypicFeaturesHeaderObj,
       phenotypicFeaturesObj,
       "\n",
@@ -791,9 +793,9 @@ const createDocumentDefinition = (
       curatedPublicationsHeaderObj,
       curatedPublicationsObj,
       "\n",
-      isDisplayMinedPublicationsSection ? minedPublicationsHeaderObj : "",
-      isDisplayMinedPublicationsSection ? minedPublicationsObj : "",
-      isDisplayMinedPublicationsSection ? "\n" : "",
+      ...(isDisplayMinedPublicationsSection
+        ? [minedPublicationsHeaderObj, minedPublicationsObj, "\n"]
+        : []),
       geneInformationHeaderObj,
       "\n",
       geneSymbolHeaderObj,
@@ -819,9 +821,9 @@ const createDocumentDefinition = (
       g2pIdHeaderObj,
       g2pIdObj,
       "\n",
-      isDisplayCommentsSection ? commentsHeaderObj : "",
-      isDisplayCommentsSection ? commentsObj : "",
-      isDisplayCommentsSection ? "\n" : "",
+      ...(isDisplayCommentsSection
+        ? [commentsHeaderObj, commentsObj, "\n"]
+        : []),
       curationInformationHeaderObj,
       "\n",
       createdOnDateHeaderObj,
@@ -885,5 +887,5 @@ export const exportRecordPdf = (locusGeneDiseaseData, isAuthenticated) => {
     downloadedDate,
   );
   const fileName = `${recordStableId}_${downloadedDate.toISOString()}.pdf`;
-  pdfMake.createPdf(documentDefinition).download(fileName);
+  return pdfMake.createPdf(documentDefinition).download(fileName);
 };

@@ -51,7 +51,7 @@ export default {
       try {
         const { exportRecordPdf } =
           await import("../../utility/DownloadUtility.js");
-        exportRecordPdf(this.locusGeneDiseaseData, this.isAuthenticated);
+        await exportRecordPdf(this.locusGeneDiseaseData, this.isAuthenticated);
       } finally {
         this.isPdfDownloading = false;
       }
