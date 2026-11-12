@@ -36,32 +36,34 @@ export default {
         data-bs-parent="#accordionPhenotypeSummary"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Publication</th>
-                <th>Phenotypic Summary</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in phenotypeSummary" :key="item.publication">
-                <td>
-                  <a
-                    v-if="item.publication"
-                    :href="EUROPE_PMC_URL + item.publication"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-decoration-none"
-                  >
-                    {{ item.publication }}
-                  </a>
-                </td>
-                <td style="white-space: pre-wrap">
-                  {{ item.summary }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Publication</th>
+                  <th>Phenotypic Summary</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in phenotypeSummary" :key="item.publication">
+                  <td>
+                    <a
+                      v-if="item.publication"
+                      :href="EUROPE_PMC_URL + item.publication"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-decoration-none"
+                    >
+                      {{ item.publication }}
+                    </a>
+                  </td>
+                  <td style="white-space: pre-wrap">
+                    {{ item.summary }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

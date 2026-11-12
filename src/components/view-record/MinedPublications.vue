@@ -118,12 +118,16 @@ export default {
           aria-expanded="false"
           aria-controls="collapsibleMinedPublicationsTable"
         >
-          <i class="bi bi-stars me-1"></i> Additional mined publications
-          awaiting review ({{ minedPublicationsUnderReview.length }})
-          <TableToolTip
-            class="ms-1"
-            :toolTipText="HELP_TEXT.MINED_PUBLICATIONS"
-          />
+          <span class="accordion-title">
+            <i class="bi bi-stars me-1"></i>
+            Additional mined publications awaiting review ({{
+              minedPublicationsUnderReview.length
+            }})
+            <TableToolTip
+              class="ms-1"
+              :toolTipText="HELP_TEXT.MINED_PUBLICATIONS"
+            />
+          </span>
         </button>
       </h2>
       <div
@@ -259,7 +263,7 @@ export default {
           </div>
           <div
             v-if="filteredAndSortedMinedPublications.length > 0"
-            class="d-flex justify-content-between"
+            class="d-flex flex-column flex-md-row align-items-start justify-content-md-between gap-2"
           >
             <div class="pt-1 px-0 pb-0">
               <button
@@ -299,6 +303,10 @@ export default {
   </div>
 </template>
 <style scoped>
+.accordion-title {
+  min-width: 0;
+}
+
 /* Border styling fix for sticky header - START */
 table {
   border-collapse: separate; /* Does not collapse border */

@@ -32,60 +32,65 @@ export default {
         data-bs-parent="#accordionMechanismEvidence"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Publication</th>
-                <th>Functional Studies</th>
-                <th>Descriptions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(value, key) in mechanismEvidence">
-                <td>
-                  <a
-                    class="text-decoration-none"
-                    :href="EUROPE_PMC_URL + key"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {{ key }}
-                  </a>
-                </td>
-                <td>
-                  <ul
-                    v-if="
-                      Object.keys(value?.functional_studies || {}).length > 0
-                    "
-                    class="mb-0 ps-3"
-                  >
-                    <li
-                      v-for="(
-                        secondaryEvidenceTypeArray, primaryEvidenceType
-                      ) in value.functional_studies"
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Publication</th>
+                  <th>Functional Studies</th>
+                  <th>Descriptions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(value, key) in mechanismEvidence">
+                  <td>
+                    <a
+                      class="text-decoration-none"
+                      :href="EUROPE_PMC_URL + key"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      {{ primaryEvidenceType }} :
-                      {{
-                        secondaryEvidenceTypeArray?.length > 0
-                          ? secondaryEvidenceTypeArray.join(", ")
-                          : null
-                      }}
-                    </li>
-                  </ul>
-                </td>
-                <td>
-                  <ul v-if="value?.descriptions?.length > 0" class="mb-0 ps-3">
-                    <li
-                      v-for="item in value.descriptions"
-                      style="white-space: pre-wrap"
+                      {{ key }}
+                    </a>
+                  </td>
+                  <td>
+                    <ul
+                      v-if="
+                        Object.keys(value?.functional_studies || {}).length > 0
+                      "
+                      class="mb-0 ps-3"
                     >
-                      {{ item }}
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                      <li
+                        v-for="(
+                          secondaryEvidenceTypeArray, primaryEvidenceType
+                        ) in value.functional_studies"
+                      >
+                        {{ primaryEvidenceType }} :
+                        {{
+                          secondaryEvidenceTypeArray?.length > 0
+                            ? secondaryEvidenceTypeArray.join(", ")
+                            : null
+                        }}
+                      </li>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul
+                      v-if="value?.descriptions?.length > 0"
+                      class="mb-0 ps-3"
+                    >
+                      <li
+                        v-for="item in value.descriptions"
+                        style="white-space: pre-wrap"
+                      >
+                        {{ item }}
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -41,46 +41,64 @@ export default {
         data-bs-parent="#accordionVariantTypes"
       >
         <div class="accordion-body p-0">
-          <table class="table table-bordered mb-0">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Inheritance</th>
-                <th>Publications</th>
-                <th v-if="isAuthenticated">Comments</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in variantTypes">
-                <td>
-                  <a
-                    class="text-decoration-none"
-                    v-if="item.accession"
-                    :href="SEQUENCE_ONTOLOGY_URL + item.accession"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {{ item.term }}
-                  </a>
-                  <span v-else>{{ item.term }}</span>
-                </td>
-                <td>
-                  <ul
-                    v-if="
-                      item.de_novo || item.inherited || item.unknown_inheritance
-                    "
-                    class="mb-0 ps-3"
-                  >
-                    <li v-if="item.de_novo">De Novo</li>
-                    <li v-if="item.inherited">Inherited</li>
-                    <li v-if="item.unknown_inheritance">Unknown Inheritance</li>
-                  </ul>
-                </td>
-                <td>
-                  <span v-if="item.publications?.length > 0">
-                    <span v-for="(publicationItem, index) in item.publications">
-                      <span v-if="index < item.publications.length - 1">
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Inheritance</th>
+                  <th>Publications</th>
+                  <th v-if="isAuthenticated">Comments</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in variantTypes">
+                  <td>
+                    <a
+                      v-if="item.accession"
+                      class="text-decoration-none"
+                      :href="SEQUENCE_ONTOLOGY_URL + item.accession"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ item.term }}
+                    </a>
+                    <span v-else>{{ item.term }}</span>
+                  </td>
+                  <td>
+                    <ul
+                      v-if="
+                        item.de_novo ||
+                        item.inherited ||
+                        item.unknown_inheritance
+                      "
+                      class="mb-0 ps-3"
+                    >
+                      <li v-if="item.de_novo">De Novo</li>
+                      <li v-if="item.inherited">Inherited</li>
+                      <li v-if="item.unknown_inheritance">
+                        Unknown Inheritance
+                      </li>
+                    </ul>
+                  </td>
+                  <td>
+                    <span v-if="item.publications?.length > 0">
+                      <span
+                        v-for="(publicationItem, index) in item.publications"
+                      >
+                        <span v-if="index < item.publications.length - 1">
+                          <a
+                            class="text-decoration-none"
+                            :href="EUROPE_PMC_URL + publicationItem"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {{ publicationItem }}
+                          </a>
+                          ,
+                        </span>
                         <a
+                          v-else
                           class="text-decoration-none"
                           :href="EUROPE_PMC_URL + publicationItem"
                           target="_blank"
@@ -88,34 +106,24 @@ export default {
                         >
                           {{ publicationItem }}
                         </a>
-                        ,
                       </span>
-                      <a
-                        class="text-decoration-none"
-                        v-else
-                        :href="EUROPE_PMC_URL + publicationItem"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {{ publicationItem }}
-                      </a>
                     </span>
-                  </span>
-                </td>
-                <td v-if="isAuthenticated">
-                  <ul v-if="item.comments?.length > 0" class="mb-0 ps-3">
-                    <li
-                      v-for="commentItem in item.comments"
-                      :key="commentItem.text"
-                      style="white-space: pre-wrap"
-                    >
-                      {{ commentItem.text }} ({{ commentItem.date }})
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                  <td v-if="isAuthenticated">
+                    <ul v-if="item.comments?.length > 0" class="mb-0 ps-3">
+                      <li
+                        v-for="commentItem in item.comments"
+                        :key="commentItem.text"
+                        style="white-space: pre-wrap"
+                      >
+                        {{ commentItem.text }} ({{ commentItem.date }})
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
