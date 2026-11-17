@@ -1,5 +1,5 @@
 <template>
-  <div class="container px-5 py-3" style="min-height: 60vh">
+  <div class="container px-3 px-sm-5 py-3" style="min-height: 60vh">
     <h2 class="pb-3">Use of Artificial intelligence in Gene2Phenotype</h2>
     <p>
       G2P records are curated from the scientific literature and are

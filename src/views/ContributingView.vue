@@ -1,5 +1,5 @@
 <template>
-  <div class="container px-5 py-3" style="min-height: 60vh">
+  <div class="container px-3 px-sm-5 py-3" style="min-height: 60vh">
     <h2 class="pb-3">G2P Curation Roles</h2>
     <p>
       G2P curation teams contain people with a mix of backgrounds and
