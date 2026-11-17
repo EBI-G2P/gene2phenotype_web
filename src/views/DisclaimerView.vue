@@ -1,5 +1,5 @@
 <template>
-  <div class="container px-5 py-3" style="min-height: 60vh">
+  <div class="container px-3 px-sm-5 py-3" style="min-height: 60vh">
     <h2 class="pb-3">G2P Disclaimer</h2>
     <p>
       The gene2phenotype database (G2P) contains expert curated gene-disease

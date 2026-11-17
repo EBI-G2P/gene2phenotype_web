@@ -44,7 +44,7 @@ export default {
         .catch((error) => {
           this.errorMsg = fetchAndLogGeneralErrorMsg(
             error,
-            "Unable to fetch terminology data. Please try again later."
+            "Unable to fetch terminology data. Please try again later.",
           );
         })
         .finally(() => {
@@ -55,7 +55,7 @@ export default {
 };
 </script>
 <template>
-  <div class="container px-5 py-3" style="min-height: 60vh">
+  <div class="container px-3 px-sm-5 py-3" style="min-height: 60vh">
     <div
       class="d-flex justify-content-center"
       v-if="isDataLoading"

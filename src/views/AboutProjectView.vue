@@ -1,5 +1,5 @@
 <template>
-  <div class="container px-5 py-3" style="min-height: 60vh">
+  <div class="container px-3 px-sm-5 py-3" style="min-height: 60vh">
     <h2 class="pb-3">The G2P Project</h2>
     <p>
       The G2P project, hosted at EMBL-EBI, shares detailed, evidence-based
