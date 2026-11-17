@@ -47,7 +47,7 @@ export default {
 };
 </script>
 <template>
-  <div class="container px-5 py-3" style="min-height: 60vh">
+  <div class="container px-3 px-sm-5 py-3" style="min-height: 60vh">
     <main id="website-help-main">
       <div id="website-help-content-div" ref="content">
         <div class="dropdown mobile-navigation mb-4">
