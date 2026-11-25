@@ -216,16 +216,14 @@ const router = createRouter({
   },
 });
 
-router.beforeEach(function (to, _, next) {
+router.beforeEach(function (to) {
   const authStore = useAuthStore();
   if (to.meta.requiresLogIn && !authStore.isAuthenticated) {
-    next({ path: "/login", query: { redirect: to.fullPath } });
+    return { path: "/login", query: { redirect: to.fullPath } };
   } else if (to.meta.requiresSuperUser && !authStore.isSuperUser) {
-    next("/");
+    return "/";
   } else if (to.meta.requiresLogOut && authStore.isAuthenticated) {
-    next("/");
-  } else {
-    next();
+    return "/";
   }
 });
 
